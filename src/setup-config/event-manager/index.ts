@@ -1,9 +1,9 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces/index";
-import * as eventManagerInterfaces from "../../interfaces/setup-config/event-manager/index";
+import * as interfaces from "../../interfaces";
+import * as eventManagerInterfaces from "../../interfaces/setup-config/event-manager";
 
-import hooksFactory from "./hook-structure/index";
+import hooksFactory from "./hook-structure";
 
 /******************************************************************************/
 

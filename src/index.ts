@@ -8,15 +8,15 @@ import * as favicon from "serve-favicon";
 import * as compression from "compression";
 import * as bodyParser from "body-parser";
 
-import * as interfaces from "./interfaces/index";
+import * as interfaces from "./interfaces";
 
-import config from "./setup-config/index";
+import config from "./setup-config";
 
-import utilitiesFactory from "./utilities/index";
+import utilitiesFactory from "./utilities";
 
-import componentsFactory from "./components/index";
+import componentsFactory from "./components";
 
-import routes from "./routes/index";
+import routes from "./routes";
 
 /******************************************************************************/
 

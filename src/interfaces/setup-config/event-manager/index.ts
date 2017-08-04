@@ -1,8 +1,8 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces/index";
+import * as interfaces from "../../../interfaces";
 
-import * as hooks from "./hooks/index";
+import * as hooks from "./hooks";
 
 /******************************************************************************/
 

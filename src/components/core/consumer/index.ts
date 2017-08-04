@@ -1,14 +1,14 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager/index";
-import * as coreInterfaces from "../../../interfaces/components/core/index";
+import * as interfaces from "../../../interfaces";
+import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as coreInterfaces from "../../../interfaces/components/core";
 
-import authFactory from "./auth/index";
-import profileFactory from "./profile/index";
-import registrationFactory from "./registration/index";
+import authFactory from "./auth";
+import profileFactory from "./profile";
+import registrationFactory from "./registration";
 
-import sharedCodeFactory from "./shared-code/index";
+import sharedCodeFactory from "./shared-code";
 
 /******************************************************************************/
 

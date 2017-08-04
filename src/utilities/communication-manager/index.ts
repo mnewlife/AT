@@ -1,16 +1,13 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces/index";
-
-import commSettings from "./comm-settings/index";
-import basicCommunicationManagerFactory from "./basic/index";
+import * as interfaces from "../../interfaces";
+import commSettings from "./comm-settings";
+import basicCommunicationManagerFactory from "./basic";
 
 /******************************************************************************/
 
 export default ( config: interfaces.Config ): interfaces.utilities.CommunicationManager => {
-
   return basicCommunicationManagerFactory( config, commSettings );
-
 }
 
 /******************************************************************************/

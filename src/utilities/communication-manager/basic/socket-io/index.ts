@@ -1,37 +1,33 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-import * as express from "express";
-import * as mongoose from "mongoose";
+import * as http from "http";
 import * as IO from "socket.io";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as communicationManagerInterfaces from "../../../../interfaces/utilities/communication-manager/index";
-import * as modersInterfaces from "../../../../interfaces/utilities/shared-logic/moders/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
+import * as interfaces from "../../../../interfaces";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
+import * as communicationManagerInterfaces from "../../../../interfaces/utilities/communication-manager";
+import * as modersInterfaces from "../../../../interfaces/utilities/shared-logic/moders";
 
-import { SubscriptionModel, SubscriptionMongooseModel } from "../../../../utilities/storage-manager/mongodb/subscription/model/index";
+import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class BasicWebSocket implements interfaces.utilities.communicationManager.WebSocket {
+class BasicWebSocket implements communicationManagerInterfaces.WebSocket {
 
-  private readonly emitter: interfaces.utilities.communicationManager.webSocket.Emitter;
-  private readonly checkThrow: interfaces.utilities.sharedLogic.moders.CheckThrow;
+  private readonly emitter: communicationManagerInterfaces.webSocket.Emitter;
+  private readonly checkThrow: modersInterfaces.CheckThrow;
   private io: SocketIO.Server;
-  private readonly storageGetUserSubscriptions: interfaces.utilities.storageManager.subscription.Get;
+  private readonly getSubscriptionByIdFromStorage: storageManagerInterfaces.subscription.GetById;
 
   /*****************************************************************/
 
-  constructor( params: any ) {
-    if ( params.production ) {
-      this.io = IO.listen( params.httpServer );
-    } else {
-      this.io = IO( params.httpServer );
-    }
+  constructor( params: communicationManagerInterfaces.webSocket.Params ) {
     this.emitter = params.emitter;
+    this.io = ( params.production ) ? IO.listen( params.httpServer ) : IO( params.httpServer );
+    this.getSubscriptionByIdFromStorage = params.getSubscriptionByIdFromStorage;
     this.checkThrow = params.checkThrow;
-    this.storageGetUserSubscriptions = params.storageGetUserSubscriptions;
   }
 
   /*****************************************************************/
@@ -338,14 +334,14 @@ class BasicWebSocket implements interfaces.utilities.communicationManager.WebSoc
           return;
         }
 
-        socket.userId = user._id;
+        socket.userId = user.id;
 
-        this.storageGetUserSubscriptions( {
-          userId: mongoose.Types.ObjectId( user._id )
+        this.getSubscriptionByIdFromStorage( {
+          userId: user.id
         }, null, null )
-          .then(( subscriptions: SubscriptionModel[] ) => {
+          .then(( subscriptions: interfaces.dataModel.subscription.Super[] ) => {
             return new Promise<string[]>(( resolve, reject ) => {
-              let channels: string[] = subscriptions.map(( subscription: SubscriptionModel ) => {
+              let channels: string[] = subscriptions.map(( subscription: interfaces.dataModel.subscription.Super ) => {
                 return subscription.subscription;
               } );
               resolve( channels );
@@ -371,6 +367,7 @@ class BasicWebSocket implements interfaces.utilities.communicationManager.WebSoc
                 userId: user._id,
                 reason: reason
               } );
+              resolve();
             } );
 
           } );
@@ -389,16 +386,22 @@ class BasicWebSocket implements interfaces.utilities.communicationManager.WebSoc
 
 /******************************************************************************/
 
-export default ( params: communicationManagerInterfaces.WebSocketFactoryParams ): communicationManagerInterfaces.WebSocket => {
-
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit,
+  commSettings: communicationManagerInterfaces.CommSettings;
+  checkThrow: modersInterfaces.CheckThrow;
+  httpServer: http.Server;
+  production: boolean;
+  getSubscriptionByIdFromStorage: storageManagerInterfaces.subscription.GetById
+} ): communicationManagerInterfaces.WebSocket => {
   return new BasicWebSocket( {
+    emitter: emitterFactory( params.emitEvent ),
     commSettings: params.commSettings,
     checkThrow: params.checkThrow,
     httpServer: params.httpServer,
     production: params.production,
-    storageGetUserSubscriptions: params.storageGetUserSubscriptions
+    getSubscriptionByIdFromStorage: params.getSubscriptionByIdFromStorage
   } );
-
 }
 
 /******************************************************************************/

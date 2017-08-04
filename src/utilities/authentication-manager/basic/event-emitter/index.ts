@@ -1,22 +1,16 @@
 /******************************************************************************/
 
-import * as Promise from "bluebird";
-import * as express from "express";
-
-import * as interfaces from "../../../../interfaces/index";
-
-import * as events from "../../../../interfaces/events/utilities/authentication-manager/index";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
+import * as events from "../../../../interfaces/utilities/authentication-manager/events";
+import * as authenticationManager from "../../../../interfaces/utilities/authentication-manager";
+import * as eventManager from "../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Emitter {
+class AuthenticationManagerEmitter implements authenticationManager.Emitter {
 
   /*****************************************************************/
 
   readonly signedIn = ( data: events.SignedInData ) => {
-
     let event: events.SignedIn = {
       context: "AuthenticationManager",
       tags: [],
@@ -25,17 +19,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         user: data.user
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly signInFailed = ( data: events.SignInFailedData ) => {
-
     let event: events.SignInFailed = {
       context: "AuthenticationManager",
       tags: [],
@@ -45,17 +35,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         reason: data.reason
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly invalidPassword = ( data: events.InvalidPasswordData ) => {
-
     let event: events.InvalidPassword = {
       context: "AuthenticationManager",
       tags: [],
@@ -66,17 +52,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         password: data.password
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly signedOut = ( data: events.SignedOutData ) => {
-
     let event: events.SignedOut = {
       context: "AuthenticationManager",
       tags: [],
@@ -85,17 +67,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         userId: data.userId
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly signOutFailed = ( data: events.SignOutFailedData ) => {
-
     let event: events.SignOutFailed = {
       context: "AuthenticationManager",
       tags: [],
@@ -105,17 +83,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         reason: data.reason
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly getCurrentUserFailed = ( data: events.GetCurrentUserFailedData ) => {
-
     let event: events.GetCurrentUserFailed = {
       context: "AuthenticationManager",
       tags: [],
@@ -125,17 +99,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         reason: data.reason
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly createHashedPasswordFailed = ( data: events.CreateHashedPasswordFailedData ) => {
-
     let event: events.CreateHashedPasswordFailed = {
       context: "AuthenticationManager",
       tags: [],
@@ -145,17 +115,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         reason: data.password
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly authPasswordFailed = ( data: events.AuthPasswordFailedData ) => {
-
     let event: events.AuthPasswordFailed = {
       context: "AuthenticationManager",
       tags: [],
@@ -166,16 +132,13 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
         reason: data.reason
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) {}
+  constructor( readonly emitEvent: eventManager.Emit ) { }
 
   /*****************************************************************/
 
@@ -183,10 +146,8 @@ class AuthenticationManagerEmitter implements authenticationManagerInterfaces.Em
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): authenticationManagerInterfaces.Emitter => {
-
+export default ( emitEvent: eventManager.Emit ): authenticationManager.Emitter => {
   return new AuthenticationManagerEmitter( emitEvent );
-
 }
 
 /******************************************************************************/

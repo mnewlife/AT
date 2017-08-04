@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
-import * as consumerInterfaces from "../../../../interfaces/components/core/consumer/index";
+import * as interfaces from "../../../../interfaces";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as consumerInterfaces from "../../../../interfaces/components/core/consumer";
 
-import emitterFactory from "./event-emitter/index";
+import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 

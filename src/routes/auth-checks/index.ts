@@ -2,7 +2,7 @@
 
 import * as express from "express";
 
-import * as interfaces from "../../interfaces/index";
+import * as interfaces from "../../interfaces";
 
 import core from "./core";
 import call263 from "./call-263";

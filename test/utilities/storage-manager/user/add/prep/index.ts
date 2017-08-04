@@ -1,10 +1,8 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-
-import * as interfaces from "../../../../../../src/interfaces/index";
-
-import { UserMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/user/model/index";
+import * as interfaces from "../../../../../../src/interfaces";
+import { UserMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/user/model";
 
 /******************************************************************************/
 

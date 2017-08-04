@@ -2,19 +2,19 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
-import * as developerInterfaces from "../../../../interfaces/components/core/developer/index";
+import * as interfaces from "../../../../interfaces";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as adminInterfaces from "../../../../interfaces/components/core/admin";
 
-import emitterFactory from "./event-emitter/index";
+import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Profile implements developerInterfaces.Profile {
+class Profile implements adminInterfaces.Profile {
 
-  private readonly emitter: developerInterfaces.profile.Emitter;
+  private readonly emitter: adminInterfaces.profile.Emitter;
 
-  constructor( params: developerInterfaces.profile.Params ) {
+  constructor( params: adminInterfaces.profile.Params ) {
     this.emitter = params.emitter;
   }
 
@@ -34,7 +34,7 @@ class Profile implements developerInterfaces.Profile {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit, sharedCode: developerInterfaces.SharedCode ): developerInterfaces.Profile => {
+export default ( emitEvent: eventManagerInterfaces.Emit, sharedCode: adminInterfaces.SharedCode ): adminInterfaces.Profile => {
   return new Profile( {
     emitter: emitterFactory( emitEvent )
   } )

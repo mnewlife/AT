@@ -1,11 +1,8 @@
 /******************************************************************************/
 
-import * as express from "express";
-import * as Promise from "bluebird";
-
-import * as interfaces from "../../../../interfaces/index";
-import * as events from "../../../../interfaces/events/utilities/shared-logic/middleware/index";
-import * as sharedLogic from "../../../../interfaces/utilities/shared-logic/index";
+import * as interfaces from "../../../../interfaces";
+import * as events from "./events";
+import * as sharedLogic from "../../../../interfaces/utilities/shared-logic";
 
 /******************************************************************************/
 

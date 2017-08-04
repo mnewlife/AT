@@ -3,13 +3,12 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../interfaces/index";
-import * as storageManager from "../../../interfaces/utilities/storage-manager/index";
-import * as sessionManager from "../../../interfaces/utilities/session-manager/index";
-import * as sharedLogic from "../../../interfaces/utilities/shared-logic/index";
-import * as events from "../../../interfaces/events/utilities/authentication-manager/index";
+import * as interfaces from "../../../interfaces";
+import * as events from "./events";
 
-import * as dataImplementations from "../../../interfaces/data-model/implementations/index";
+import * as sharedLogic from "../../../interfaces/utilities/shared-logic";
+import * as storageManager from "../../../interfaces/utilities/storage-manager";
+import * as sessionManager from "../../../interfaces/utilities/session-manager";
 
 /******************************************************************************/
 
@@ -27,18 +26,18 @@ export interface Emitter {
 export interface Params {
   emitter: Emitter;
 
-  storageGetUser: storageManager.user.Get;
-  storageGetUserById: storageManager.user.GetById;
+  getUserFromStorage: storageManager.user.Get;
+  getUserByIdFromStorage: storageManager.user.GetById;
 
-  sessionSetCurrentUser: sessionManager.SetCurrentUser;
-  sessionGetCurrentUser: sessionManager.GetCurrentUser;
-  sessionSignOut: sessionManager.SignOut;
+  setCurrentUserInSession: sessionManager.SetCurrentUser;
+  getCurrentUserFromSession: sessionManager.GetCurrentUser;
+  signOutOfSession: sessionManager.SignOut;
 
   checkThrow: sharedLogic.moders.CheckThrow;
 }
 
 export interface SignIn {
-  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
 }
 
 export interface SignOut {
@@ -46,7 +45,7 @@ export interface SignOut {
 }
 
 export interface GetCurrentUser {
-  ( req: express.Request, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
 }
 
 export interface AuthPassword {

@@ -3,11 +3,11 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
+import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/developer/profile/index";
-import * as profileInterfaces from "../../../../../interfaces/components/core/developer/profile/index";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager/index";
+import * as events from "../../../../../interfaces/events/components/core/admin/profile";
+import * as profileInterfaces from "../../../../../interfaces/components/core/admin/profile";
+import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
@@ -15,10 +15,10 @@ class ProfileEmitter implements profileInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly example = ( data: events.ExampleData ) => {
+  readonly example = ( data: storageManagerEvents.ExampleData ) => {
 
-    let event: events.Example = {
-      context: "Core|Developer|Profile",
+    let event: storageManagerEvents.Example = {
+      context: "Core|Admin|Profile",
       tags: [],
       identifier: "Example",
       data: {

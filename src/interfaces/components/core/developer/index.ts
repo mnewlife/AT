@@ -1,16 +1,16 @@
 /******************************************************************************/
 
-import * as core from "../../../../interfaces/components/core/index";
+import * as core from "../../../../interfaces/components/core";
 
-import * as auth from "./auth/index";
-import * as profile from "./profile/index";
-import * as registration from "./registration/index";
+import * as auth from "./auth";
+import * as profile from "./profile";
+import * as registration from "./registration";
 
-import * as sharedCode from "./shared-code/index";
+import * as admins from "./admins";
 
 /******************************************************************************/
 
-export { auth, profile, registration, sharedCode };
+export { auth, profile, registration, admins };
 
 /******************************************************************************/
 
@@ -18,6 +18,14 @@ export interface Params {
   auth: Auth;
   profile: Profile;
   registration: Registration;
+  admins: Admins;
+}
+
+export interface Admins {
+  get: admins.Get;
+  getOne: admins.GetOne;
+  add: admins.Add;
+  remove: admins.Remove;
 }
 
 export interface Auth {
@@ -26,18 +34,17 @@ export interface Auth {
 }
 
 export interface Profile {
-  getUserDetails: profile.GetDetails;
-  updateUserDetails: profile.UpdateDetails;
-  changePassword: profile.ChangePassword;
+  readonly getUserDetails: profile.GetDetails;
+  readonly updateUserDetails: profile.UpdateDetails;
+  readonly changeEmailAddress: profile.ChangeEmailAddress;
+  readonly changePassword: profile.ChangePassword;
+  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
+  readonly resetPassword: profile.ResetPassword;
+  readonly deleteAccount: profile.DeleteAccount;
 }
 
 export interface Registration {
-  addAdmin: registration.AddAdmin;
   verifyAccount: registration.VerifyAccount;
-}
-
-export interface SharedCode {
-  verification: sharedCode.Verification;
 }
 
 /******************************************************************************/

@@ -3,46 +3,26 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
+import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/admin/registration/index";
-import * as registrationInterfaces from "../../../../../interfaces/components/core/admin/registration/index";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager/index";
+import * as events from "../../../../../interfaces/events/components/core/admin/auth";
+import * as authInterfaces from "../../../../../interfaces/components/core/admin/auth";
+import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class RegistrationEmitter implements registrationInterfaces.Emitter {
+class AuthEmitter implements authInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly addedAdmin = ( data: events.AddedAdminData ) => {
+  readonly example = ( data: storageManagerEvents.ExampleData ) => {
 
-    let event: events.AddedAdmin = {
-      context: "Core|Admin|Registration",
+    let event: storageManagerEvents.Example = {
+      context: "Core|Admin|Auth",
       tags: [],
-      identifier: "AddedAdmin",
+      identifier: "Example",
       data: {
         user: data.user
-      }
-    };
-
-    this.emitEvent( event );
-
-    return event;
-
-  }
-
-  /*****************************************************************/
-
-  readonly addAdminFailed = ( data: events.AddAdminFailedData ) => {
-
-    let event: events.AddAdminFailed = {
-      context: "Core|Admin|Registration",
-      tags: [],
-      identifier: "AddAdminFailed",
-      data: {
-        emailAddress: data.emailAddress,
-        reason: data.reason
       }
     };
 
@@ -62,8 +42,8 @@ class RegistrationEmitter implements registrationInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): registrationInterfaces.Emitter => {
-  return new RegistrationEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): authInterfaces.Emitter => {
+  return new AuthEmitter( emitEvent );
 }
 
 /******************************************************************************/

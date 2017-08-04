@@ -2,10 +2,10 @@
 
 import * as http from "http";
 
-import * as interfaces from "../interfaces/index";
+import * as interfaces from "../interfaces";
 
-import eventManagerFactory from "./event-manager/index";
-import environment from "./environment/index";
+import eventManagerFactory from "./event-manager";
+import environment from "./environment";
 
 /******************************************************************************/
 

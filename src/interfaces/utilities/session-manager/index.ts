@@ -3,10 +3,8 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../interfaces/index";
-import * as events from "../../../interfaces/events/utilities/session-manager/index";
-
-import * as dataImplementations from "../../../interfaces/data-model/implementations/index";
+import * as interfaces from "../../../interfaces";
+import * as events from "./events";
 
 /******************************************************************************/
 
@@ -26,11 +24,11 @@ export interface Params {
 }
 
 export interface SetCurrentUser {
-  ( signedInUser: interfaces.dataModel.User, req: express.Request, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( signedInUser: interfaces.dataModel.user.Super, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
 }
 
 export interface GetCurrentUser {
-  ( req: express.Request, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
 }
 
 export interface SignOut {

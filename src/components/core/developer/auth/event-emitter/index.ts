@@ -3,11 +3,11 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
+import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/developer/auth/index";
-import * as authInterfaces from "../../../../../interfaces/components/core/developer/auth/index";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager/index";
+import * as events from "../../../../../interfaces/events/components/core/admin/auth";
+import * as authInterfaces from "../../../../../interfaces/components/core/admin/auth";
+import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
@@ -15,10 +15,10 @@ class AuthEmitter implements authInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly example = ( data: events.ExampleData ) => {
+  readonly example = ( data: storageManagerEvents.ExampleData ) => {
 
-    let event: events.Example = {
-      context: "Core|Developer|Auth",
+    let event: storageManagerEvents.Example = {
+      context: "Core|Admin|Auth",
       tags: [],
       identifier: "Example",
       data: {

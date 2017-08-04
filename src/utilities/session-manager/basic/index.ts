@@ -4,8 +4,10 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as expressSession from "express-session";
 
-import * as interfaces from "../../../interfaces/index";
-import * as sessionManagerInterfaces from "../../../interfaces/utilities/session-manager/index";
+import * as interfaces from "../../../interfaces";
+import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as sessionManagerInterfaces from "../../../interfaces/utilities/session-manager";
+import * as sharedLogicInterfaces from "../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
@@ -15,56 +17,44 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
   middleware: express.RequestHandler[] = [];
 
-  private readonly emitter: interfaces.utilities.sessionManager.Emitter;
-  private readonly checkThrow: interfaces.utilities.sharedLogic.moders.CheckThrow;
+  private readonly emitter: sessionManagerInterfaces.Emitter;
+  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   private readonly production: boolean;
 
   /*****************************************************************/
 
   constructor( params: sessionManagerInterfaces.Params ) {
-
     this.emitter = params.emitter;
     this.checkThrow = params.checkThrow;
-
     let attemptSession = function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
-
       if ( req.session ) {
         return next();
       }
-
       let tryCount = 1;
       let maxTries = 3;
 
       function lookupSession ( error: any ) {
-
         if ( error ) {
           throw error;
         }
-
         if ( req.session ) {
           return next();
         }
-
         tryCount += 1;
         if ( tryCount > maxTries ) {
           throw new Error( "Session: Couldn't retain session" );
         }
-
         params.middlewareConfiguration( req, res, lookupSession );
-
       }
 
       lookupSession( "" );
-
     }
-
     this.middleware.push( attemptSession );
-
   }
 
   /*****************************************************************/
 
-  readonly setCurrentUser = ( user: interfaces.dataModel.User, req: express.Request, forceThrow = false ): Promise<any> => {
+  readonly setCurrentUser = ( user: interfaces.dataModel.user.Super, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -102,7 +92,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
   /*****************************************************************/
 
-  readonly signOut = ( req: express.Request, forceThrow = false ): Promise<any> => {
+  readonly signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -139,28 +129,26 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
   }
 
-  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.User> => {
+  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         if ( req.session.currentUser ) {
           return Promise.resolve( req.session.currentUser );
-        } else {
-
-          new Promise<void>(( resolve, reject ) => {
-            this.emitter.noCurrentUser( {
-              req: req
-            } );
-            resolve();
-          } );
-
-          return Promise.reject( {
-            identifier: "NoCurrentUser",
-            data: {}
-          } );
-
         }
+
+        new Promise<void>(( resolve, reject ) => {
+          this.emitter.noCurrentUser( {
+            req: req
+          } );
+          resolve();
+        } );
+
+        return Promise.reject( {
+          identifier: "NoCurrentUser",
+          data: {}
+        } );
 
       } )
       .catch(( reason: any ) => {
@@ -177,7 +165,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
           return Promise.reject( {
             identifier: "NoCurrentUser",
             data: {
-              reason : reason
+              reason: reason
             }
           } );
         }
@@ -185,7 +173,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
         return Promise.reject( {
           identifier: "GetCurrentUserFailed",
           data: {
-            reason : reason
+            reason: reason
           }
         } );
 
@@ -199,7 +187,11 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.utilities.SessionManager => {
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit;
+  production: boolean;
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+} ): interfaces.utilities.SessionManager => {
 
   let middlewareConfiguration: express.RequestHandler = expressSession( {
     name: "AllThings263",
@@ -207,16 +199,16 @@ export default ( config: interfaces.Config ): interfaces.utilities.SessionManage
     resave: true,
     saveUninitialized: true,
     cookie: {
-      secure: ( config.environment.production ) ? true : false,
+      secure: ( params.production ) ? true : false,
       httpOnly: true
     }
   } );
 
   return new BasicSessionManager( {
-    production: config.environment.production,
+    emitter: emitterFactory( params.emitEvent ),
+    production: params.production,
     middlewareConfiguration: middlewareConfiguration,
-    emitter: emitterFactory( config.eventManager.emit ),
-    checkThrow: config.utilities.sharedLogic.moders.checkThrow
+    checkThrow: params.checkThrow
   } );
 
 }

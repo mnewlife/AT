@@ -1,23 +1,39 @@
 /******************************************************************************/
 
-import * as core from "../../../../interfaces/components/core/index";
+import * as auth from "./auth";
+import * as profile from "./profile";
+import * as registration from "./registration";
 
-import * as auth from "./auth/index";
-import * as profile from "./profile/index";
-import * as registration from "./registration/index";
-
-import * as sharedCode from "./shared-code/index";
-
-/******************************************************************************/
-
-export { auth, profile, registration, sharedCode };
+import * as admins from "./admins";
+import * as logistics from "./logistics";
+import * as salesReps from "./sales-reps";
 
 /******************************************************************************/
 
-export interface Params {
-  auth: Auth;
-  profile: Profile;
-  registration: Registration;
+export { admins, logistics, salesReps };
+export { auth, profile, registration };
+
+/******************************************************************************/
+
+export interface Admins {
+  readonly get: admins.Get;
+  readonly getOne: admins.GetOne;
+  readonly add: admins.Add;
+  readonly remove: admins.Remove;
+}
+
+export interface Logistics {
+  readonly get: admins.Get;
+  readonly getOne: admins.GetOne;
+  readonly add: admins.Add;
+  readonly remove: admins.Remove;
+}
+
+export interface SalesReps {
+  readonly get: admins.Get;
+  readonly getOne: admins.GetOne;
+  readonly add: admins.Add;
+  readonly remove: admins.Remove;
 }
 
 export interface Auth {
@@ -28,16 +44,15 @@ export interface Auth {
 export interface Profile {
   readonly getUserDetails: profile.GetDetails;
   readonly updateUserDetails: profile.UpdateDetails;
+  readonly changeEmailAddress: profile.ChangeEmailAddress;
   readonly changePassword: profile.ChangePassword;
+  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
+  readonly resetPassword: profile.ResetPassword;
+  readonly deleteAccount: profile.DeleteAccount;
 }
 
 export interface Registration {
-  readonly addAdmin: registration.AddAdmin;
   readonly verifyAccount: registration.VerifyAccount;
-}
-
-export interface SharedCode {
-  verification: sharedCode.Verification;
 }
 
 /******************************************************************************/

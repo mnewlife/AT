@@ -1,58 +1,39 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager/index";
-import * as grocRoundInterfaces from "../../../interfaces/components/groc-round/index";
+import * as interfaces from "../../../interfaces";
+import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as coreInterfaces from "../../../interfaces/components/core";
 
-import cartFactory from "./cart/index";
-import cartProductsFactory from "./cart-products/index";
-import contributionsFactory from "./contributions/index";
-import deliveryFeesFactory from "./delivery-fees/index";
-import productsFactory from "./products/index";
-import roundsFactory from "./rounds/index";
-import trackProductsFactory from "./track-products/index";
-import tracksFactory from "./tracks/index";
+import authFactory from "./auth";
+import profileFactory from "./profile";
+import registrationFactory from "./registration";
 
-import sharedCodeFactory from "./shared-code/index";
+import sharedCodeFactory from "./shared-code";
 
 /******************************************************************************/
 
-class Consumer implements grocRoundInterfaces.Consumer {
+class Consumer implements coreInterfaces.Consumer {
 
-  readonly cart: grocRoundInterfaces.consumer.Cart;
-  readonly cartProducts: grocRoundInterfaces.consumer.CartProducts;
-  readonly contributions: grocRoundInterfaces.consumer.Contributions;
-  readonly deliveryFees: grocRoundInterfaces.consumer.DeliveryFees;
-  readonly products: grocRoundInterfaces.consumer.Products;
-  readonly rounds: grocRoundInterfaces.consumer.Rounds;
-  readonly trackProducts: grocRoundInterfaces.consumer.TrackProducts;
-  readonly tracks: grocRoundInterfaces.consumer.Tracks;
+  readonly auth: coreInterfaces.consumer.Auth;
+  readonly profile: coreInterfaces.consumer.Profile;
+  readonly registration: coreInterfaces.consumer.Registration;
 
-  constructor( params: grocRoundInterfaces.consumer.Params ) {
-    this.cart = params.cart;
-    this.cartProducts = params.cartProducts;
-    this.contributions = params.contributions;
-    this.deliveryFees = params.deliveryFees;
-    this.products = params.products;
-    this.rounds = params.rounds;
-    this.trackProducts = params.trackProducts;
+  constructor( params: coreInterfaces.consumer.Params ) {
+    this.auth = params.auth;
+    this.profile = params.profile;
+    this.registration = params.registration;
   }
 
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config, sharedCode: grocRoundInterfaces.SharedCode ): grocRoundInterfaces.Consumer => {
+export default ( config: interfaces.Config, sharedCode: coreInterfaces.SharedCode ): coreInterfaces.Consumer => {
   let localSharedCode = sharedCodeFactory( config, sharedCode );
   return new Consumer( {
-    cart: cartFactory( config.eventManager.emit, localSharedCode ),
-    cartProducts: cartProductsFactory( config.eventManager.emit, localSharedCode ),
-    contributions: contributionsFactory( config.eventManager.emit, localSharedCode ),
-    deliveryFees: deliveryFeesFactory( config.eventManager.emit, localSharedCode ),
-    products: productsFactory( config.eventManager.emit, localSharedCode ),
-    rounds: roundsFactory( config.eventManager.emit, localSharedCode ),
-    trackProducts: trackProductsFactory( config.eventManager.emit, localSharedCode ),
-    tracks: tracksFactory( config.eventManager.emit, localSharedCode )
+    auth: authFactory( config.eventManager.emit, localSharedCode ),
+    profile: profileFactory( config.eventManager.emit, localSharedCode ),
+    registration: registrationFactory( config.eventManager.emit, localSharedCode )
   } );
 }
 

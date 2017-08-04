@@ -1,15 +1,12 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces/index";
-
-import basicLogicFactory from "./basic/index";
+import * as interfaces from "../../interfaces";
+import basicLogicFactory from "./basic";
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.utilities.SharedLogic => {
-
-  return basicLogicFactory( config );
-
+export default ( emit: interfaces.setupConfig.eventManager.Emit ): interfaces.utilities.SharedLogic => {
+  return basicLogicFactory( emit );
 }
 
 /******************************************************************************/

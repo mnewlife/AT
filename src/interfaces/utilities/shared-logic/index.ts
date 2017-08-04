@@ -3,11 +3,11 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../interfaces/index";
-import * as dataStructures from "./data-structures/index";
-import * as middleware from "./middleware/index";
-import * as moders from "./moders/index";
-import * as numbers from "./numbers/index";
+import * as interfaces from "../../../interfaces";
+import * as dataStructures from "./data-structures";
+import * as middleware from "./middleware";
+import * as moders from "./moders";
+import * as numbers from "./numbers";
 
 /******************************************************************************/
 
@@ -30,6 +30,8 @@ export interface Params {
   moders: Moders;
 };
 
+/******************************************************************************/
+
 export interface Moders {
   readonly checkThrow: moders.CheckThrow;
 }
@@ -41,6 +43,8 @@ export interface Numbers {
 export interface Middleware {
   readonly retrieveMwareLists: middleware.RetrieveMwareLists;
 };
+
+/******************************************************************************/
 
 export interface AppMiddleware {
   [ index: string ]: express.RequestHandler[];

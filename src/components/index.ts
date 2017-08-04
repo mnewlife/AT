@@ -1,25 +1,20 @@
 /******************************************************************************/
 
-import * as interfaces from "../interfaces/index";
+import * as interfaces from "../interfaces";
 
-import coreFactory from "./core/index";
-import call263Factory from "./call-263/index";
-import grocRoundFactory from "./groc-round/index";
-
-import sharedCodeFactory from "./shared-code/index";
+import coreFactory from "./core";
+import ordersFactory from "./orders";
 
 /******************************************************************************/
 
 class Components implements interfaces.Components {
 
   readonly core: interfaces.components.Core;
-  readonly call263: interfaces.components.Call263;
-  readonly grocRound: interfaces.components.GrocRound;
+  readonly orders: interfaces.components.Orders;
 
-  constructor( core: interfaces.components.Core, call263: interfaces.components.Call263, grocRound: interfaces.components.GrocRound ) {
+  constructor( core: interfaces.components.Core, orders: interfaces.components.Orders ) {
     this.core = core;
-    this.call263 = call263;
-    this.grocRound = grocRound;
+    this.orders = orders;
   }
 
 }
@@ -27,11 +22,9 @@ class Components implements interfaces.Components {
 /******************************************************************************/
 
 export default ( config: interfaces.Config ): interfaces.Components => {
-  let localSharedCode = sharedCodeFactory( config );
   return new Components(
-    coreFactory( config, localSharedCode ),
-    call263Factory( config, localSharedCode ),
-    grocRoundFactory( config, localSharedCode )
+    coreFactory( config ),
+    ordersFactory( config )
   );
 }
 

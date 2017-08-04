@@ -1,66 +1,61 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager/index";
-import * as grocRoundInterfaces from "../../../interfaces/components/groc-round/index";
+import * as interfaces from "../../../interfaces";
+import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as coreInterfaces from "../../../interfaces/components/core";
 
-import cartProductsFactory from "./cart-products/index";
-import cartsFactory from "./carts/index";
-import contributionsFactory from "./contributions/index";
-import deliveryFeesFactory from "./delivery-fees/index";
-import productsFactory from "./products/index";
-import roundsFactory from "./rounds/index";
-import shopsFactory from "./shops/index";
-import trackProductsFactory from "./track-products/index";
-import tracksFactory from "./tracks/index";
-import usersFactory from "./users/index";
+import adminsFactory from "./admins";
+import logisticsFactory from "./logistics";
+import salesRepsFactory from "./sales-reps";
 
-import sharedCodeFactory from "./shared-code/index";
+import authFactory from "./auth";
+import profileFactory from "./profile";
+import registrationFactory from "./registration";
 
 /******************************************************************************/
 
-class Admin implements grocRoundInterfaces.Admin {
+class Admin implements coreInterfaces.Admin {
 
-  readonly cartProducts: grocRoundInterfaces.admin.CartProducts;
-  readonly carts: grocRoundInterfaces.admin.Carts;
-  readonly contributions: grocRoundInterfaces.admin.Contributions;
-  readonly deliveryFees: grocRoundInterfaces.admin.DeliveryFees;
-  readonly products: grocRoundInterfaces.admin.Products;
-  readonly rounds: grocRoundInterfaces.admin.Rounds;
-  readonly shops: grocRoundInterfaces.admin.Shops;
-  readonly trackProducts: grocRoundInterfaces.admin.TrackProducts;
-  readonly tracks: grocRoundInterfaces.admin.Tracks;
-  readonly users: grocRoundInterfaces.admin.Users;
+  readonly admins: coreInterfaces.admin.Admins;
+  readonly logistics: coreInterfaces.admin.Admins;
+  readonly salesReps: coreInterfaces.admin.SalesReps;
 
-  constructor( params: grocRoundInterfaces.admin.Params ) {
-    this.cartProducts = params.cartProducts;
-    this.carts = params.carts;
-    this.contributions = params.contributions;
-    this.deliveryFees = params.deliveryFees;
-    this.products = params.products;
-    this.rounds = params.rounds;
-    this.shops = params.shops;
-    this.trackProducts = params.trackProducts;
-    this.users = params.users;
+  readonly auth: coreInterfaces.admin.Auth;
+  readonly profile: coreInterfaces.admin.Profile;
+  readonly registration: coreInterfaces.admin.Registration;
+
+  constructor( params: {
+    auth: coreInterfaces.admin.Auth,
+    profile: coreInterfaces.admin.Profile,
+    registration: coreInterfaces.admin.Registration
+  } ) {
+    this.auth = params.auth;
+    this.profile = params.profile;
+    this.registration = params.registration;
   }
 
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config, sharedCode: grocRoundInterfaces.SharedCode ): grocRoundInterfaces.Admin => {
-  let localSharedCode = sharedCodeFactory( config, sharedCode );
+export default ( config: interfaces.Config ): coreInterfaces.Admin => {
   return new Admin( {
-    cartProducts: cartProductsFactory( config.eventManager.emit, localSharedCode ),
-    carts: cartsFactory( config.eventManager.emit, localSharedCode ),
-    contributions: contributionsFactory( config.eventManager.emit, localSharedCode ),
-    deliveryFees: deliveryFeesFactory( config.eventManager.emit, localSharedCode ),
-    products: productsFactory( config.eventManager.emit, localSharedCode ),
-    rounds: roundsFactory( config.eventManager.emit, localSharedCode ),
-    shops: shopsFactory( config.eventManager.emit, localSharedCode ),
-    trackProducts: trackProductsFactory( config.eventManager.emit, localSharedCode ),
-    tracks: tracksFactory( config.eventManager.emit, localSharedCode ),
-    users: usersFactory( config.eventManager.emit, localSharedCode ),
+    admins: adminsFactory( {} ),
+    logistics: logisticsFactory( {} ),
+    salesReps: salesRepsFactory( {} ),
+    auth: authFactory( {
+      emitEvent: config.eventManager.emit,
+      authSignIn: config.utilities.authenticationManager.signIn,
+      authSignOut: config.utilities.authenticationManager.signOut,
+      checkThrow: config.utilities.sharedLogic.moders.checkThrow
+    } ),
+    profile: profileFactory( config.eventManager.emit ),
+    registration: registrationFactory( {
+      emitEvent: config.eventManager.emit,
+      storeNewUser: config.utilities.storageManager.user.add,
+      checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+      getCurrentUserFromSession: config.utilities.sessionManager.getCurrentUser
+    } )
   } );
 }
 

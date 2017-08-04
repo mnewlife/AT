@@ -1,10 +1,9 @@
 /******************************************************************************/
 
-import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as events from "../../../../interfaces/events/utilities/communication-manager/mail-agent/index";
+import * as interfaces from "../../../../interfaces";
+import * as events from "./events";
 
 /******************************************************************************/
 
@@ -14,9 +13,9 @@ export interface Emitter {
 }
 
 export interface Params {
-  emitter : Emitter;
-  checkThrow : interfaces.utilities.sharedLogic.moders.CheckThrow;
-  commSettings : interfaces.utilities.communicationManager.CommSettings;
+  emitter: Emitter;
+  checkThrow: interfaces.utilities.sharedLogic.moders.CheckThrow;
+  commSettings: interfaces.utilities.communicationManager.CommSettings;
 }
 
 export interface SendEmail {

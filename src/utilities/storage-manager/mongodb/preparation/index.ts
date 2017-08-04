@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as interfaces from "../../../../interfaces";
 
 /******************************************************************************/
 

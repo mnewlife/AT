@@ -3,22 +3,22 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
+import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/admin/profile/index";
-import * as profileInterfaces from "../../../../../interfaces/components/core/admin/profile/index";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager/index";
+import * as events from "../../../../../interfaces/events/components/core/admin/auth";
+import * as authInterfaces from "../../../../../interfaces/components/core/admin/auth";
+import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class ProfileEmitter implements profileInterfaces.Emitter {
+class AuthEmitter implements authInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly example = ( data: events.ExampleData ) => {
+  readonly example = ( data: storageManagerEvents.ExampleData ) => {
 
-    let event: events.Example = {
-      context: "Core|Admin|Profile",
+    let event: storageManagerEvents.Example = {
+      context: "Core|Admin|Auth",
       tags: [],
       identifier: "Example",
       data: {
@@ -42,8 +42,8 @@ class ProfileEmitter implements profileInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): profileInterfaces.Emitter => {
-  return new ProfileEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): authInterfaces.Emitter => {
+  return new AuthEmitter( emitEvent );
 }
 
 /******************************************************************************/

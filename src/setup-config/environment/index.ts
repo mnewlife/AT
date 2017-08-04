@@ -1,6 +1,6 @@
 /**********************************************************************/
 
-import * as interfaces from "../../interfaces/index";
+import * as interfaces from "../../interfaces";
 
 /**********************************************************************/
 
@@ -8,7 +8,7 @@ let temp : any = {};
 
 if ( process.env.node_env === "production" ) {
   temp.production = true;
-  temp.host = "allthings263.herokuapp.com";
+  temp.host = "parrogate.herokuapp.com";
 } else {
   temp.production = false;
   temp.host = "127.0.0.1:1111";
@@ -16,13 +16,13 @@ if ( process.env.node_env === "production" ) {
 
 let environment : interfaces.setupConfig.Environment = {
 
-  applicationName : "AllThings263" ,
-  applicationDescription : "Empowering the lives of our community members through technology" ,
+  applicationName : "Parrogate" ,
+  applicationDescription : "Parrogate Ordering Platform" ,
   contactDetails : {
     emailAddress : "allthings263@gmail.com" ,
     phoneNumber : "+263779528194"
   } ,
-  copyrightMessage : "Copyright © 2017 AllThings263.com Limited. All rights reserved." ,
+  copyrightMessage : "Copyright © 2017 Parrogate." ,
   production : temp.production ,
   host : temp.host
 

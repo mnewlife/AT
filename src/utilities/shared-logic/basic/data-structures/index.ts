@@ -2,9 +2,8 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic/index";
-
+import * as interfaces from "../../../../interfaces";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
@@ -298,9 +297,7 @@ class DataStructures implements sharedLogicInterfaces.DataStructures {
 /******************************************************************************/
 
 export default ( emitEvent: interfaces.setupConfig.eventManager.Emit ): sharedLogicInterfaces.DataStructures => {
-
   return new DataStructures( emitterFactory( emitEvent ) );
-
 }
 
 /******************************************************************************/

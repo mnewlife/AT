@@ -1,15 +1,12 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces/index";
-
-import basicResponseManagerFactory from "./basic/index";
+import * as interfaces from "../../interfaces";
+import basicResponseManagerFactory from "./basic";
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.utilities.ResponseManager => {
-
-  return basicResponseManagerFactory( config );
-
+export default ( emit: interfaces.setupConfig.eventManager.Emit ): interfaces.utilities.ResponseManager => {
+  return basicResponseManagerFactory( emit );
 }
 
 /******************************************************************************/

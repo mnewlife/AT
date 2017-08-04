@@ -1,61 +1,39 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../interfaces/index";
-
-import * as cart from "./cart/index";
-import * as cartProducts from "./cart-products/index";
-import * as contributions from "./contributions/index";
-import * as deliveryFees from "./delivery-fees/index";
-import * as products from "./products/index";
-import * as rounds from "./rounds/index";
-import * as trackProducts from "./track-products/index";
-import * as tracks from "./tracks/index";
-
-import * as sharedCode from "./shared-code/index";
+import * as auth from "./auth";
+import * as profile from "./profile";
+import * as registration from "./registration";
 
 /******************************************************************************/
 
-export { cartProducts, cart, contributions, deliveryFees, products };
-export { rounds, trackProducts, tracks, sharedCode };
+export { auth, profile, registration };
 
 /******************************************************************************/
 
 export interface Params {
-  cartProducts: CartProducts;
-  cart: Cart;
-  contributions: Contributions;
-  deliveryFees: DeliveryFees;
-  products: Products;
-  rounds: Rounds;
-  trackProducts: TrackProducts;
-  tracks: Tracks;
+  auth: Auth;
+  profile: Profile;
+  registration : Registration;
 }
 
-export interface CartProducts {
+export interface Auth {
+  readonly signIn: auth.SignIn;
+  readonly signOut: auth.SignOut;
 }
 
-export interface Cart {
+export interface Profile {
+  readonly getUserDetails: profile.GetDetails;
+  readonly updateUserDetails: profile.UpdateDetails;
+  readonly changeEmailAddress: profile.ChangeEmailAddress;
+  readonly changePassword: profile.ChangePassword;
+  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
+  readonly resetPassword: profile.ResetPassword;
+  readonly deleteAccount: profile.DeleteAccount;
+
 }
 
-export interface Contributions {
-}
-
-export interface DeliveryFees {
-}
-
-export interface Products {
-}
-
-export interface Rounds {
-}
-
-export interface TrackProducts {
-}
-
-export interface Tracks {
-}
-
-export interface SharedCode {
+export interface Registration {
+  readonly verifyAccount: registration.VerifyAccount;
 }
 
 /******************************************************************************/

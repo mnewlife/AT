@@ -1,10 +1,10 @@
 /******************************************************************************/
 
-import * as express from "express";
 import * as Promise from "bluebird";
+import * as http from "http";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as events from "../../../../interfaces/events/utilities/communication-manager/web-socket/index";
+import * as interfaces from "../../../../interfaces";
+import * as events from "./events";
 
 /******************************************************************************/
 
@@ -24,10 +24,15 @@ export interface Emitter {
 }
 
 export interface Params {
-  emitEvent : interfaces.setupConfig.eventManager.Emit;
-  checkThrow : interfaces.utilities.sharedLogic.moders.CheckThrow;
-  commSettings : interfaces.utilities.communicationManager.CommSettings;
+  emitter: Emitter;
+  commSettings: interfaces.utilities.communicationManager.CommSettings;
+  httpServer: http.Server;
+  production: boolean;
+  getSubscriptionByIdFromStorage: interfaces.utilities.storageManager.subscription.GetById;
+  checkThrow: interfaces.utilities.sharedLogic.moders.CheckThrow;
 }
+
+/******************************************************************************/
 
 export interface PushToOtherUsers {
   ( userId: string, identifier: string, payload: any, forceThrow?: boolean ): Promise<any>;

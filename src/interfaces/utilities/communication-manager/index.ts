@@ -1,12 +1,13 @@
 /******************************************************************************/
 
 import * as http from "http";
-import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../interfaces/index";
-import * as mailAgent from "./mail-agent/index";
-import * as webSocket from "./web-socket/index";
+import * as interfaces from "../../../interfaces";
+import * as mailAgent from "./mail-agent";
+import * as webSocket from "./web-socket";
+
+/******************************************************************************/
 
 export { mailAgent, webSocket };
 
@@ -24,14 +25,6 @@ export interface CommSettings {
 
 export interface MailAgent {
   readonly sendEmail: mailAgent.SendEmail;
-}
-
-export interface WebSocketFactoryParams {
-  commSettings : CommSettings;
-  checkThrow : interfaces.utilities.sharedLogic.moders.CheckThrow;
-  httpServer : http.Server;
-  production : boolean;
-  storageGetUserSubscriptions : interfaces.utilities.storageManager.subscription.Get
 }
 
 export interface WebSocket {

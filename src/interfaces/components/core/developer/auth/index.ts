@@ -2,8 +2,9 @@
 
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
-import * as dataImplementations from "../../../../../interfaces/data-model/implementations/index";
+import * as interfaces from "../../../../../interfaces";
+import * as authenticationManagerInterfaces from "../../../../../interfaces/utilities/authentication-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 /******************************************************************************/
 
@@ -11,12 +12,8 @@ export interface Emitter {
 
 }
 
-export interface Params {
-  emitter: Emitter;
-}
-
 export interface SignIn {
-  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Developer>;
 }
 
 export interface SignOut {

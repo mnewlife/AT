@@ -1,93 +1,88 @@
 /******************************************************************************/
 
-import * as Promise from "bluebird";
 import * as express from "express";
+import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
-import * as coreInterfaces from "../../../../interfaces/components/core/index";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic/index";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager/index";
-import * as sessionManagerInterfaces from "../../../../interfaces/utilities/session-manager/index";
-import * as dataImplementations from "../../../../interfaces/data-model/implementations/index";
+import * as interfaces from "../../../../interfaces";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as adminInterfaces from "../../../../interfaces/components/core/admin";
+import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
-import { defaultPassword } from "../../../../components/core/config";
-
-import emitterFactory from "./event-emitter/index";
+import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Registration implements coreInterfaces.admin.Registration {
+class Auth implements adminInterfaces.Auth {
 
-  private readonly emitter: coreInterfaces.admin.registration.Emitter;
-  private readonly storeNewUser: storageManagerInterfaces.user.Add;
-  private readonly generateVerificationCode: coreInterfaces.sharedCode.verification.GenerateCode;
-  private readonly verifyAccountLogic: coreInterfaces.sharedCode.verification.VerifyAccount;
+  private readonly emitter: adminInterfaces.auth.Emitter;
+  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
+  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
   private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-  private readonly getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
 
-  constructor( params: coreInterfaces.admin.registration.Params ) {
+  constructor( params: {
+    emitter: adminInterfaces.auth.Emitter,
+    authSignIn: authenticationManagerInterfaces.SignIn,
+    authSignOut: authenticationManagerInterfaces.SignOut,
+    checkThrow: sharedLogicInterfaces.moders.CheckThrow
+  } ) {
     this.emitter = params.emitter;
-    this.storeNewUser = params.storeNewUser;
-    this.generateVerificationCode = params.generateVerificationCode;
-    this.verifyAccountLogic = params.verifyAccountLogic;
+    this.authSignIn = params.authSignIn;
+    this.authSignOut = params.authSignOut;
     this.checkThrow = params.checkThrow;
   }
 
-  addAdmin = ( emailAddress: string, req: express.Request, forceThrow = false ): Promise<dataImplementations.UserModel> => {
+  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Admin> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        return this.getCurrentUserFromSession( req );
+
+        return this.authSignIn( emailAddress, password, req );
+
       } )
-      .then(( currentUser: dataImplementations.UserModel ) => {
-        return new Promise<void>(( resolve, reject ) => {
-          if ( currentUser.accessLevel !== "developer" ) {
-            return reject( {
-              identifier: "UnauthorizedUser",
-              data: {
-                user: currentUser
-              }
-            } );
-          }
-          resolve();
-        } );
-      } )
-      .then(( response: any ) => {
-        return this.generateVerificationCode();
-      } )
-      .then(( generatedCode: string ) => {
-        return this.storeNewUser( emailAddress, defaultPassword, "admin", generatedCode );
-      } )
-      .then(( addedUser: dataImplementations.UserModel ) => {
-        new Promise<void>(( resolve, reject ) => {
-          this.emitter.addedAdmin( {
-            user: addedUser
-          } );
-          resolve();
-        } );
-        return Promise.resolve( addedUser );
+      .then(( signedInUser: interfaces.dataModel.user.Admin ) => {
+
+        signedInUser.password = "";
+        return Promise.resolve( signedInUser );
+
       } )
       .catch(( reason: any ) => {
-        new Promise<void>(( resolve, reject ) => {
-          this.emitter.addAdminFailed( {
-            emailAddress: emailAddress,
-            reason: reason
-          } );
-          resolve();
-        } );
+
         return Promise.reject( {
-          identifier: "AddAdminFailed",
+          identifier: "SignInFailed",
           data: {
             reason: reason
           }
         } );
+
       } );
 
   }
 
-  verifyAccount = ( userId: string, code: string, forceThrow = false ): Promise<any> => {
-    return Promise.resolve();
+  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.authSignOut( req );
+
+      } )
+      .then(( response: any ) => {
+
+        return Promise.resolve();
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "SignOutFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
   }
 
 }
@@ -96,18 +91,15 @@ class Registration implements coreInterfaces.admin.Registration {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  storeNewUser: storageManagerInterfaces.user.Add,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
-  getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
-  sharedCode: coreInterfaces.SharedCode
-} ): coreInterfaces.admin.Registration => {
-  return new Registration( {
+  authSignIn: authenticationManagerInterfaces.SignIn,
+  authSignOut: authenticationManagerInterfaces.SignOut,
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow
+} ): adminInterfaces.Auth => {
+  return new Auth( {
     emitter: emitterFactory( params.emitEvent ),
-    storeNewUser: params.storeNewUser,
-    generateVerificationCode: params.sharedCode.verification.generateCode,
-    verifyAccountLogic: params.sharedCode.verification.verifyAccount,
-    checkThrow: params.checkThrow,
-    getCurrentUserFromSession: params.getCurrentUserFromSession
+    authSignIn: params.authSignIn,
+    authSignOut: params.authSignOut,
+    checkThrow: params.checkThrow
   } )
 }
 

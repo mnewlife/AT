@@ -2,16 +2,14 @@
 
 import * as Promise from "bluebird";
 import * as express from "express";
-import * as mongoose from "mongoose";
 import * as bCrypt from "bcrypt-nodejs";
 
-import * as interfaces from "../../../interfaces/index";
-import * as authenticationManagerInterfaces from "../../../interfaces/utilities/authentication-manager/index";
-import * as sessionManagerInterfaces from "../../../interfaces/utilities/session-manager/index";
-import * as storageManagerInterfaces from "../../../interfaces/utilities/storage-manager/index";
-import * as sharedLogicInterfaces from "../../../interfaces/utilities/shared-logic/index";
-
-import { UserModel } from "../../../utilities/storage-manager/mongodb/user/model/index";
+import * as interfaces from "../../../interfaces";
+import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as authenticationManagerInterfaces from "../../../interfaces/utilities/authentication-manager";
+import * as sharedLogicInterfaces from "../../../interfaces/utilities/shared-logic";
+import * as sessionManagerInterfaces from "../../../interfaces/utilities/session-manager";
+import * as storageManagerInterfaces from "../../../interfaces/utilities/storage-manager";
 
 import emitterFactory from "./event-emitter";
 
@@ -25,12 +23,12 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
   private readonly emitter: authenticationManagerInterfaces.Emitter;
 
-  private readonly storageGetUser: storageManagerInterfaces.user.Get;
-  private readonly storageGetUserById: storageManagerInterfaces.user.GetById;
+  private readonly getUserFromStorage: storageManagerInterfaces.user.Get;
+  private readonly getUserByIdFromStorage: storageManagerInterfaces.user.GetById;
 
-  private readonly sessionSetCurrentUser: sessionManagerInterfaces.SetCurrentUser;
-  private readonly sessionGetCurrentUser: sessionManagerInterfaces.GetCurrentUser;
-  private readonly sessionSignOut: sessionManagerInterfaces.SignOut;
+  private readonly setCurrentUserInSession: sessionManagerInterfaces.SetCurrentUser;
+  private readonly getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
+  private readonly signOutOfSession: sessionManagerInterfaces.SignOut;
 
   private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 
@@ -47,70 +45,63 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
   /*****************************************************************/
 
   constructor( params: authenticationManagerInterfaces.Params ) {
-
     this.emitter = params.emitter;
-
-    this.storageGetUser = params.storageGetUser;
-    this.storageGetUserById = params.storageGetUserById;
-
-    this.sessionSetCurrentUser = params.sessionSetCurrentUser;
-    this.sessionGetCurrentUser = params.sessionGetCurrentUser;
-    this.sessionSignOut = params.sessionSignOut;
-
+    this.getUserFromStorage = params.getUserFromStorage;
+    this.getUserByIdFromStorage = params.getUserByIdFromStorage;
+    this.setCurrentUserInSession = params.setCurrentUserInSession;
+    this.getCurrentUserFromSession = params.getCurrentUserFromSession;
+    this.signOutOfSession = params.signOutOfSession;
     this.checkThrow = params.checkThrow;
-
   }
 
   /*****************************************************************/
 
-  readonly signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<UserModel> => {
+  readonly signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.storageGetUser( {
+        return this.getUserFromStorage( {
           emailAddress: emailAddress
         }, null, null );
 
       } )
-      .then(( foundUser: UserModel ) => {
+      .then(( foundUsers: interfaces.dataModel.user.Super[] ) => {
 
         return new Promise<any>(( resolve, reject ) => {
 
-          if ( this.isValidPassword( password, foundUser.password ) ) {
-            resolve( foundUser );
-          } else {
-
-            new Promise<void>(( resolve, reject ) => {
-              let event = this.emitter.invalidPassword( {
-                emailAddress: emailAddress,
-                password: password
-              } );
-              resolve();
-            } );
-
-            reject( {
-              identifier: "invalidPassword",
-              data: {
-                emailAddress: emailAddress,
-                password: password
-              }
-            } );
-
+          if ( this.isValidPassword( password, foundUsers[ 0 ].password ) ) {
+            return resolve( foundUsers[ 0 ] );
           }
+
+          new Promise<void>(( resolve, reject ) => {
+            let event = this.emitter.invalidPassword( {
+              emailAddress: emailAddress,
+              password: password
+            } );
+            resolve();
+          } );
+
+          reject( {
+            identifier: "invalidPassword",
+            data: {
+              emailAddress: emailAddress,
+              password: password
+            }
+          } );
 
         } );
 
       } )
-      .then(( foundUser: UserModel ) => {
+      .then(( authenticUser: interfaces.dataModel.user.Super ) => {
 
-        return this.sessionSetCurrentUser( foundUser, req )
-          .then(( sessionedUser: UserModel ) => {
-            return Promise.resolve( foundUser );
-          } )
+        return this.setCurrentUserInSession( authenticUser, req )
+          .then(( sessionedUser: interfaces.dataModel.user.Super ) => {
+            return Promise.resolve( sessionedUser );
+          } );
 
       } )
-      .then(( signedInUser: UserModel ) => {
+      .then(( signedInUser: interfaces.dataModel.user.Super ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.signedIn( {
@@ -167,7 +158,7 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        return this.sessionSignOut( req );
+        return this.signOutOfSession( req );
       } )
       .catch(( reason: any ) => {
 
@@ -192,13 +183,13 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
   /*****************************************************************/
 
-  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<UserModel> => {
+  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        return this.sessionGetCurrentUser( req );
+        return this.getCurrentUserFromSession( req );
       } )
-      .then(( currentUser: UserModel ) => {
+      .then(( currentUser: interfaces.dataModel.user.Super ) => {
         return Promise.resolve( currentUser );
       } )
       .catch(( reason: any ) => {
@@ -234,35 +225,31 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-
-        return this.storageGetUserById( mongoose.Types.ObjectId( userId ) );
-
+        return this.getUserByIdFromStorage( userId );
       } )
-      .then(( foundUser: UserModel ) => {
+      .then(( foundUser: interfaces.dataModel.user.Super ) => {
 
         return new Promise<void>(( resolve, reject ) => {
 
           if ( this.isValidPassword( password, foundUser.password ) ) {
-            resolve();
-          } else {
-
-            new Promise<void>(( resolve, reject ) => {
-              this.emitter.invalidPassword( {
-                userId: userId,
-                password: password
-              } );
-              resolve();
-            } );
-
-            reject( {
-              identifier: "InvalidPassword",
-              data: {
-                userId: userId,
-                password: password
-              }
-            } );
-
+            return resolve();
           }
+
+          new Promise<void>(( resolve, reject ) => {
+            this.emitter.invalidPassword( {
+              userId: userId,
+              password: password
+            } );
+            resolve();
+          } );
+
+          reject( {
+            identifier: "InvalidPassword",
+            data: {
+              userId: userId,
+              password: password
+            }
+          } );
 
         } );
 
@@ -318,6 +305,7 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
             password: password,
             reason: reason
           } );
+          resolve();
         } );
 
         return Promise.reject( {
@@ -335,23 +323,26 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.utilities.AuthenticationManager => {
+export default ( params: {
+  emit: eventManagerInterfaces.Emit;
+  getUserFromStorage: storageManagerInterfaces.user.Get;
+  getUserByIdFromStorage: storageManagerInterfaces.user.GetById,
+  setCurrentUserInSession: sessionManagerInterfaces.SetCurrentUser;
+  getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
+  signOutOfSession: sessionManagerInterfaces.SignOut;
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow
+} ): interfaces.utilities.AuthenticationManager => {
 
   return new BasicAuthenticationManager( {
-
-    emitter: emitterFactory( config.eventManager.emit ),
-
-    storageGetUser: config.utilities.storageManager.user.get,
-    storageGetUserById: config.utilities.storageManager.user.getById,
-
-    sessionSetCurrentUser: config.utilities.sessionManager.setCurrentUser,
-    sessionGetCurrentUser: config.utilities.sessionManager.getCurrentUser,
-    sessionSignOut: config.utilities.sessionManager.signOut,
-
-    checkThrow: config.utilities.sharedLogic.moders.checkThrow
-
+    emitter: emitterFactory( params.emit ),
+    getUserFromStorage: params.getUserFromStorage,
+    getUserByIdFromStorage: params.getUserByIdFromStorage,
+    setCurrentUserInSession: params.setCurrentUserInSession,
+    getCurrentUserFromSession: params.getCurrentUserFromSession,
+    signOutOfSession: params.signOutOfSession,
+    checkThrow: params.checkThrow
   } );
-
+  
 }
 
 /******************************************************************************/

@@ -3,22 +3,22 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
+import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/groc-round/admin/shops/index";
-import * as shopsInterfaces from "../../../../../interfaces/components/groc-round/admin/shops/index";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager/index";
+import * as events from "../../../../../interfaces/events/components/core/admin/auth";
+import * as authInterfaces from "../../../../../interfaces/components/core/admin/auth";
+import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class ShopsEmitter implements shopsInterfaces.Emitter {
+class AuthEmitter implements authInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly example = ( data: events.ExampleData ) => {
+  readonly example = ( data: storageManagerEvents.ExampleData ) => {
 
-    let event: events.Example = {
-      context: "GrocRound|Admin|Shops",
+    let event: storageManagerEvents.Example = {
+      context: "Core|Admin|Auth",
       tags: [],
       identifier: "Example",
       data: {
@@ -42,8 +42,8 @@ class ShopsEmitter implements shopsInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): shopsInterfaces.Emitter => {
-  return new ShopsEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): authInterfaces.Emitter => {
+  return new AuthEmitter( emitEvent );
 }
 
 /******************************************************************************/

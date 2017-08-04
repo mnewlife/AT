@@ -3,11 +3,11 @@
 import * as http from "http";
 import * as express from "express";
 
-import * as setupConfig from "./setup-config/index";
-import * as utilities from "./utilities/index";
-import * as components from "./components/index";
-import * as events from "./events/index";
-import * as dataModel from "./data-model/index";
+import * as setupConfig from "./setup-config";
+import * as utilities from "./utilities";
+import * as components from "./components";
+import * as events from "./events";
+import * as dataModel from "./data-model";
 
 /******************************************************************************/
 
@@ -15,7 +15,7 @@ export { setupConfig, utilities, components, events, dataModel };
 
 /******************************************************************************/
 
-export type AppName = "Core" | "Call263" | "Grocound";
+export type AppName = "Core" | "Orders";
 
 /******************************************************************************/
 
@@ -25,7 +25,6 @@ export interface Config {
   server: http.Server;
 
   eventManager: setupConfig.EventManager;
-
   environment: setupConfig.Environment;
 }
 
@@ -38,18 +37,31 @@ export interface Utilities {
   authenticationManager: utilities.AuthenticationManager;
   communicationManager: utilities.CommunicationManager;
   responseManager: utilities.ResponseManager;
-
-  [ index: string ]: any;
 };
 
 /******************************************************************************/
 
 export interface Components {
   core: components.Core;
-  call263: components.Call263;
-  grocRound: components.GrocRound;
-
-  [ index: string ]: any;
+  orders: components.Orders;
 };
+
+/******************************************************************************/
+
+type PartialDeep<T> = {
+  [ P in keyof T ]?: PartialDeep<T[ P ]>;
+}
+type PartialRestoreArrays<K> = {
+  [ P in keyof K ]?: K[ P ];
+}
+export type DeepPartial<T, K> = PartialDeep<T> & PartialRestoreArrays<K>;
+
+export type Any<T> = {
+  [ P in keyof T ]: any;
+}
+
+export type Nullable<T> = {
+  [ P in keyof T ]: T[ P ] | null;
+}
 
 /******************************************************************************/

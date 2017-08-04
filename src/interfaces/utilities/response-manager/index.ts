@@ -3,12 +3,11 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../interfaces/index";
-import * as storageManager from "../../../interfaces/utilities/storage-manager/index";
-import * as sessionManager from "../../../interfaces/utilities/session-manager/index";
-import * as sharedLogic from "../../../interfaces/utilities/shared-logic/index";
-import * as events from "../../../interfaces/events/utilities/response-manager/index";
-
+import * as interfaces from "../../../interfaces";
+import * as events from "./events";
+import * as storageManager from "../../../interfaces/utilities/storage-manager";
+import * as sessionManager from "../../../interfaces/utilities/session-manager";
+import * as sharedLogic from "../../../interfaces/utilities/shared-logic";
 
 /******************************************************************************/
 

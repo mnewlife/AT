@@ -1,41 +1,26 @@
 /******************************************************************************/
 
-import * as core from "./core/index";
-import * as call263 from "./call-263/index";
-import * as grocRound from "./groc-round/index";
-import * as sharedCode from "./shared-code/index";
+import * as core from "./core";
+import * as orders from "./orders";
 
 /******************************************************************************/
 
-export { core, call263, grocRound, sharedCode };
+export { core, orders };
 
 /******************************************************************************/
-
-export interface Params {
-  core: Core;
-  call263: Call263;
-  GrocRound: GrocRound;
-}
 
 export interface Core {
   developer: core.Developer;
   admin: core.Admin;
-  consumer: core.Consumer;
+  logistics: core.Logistics;
+  salesRep: core.SalesRep;
 }
 
-export interface Call263 {
-  developer: call263.Developer;
-  admin: call263.Admin;
-  consumer: call263.Consumer;
-}
-
-export interface GrocRound {
-  developer: grocRound.Developer;
-  admin: grocRound.Admin;
-  consumer: grocRound.Consumer;
-}
-
-export interface SharedCode {
+export interface Orders {
+  developer: orders.Developer;
+  admin: orders.Admin;
+  logistics: orders.Logistics;
+  salesRep: orders.SalesRep;
 }
 
 /******************************************************************************/

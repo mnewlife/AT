@@ -1,71 +1,58 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../interfaces/index";
+import * as auth from "./auth";
+import * as profile from "./profile";
+import * as registration from "./registration";
 
-import * as cartProducts from "./cart-products/index";
-import * as carts from "./carts/index";
-import * as contributions from "./contributions/index";
-import * as deliveryFees from "./delivery-fees/index";
-import * as products from "./products/index";
-import * as rounds from "./rounds/index";
-import * as shops from "./shops/index";
-import * as trackProducts from "./track-products/index";
-import * as tracks from "./tracks/index";
-import * as users from "./users/index";
-
-import * as sharedCode from "./shared-code/index";
+import * as admins from "./admins";
+import * as logistics from "./logistics";
+import * as salesReps from "./sales-reps";
 
 /******************************************************************************/
 
-export { cartProducts, carts, contributions, deliveryFees, products };
-export { rounds, shops, trackProducts, tracks, users, sharedCode };
+export { admins, logistics, salesReps };
+export { auth, profile, registration };
 
 /******************************************************************************/
 
-export interface Params {
-  cartProducts: CartProducts;
-  carts: Carts;
-  contributions: Contributions;
-  deliveryFees: DeliveryFees;
-  products: Products;
-  rounds: Rounds;
-  shops: Shops;
-  trackProducts: TrackProducts;
-  tracks: Tracks;
-  users: Users;
+export interface Admins {
+  readonly get: admins.Get;
+  readonly getOne: admins.GetOne;
+  readonly add: admins.Add;
+  readonly remove: admins.Remove;
 }
 
-export interface CartProducts {
+export interface Logistics {
+  readonly get: admins.Get;
+  readonly getOne: admins.GetOne;
+  readonly add: admins.Add;
+  readonly remove: admins.Remove;
 }
 
-export interface Carts {
+export interface SalesReps {
+  readonly get: admins.Get;
+  readonly getOne: admins.GetOne;
+  readonly add: admins.Add;
+  readonly remove: admins.Remove;
 }
 
-export interface Contributions {
+export interface Auth {
+  readonly signIn: auth.SignIn;
+  readonly signOut: auth.SignOut;
 }
 
-export interface DeliveryFees {
+export interface Profile {
+  readonly getUserDetails: profile.GetDetails;
+  readonly updateUserDetails: profile.UpdateDetails;
+  readonly changeEmailAddress: profile.ChangeEmailAddress;
+  readonly changePassword: profile.ChangePassword;
+  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
+  readonly resetPassword: profile.ResetPassword;
+  readonly deleteAccount: profile.DeleteAccount;
 }
 
-export interface Products {
-}
-
-export interface Rounds {
-}
-
-export interface Shops {
-}
-
-export interface TrackProducts {
-}
-
-export interface Tracks {
-}
-
-export interface Users {
-}
-
-export interface SharedCode {
+export interface Registration {
+  readonly verifyAccount: registration.VerifyAccount;
 }
 
 /******************************************************************************/

@@ -1,21 +1,15 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../../interfaces/index";
+import * as interfaces from "../../../../../interfaces";
 
 /******************************************************************************/
 
 export interface Emitter {
-
+  
 }
 
-export interface Params {
-  emitter: Emitter;
-}
-
-export interface Get {
-}
-
-export interface GetOne {
+export interface VerifyAccount {
+  ( userId: string, code: string, forceThrow?: boolean ): Promise<void>;
 }
 
 /******************************************************************************/

@@ -3,7 +3,8 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as interfaces from "../../../../interfaces";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 /******************************************************************************/
 
@@ -11,41 +12,35 @@ export default abstract class MongoController implements interfaces.utilities.st
 
   /*****************************************************************/
 
-  private readonly mapDetails : interfaces.utilities.sharedLogic.dataStructures.MapDetails;
+  protected readonly emitter: any;
+  protected readonly Model: mongoose.Model<mongoose.Document>;
+  protected readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
-  constructor ( protected readonly emitter : any , protected readonly Model : mongoose.Model<mongoose.Document> , mapDetails : interfaces.utilities.sharedLogic.dataStructures.MapDetails ) {
-    this.mapDetails = mapDetails;
+  constructor( params: {
+    emitter: any;
+    Model: mongoose.Model<mongoose.Document>;
+    mapDetails: sharedLogicInterfaces.dataStructures.MapDetails,
+    checkThrow: sharedLogicInterfaces.moders.CheckThrow
+  } ) {
+    this.Model = params.Model;
+    this.checkThrow = params.checkThrow;
+    this.mapDetails = params.mapDetails;
   }
 
   /*****************************************************************/
 
-  protected readonly checkThrow = ( forceThrow? : boolean ) => {
-
-    return new Promise<any>( ( resolve , reject ) => {
-
-      if ( forceThrow ) {
-        throw new Error( "Forced Throw!" );
-      }
-
-      resolve();
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  protected readonly find = ( conditions : any , sortCriteria? : string , limit? : number ) : Promise<any> => {
+  protected readonly find = ( conditions: any, sortCriteria?: string, limit?: number ): Promise<any[]> => {
 
     conditions = ( conditions ) ? conditions : {};
     sortCriteria = ( sortCriteria ) ? sortCriteria : "-updatedAt";
     limit = ( limit ) ? limit : 50;
 
-    return new Promise<any>( ( resolve , reject ) => {
+    return new Promise<any>(( resolve, reject ) => {
 
-      this.Model.find( conditions ).sort( sortCriteria ).limit( limit ).exec( ( err , foundDocuments ) => {
+      this.Model.find( conditions ).sort( sortCriteria ).limit( limit ).exec(( err, foundDocuments ) => {
 
         if ( err ) {
           reject( err );
@@ -61,11 +56,11 @@ export default abstract class MongoController implements interfaces.utilities.st
 
   /*****************************************************************/
 
-  protected readonly findById = ( id : mongoose.Types.ObjectId ) : Promise<any> => {
+  protected readonly findById = ( id: mongoose.Types.ObjectId ): Promise<any> => {
 
-    return new Promise<any>( ( resolve , reject ) => {
+    return new Promise<any>(( resolve, reject ) => {
 
-      this.Model.findById( id , ( err , foundDocument ) => {
+      this.Model.findById( id, ( err, foundDocument ) => {
 
         if ( err ) {
           return reject( err );
@@ -75,7 +70,7 @@ export default abstract class MongoController implements interfaces.utilities.st
           resolve( foundDocument );
         } else {
           reject( {
-            identifier : "DocumentNotFound"
+            identifier: "DocumentNotFound"
           } );
         }
 
@@ -87,12 +82,12 @@ export default abstract class MongoController implements interfaces.utilities.st
 
   /*****************************************************************/
 
-  protected readonly saveDocument = ( details : any ) : Promise<any> => {
+  protected readonly saveDocument = ( details: any ): Promise<any> => {
 
-    return new Promise<any>( ( resolve , reject ) => {
+    return new Promise<any>(( resolve, reject ) => {
 
       let newModel = new this.Model( details );
-      newModel.save( ( err : any ) => {
+      newModel.save(( err: any ) => {
 
         if ( err ) {
           reject( err );
@@ -108,11 +103,11 @@ export default abstract class MongoController implements interfaces.utilities.st
 
   /*****************************************************************/
 
-  protected readonly saveMulitpleDocuments = ( detailArr : any[] ) : Promise<any> => {
+  protected readonly saveMultipleDocuments = ( detailArr: any[] ): Promise<any> => {
 
-    return new Promise<any>( ( resolve , reject ) => {
+    return new Promise<any>(( resolve, reject ) => {
 
-      this.Model.insertMany( detailArr , ( err , savedDocuments ) => {
+      this.Model.insertMany( detailArr, ( err, savedDocuments ) => {
 
         if ( err ) {
           reject( err );
@@ -128,25 +123,25 @@ export default abstract class MongoController implements interfaces.utilities.st
 
   /*****************************************************************/
 
-  protected readonly updateDocuments = ( conditions : any , details : any ) : Promise<any> => {
+  protected readonly updateDocuments = ( conditions: any, details: any ): Promise<any> => {
 
-    return new Promise<any>( ( resolve , reject ) => {
+    return new Promise<any>(( resolve, reject ) => {
 
-      let returnDocuments : mongoose.Document[] = [];
+      let returnDocuments: mongoose.Document[] = [];
 
-      this.Model.find( conditions ).exec( ( err , foundDocuments ) => {
+      this.Model.find( conditions ).exec(( err, foundDocuments ) => {
 
         if ( err ) {
           return reject( err );
         }
 
-        Promise.all( foundDocuments.map( ( document : any ) => {
+        Promise.all( foundDocuments.map(( document: any ) => {
 
-          return new Promise<any>( ( resolve , reject ) => {
+          return new Promise<any>(( resolve, reject ) => {
 
-            this.mapDetails( details , document );
+            this.mapDetails( details, document );
 
-            document.save( ( err : any ) => {
+            document.save(( err: any ) => {
 
               if ( err ) {
                 reject( err );
@@ -160,11 +155,11 @@ export default abstract class MongoController implements interfaces.utilities.st
           } );
 
         } ) )
-        .then( ( response : any ) => {
+          .then(( response: any ) => {
 
-          resolve( returnDocuments );
+            resolve( returnDocuments );
 
-        } );
+          } );
 
       } );
 
@@ -174,14 +169,14 @@ export default abstract class MongoController implements interfaces.utilities.st
 
   /*****************************************************************/
 
-  protected readonly removeDocuments = ( conditions : any ) : Promise<any> => {
+  protected readonly removeDocuments = ( conditions: any ): Promise<any> => {
 
-    return new Promise<any>( ( resolve , reject ) => {
+    return new Promise<any>(( resolve, reject ) => {
 
-      this.Model.find( conditions ).remove( ( err : any ) => {
+      this.Model.find( conditions ).remove(( err: any ) => {
 
         if ( err ) {
-          reject ( err );
+          reject( err );
         } else {
           resolve();
         }

@@ -1,15 +1,12 @@
 /******************************************************************************/
 
 import * as express from "express";
-
-import * as interfaces from "../../interfaces/index";
-
-import * as sharedLogic from "./shared-logic/index";
-import * as sessionManager from "./session-manager/index";
-import * as storageManager from "./storage-manager/index";
-import * as authenticationManager from "./authentication-manager/index";
-import * as communicationManager from "./communication-manager/index";
-import * as responseManager from "./response-manager/index";
+import * as sharedLogic from "./shared-logic";
+import * as sessionManager from "./session-manager";
+import * as storageManager from "./storage-manager";
+import * as authenticationManager from "./authentication-manager";
+import * as communicationManager from "./communication-manager";
+import * as responseManager from "./response-manager";
 
 /******************************************************************************/
 
@@ -37,31 +34,17 @@ export interface SessionManager extends MiddlewareBorn {
 }
 
 export interface StorageManager extends MiddlewareBorn {
-  readonly user: storageManager.StorageUser;
-  readonly event: storageManager.StorageEvent;
-  readonly progression: storageManager.StorageProgression;
-  readonly notification: storageManager.StorageNotification;
-  readonly invitation: storageManager.StorageInvitation;
-  readonly subscription: storageManager.StorageSubscription;
+  readonly user: storageManager.User;
+  readonly event: storageManager.Event;
+  readonly progression: storageManager.Progression;
+  readonly notification: storageManager.Notification;
+  readonly subscription: storageManager.Subscription;
 
-  readonly channel: storageManager.StorageChannel;
-  readonly payment: storageManager.StoragePayment;
-  readonly airtimeTransfer: storageManager.StorageAirtimeTransfer;
-  readonly call: storageManager.StorageCall;
-
-  readonly shop: storageManager.StorageShop;
-  readonly product: storageManager.StorageProduct;
-  readonly price: storageManager.StoragePrice;
-  readonly round: storageManager.StorageRound;
-  readonly roundContributor: storageManager.StorageRoundContributor;
-  readonly track: storageManager.StorageTrack;
-  readonly trackProduct: storageManager.StorageTrackProduct;
-  readonly contribution: storageManager.StorageContribution;
-  readonly deliveryFee: storageManager.StorageDeliveryFee;
-  readonly cart: storageManager.StorageCart;
-  readonly cartProduct: storageManager.StorageCartProduct;
-  readonly disbursement: storageManager.StorageDisbursement;
-  readonly article: storageManager.StorageArticle;
+  readonly amendmentRequest: storageManager.AmendmentRequest;
+  readonly customerGroup: storageManager.CustomerGroup;
+  readonly productType: storageManager.ProductType;
+  readonly product: storageManager.Product;
+  readonly order: storageManager.Order;
 }
 
 export interface AuthenticationManager extends MiddlewareBorn {

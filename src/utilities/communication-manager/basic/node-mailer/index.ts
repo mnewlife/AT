@@ -4,12 +4,12 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as nodemailer from "nodemailer";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as communicationManagerInterfaces from "../../../../interfaces/utilities/communication-manager/index";
-import * as modersInterfaces from "../../../../interfaces/utilities/shared-logic/moders/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
+import * as interfaces from "../../../../interfaces";
+import * as communicationManagerInterfaces from "../../../../interfaces/utilities/communication-manager";
+import * as modersInterfaces from "../../../../interfaces/utilities/shared-logic/moders";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
 
-import emitterFactory from "./event-emitter/index";
+import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
@@ -103,11 +103,15 @@ class BasicMailAgent implements communicationManagerInterfaces.MailAgent {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit, checkThrow: modersInterfaces.CheckThrow, commSettings: communicationManagerInterfaces.CommSettings ): communicationManagerInterfaces.MailAgent => {
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit,
+  checkThrow: modersInterfaces.CheckThrow,
+  commSettings: communicationManagerInterfaces.CommSettings
+} ): communicationManagerInterfaces.MailAgent => {
   return new BasicMailAgent( {
-    emitter: emitterFactory( emitEvent ),
-    checkThrow: checkThrow,
-    commSettings: commSettings
+    emitter: emitterFactory( params.emitEvent ),
+    checkThrow: params.checkThrow,
+    commSettings: params.commSettings
   } );
 };
 

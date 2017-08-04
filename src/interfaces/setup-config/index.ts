@@ -1,9 +1,9 @@
 /******************************************************************************/
 
-import * as environment from "./environment/index";
-import * as eventManager from "./event-manager/index";
+import * as environment from "./environment";
+import * as eventManager from "./event-manager";
 
-import * as interfaces from "../../interfaces/index";
+import * as interfaces from "../../interfaces";
 
 /******************************************************************************/
 

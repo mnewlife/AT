@@ -3,10 +3,10 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../interfaces/index";
-import * as events from "../../../../interfaces/events/utilities/session-manager/index";
-import * as sessionManagerInterfaces from "../../../../interfaces/utilities/session-manager/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
+import * as interfaces from "../../../../interfaces";
+import * as events from "../../../../interfaces/utilities/session-manager/events";
+import * as sessionManagerInterfaces from "../../../../interfaces/utilities/session-manager";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 

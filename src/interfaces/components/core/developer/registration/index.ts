@@ -2,8 +2,8 @@
 
 import * as express from "express";
 
-import * as interfaces from "../../../../../interfaces/index";
-import * as dataImplementations from "../../../../../interfaces/data-model/implementations/index";
+import * as interfaces from "../../../../../interfaces";
+import * as registrationevents from "../../../../../interfaces/components/core/developer/registration/events";
 
 /******************************************************************************/
 
@@ -11,12 +11,8 @@ export interface Emitter {
 
 }
 
-export interface Params {
-  emitter: Emitter;
-}
-
-export interface AddAdmin {
-  ( emailAddress: string, req: express.Request, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+export interface AddDeveloper {
+  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Developer>;
 }
 
 export interface VerifyAccount {

@@ -1,7 +1,7 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../../interfaces/index";
-import * as dataImplementations from "../../../../../interfaces/data-model/implementations/index";
+import * as interfaces from "../../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
 
 /******************************************************************************/
 
@@ -9,42 +9,32 @@ export interface Emitter {
 
 }
 
-export interface Params {
-  emitter : Emitter;
-}
-
-export interface UpdateFields {
-
-  firstName?: string;
-  lastName?: string;
-  dateOfBirth?: Date;
-  gender?: "Male" | "Female";
-
-  phoneNumbers?: string[];
-
-  country?: string;
-  province?: string;
-  address?: string;
-}
-
 export interface GetDetails {
-  ( userId: string, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Developer>;
 }
 
 export interface UpdateDetails {
-  ( userId: string, details: UpdateFields, forceThrow?: boolean ): Promise<dataImplementations.UserModel>;
+  ( userId: string, details: storageManagerInterfaces.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Developer>;
 }
 
-export interface ChangeEmailAddress { }
+export interface ChangeEmailAddress {
+  ( userId: string, password: string, newEmailAddress: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Developer>;
+}
 
 export interface ChangePassword {
   ( userId: string, oldPassword: string, newPassword: string, forceThrow?: boolean ): Promise<void>;
 }
 
-export interface RequestPasswordResetCode { }
+export interface RequestPasswordResetCode {
+  ( userId: string, forceThrow?: boolean ): Promise<void>;
+}
 
-export interface ResetPassword { }
+export interface ResetPassword {
+  ( userId: string, resetCode: string, forceThrow?: boolean ): Promise<void>;
+}
 
-export interface DeleteAccount { }
+export interface DeleteAccount {
+  ( userId: string, password: string, forceThrow?: boolean ): Promise<void>;
+}
 
 /******************************************************************************/

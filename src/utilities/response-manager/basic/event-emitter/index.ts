@@ -1,21 +1,16 @@
 /******************************************************************************/
 
-import * as Promise from "bluebird";
-import * as express from "express";
-
-import * as interfaces from "../../../../interfaces/index";
-import * as events from "../../../../interfaces/events/utilities/response-manager/index";
-import * as responseManagerInterfaces from "../../../../interfaces/utilities/response-manager/index";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager/index";
+import * as responseManagerInterfaces from "../../../../interfaces/utilities/response-manager";
+import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as events from "../../../../interfaces/utilities/response-manager/events";
 
 /******************************************************************************/
 
-class ResponseManagerEmitter implements interfaces.utilities.responseManager.Emitter {
+class ResponseManagerEmitter implements responseManagerInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly stringifyHtmlPacketFailed = ( params: any ) => {
-
+  readonly stringifyHtmlPacketFailed = ( params: events.StringifyHtmlPacketFailedData ) => {
     let event: events.StringifyHtmlPacketFailed = {
       context: "ResponseManager",
       tags: [],
@@ -25,17 +20,13 @@ class ResponseManagerEmitter implements interfaces.utilities.responseManager.Emi
         reason: params.reason
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly unacceptableResponseType = ( params: any ) => {
-
     let event: events.UnacceptableResponseType = {
       context: "ResponseManager",
       tags: [],
@@ -45,17 +36,13 @@ class ResponseManagerEmitter implements interfaces.utilities.responseManager.Emi
         packet: params.packet
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
   readonly sendResponseFailed = ( params: any ) => {
-
     let event: events.SendResponseFailed = {
       context: "ResponseManager",
       tags: [],
@@ -69,16 +56,13 @@ class ResponseManagerEmitter implements interfaces.utilities.responseManager.Emi
         reason: params.reason
       }
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: interfaces.setupConfig.eventManager.Emit, params: any ) { }
+  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
@@ -86,10 +70,8 @@ class ResponseManagerEmitter implements interfaces.utilities.responseManager.Emi
 
 /******************************************************************************/
 
-export default ( emitEvent : eventManagerInterfaces.Emit ): interfaces.utilities.responseManager.Emitter => {
-
-  return new ResponseManagerEmitter( config.eventManager.emit, {} );
-
+export default ( emitEvent: eventManagerInterfaces.Emit ): responseManagerInterfaces.Emitter => {
+  return new ResponseManagerEmitter( emitEvent );
 }
 
 /******************************************************************************/

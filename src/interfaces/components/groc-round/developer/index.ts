@@ -1,71 +1,50 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../interfaces/index";
+import * as core from "../../../../interfaces/components/core";
 
-import * as cartProducts from "./cart-products/index";
-import * as carts from "./carts/index";
-import * as contributions from "./contributions/index";
-import * as deliveryFees from "./delivery-fees/index";
-import * as products from "./products/index";
-import * as rounds from "./rounds/index";
-import * as shops from "./shops/index";
-import * as trackProducts from "./track-products/index";
-import * as tracks from "./tracks/index";
-import * as users from "./users/index";
+import * as auth from "./auth";
+import * as profile from "./profile";
+import * as registration from "./registration";
 
-import * as sharedCode from "./shared-code/index";
+import * as admins from "./admins";
 
 /******************************************************************************/
 
-export { cartProducts, carts, contributions, deliveryFees, products };
-export { rounds, shops, trackProducts, tracks, users, sharedCode };
+export { auth, profile, registration, admins };
 
 /******************************************************************************/
 
 export interface Params {
-  cart: CartProducts;
-  carts: Carts;
-  contributions: Contributions;
-  deliveryFees: DeliveryFees;
-  products: Products;
-  rounds: Rounds;
-  shops: Shops;
-  trackProducts: TrackProducts;
-  tracks: Tracks;
-  users: Users;
+  auth: Auth;
+  profile: Profile;
+  registration: Registration;
+  admins: Admins;
 }
 
-export interface CartProducts {
+export interface Admins {
+  get: admins.Get;
+  getOne: admins.GetOne;
+  add: admins.Add;
+  remove: admins.Remove;
 }
 
-export interface Carts {
+export interface Auth {
+  signIn: auth.SignIn;
+  signOut: auth.SignOut;
 }
 
-export interface Contributions {
+export interface Profile {
+  readonly getUserDetails: profile.GetDetails;
+  readonly updateUserDetails: profile.UpdateDetails;
+  readonly changeEmailAddress: profile.ChangeEmailAddress;
+  readonly changePassword: profile.ChangePassword;
+  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
+  readonly resetPassword: profile.ResetPassword;
+  readonly deleteAccount: profile.DeleteAccount;
 }
 
-export interface DeliveryFees {
-}
-
-export interface Products {
-}
-
-export interface Rounds {
-}
-
-export interface Shops {
-}
-
-export interface TrackProducts {
-}
-
-export interface Tracks {
-}
-
-export interface Users {
-}
-
-export interface SharedCode {
+export interface Registration {
+  verifyAccount: registration.VerifyAccount;
 }
 
 /******************************************************************************/

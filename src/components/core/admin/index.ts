@@ -1,24 +1,34 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces/index";
-import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager/index";
-import * as coreInterfaces from "../../../interfaces/components/core/index";
+import * as interfaces from "../../../interfaces";
+import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as coreInterfaces from "../../../interfaces/components/core";
 
-import authFactory from "./auth/index";
-import profileFactory from "./profile/index";
-import registrationFactory from "./registration/index";
+import adminsFactory from "./admins";
+import logisticsFactory from "./logistics";
+import salesRepsFactory from "./sales-reps";
 
-import sharedCodeFactory from "./shared-code/index";
+import authFactory from "./auth";
+import profileFactory from "./profile";
+import registrationFactory from "./registration";
 
 /******************************************************************************/
 
 class Admin implements coreInterfaces.Admin {
 
+  readonly admins: coreInterfaces.admin.Admins;
+  readonly logistics: coreInterfaces.admin.Admins;
+  readonly salesReps: coreInterfaces.admin.SalesReps;
+
   readonly auth: coreInterfaces.admin.Auth;
   readonly profile: coreInterfaces.admin.Profile;
   readonly registration: coreInterfaces.admin.Registration;
 
-  constructor( params: coreInterfaces.admin.Params ) {
+  constructor( params: {
+    auth: coreInterfaces.admin.Auth,
+    profile: coreInterfaces.admin.Profile,
+    registration: coreInterfaces.admin.Registration
+  } ) {
     this.auth = params.auth;
     this.profile = params.profile;
     this.registration = params.registration;
@@ -28,23 +38,23 @@ class Admin implements coreInterfaces.Admin {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config, sharedCode: coreInterfaces.SharedCode ): coreInterfaces.Admin => {
-  let localSharedCode = sharedCodeFactory( config, sharedCode );
+export default ( config: interfaces.Config ): coreInterfaces.Admin => {
   return new Admin( {
+    admins: adminsFactory( {} ),
+    logistics: logisticsFactory( {} ),
+    salesReps: salesRepsFactory( {} ),
     auth: authFactory( {
       emitEvent: config.eventManager.emit,
       authSignIn: config.utilities.authenticationManager.signIn,
       authSignOut: config.utilities.authenticationManager.signOut,
-      checkThrow: config.utilities.sharedLogic.moders.checkThrow,
-      sharedCode: localSharedCode
+      checkThrow: config.utilities.sharedLogic.moders.checkThrow
     } ),
-    profile: profileFactory( config.eventManager.emit, localSharedCode ),
+    profile: profileFactory( config.eventManager.emit ),
     registration: registrationFactory( {
       emitEvent: config.eventManager.emit,
       storeNewUser: config.utilities.storageManager.user.add,
       checkThrow: config.utilities.sharedLogic.moders.checkThrow,
-      getCurrentUserFromSession: config.utilities.sessionManager.getCurrentUser,
-      sharedCode: localSharedCode
+      getCurrentUserFromSession: config.utilities.sessionManager.getCurrentUser
     } )
   } );
 }
