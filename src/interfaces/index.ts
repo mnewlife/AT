@@ -1,21 +1,19 @@
 /******************************************************************************/
 
 import * as http from "http";
-import * as express from "express";
 
 import * as setupConfig from "./setup-config";
 import * as utilities from "./utilities";
 import * as components from "./components";
-import * as events from "./events";
 import * as dataModel from "./data-model";
 
 /******************************************************************************/
 
-export { setupConfig, utilities, components, events, dataModel };
+export { setupConfig, utilities, components, dataModel };
 
 /******************************************************************************/
 
-export type AppName = "Core" | "Orders";
+export type AppName = "Core" | "GrocRound" | "Call263" | "Routers" | "Powertel";
 
 /******************************************************************************/
 
@@ -43,7 +41,10 @@ export interface Utilities {
 
 export interface Components {
   core: components.Core;
-  orders: components.Orders;
+  grocRound: components.GrocRound;
+  call263: components.Call263;
+  routers: components.Routers;
+  powertel: components.Powertel;
 };
 
 /******************************************************************************/

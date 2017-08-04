@@ -1,23 +1,17 @@
 /******************************************************************************/
 
-import * as storageManager from "../../../interfaces/utilities/storage-manager";
+import * as appStorage from "../../../../interfaces/utilities/storage-manager/powertel";
 
-import * as user from "./user";
-import * as event from "./event";
-import * as progression from "./progression";
-import * as notification from "./notification";
-import * as subscription from "./subscription";
-
-import * as amendmentRequest from "./amendment-request";
-import * as customerGroup from "./customer-group";
-import * as productType from "./product-type";
-import * as product from "./product";
-import * as order from "./order";
+import * as airtimeSale from "./airtime-sale";
+import * as card from "./card";
+import * as cardSale from "./card-sale";
+import * as newAirtimeStock from "./new-airtime-stock";
+import * as newCardStock from "./new-card-stock";
+import * as registration from "./registration";
 
 /******************************************************************************/
 
-export { user, event, progression, notification, subscription };
-export { amendmentRequest, customerGroup, productType, product, order };
+export { airtimeSale, card, cardSale, newAirtimeStock, newCardStock, registration };
 
 /******************************************************************************/
 
@@ -25,162 +19,98 @@ export interface StorageController { }
 
 /******************************************************************************/
 
-export interface User extends StorageController {
-  get: storageManager.user.Get;
-  getById: storageManager.user.GetById;
+export interface AirtimeSale extends StorageController {
+  get: appStorage.airtimeSale.Get;
+  getById: appStorage.airtimeSale.GetById;
 
-  add: storageManager.user.Add;
-  addBatch: storageManager.user.AddBatch;
+  add: appStorage.airtimeSale.Add;
+  addBatch: appStorage.airtimeSale.AddBatch;
 
-  update: storageManager.user.Update;
-  updateById: storageManager.user.UpdateById;
+  update: appStorage.airtimeSale.Update;
+  updateById: appStorage.airtimeSale.UpdateById;
 
-  remove: storageManager.user.Remove;
-  removeById: storageManager.user.RemoveById;
+  remove: appStorage.airtimeSale.Remove;
+  removeById: appStorage.airtimeSale.RemoveById;
 }
 
 /******************************************************************************/
 
-export interface Progression extends StorageController {
-  get: storageManager.progression.Get;
-  getById: storageManager.progression.GetById;
+export interface Card extends StorageController {
+  get: appStorage.card.Get;
+  getById: appStorage.card.GetById;
 
-  add: storageManager.progression.Add;
-  addBatch: storageManager.progression.AddBatch;
+  add: appStorage.card.Add;
+  addBatch: appStorage.card.AddBatch;
 
-  update: storageManager.progression.Update;
-  updateById: storageManager.progression.UpdateById;
+  update: appStorage.card.Update;
+  updateById: appStorage.card.UpdateById;
 
-  remove: storageManager.progression.Remove;
-  removeById: storageManager.progression.RemoveById;
+  remove: appStorage.card.Remove;
+  removeById: appStorage.card.RemoveById;
 };
 
 /******************************************************************************/
 
-export interface Event extends StorageController {
-  get: storageManager.event.Get;
-  getById: storageManager.event.GetById;
+export interface CardSale extends StorageController {
+  get: appStorage.cardSale.Get;
+  getById: appStorage.cardSale.GetById;
 
-  add: storageManager.event.Add;
-  addBatch: storageManager.event.AddBatch;
+  add: appStorage.cardSale.Add;
+  addBatch: appStorage.cardSale.AddBatch;
 
-  update: storageManager.event.Update;
-  updateById: storageManager.event.UpdateById;
+  update: appStorage.cardSale.Update;
+  updateById: appStorage.cardSale.UpdateById;
 
-  remove: storageManager.event.Remove;
-  removeById: storageManager.event.RemoveById;
+  remove: appStorage.cardSale.Remove;
+  removeById: appStorage.cardSale.RemoveById;
 };
 
 /******************************************************************************/
 
-export interface Notification extends StorageController {
-  get: storageManager.notification.Get;
-  getById: storageManager.notification.GetById;
+export interface NewAirtimeStock extends StorageController {
+  get: appStorage.newAirtimeStock.Get;
+  getById: appStorage.newAirtimeStock.GetById;
 
-  add: storageManager.notification.Add;
-  addBatch: storageManager.notification.AddBatch;
+  add: appStorage.newAirtimeStock.Add;
+  addBatch: appStorage.newAirtimeStock.AddBatch;
 
-  update: storageManager.notification.Update;
-  updateById: storageManager.notification.UpdateById;
+  update: appStorage.newAirtimeStock.Update;
+  updateById: appStorage.newAirtimeStock.UpdateById;
 
-  remove: storageManager.notification.Remove;
-  removeById: storageManager.notification.RemoveById;
+  remove: appStorage.newAirtimeStock.Remove;
+  removeById: appStorage.newAirtimeStock.RemoveById;
 };
 
 /******************************************************************************/
 
-export interface Subscription extends StorageController {
-  get: storageManager.subscription.Get;
-  getById: storageManager.subscription.GetById;
+export interface NewCardStock extends StorageController {
+  get: appStorage.newCardStock.Get;
+  getById: appStorage.newCardStock.GetById;
 
-  add: storageManager.subscription.Add;
-  addBatch: storageManager.subscription.AddBatch;
+  add: appStorage.newCardStock.Add;
+  addBatch: appStorage.newCardStock.AddBatch;
 
-  update: storageManager.subscription.Update;
-  updateById: storageManager.subscription.UpdateById;
+  update: appStorage.newCardStock.Update;
+  updateById: appStorage.newCardStock.UpdateById;
 
-  remove: storageManager.subscription.Remove;
-  removeById: storageManager.subscription.RemoveById;
+  remove: appStorage.newCardStock.Remove;
+  removeById: appStorage.newCardStock.RemoveById;
 };
 
 /******************************************************************************/
 
-export interface AmendmentRequest extends StorageController {
-  get: storageManager.amendmentRequest.Get;
-  getById: storageManager.amendmentRequest.GetById;
+export interface Registration extends StorageController {
+  get: appStorage.registration.Get;
+  getById: appStorage.registration.GetById;
 
-  add: storageManager.amendmentRequest.Add;
-  addBatch: storageManager.amendmentRequest.AddBatch;
+  add: appStorage.registration.Add;
+  addBatch: appStorage.registration.AddBatch;
 
-  update: storageManager.amendmentRequest.Update;
-  updateById: storageManager.amendmentRequest.UpdateById;
+  update: appStorage.registration.Update;
+  updateById: appStorage.registration.UpdateById;
 
-  remove: storageManager.amendmentRequest.Remove;
-  removeById: storageManager.amendmentRequest.RemoveById;
-};
-
-/******************************************************************************/
-
-export interface CustomerGroup extends StorageController {
-  get: storageManager.customerGroup.Get;
-  getById: storageManager.customerGroup.GetById;
-
-  add: storageManager.customerGroup.Add;
-  addBatch: storageManager.customerGroup.AddBatch;
-
-  update: storageManager.customerGroup.Update;
-  updateById: storageManager.customerGroup.UpdateById;
-
-  remove: storageManager.customerGroup.Remove;
-  removeById: storageManager.customerGroup.RemoveById;
-};
-
-/******************************************************************************/
-
-export interface ProductType extends StorageController {
-  get: storageManager.productType.Get;
-  getById: storageManager.productType.GetById;
-
-  add: storageManager.productType.Add;
-  addBatch: storageManager.productType.AddBatch;
-
-  update: storageManager.productType.Update;
-  updateById: storageManager.productType.UpdateById;
-
-  remove: storageManager.productType.Remove;
-  removeById: storageManager.productType.RemoveById;
-};
-
-/******************************************************************************/
-
-export interface Product extends StorageController {
-  get: storageManager.product.Get;
-  getById: storageManager.product.GetById;
-
-  add: storageManager.product.Add;
-  addBatch: storageManager.product.AddBatch;
-
-  update: storageManager.product.Update;
-  updateById: storageManager.product.UpdateById;
-
-  remove: storageManager.product.Remove;
-  removeById: storageManager.product.RemoveById;
-};
-
-/******************************************************************************/
-
-export interface Order extends StorageController {
-  get: storageManager.order.Get;
-  getById: storageManager.order.GetById;
-
-  add: storageManager.order.Add;
-  addBatch: storageManager.order.AddBatch;
-
-  update: storageManager.order.Update;
-  updateById: storageManager.order.UpdateById;
-
-  remove: storageManager.order.Remove;
-  removeById: storageManager.order.RemoveById;
+  remove: appStorage.registration.Remove;
+  removeById: appStorage.registration.RemoveById;
 };
 
 /******************************************************************************/

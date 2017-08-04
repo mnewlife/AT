@@ -2,22 +2,15 @@
 
 import * as storageManager from "../../../interfaces/utilities/storage-manager";
 
-import * as user from "./user";
-import * as event from "./event";
-import * as progression from "./progression";
-import * as notification from "./notification";
-import * as subscription from "./subscription";
-
-import * as amendmentRequest from "./amendment-request";
-import * as customerGroup from "./customer-group";
-import * as productType from "./product-type";
-import * as product from "./product";
-import * as order from "./order";
+import * as core from "./core";
+import * as grocRound from "./groc-round";
+import * as call263 from "./call-263";
+import * as routers from "./routers";
+import * as powertel from "./powertel";
 
 /******************************************************************************/
 
-export { user, event, progression, notification, subscription };
-export { amendmentRequest, customerGroup, productType, product, order };
+export { core, grocRound, call263, routers, powertel };
 
 /******************************************************************************/
 
@@ -25,18 +18,9 @@ export interface StorageController { }
 
 /******************************************************************************/
 
-export interface User extends StorageController {
+export interface Core extends StorageController {
   get: storageManager.user.Get;
   getById: storageManager.user.GetById;
-
-  add: storageManager.user.Add;
-  addBatch: storageManager.user.AddBatch;
-
-  update: storageManager.user.Update;
-  updateById: storageManager.user.UpdateById;
-
-  remove: storageManager.user.Remove;
-  removeById: storageManager.user.RemoveById;
 }
 
 /******************************************************************************/

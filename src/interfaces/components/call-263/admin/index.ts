@@ -1,58 +1,39 @@
 /******************************************************************************/
 
-import * as auth from "./auth";
-import * as profile from "./profile";
-import * as registration from "./registration";
-
-import * as admins from "./admins";
-import * as logistics from "./logistics";
-import * as salesReps from "./sales-reps";
+import * as channels from "./channels";
+import * as airtimePayments from "./airtime-payments";
+import * as airtimeTransfers from "./airtime-transfers";
 
 /******************************************************************************/
 
-export { admins, logistics, salesReps };
-export { auth, profile, registration };
+export { channels, airtimePayments, airtimeTransfers };
 
 /******************************************************************************/
 
-export interface Admins {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface Channels {
+  readonly get: channels.Get;
+  readonly getOne: channels.GetOne;
+  readonly add: channels.Add;
+  readonly addOne: channels.AddOne;
+  readonly update: channels.Update;
+  readonly remove: channels.Remove;
 }
 
-export interface Logistics {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface AirtimePayments {
+  readonly get: airtimePayments.Get;
+  readonly getOne: airtimePayments.GetOne;
+  readonly add: airtimePayments.Add;
+  readonly update: airtimePayments.Update;
+  readonly remove: airtimePayments.Remove;
 }
 
-export interface SalesReps {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
-}
-
-export interface Auth {
-  readonly signIn: auth.SignIn;
-  readonly signOut: auth.SignOut;
-}
-
-export interface Profile {
-  readonly getUserDetails: profile.GetDetails;
-  readonly updateUserDetails: profile.UpdateDetails;
-  readonly changeEmailAddress: profile.ChangeEmailAddress;
-  readonly changePassword: profile.ChangePassword;
-  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
-  readonly resetPassword: profile.ResetPassword;
-  readonly deleteAccount: profile.DeleteAccount;
-}
-
-export interface Registration {
-  readonly verifyAccount: registration.VerifyAccount;
+export interface AirtimeTransfers {
+  readonly get: airtimeTransfers.Get;
+  readonly getOne: airtimeTransfers.GetOne;
+  readonly makeTransfer: airtimeTransfers.MakeTransfer;
+  readonly record: airtimeTransfers.Record;
+  readonly update: airtimeTransfers.Update;
+  readonly remove: airtimeTransfers.Remove;
 }
 
 /******************************************************************************/

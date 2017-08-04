@@ -2,12 +2,11 @@
 
 import * as developer from "./developer";
 import * as admin from "./admin";
-import * as logistics from "./logistics";
-import * as salesRep from "./sales-rep";
+import * as consumer from "./consumer";
 
 /******************************************************************************/
 
-export { developer, admin, logistics, salesRep };
+export { developer, admin, consumer };
 
 /******************************************************************************/
 
@@ -19,24 +18,15 @@ export interface Developer {
 }
 
 export interface Admin {
-  readonly registration: admin.Registration;
-  readonly auth: admin.Auth;
-  readonly profile: admin.Profile;
-  readonly admins: admin.Admins;
-  readonly logistics: admin.Logistics;
-  readonly salesRep: admin.SalesReps;
-}
-
-export interface Logistics {
-  readonly registration: logistics.Registration;
-  readonly auth: logistics.Auth;
-  readonly profile: logistics.Profile;
+  readonly channels: admin.Channels;
+  readonly airtimePayments: admin.AirtimePayments;
+  readonly airtimeTransfers: admin.AirtimeTransfers;
 }
 
 export interface SalesRep {
-  readonly registration: salesRep.Registration;
-  readonly auth: salesRep.Auth;
-  readonly profile: salesRep.Profile;
+  readonly registration: consumer.Registration;
+  readonly auth: consumer.Auth;
+  readonly profile: consumer.Profile;
 }
 
 /******************************************************************************/

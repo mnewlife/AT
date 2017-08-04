@@ -1,20 +1,8 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces";
+import * as interfaces from "../../../../interfaces";
 
 /******************************************************************************/
-
-export interface Developer extends Super { accessLevel: "developer" };
-export interface Developer_Partial extends Super_Partial { accessLevel?: "developer" };
-
-export interface Admin extends Super { accessLevel: "admin" };
-export interface Admin_Partial extends Super_Partial { accessLevel?: "admin" };
-
-export interface Logistics extends Super { accessLevel: "logistics" };
-export interface Logistics_Partial extends Super_Partial { accessLevel?: "logistics" };
-
-export interface SalesRep extends Super { accessLevel: "salesRep" };
-export interface SalesRep_Partial extends Super_Partial { accessLevel?: "salesRep" };
 
 export interface Super extends interfaces.dataModel.DataModel {
   emailAddress: string;
