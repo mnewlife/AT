@@ -67,7 +67,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.dataModel.AccessLevel = "admin";
+    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
 
     return storageUser.add( {
       emailAddress: "allansimoyi@gmail.com",
@@ -119,7 +119,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.dataModel.AccessLevel = "admin";
+    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
 
     return storageUser.add( {
       emailAddress: "allansimoyi@gmail.com",
@@ -186,7 +186,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.dataModel.AccessLevel = "admin";
+    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
 
     return storageUser.add( null, true )
       .then(( response: any ) => {
@@ -246,7 +246,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.dataModel.AccessLevel = "admin";
+    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
 
     return storageUser.add( null, true )
       .then(( response: any ) => {

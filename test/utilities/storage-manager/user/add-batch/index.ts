@@ -58,9 +58,9 @@ describe( "User ADD-BATCH" , function () : void {
 
   it( "should add a batch of new user records" , () => {
 
-    let adminAccessLevel : interfaces.dataModel.AccessLevel = "admin";
-    let developerAccessLevel : interfaces.dataModel.AccessLevel = "developer";
-    let consumerAccessLevel : interfaces.dataModel.AccessLevel = "consumer";
+    let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
+    let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";
+    let consumerAccessLevel : interfaces.datModel.core.AccessLevel = "consumer";
 
     let newUserBatch = [
       {
@@ -107,9 +107,9 @@ describe( "User ADD-BATCH" , function () : void {
 
   it( "should emit event upon adding a batch of new user documents" , () => {
 
-    let adminAccessLevel : interfaces.dataModel.AccessLevel = "admin";
-    let developerAccessLevel : interfaces.dataModel.AccessLevel = "developer";
-    let consumerAccessLevel : interfaces.dataModel.AccessLevel = "consumer";
+    let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
+    let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";
+    let consumerAccessLevel : interfaces.datModel.core.AccessLevel = "consumer";
 
     let newUserBatch = [
       {

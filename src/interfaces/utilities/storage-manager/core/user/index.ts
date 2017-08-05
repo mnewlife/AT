@@ -66,7 +66,7 @@ export interface RemoveById {
 
 export interface AddDetails {
   emailAddress: string;
-  accessLevel: interfaces.dataModel.AccessLevel;
+  accessLevel: interfaces.datModel.core.AccessLevel;
   password: string;
   resetCode?: string;
   verification: {
@@ -88,7 +88,7 @@ export interface AddDetails {
 
 export type UpdateDetails = Partial<{
   emailAddress: string;
-  accessLevel: interfaces.dataModel.AccessLevel;
+  accessLevel: interfaces.datModel.core.AccessLevel;
   password: string;
   resetCode: string;
   verification: Partial<{
@@ -112,7 +112,7 @@ export type UpdateDetails = Partial<{
 
 export type FiltrationCriteria = Partial<{
   emailAddress: string;
-  accessLevel: interfaces.dataModel.AccessLevel;
+  accessLevel: interfaces.datModel.core.AccessLevel;
   verification: Partial<{
     verified: boolean;
     verificationCode: string;

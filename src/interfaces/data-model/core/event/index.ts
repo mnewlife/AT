@@ -1,6 +1,6 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../interfaces";
+import * as interfaces from "../../../../interfaces";
 
 /******************************************************************************/
 
@@ -10,6 +10,5 @@ export interface Super extends interfaces.dataModel.Happening, interfaces.dataMo
   tags: string[];
   data: any;
 }
-export interface Super_Partial extends Partial<Super> { }
 
 /******************************************************************************/

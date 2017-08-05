@@ -9,9 +9,9 @@ import * as interfaces from "../../../../../../../src/interfaces/index";
 
 export default () : interfaces.dataModel.User[] => {
 
-  let adminAccessLevel : interfaces.dataModel.AccessLevel = "admin";
-  let developerAccessLevel : interfaces.dataModel.AccessLevel = "developer";
-  let consumerAccessLevel : interfaces.dataModel.AccessLevel = "consumer";
+  let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
+  let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";
+  let consumerAccessLevel : interfaces.datModel.core.AccessLevel = "consumer";
 
   return [
 

@@ -18,7 +18,7 @@ export interface SalesRep_Partial extends Super_Partial { accessLevel?: "salesRe
 
 export interface Super extends interfaces.dataModel.DataModel {
   emailAddress: string;
-  accessLevel: interfaces.dataModel.AccessLevel;
+  accessLevel: interfaces.datModel.core.AccessLevel;
   password: string;
   resetCode?: string;
   verification: Verification;

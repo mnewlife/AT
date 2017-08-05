@@ -12,30 +12,15 @@ export { core, grocRound, call263, routers, powertel };
 
 /******************************************************************************/
 
-export type ModelRange = user.Super | amendmentRequest.Super
-  | customerGroup.Super | productType.Super
-  | product.Super | order.Super
-
-  | event.Super | progression.Super
-  | notification.Super | subscription.Super;
-
-export type ModelArrayRange = user.Super[] | amendmentRequest.Super[]
-  | customerGroup.Super[] | productType.Super[]
-  | product.Super[] | order.Super[]
-
-  | event.Super[] | progression.Super[]
-  | notification.Super[] | subscription.Super[];
+//
 
 /******************************************************************************/
 
-export interface DataModel extends DataModel_Partial {
+export interface DataModel {
   id: string;
   createdAt: Date;
   updatedAt: Date;
 }
-export type DataModel_Partial = Partial<DataModel>;
-
-export type AccessLevel = "developer" | "admin" | "logistics" | "salesRep";
 
 /******************************************************************************/
 
@@ -45,15 +30,5 @@ export interface Happening {
   tags: string[];
   data: any;
 }
-export type Happening_Partial = Partial<Happening>;
-
-/******************************************************************************/
-
-export interface UserInfo extends DataModel {
-  userId: string;
-  emailAddress: string;
-  fullName: string;
-};
-export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/

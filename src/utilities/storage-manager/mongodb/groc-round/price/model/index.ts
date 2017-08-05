@@ -10,7 +10,7 @@ import { ignoreEmpty } from "../../preparation";
 
 export interface Model extends mongoose.Document, mongoDB.Document {
   emailAddress: string;
-  accessLevel: interfaces.dataModel.AccessLevel;
+  accessLevel: interfaces.datModel.core.AccessLevel;
   password: string;
   resetCode?: string;
 
