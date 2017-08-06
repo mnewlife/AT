@@ -1,7 +1,6 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-import * as mongoose from "mongoose";
 
 import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
@@ -24,33 +23,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( airtimePaymentId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]>;
 }
 
 export interface UpdateById {
-  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( airtimePaymentId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super>;
 }
 
 /******************************************************************************/
@@ -60,40 +59,36 @@ export interface Remove {
 }
 
 export interface RemoveById {
-  ( eventId: string, forceThrow?: boolean ): Promise<void>;
+  ( airtimePaymentId: string, forceThrow?: boolean ): Promise<void>;
 }
 
 /******************************************************************************/
 
 export interface AddDetails {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+  user: interfaces.dataModel.core.UserInfo;
+  channelId: string;
+  transaction: interfaces.dataModel.call263.airtimePayment.Transaction;
 }
 
 /******************************************************************************/
 
 export type UpdateDetails = Partial<{
-  context: string;
-  identifier: string;
-  tagsToAdd: string[];
-  tagsToRemove: string[];
-  data: any;
+  user: Partial<interfaces.dataModel.core.UserInfo>;
+  channelId: string;
+  transaction: Partial<interfaces.dataModel.call263.airtimePayment.Transaction>;
 }>;
 
 /******************************************************************************/
 
 export type FiltrationCriteria = Partial<{
-  context: string;
-  identifier: string;
-  tags: string[];
-  textSearch: string;
+  user: Partial<interfaces.dataModel.core.UserInfo>;
+  channelId: string;
+  transaction: Partial<interfaces.dataModel.call263.airtimePayment.Transaction>;
 }>;
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt";
+export type SortOptions = "createdAt" | "updatedAt" | "amount";
 
 export interface SortCriteria {
   criteria: SortOptions;

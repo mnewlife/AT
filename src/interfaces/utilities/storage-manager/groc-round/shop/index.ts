@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
 
 /******************************************************************************/
@@ -66,34 +66,33 @@ export interface RemoveById {
 /******************************************************************************/
 
 export interface AddDetails {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+  shopName: string;
+  images?: string[];
+  numProducts: number;
 }
 
 /******************************************************************************/
 
 export type UpdateDetails = Partial<{
-  context: string;
-  identifier: string;
-  tagsToAdd: string[];
-  tagsToRemove: string[];
-  data: any;
+  shopName: string;
+  imagesToAdd: string[];
+  imagesToRemove: string[];
+  numProducts: number;
+  numProductsPlus: number;
+  numProductsMinus: number;
 }>;
 
 /******************************************************************************/
 
 export type FiltrationCriteria = Partial<{
-  context: string;
-  identifier: string;
-  tags: string[];
-  textSearch: string;
+  shopName: string;
+  images: string[];
+  numProducts: Partial<{ min: number; max: number; }>;
 }>;
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt";
+export type SortOptions = "createdAt" | "updatedAt" | "numProducts";
 
 export interface SortCriteria {
   criteria: SortOptions;

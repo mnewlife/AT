@@ -17,7 +17,7 @@ export interface Super extends interfaces.dataModel.DataModel {
   personalDetails?: PersonalDetails;
   contactDetails?: ContactDetails;
   residentialDetails?: ResidentialDetails;
-  activeApps: string[];
+  activeApps: interfaces.AppName[];
 }
 
 /******************************************************************************/
@@ -34,7 +34,6 @@ export interface PersonalDetails extends interfaces.dataModel.DataModel {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
-  age: number;
   gender: "Male" | "Female";
 }
 

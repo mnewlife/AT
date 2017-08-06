@@ -1,36 +1,18 @@
 /******************************************************************************/
 
-import * as core from "../../../../interfaces/components/core";
-
 import * as auth from "./auth";
 import * as profile from "./profile";
 import * as registration from "./registration";
 
-import * as admins from "./admins";
-
 /******************************************************************************/
 
-export { auth, profile, registration, admins };
+export { auth, profile, registration };
 
 /******************************************************************************/
-
-export interface Params {
-  auth: Auth;
-  profile: Profile;
-  registration: Registration;
-  admins: Admins;
-}
-
-export interface Admins {
-  get: admins.Get;
-  getOne: admins.GetOne;
-  add: admins.Add;
-  remove: admins.Remove;
-}
 
 export interface Auth {
-  signIn: auth.SignIn;
-  signOut: auth.SignOut;
+  readonly signIn: auth.SignIn;
+  readonly signOut: auth.SignOut;
 }
 
 export interface Profile {
@@ -44,7 +26,7 @@ export interface Profile {
 }
 
 export interface Registration {
-  verifyAccount: registration.VerifyAccount;
+  readonly verifyAccount: registration.VerifyAccount;
 }
 
 /******************************************************************************/

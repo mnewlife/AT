@@ -23,33 +23,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
+  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super[]>;
 }
 
 export interface UpdateById {
-  ( userId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
+  ( userId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 /******************************************************************************/
@@ -66,21 +66,13 @@ export interface RemoveById {
 
 export interface AddDetails {
   emailAddress: string;
-  accessLevel: interfaces.datModel.core.AccessLevel;
+  accessLevel: interfaces.dataModel.core.AccessLevel;
   password: string;
   resetCode?: string;
-  verification: {
-    verified: boolean;
-    verificationCode?: string;
-    numVerAttempts: number;
-  };
-  personalDetails?: {
-    firstName: string;
-    lastName: string;
-  };
-  contactDetails?: {
-    phoneNumbers: string[];
-  };
+  verification: interfaces.dataModel.core.user.Verification;
+  personalDetails?: interfaces.dataModel.core.user.PersonalDetails;
+  contactDetails?: interfaces.dataModel.core.user.ContactDetails;
+  residentialDetails?: interfaces.dataModel.core.user.ResidentialDetails;
   activeApps: interfaces.AppName[];
 }
 
@@ -88,7 +80,7 @@ export interface AddDetails {
 
 export type UpdateDetails = Partial<{
   emailAddress: string;
-  accessLevel: interfaces.datModel.core.AccessLevel;
+  accessLevel: interfaces.dataModel.core.AccessLevel;
   password: string;
   resetCode: string;
   verification: Partial<{
@@ -96,14 +88,12 @@ export type UpdateDetails = Partial<{
     verificationCode: string;
     numVerAttempts: number; numVerAttemptsPlus: number; numVerAttemptsMinus: number;
   }>;
-  personalDetails: Partial<{
-    firstName: string;
-    lastName: string;
-  }>;
+  personalDetails: Partial<interfaces.dataModel.core.user.PersonalDetails>;
   contactDetails: Partial<{
     phoneNumbersToAdd: string[];
     phoneNumbersToRemove: string[];
   }>;
+  residentialDetails: Partial<interfaces.dataModel.core.user.ResidentialDetails>;
   activeAppsToAdd: interfaces.AppName[];
   activeAppsToRemove: interfaces.AppName[];
 }>;
@@ -118,8 +108,14 @@ export type FiltrationCriteria = Partial<{
     verificationCode: string;
     numVerAttempts: Partial<{ min: number; max: number; }>;
   }>;
-  personalDetails: interfaces.dataModel.user.PersonalDetails_Partial;
-  contactDetails: interfaces.dataModel.user.ContactDetails_Partial;
+  personalDetails: Partial<{
+    firstName: string;
+    lastName: string;
+    dateOfBirth: Partial<{ min: Date; max: Date; }>;
+    gender: "Male" | "Female";
+  }>;
+  contactDetails: interfaces.dataModel.core.user.ContactDetails;
+  residentialDetails: Partial<interfaces.dataModel.core.user.ResidentialDetails>;
   activeApps: interfaces.AppName[];
   textSearch?: string;
 }>

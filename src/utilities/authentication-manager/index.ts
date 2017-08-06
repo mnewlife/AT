@@ -12,8 +12,8 @@ import basicAuthenticationManagerFactory from "./basic";
 
 export default ( params: {
   emit: eventManagerInterfaces.Emit;
-  getUserFromStorage: storageManagerInterfaces.user.Get;
-  getUserByIdFromStorage: storageManagerInterfaces.user.GetById,
+  getUserFromStorage: storageManagerInterfaces.core.user.Get;
+  getUserByIdFromStorage: storageManagerInterfaces.core.user.GetById,
   setCurrentUserInSession: sessionManagerInterfaces.SetCurrentUser;
   getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
   signOutOfSession: sessionManagerInterfaces.SignOut;

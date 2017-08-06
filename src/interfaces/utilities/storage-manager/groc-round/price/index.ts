@@ -1,9 +1,8 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
 
 /******************************************************************************/
@@ -24,33 +23,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( priceId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super[]>;
 }
 
 export interface UpdateById {
-  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( priceId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super>;
 }
 
 /******************************************************************************/
@@ -60,40 +59,39 @@ export interface Remove {
 }
 
 export interface RemoveById {
-  ( eventId: string, forceThrow?: boolean ): Promise<void>;
+  ( priceId: string, forceThrow?: boolean ): Promise<void>;
 }
 
 /******************************************************************************/
 
 export interface AddDetails {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+  productId: string;
+  shopId: string;
+  quantity: number;
+  price: number;
 }
 
 /******************************************************************************/
 
 export type UpdateDetails = Partial<{
-  context: string;
-  identifier: string;
-  tagsToAdd: string[];
-  tagsToRemove: string[];
-  data: any;
+  productId: string;
+  shopId: string;
+  quantity: number;
+  price: number;
 }>;
 
 /******************************************************************************/
 
 export type FiltrationCriteria = Partial<{
-  context: string;
-  identifier: string;
-  tags: string[];
-  textSearch: string;
+  productId: string;
+  shopId: string;
+  quantity: Partial<{ min: number; max: number; }>;
+  price: Partial<{ min: number; max: number; }>;
 }>;
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt";
+export type SortOptions = "createdAt" | "updatedAt" | "quantity" | "price";
 
 export interface SortCriteria {
   criteria: SortOptions;

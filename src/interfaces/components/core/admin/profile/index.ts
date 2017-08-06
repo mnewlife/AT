@@ -12,11 +12,11 @@ export interface Emitter {
 }
 
 export interface GetDetails {
-  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Admin>;
+  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Admin>;
 }
 
 export interface UpdateDetails {
-  ( userId: string, details: storageManagerInterfaces.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Admin>;
+  ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Admin>;
 }
 
 export interface ChangeEmailAddress {

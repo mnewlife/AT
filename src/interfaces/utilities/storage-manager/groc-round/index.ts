@@ -5,10 +5,11 @@ import * as appStorage from "../../../../interfaces/utilities/storage-manager/gr
 import * as price from "./price";
 import * as product from "./product";
 import * as shop from "./shop";
+import * as events from "./events";
 
 /******************************************************************************/
 
-export { price, product, shop };
+export { price, product, shop, events };
 
 /******************************************************************************/
 
@@ -16,7 +17,7 @@ export interface StorageController { }
 
 /******************************************************************************/
 
-export interface AirtimePayment extends StorageController {
+export interface Price extends StorageController {
   get: appStorage.price.Get;
   getById: appStorage.price.GetById;
 
@@ -32,7 +33,7 @@ export interface AirtimePayment extends StorageController {
 
 /******************************************************************************/
 
-export interface AirtimeTransfer extends StorageController {
+export interface Product extends StorageController {
   get: appStorage.product.Get;
   getById: appStorage.product.GetById;
 
@@ -48,7 +49,7 @@ export interface AirtimeTransfer extends StorageController {
 
 /******************************************************************************/
 
-export interface Channel extends StorageController {
+export interface Shop extends StorageController {
   get: appStorage.shop.Get;
   getById: appStorage.shop.GetById;
 

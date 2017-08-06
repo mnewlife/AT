@@ -34,17 +34,11 @@ export interface SessionManager extends MiddlewareBorn {
 }
 
 export interface StorageManager extends MiddlewareBorn {
-  readonly user: storageManager.User;
-  readonly event: storageManager.Event;
-  readonly progression: storageManager.Progression;
-  readonly notification: storageManager.Notification;
-  readonly subscription: storageManager.Subscription;
-
-  readonly amendmentRequest: storageManager.AmendmentRequest;
-  readonly customerGroup: storageManager.CustomerGroup;
-  readonly productType: storageManager.ProductType;
-  readonly product: storageManager.Product;
-  readonly order: storageManager.Order;
+  readonly call263: storageManager.Call263;
+  readonly core: storageManager.Core;
+  readonly grocRound: storageManager.GrocRound;
+  readonly powertel: storageManager.Powertel;
+  readonly routers: storageManager.Routers;
 }
 
 export interface AuthenticationManager extends MiddlewareBorn {

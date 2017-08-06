@@ -1,52 +1,59 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as interfaces from "../../../../../interfaces";
-import * as mongoDB from "../../../../../utilities/storage-manager/mongodb";
+import * as interfaces from "../../../../../../interfaces";
+import * as mongoDB from "../../../../../../utilities/storage-manager/mongodb";
 
-import { ignoreEmpty } from "../../preparation";
+import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
 export interface Model extends mongoose.Document, mongoDB.Document {
   emailAddress: string;
-  accessLevel: interfaces.datModel.core.AccessLevel;
+  accessLevel: interfaces.dataModel.core.AccessLevel;
   password: string;
   resetCode?: string;
 
   verification: Verification;
   personalDetails?: PersonalDetails;
   contactDetails?: ContactDetails;
+  residentialDetails?: ResidentialDetails;
 
   activeApps: interfaces.AppName[];
 }
 export interface Model_Partial extends Partial<Pick<Model, ModelPartial_Details_Flat>> {
-  verification?: Verification_Partial;
-  personalDetails?: PersonalDetails_Partial;
-  contactDetails?: ContactDetails_Partial;
+  verification?: Partial<Verification>;
+  personalDetails?: Partial<PersonalDetails>;
+  contactDetails?: Partial<ContactDetails>;
+  residentialDetails?: Partial<ResidentialDetails>;
 };
 type ModelPartial_Details_Flat = "emailAddress" | "accessLevel" | "password"
   | "resetCode" | "activeApps";
 
 /******************************************************************************/
 
-export interface Verification extends mongoose.Types.Subdocument, mongoDB.Document {
+export interface Verification extends mongoose.Document, mongoDB.Document {
   verified: boolean;
   verificationCode?: string;
   numVerAttempts: number;
 }
-type Verification_Partial = Partial<Verification>;
 
 export interface PersonalDetails extends mongoose.Document, mongoDB.Document {
   firstName: string;
   lastName: string;
+  dateOfBirth: Date;
+  gender: "Male" | "Female";
 }
-type PersonalDetails_Partial = Partial<PersonalDetails>;
 
 export interface ContactDetails extends mongoose.Document, mongoDB.Document {
   phoneNumbers: string[];
 }
-type ContactDetails_Partial = Partial<ContactDetails>;
+
+export interface ResidentialDetails extends mongoose.Document, mongoDB.Document {
+  country: string;
+  province: string;
+  address: string;
+}
 
 /******************************************************************************/
 
@@ -68,6 +75,8 @@ let userSchema = new mongoose.Schema( {
   personalDetails: {
     firstName: { type: String, set: ignoreEmpty },
     lastName: { type: String, set: ignoreEmpty },
+    dateOfBirth: { type: Date, default: Date.now },
+    gender: { type: String, set: ignoreEmpty },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
   },
@@ -76,6 +85,12 @@ let userSchema = new mongoose.Schema( {
     phoneNumbers: [ String ],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
+  },
+
+  residentialDetails: {
+    country: { type: String, set: ignoreEmpty },
+    province: { type: String, set: ignoreEmpty },
+    address: { type: String, set: ignoreEmpty }
   },
 
   activeApps: [ String ],

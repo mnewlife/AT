@@ -5,7 +5,7 @@ import * as interfaces from "../../../../interfaces";
 /******************************************************************************/
 
 export interface Super extends interfaces.dataModel.DataModel {
-  buyer: string;
+  buyerName: string;
   card?: {
     cardId: string;
     mdn: number;

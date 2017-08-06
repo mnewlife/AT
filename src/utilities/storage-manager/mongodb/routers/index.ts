@@ -37,7 +37,7 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 class MongodbStorage implements interfaces.utilities.StorageManager {
 
-  readonly user: storageManagerInterfaces.User;
+  readonly user: storageManagerInterfaces.core.user;
   readonly event: storageManagerInterfaces.Event;
   readonly progression: storageManagerInterfaces.Progression;
   readonly notification: storageManagerInterfaces.Notification;
@@ -55,7 +55,7 @@ class MongodbStorage implements interfaces.utilities.StorageManager {
 
   constructor( params: {
     linkToDB: string;
-    user: storageManagerInterfaces.User;
+    user: storageManagerInterfaces.core.user;
     event: storageManagerInterfaces.Event;
     progression: storageManagerInterfaces.Progression;
     notification: storageManagerInterfaces.Notification;

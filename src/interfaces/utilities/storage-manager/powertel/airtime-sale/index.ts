@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
 
 /******************************************************************************/
@@ -24,33 +24,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]>;
 }
 
 export interface UpdateById {
-  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super>;
 }
 
 /******************************************************************************/
@@ -66,34 +66,54 @@ export interface RemoveById {
 /******************************************************************************/
 
 export interface AddDetails {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+  buyerName: string;
+  card?: {
+    cardId: string;
+    mdn: number;
+  };
+  user?: interfaces.dataModel.core.UserInfo;
+  amount: number;
+  bundles?: {
+    gb: number;
+    days: number;
+  };
 }
 
 /******************************************************************************/
 
 export type UpdateDetails = Partial<{
-  context: string;
-  identifier: string;
-  tagsToAdd: string[];
-  tagsToRemove: string[];
-  data: any;
+  buyerName: string;
+  card: Partial<{
+    cardId: string;
+    mdn: number;
+  }>;
+  user: Partial<interfaces.dataModel.core.UserInfo>;
+  amount: number;
+  bundles: Partial<{
+    gb: number;
+    days: number;
+  }>;
 }>;
 
 /******************************************************************************/
 
 export type FiltrationCriteria = Partial<{
-  context: string;
-  identifier: string;
-  tags: string[];
-  textSearch: string;
+  buyerName: string;
+  card: {
+    cardId: string;
+    mdn: number;
+  };
+  user: Partial<interfaces.dataModel.core.UserInfo>;
+  amount: Partial<{ min: number; max: number; }>;
+  bundles?: {
+    gb: Partial<{ min: number; max: number; }>;
+    days: Partial<{ min: number; max: number; }>;
+  };
 }>;
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt";
+export type SortOptions = "createdAt" | "updatedAt" | "mdn" | "amount" | "gb" | "days";
 
 export interface SortCriteria {
   criteria: SortOptions;

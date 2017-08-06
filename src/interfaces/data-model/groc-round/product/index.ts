@@ -21,7 +21,7 @@ export interface PriceValues {
 };
 
 export interface PriceValue {
-  shopId: string;
+  shopId?: string;
   price: number;
 };
 

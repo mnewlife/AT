@@ -5,14 +5,13 @@ import * as interfaces from "../../../../interfaces";
 /******************************************************************************/
 
 export interface Super extends interfaces.dataModel.DataModel {
-  pin: number;
-  puk: number;
-  mdn: number;
-  owner?: {
-    registrationId: string;
-    fullName: string;
+  mdnRange?: {
+    min: number;
+    max: number;
   };
-  user?: interfaces.dataModel.core.UserInfo;
+  initialCount: number;
+  newCount: number;
+  amount: number;
 }
 
 /******************************************************************************/

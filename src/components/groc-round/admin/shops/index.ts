@@ -32,7 +32,7 @@ class Auth implements adminInterfaces.Auth {
     this.checkThrow = params.checkThrow;
   }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Admin> => {
+  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -40,7 +40,7 @@ class Auth implements adminInterfaces.Auth {
         return this.authSignIn( emailAddress, password, req );
 
       } )
-      .then(( signedInUser: interfaces.dataModel.user.Admin ) => {
+      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
 
         signedInUser.password = "";
         return Promise.resolve( signedInUser );

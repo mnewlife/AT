@@ -13,17 +13,28 @@ export interface Emitter {
 
 }
 
-/*
-get, getOne,
-add, addOne,
-update, delete */
-
 export interface Get {
-  ( filtrationCriteria: , forceThrow?: boolean ): Promise<interfaces.dataModel.user.Admin>;
+  ( filtrationCriteria: storageManagerInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.channel.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]>;
 }
 
-export interface SignOut {
-  ( req: express.Request, forceThrow?: boolean ): Promise<void>;
+export interface GetOne {
+  ( channelId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super>;
+}
+
+export interface Add {
+  ( channels: storageManagerInterfaces.call263.channel.AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]>;
+}
+
+export interface AddOne {
+  ( channel: storageManagerInterfaces.call263.channel.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super>;
+}
+
+export interface Update {
+  ( channelId: string, updates: storageManagerInterfaces.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]>;
+}
+
+export interface Remove {
+  ( channelId: string, forceThrow?: boolean ): Promise<void>;
 }
 
 /******************************************************************************/

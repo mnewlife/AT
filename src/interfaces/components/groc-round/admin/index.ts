@@ -1,58 +1,45 @@
 /******************************************************************************/
 
-import * as auth from "./auth";
-import * as profile from "./profile";
-import * as registration from "./registration";
-
-import * as admins from "./admins";
-import * as logistics from "./logistics";
-import * as salesReps from "./sales-reps";
+import * as prices from "./prices";
+import * as products from "./products";
+import * as shops from "./shops";
+import * as users from "./users";
 
 /******************************************************************************/
 
-export { admins, logistics, salesReps };
-export { auth, profile, registration };
+export { prices, products, shops, users };
 
 /******************************************************************************/
 
-export interface Admins {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface Prices {
+  readonly get: prices.Get;
+  readonly getOne: prices.GetOne;
+  readonly add: prices.Add;
+  readonly update: prices.Update;
+  readonly remove: prices.Remove;
 }
 
-export interface Logistics {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface Products {
+  readonly get: products.Get;
+  readonly getOne: products.GetOne;
+  readonly add: products.Add;
+  readonly update: products.Update;
+  readonly remove: products.Remove;
 }
 
-export interface SalesReps {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface Shops {
+  readonly get: shops.Get;
+  readonly getOne: shops.GetOne;
+  readonly makeTransfer: shops.Add;
+  readonly update: shops.Update;
+  readonly remove: shops.Remove;
 }
 
-export interface Auth {
-  readonly signIn: auth.SignIn;
-  readonly signOut: auth.SignOut;
-}
-
-export interface Profile {
-  readonly getUserDetails: profile.GetDetails;
-  readonly updateUserDetails: profile.UpdateDetails;
-  readonly changeEmailAddress: profile.ChangeEmailAddress;
-  readonly changePassword: profile.ChangePassword;
-  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
-  readonly resetPassword: profile.ResetPassword;
-  readonly deleteAccount: profile.DeleteAccount;
-}
-
-export interface Registration {
-  readonly verifyAccount: registration.VerifyAccount;
+export interface Users {
+  readonly get: users.Get;
+  readonly getOne: users.GetOne;
+  readonly remove: users.Remove;
 }
 
 /******************************************************************************/
+

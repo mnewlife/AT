@@ -11,7 +11,7 @@ export interface Emitter {
 }
 
 export interface SignIn {
-  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.SalesRep>;
+  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.SalesRep>;
 }
 
 export interface SignOut {

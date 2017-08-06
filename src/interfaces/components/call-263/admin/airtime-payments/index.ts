@@ -3,7 +3,9 @@
 import * as express from "express";
 
 import * as interfaces from "../../../../../interfaces";
+import * as authenticationManagerInterfaces from "../../../../../interfaces/utilities/authentication-manager";
 import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 /******************************************************************************/
 
@@ -11,32 +13,24 @@ export interface Emitter {
 
 }
 
-export interface GetDetails {
-  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Admin>;
+export interface Get {
+  ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]>;
 }
 
-export interface UpdateDetails {
-  ( userId: string, details: storageManagerInterfaces.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Admin>;
+export interface GetOne {
+  ( airtimePaymentId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super>;
 }
 
-export interface ChangeEmailAddress {
-  ( userId: string, password: string, newEmailAddress: string, req: express.Request, forceThrow?: boolean ): Promise<void>;
+export interface Add {
+  ( airtimePayment: storageManagerInterfaces.call263.airtimePayment.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super>;
 }
 
-export interface ChangePassword {
-  ( userId: string, oldPassword: string, newPassword: string, forceThrow?: boolean ): Promise<void>;
+export interface Update {
+  ( airtimePaymentId: string, updates: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]>;
 }
 
-export interface RequestPasswordResetCode {
-  ( userId: string, forceThrow?: boolean ): Promise<void>;
-}
-
-export interface ResetPassword {
-  ( userId: string, resetCode: string, forceThrow?: boolean ): Promise<void>;
-}
-
-export interface DeleteAccount {
-  ( userId: string, password: string, forceThrow?: boolean ): Promise<void>;
+export interface Remove {
+  ( airtimePaymentId: string, forceThrow?: boolean ): Promise<void>;
 }
 
 /******************************************************************************/

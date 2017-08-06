@@ -5,14 +5,14 @@ import * as interfaces from "../../../../interfaces";
 
 /******************************************************************************/
 
-interface BaseEvent extends interfaces.dataModel.Happening {
+export interface BaseEvent extends interfaces.dataModel.Happening {
   context: "SessionManager";
 }
 
 /******************************************************************************/
 
 export interface SetCurrentUserData {
-  user: interfaces.dataModel.user.Super,
+  user: interfaces.dataModel.core.user.Super,
   req: express.Request
 };
 export interface SetCurrentUser extends BaseEvent {
@@ -23,7 +23,7 @@ export interface SetCurrentUser extends BaseEvent {
 /******************************************************************************/
 
 export interface SetCurrentUserFailedData {
-  user: interfaces.dataModel.user.Super,
+  user: interfaces.dataModel.core.user.Super,
   req: express.Request,
   reason: any
 };

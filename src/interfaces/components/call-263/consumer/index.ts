@@ -1,39 +1,30 @@
 /******************************************************************************/
 
-import * as auth from "./auth";
-import * as profile from "./profile";
-import * as registration from "./registration";
+import * as channel from "./channel";
+import * as airtimePayments from "./airtime-payments";
+import * as airtimeTransfers from "./airtime-transfers";
 
 /******************************************************************************/
 
-export { auth, profile, registration };
+export { channel, airtimePayments, airtimeTransfers };
 
 /******************************************************************************/
 
-export interface Params {
-  auth: Auth;
-  profile: Profile;
-  registration : Registration;
+export interface Channel {
+  readonly get: channel.GetDetails;
+  readonly getOne: channel.GetBalances;
 }
 
-export interface Auth {
-  readonly signIn: auth.SignIn;
-  readonly signOut: auth.SignOut;
+export interface AirtimePayments {
+  readonly get: airtimePayments.Get;
+  readonly getOne: airtimePayments.GetOne;
+  readonly makePayment: airtimePayments.MakePayment;
+  readonly recordPayment: airtimePayments.RecordPayment;
 }
 
-export interface Profile {
-  readonly getUserDetails: profile.GetDetails;
-  readonly updateUserDetails: profile.UpdateDetails;
-  readonly changeEmailAddress: profile.ChangeEmailAddress;
-  readonly changePassword: profile.ChangePassword;
-  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
-  readonly resetPassword: profile.ResetPassword;
-  readonly deleteAccount: profile.DeleteAccount;
-
-}
-
-export interface Registration {
-  readonly verifyAccount: registration.VerifyAccount;
+export interface AirtimeTransfers {
+  readonly get: airtimeTransfers.Get;
+  readonly getOne: airtimeTransfers.GetOne;
 }
 
 /******************************************************************************/

@@ -10,15 +10,15 @@ export interface Emitter {
 }
 
 export interface GetDetails {
-  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.SalesRep>;
+  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Consumer>;
 }
 
 export interface UpdateDetails {
-  ( userId: string, details: storageManagerInterfaces.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.user.SalesRep>;
+  ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Consumer>;
 }
 
 export interface ChangeEmailAddress {
-  ( userId: string, password: string, newEmailAddress: string, forceThrow?: boolean ): Promise<interfaces.dataModel.user.SalesRep>;
+  ( userId: string, password: string, newEmailAddress: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Consumer>;
 }
 
 export interface ChangePassword {

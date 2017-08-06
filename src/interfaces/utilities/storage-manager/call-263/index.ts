@@ -5,10 +5,11 @@ import * as appStorage from "../../../../interfaces/utilities/storage-manager/ca
 import * as airtimePayment from "./airtime-payment";
 import * as airtimeTransfer from "./airtime-transfer";
 import * as channel from "./channel";
+import * as events from "./events";
 
 /******************************************************************************/
 
-export { airtimePayment, airtimeTransfer, channel };
+export { airtimePayment, airtimeTransfer, channel, events };
 
 /******************************************************************************/
 

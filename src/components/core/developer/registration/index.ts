@@ -20,7 +20,7 @@ import emitterFactory from "./event-emitter";
 class Registration implements coreInterfaces.admin.Registration {
 
   private readonly emitter: coreInterfaces.admin.registration.Emitter;
-  private readonly storeNewUser: storageManagerInterfaces.user.Add;
+  private readonly storeNewUser: storageManagerInterfaces.core.user.Add;
   private readonly generateVerificationCode: coreInterfaces.sharedCode.verification.GenerateCode;
   private readonly verifyAccountLogic: coreInterfaces.sharedCode.verification.VerifyAccount;
   private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -96,7 +96,7 @@ class Registration implements coreInterfaces.admin.Registration {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  storeNewUser: storageManagerInterfaces.user.Add,
+  storeNewUser: storageManagerInterfaces.core.user.Add,
   checkThrow: sharedLogicInterfaces.moders.CheckThrow,
   getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
   sharedCode: coreInterfaces.SharedCode

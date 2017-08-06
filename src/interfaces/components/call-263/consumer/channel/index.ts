@@ -3,6 +3,9 @@
 import * as express from "express";
 
 import * as interfaces from "../../../../../interfaces";
+import * as authenticationManagerInterfaces from "../../../../../interfaces/utilities/authentication-manager";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 /******************************************************************************/
 
@@ -10,12 +13,12 @@ export interface Emitter {
 
 }
 
-export interface SignIn {
-  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.SalesRep>;
+export interface GetDetails {
+  ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]>;
 }
 
-export interface SignOut {
-  ( req: express.Request, forceThrow?: boolean ): Promise<void>;
+export interface GetBalances {
+  ( airtimeTransferId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super>;
 }
 
 /******************************************************************************/

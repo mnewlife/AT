@@ -10,12 +10,6 @@ export { auth, profile, registration };
 
 /******************************************************************************/
 
-export interface Params {
-  auth: Auth;
-  profile: Profile;
-  registration : Registration;
-}
-
 export interface Auth {
   readonly signIn: auth.SignIn;
   readonly signOut: auth.SignOut;
@@ -29,7 +23,6 @@ export interface Profile {
   readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
   readonly resetPassword: profile.ResetPassword;
   readonly deleteAccount: profile.DeleteAccount;
-
 }
 
 export interface Registration {

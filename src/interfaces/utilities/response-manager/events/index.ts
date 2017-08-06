@@ -5,7 +5,7 @@ import * as interfaces from "../../../../interfaces";
 
 /******************************************************************************/
 
-interface BaseEvent extends interfaces.dataModel.Happening {
+export interface BaseEvent extends interfaces.dataModel.Happening {
   context: "ResponseManager";
 }
 

@@ -7,11 +7,12 @@ import * as card from "./card";
 import * as cardSale from "./card-sale";
 import * as newAirtimeStock from "./new-airtime-stock";
 import * as newCardStock from "./new-card-stock";
-import * as registration from "./registration";
+import * as airtime from "./airtime";
+import * as events from "./events";
 
 /******************************************************************************/
 
-export { airtimeSale, card, cardSale, newAirtimeStock, newCardStock, registration };
+export { airtimeSale, card, cardSale, newAirtimeStock, newCardStock, airtime, events };
 
 /******************************************************************************/
 
@@ -99,18 +100,18 @@ export interface NewCardStock extends StorageController {
 
 /******************************************************************************/
 
-export interface Registration extends StorageController {
-  get: appStorage.registration.Get;
-  getById: appStorage.registration.GetById;
+export interface Airtime extends StorageController {
+  get: appStorage.airtime.Get;
+  getById: appStorage.airtime.GetById;
 
-  add: appStorage.registration.Add;
-  addBatch: appStorage.registration.AddBatch;
+  add: appStorage.airtime.Add;
+  addBatch: appStorage.airtime.AddBatch;
 
-  update: appStorage.registration.Update;
-  updateById: appStorage.registration.UpdateById;
+  update: appStorage.airtime.Update;
+  updateById: appStorage.airtime.UpdateById;
 
-  remove: appStorage.registration.Remove;
-  removeById: appStorage.registration.RemoveById;
+  remove: appStorage.airtime.Remove;
+  removeById: appStorage.airtime.RemoveById;
 };
 
 /******************************************************************************/

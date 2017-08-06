@@ -1,58 +1,64 @@
 /******************************************************************************/
 
-import * as auth from "./auth";
-import * as profile from "./profile";
-import * as registration from "./registration";
-
-import * as admins from "./admins";
-import * as logistics from "./logistics";
-import * as salesReps from "./sales-reps";
-
-/******************************************************************************/
-
-export { admins, logistics, salesReps };
-export { auth, profile, registration };
+import * as airtime from "./airtime";
+import * as airtimeSales from "./airtime-sales";
+import * as cardSales from "./card-sales";
+import * as cards from "./airtime";
+import * as newAirtimeStock from "./new-airtime-stock";
+import * as newCardStock from "./new-card-stock";
 
 /******************************************************************************/
 
-export interface Admins {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export { airtime, airtimeSales, cardSales, cards, newAirtimeStock, newCardStock };
+
+/******************************************************************************/
+
+export interface Airtime {
+  readonly get: airtime.Get;
+  readonly getOne: airtime.GetOne;
+  readonly add: airtime.Add;
+  readonly update: airtime.Update;
+  readonly remove: airtime.Remove;
 }
 
-export interface Logistics {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface AirtimeSales {
+  readonly get: airtimeSales.Get;
+  readonly getOne: airtimeSales.GetOne;
+  readonly add: airtimeSales.Add;
+  readonly update: airtimeSales.Update;
+  readonly remove: airtimeSales.Remove;
 }
 
-export interface SalesReps {
-  readonly get: admins.Get;
-  readonly getOne: admins.GetOne;
-  readonly add: admins.Add;
-  readonly remove: admins.Remove;
+export interface CardSales {
+  readonly get: cardSales.Get;
+  readonly getOne: cardSales.GetOne;
+  readonly makeTransfer: cardSales.Add;
+  readonly update: cardSales.Update;
+  readonly remove: cardSales.Remove;
 }
 
-export interface Auth {
-  readonly signIn: auth.SignIn;
-  readonly signOut: auth.SignOut;
+export interface Cards {
+  readonly get: cards.Get;
+  readonly getOne: cards.GetOne;
+  readonly add: cards.Add;
+  readonly update: cards.Update;
+  readonly remove: cards.Remove;
 }
 
-export interface Profile {
-  readonly getUserDetails: profile.GetDetails;
-  readonly updateUserDetails: profile.UpdateDetails;
-  readonly changeEmailAddress: profile.ChangeEmailAddress;
-  readonly changePassword: profile.ChangePassword;
-  readonly requestPasswordResetCode: profile.RequestPasswordResetCode;
-  readonly resetPassword: profile.ResetPassword;
-  readonly deleteAccount: profile.DeleteAccount;
+export interface NewAirtimeStock {
+  readonly get: newAirtimeStock.Get;
+  readonly getOne: newAirtimeStock.GetOne;
+  readonly add: newAirtimeStock.Add;
+  readonly update: newAirtimeStock.Update;
+  readonly remove: newAirtimeStock.Remove;
 }
 
-export interface Registration {
-  readonly verifyAccount: registration.VerifyAccount;
+export interface NewCardStock {
+  readonly get: newCardStock.Get;
+  readonly getOne: newCardStock.GetOne;
+  readonly add: newCardStock.Add;
+  readonly update: newCardStock.Update;
+  readonly remove: newCardStock.Remove;
 }
 
 /******************************************************************************/

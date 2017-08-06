@@ -86,9 +86,9 @@ describe( "User ADD", function (): void {
       },
       activeApps: [ "Core" ]
     } )
-      .then(( user: interfaces.dataModel.user.Super ) => {
+      .then(( user: interfaces.dataModel.core.user.Super ) => {
 
-        expect( user ).to.satisfy(( user: interfaces.dataModel.user.Super ) => {
+        expect( user ).to.satisfy(( user: interfaces.dataModel.core.user.Super ) => {
 
           if ( !user || !user.id ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -138,7 +138,7 @@ describe( "User ADD", function (): void {
       },
       activeApps: [ "Core" ]
     } )
-      .then(( user: interfaces.dataModel.user.Super ) => {
+      .then(( user: interfaces.dataModel.core.user.Super ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 

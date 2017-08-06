@@ -10,12 +10,7 @@ export { developer, admin, consumer };
 
 /******************************************************************************/
 
-export interface Developer {
-  readonly registration: developer.Registration;
-  readonly auth: developer.Auth;
-  readonly profile: developer.Profile;
-  readonly admins: developer.Admins;
-}
+export interface Developer { }
 
 export interface Admin {
   readonly channels: admin.Channels;
@@ -23,10 +18,10 @@ export interface Admin {
   readonly airtimeTransfers: admin.AirtimeTransfers;
 }
 
-export interface SalesRep {
-  readonly registration: consumer.Registration;
-  readonly auth: consumer.Auth;
-  readonly profile: consumer.Profile;
+export interface Consumer {
+  readonly channel: consumer.Channel;
+  readonly airtimePayments: consumer.AirtimePayments;
+  readonly airtimeTransfers: consumer.AirtimeTransfers;
 }
 
 /******************************************************************************/

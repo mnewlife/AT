@@ -54,7 +54,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
   /*****************************************************************/
 
-  readonly setCurrentUser = ( user: interfaces.dataModel.user.Super, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly setCurrentUser = ( user: interfaces.dataModel.core.user.Super, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -129,7 +129,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
   }
 
-  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {

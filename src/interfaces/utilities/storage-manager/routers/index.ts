@@ -2,16 +2,34 @@
 
 import * as appStorage from "../../../../interfaces/utilities/storage-manager/routers";
 
+import * as amounts from "./amounts";
 import * as newRouterStock from "./new-router-stock";
 import * as sale from "./sale";
+import * as events from "./events";
 
 /******************************************************************************/
 
-export { newRouterStock, sale };
+export { amounts, newRouterStock, sale, events };
 
 /******************************************************************************/
 
 export interface StorageController { }
+
+/******************************************************************************/
+
+export interface Amounts extends StorageController {
+  get: appStorage.amounts.Get;
+  getById: appStorage.amounts.GetById;
+
+  add: appStorage.amounts.Add;
+  addBatch: appStorage.amounts.AddBatch;
+
+  update: appStorage.amounts.Update;
+  updateById: appStorage.amounts.UpdateById;
+
+  remove: appStorage.amounts.Remove;
+  removeById: appStorage.amounts.RemoveById;
+};
 
 /******************************************************************************/
 

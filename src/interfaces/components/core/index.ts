@@ -2,41 +2,30 @@
 
 import * as developer from "./developer";
 import * as admin from "./admin";
-import * as logistics from "./logistics";
-import * as salesRep from "./sales-rep";
+import * as consumer from "./consumer";
 
 /******************************************************************************/
 
-export { developer, admin, logistics, salesRep };
+export { developer, admin, consumer };
 
 /******************************************************************************/
 
 export interface Developer {
-  readonly registration: developer.Registration;
   readonly auth: developer.Auth;
   readonly profile: developer.Profile;
-  readonly admins: developer.Admins;
+  readonly registration: developer.Registration;
 }
 
 export interface Admin {
-  readonly registration: admin.Registration;
   readonly auth: admin.Auth;
   readonly profile: admin.Profile;
-  readonly admins: admin.Admins;
-  readonly logistics: admin.Logistics;
-  readonly salesRep: admin.SalesReps;
+  readonly registration: admin.Registration;
 }
 
-export interface Logistics {
-  readonly registration: logistics.Registration;
-  readonly auth: logistics.Auth;
-  readonly profile: logistics.Profile;
-}
-
-export interface SalesRep {
-  readonly registration: salesRep.Registration;
-  readonly auth: salesRep.Auth;
-  readonly profile: salesRep.Profile;
+export interface Consumer {
+  readonly auth: consumer.Auth;
+  readonly profile: consumer.Profile;
+  readonly registration: consumer.Registration;
 }
 
 /******************************************************************************/

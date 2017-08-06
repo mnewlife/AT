@@ -4,10 +4,11 @@ import * as appStorage from "../../../../interfaces/utilities/storage-manager/co
 
 import * as user from "./user";
 import * as event from "./event";
+import * as events from "./events";
 
 /******************************************************************************/
 
-export { user, event };
+export { user, event, events };
 
 /******************************************************************************/
 

@@ -5,14 +5,14 @@ import * as interfaces from "../../../../interfaces";
 
 /******************************************************************************/
 
-interface BaseEvent extends interfaces.dataModel.Happening {
+export interface BaseEvent extends interfaces.dataModel.Happening {
   context: "AuthenticationManager";
 }
 
 /******************************************************************************/
 
 export interface SignedInData {
-  user: interfaces.dataModel.user.Super;
+  user: interfaces.dataModel.core.user.Super;
 }
 export interface SignedIn extends BaseEvent {
   identifier: "SignedIn";

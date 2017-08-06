@@ -24,11 +24,11 @@ export interface Params {
 }
 
 export interface SetCurrentUser {
-  ( signedInUser: interfaces.dataModel.user.Super, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
+  ( signedInUser: interfaces.dataModel.core.user.Super, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface GetCurrentUser {
-  ( req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Super>;
+  ( req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface SignOut {

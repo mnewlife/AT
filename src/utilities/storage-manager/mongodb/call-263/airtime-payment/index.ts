@@ -2,10 +2,10 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../mongo-controller";
+import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, UserMongooseModel } from "./model";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
@@ -13,18 +13,18 @@ import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.User {
+class MongoUser extends MongoController implements storageManagerInterfaces.core.user {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.user.Emitter;
+    emitter: storageManagerInterfaces.core.user.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,9 +69,9 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
         return this.convertToAbstract( foundUsers );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
 
-        new Promise<interfaces.dataModel.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
@@ -111,7 +111,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,7 +124,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
         return this.convertToAbstract( [ foundUser ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
@@ -167,7 +167,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.user.Super[]> => {
+  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -215,7 +215,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
         return this.convertToAbstract( addedUsers );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
@@ -250,7 +250,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -297,7 +297,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
         return this.convertToAbstract( [ addedUser ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
@@ -332,7 +332,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.user.FiltrationCriteria, details: storageManagerInterfaces.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -371,7 +371,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
         return this.convertToAbstract( updatedUsers );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
@@ -408,7 +408,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     let userObjectId: mongoose.Types.ObjectId;
 
@@ -441,7 +441,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
         return this.convertToAbstract( [ updatedUser ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
@@ -478,7 +478,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -571,7 +571,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
@@ -625,7 +625,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
@@ -644,7 +644,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
@@ -759,18 +759,18 @@ class MongoUser extends MongoController implements storageManagerInterfaces.User
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.user.Super[]> => {
+  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.user.Super[] = [];
+          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
 
           users.forEach(( user ) => {
 
-            let returnUser: interfaces.dataModel.user.Super = {
+            let returnUser: interfaces.dataModel.core.user.Super = {
               id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
               emailAddress: user.emailAddress,
               accessLevel: user.accessLevel,
@@ -848,7 +848,7 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.User => {
+} ): storageManagerInterfaces.core.user => {
   return new MongoUser( {
     emitter: emitterFactory( params.emitEvent ),
     Model: UserMongooseModel,

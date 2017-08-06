@@ -26,7 +26,7 @@ describe( "User REMOVE" , function () : void {
 
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
-  let testInstances : interfaces.dataModel.User[] = [];
+  let testInstances : interfaces.dataModel.core.user[] = [];
 
   let dataStructures : interfaces.utilities.sharedLogic.DataStructures;
   let storageUser : interfaces.utilities.storageManager.StorageUser;

@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
 
 /******************************************************************************/
@@ -24,33 +24,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( newRouterStockId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]>;
 }
 
 export interface UpdateById {
-  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( newRouterStockId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super>;
 }
 
 /******************************************************************************/
@@ -60,40 +60,39 @@ export interface Remove {
 }
 
 export interface RemoveById {
-  ( eventId: string, forceThrow?: boolean ): Promise<void>;
+  ( newRouterStockId: string, forceThrow?: boolean ): Promise<void>;
 }
 
 /******************************************************************************/
 
 export interface AddDetails {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+  type: string;
+  initialCount: number;
+  newCount: number;
+  amount: number;
 }
 
 /******************************************************************************/
 
 export type UpdateDetails = Partial<{
-  context: string;
-  identifier: string;
-  tagsToAdd: string[];
-  tagsToRemove: string[];
-  data: any;
+  type: string;
+  initialCount: number;
+  newCount: number;
+  amount: number;
 }>;
 
 /******************************************************************************/
 
 export type FiltrationCriteria = Partial<{
-  context: string;
-  identifier: string;
-  tags: string[];
-  textSearch: string;
+  type: string;
+  initialCount: Partial<{ min: number; max: number; }>;
+  newCount: Partial<{ min: number; max: number; }>;
+  amount: Partial<{ min: number; max: number; }>;
 }>;
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt";
+export type SortOptions = "createdAt" | "updatedAt" | "initialCount" | "newCount" | "amount";
 
 export interface SortCriteria {
   criteria: SortOptions;

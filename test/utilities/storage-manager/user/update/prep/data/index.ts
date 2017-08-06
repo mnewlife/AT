@@ -7,7 +7,7 @@ import * as interfaces from "../../../../../../../src/interfaces/index";
 
 /******************************************************************************/
 
-export default () : interfaces.dataModel.User[] => {
+export default () : interfaces.dataModel.core.user[] => {
 
   let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
   let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";

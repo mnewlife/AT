@@ -23,8 +23,8 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
   private readonly emitter: authenticationManagerInterfaces.Emitter;
 
-  private readonly getUserFromStorage: storageManagerInterfaces.user.Get;
-  private readonly getUserByIdFromStorage: storageManagerInterfaces.user.GetById;
+  private readonly getUserFromStorage: storageManagerInterfaces.core.user.Get;
+  private readonly getUserByIdFromStorage: storageManagerInterfaces.core.user.GetById;
 
   private readonly setCurrentUserInSession: sessionManagerInterfaces.SetCurrentUser;
   private readonly getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
@@ -56,7 +56,7 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
   /*****************************************************************/
 
-  readonly signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -66,7 +66,7 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
         }, null, null );
 
       } )
-      .then(( foundUsers: interfaces.dataModel.user.Super[] ) => {
+      .then(( foundUsers: interfaces.dataModel.core.user.Super[] ) => {
 
         return new Promise<any>(( resolve, reject ) => {
 
@@ -93,15 +93,15 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
         } );
 
       } )
-      .then(( authenticUser: interfaces.dataModel.user.Super ) => {
+      .then(( authenticUser: interfaces.dataModel.core.user.Super ) => {
 
         return this.setCurrentUserInSession( authenticUser, req )
-          .then(( sessionedUser: interfaces.dataModel.user.Super ) => {
+          .then(( sessionedUser: interfaces.dataModel.core.user.Super ) => {
             return Promise.resolve( sessionedUser );
           } );
 
       } )
-      .then(( signedInUser: interfaces.dataModel.user.Super ) => {
+      .then(( signedInUser: interfaces.dataModel.core.user.Super ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.signedIn( {
@@ -183,13 +183,13 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
   /*****************************************************************/
 
-  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.user.Super> => {
+  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
         return this.getCurrentUserFromSession( req );
       } )
-      .then(( currentUser: interfaces.dataModel.user.Super ) => {
+      .then(( currentUser: interfaces.dataModel.core.user.Super ) => {
         return Promise.resolve( currentUser );
       } )
       .catch(( reason: any ) => {
@@ -227,7 +227,7 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
       .then(( response: any ) => {
         return this.getUserByIdFromStorage( userId );
       } )
-      .then(( foundUser: interfaces.dataModel.user.Super ) => {
+      .then(( foundUser: interfaces.dataModel.core.user.Super ) => {
 
         return new Promise<void>(( resolve, reject ) => {
 
@@ -325,8 +325,8 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
 export default ( params: {
   emit: eventManagerInterfaces.Emit;
-  getUserFromStorage: storageManagerInterfaces.user.Get;
-  getUserByIdFromStorage: storageManagerInterfaces.user.GetById,
+  getUserFromStorage: storageManagerInterfaces.core.user.Get;
+  getUserByIdFromStorage: storageManagerInterfaces.core.user.GetById,
   setCurrentUserInSession: sessionManagerInterfaces.SetCurrentUser;
   getCurrentUserFromSession: sessionManagerInterfaces.GetCurrentUser;
   signOutOfSession: sessionManagerInterfaces.SignOut;

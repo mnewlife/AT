@@ -11,8 +11,8 @@ export interface Emitter {
 
 }
 
-export interface AddDeveloper {
-  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.user.Developer>;
+export interface AddAdmin {
+  ( emailAddress: string, password: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Admin>;
 }
 
 export interface VerifyAccount {

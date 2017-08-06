@@ -2,83 +2,57 @@
 
 import * as interfaces from "../../../../interfaces";
 
-import * as user from "../user";
-import * as event from "../event";
-import * as progression from "../progression";
-import * as notification from "../notification";
-import * as subscription from "../subscription";
-
-import * as customerGroup from "../customer-group";
-import * as productType from "../product-type";
-import * as product from "../product";
-import * as amendmentRequest from "../amendment-request";
-import * as order from "../order";
+import * as call263 from "../call-263";
+import * as core from "../core";
+import * as grocRound from "../groc-round";
+import * as powertel from "../powertel";
+import * as routers from "../routers";
 
 /******************************************************************************/
 
-interface BaseEvent extends interfaces.dataModel.Happening {
-  context: "User" | "Event" | "Progression" | "Notification" | "Subscription" |
-  "CustomerGroup" | "ProductType" | "Product" | "AmendmentRequest" | "Order";
+export interface BaseEvent extends interfaces.dataModel.Happening {
+  context: call263.events.BaseEvent[ "context" ] | core.events.BaseEvent[ "context" ]
+  | grocRound.events.BaseEvent[ "context" ] | powertel.events.BaseEvent[ "context" ]
+  | routers.events.BaseEvent[ "context" ];
 }
 
 /******************************************************************************/
 
-export type FiltrationCriteriaRange = user.FiltrationCriteria | amendmentRequest.FiltrationCriteria
-  | customerGroup.FiltrationCriteria | productType.FiltrationCriteria
-  | product.FiltrationCriteria | order.FiltrationCriteria
-
-  | event.FiltrationCriteria | progression.FiltrationCriteria
-  | notification.FiltrationCriteria | subscription.FiltrationCriteria;
+export type FiltrationCriteriaRange = call263.events.FiltrationCriteriaRange
+  | core.events.FiltrationCriteriaRange | grocRound.events.FiltrationCriteriaRange
+  | powertel.events.FiltrationCriteriaRange | routers.events.FiltrationCriteriaRange;
 
 /******************************************************************************/
 
-export type AddDetailsRange = user.AddDetails | amendmentRequest.AddDetails
-  | customerGroup.AddDetails | productType.AddDetails
-  | product.AddDetails | order.AddDetails
+export type AddDetailsRange = call263.events.AddDetailsRange
+| core.events.AddDetailsRange | grocRound.events.AddDetailsRange
+| powertel.events.AddDetailsRange | routers.events.AddDetailsRange;
 
-  | event.AddDetails | progression.AddDetails
-  | notification.AddDetails | subscription.AddDetails;
-
-export type AddDetailsArrayRange = user.AddDetails[] | amendmentRequest.AddDetails[]
-  | customerGroup.AddDetails[] | productType.AddDetails[]
-  | product.AddDetails[] | order.AddDetails[]
-
-  | event.AddDetails[] | progression.AddDetails[]
-  | notification.AddDetails[] | subscription.AddDetails[];
+export type AddDetailsArrayRange = call263.events.AddDetailsArrayRange
+| core.events.AddDetailsArrayRange | grocRound.events.AddDetailsArrayRange
+| powertel.events.AddDetailsArrayRange | routers.events.AddDetailsArrayRange;
 
 /******************************************************************************/
 
-export type UpdateDetailsRange = user.UpdateDetails | amendmentRequest.UpdateDetails
-  | customerGroup.UpdateDetails | productType.UpdateDetails
-  | product.UpdateDetails | order.UpdateDetails
+export type UpdateDetailsRange = call263.events.UpdateDetailsRange
+| core.events.UpdateDetailsRange | grocRound.events.UpdateDetailsRange
+| powertel.events.UpdateDetailsRange | routers.events.UpdateDetailsRange;
 
-  | event.UpdateDetails | progression.UpdateDetails
-  | notification.UpdateDetails | subscription.UpdateDetails;
-
-export type UpdateDetailsArrayRange = user.UpdateDetails[] | amendmentRequest.UpdateDetails[]
-  | customerGroup.UpdateDetails[] | productType.UpdateDetails[]
-  | product.UpdateDetails[] | order.UpdateDetails[]
-
-  | event.UpdateDetails[] | progression.UpdateDetails[]
-  | notification.UpdateDetails[] | subscription.UpdateDetails[];
+export type UpdateDetailsArrayRange = call263.events.UpdateDetailsArrayRange
+| core.events.UpdateDetailsArrayRange | grocRound.events.UpdateDetailsArrayRange
+| powertel.events.UpdateDetailsArrayRange | routers.events.UpdateDetailsArrayRange;
 
 /******************************************************************************/
 
-export type SortOptionsRange = user.SortOptions | amendmentRequest.SortOptions
-  | customerGroup.SortOptions | productType.SortOptions
-  | product.SortOptions | order.SortOptions
-
-  | event.SortOptions | progression.SortOptions
-  | notification.SortOptions | subscription.SortOptions;
+export type SortOptionsRange = call263.events.SortOptionsRange
+| core.events.SortOptionsRange | grocRound.events.SortOptionsRange
+| powertel.events.SortOptionsRange | routers.events.SortOptionsRange;
 
 /******************************************************************************/
 
-export type SortCriteriaRange = user.SortCriteria | amendmentRequest.SortCriteria
-  | customerGroup.SortCriteria | productType.SortCriteria
-  | product.SortCriteria | order.SortCriteria
-
-  | event.SortCriteria | progression.SortCriteria
-  | notification.SortCriteria | subscription.SortCriteria;
+export type SortCriteriaRange = call263.events.SortCriteriaRange
+| core.events.SortCriteriaRange | grocRound.events.SortCriteriaRange
+| powertel.events.SortCriteriaRange | routers.events.SortCriteriaRange;
 
 /******************************************************************************/
 
@@ -140,7 +114,7 @@ export interface Added extends BaseEvent {
 /******************************************************************************/
 
 export interface AddFailedData {
-  details: AddDetailsArrayRange;
+  details: AddDetailsRange;
   reason: any
 };
 export interface AddFailed extends BaseEvent {
