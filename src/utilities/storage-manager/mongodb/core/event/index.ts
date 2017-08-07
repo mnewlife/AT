@@ -2,29 +2,29 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../mongo-controller";
+import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, EventMongooseModel } from "./model";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
+import * as interfaces from "../../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoEvent extends MongoController implements storageManagerInterfaces.Event {
+class MongoEvent extends MongoController implements storageManagerInterfaces.core.Event {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.event.Emitter;
+  protected readonly emitter: storageManagerInterfaces.core.event.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.event.Emitter;
+    emitter: storageManagerInterfaces.core.event.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.event.FiltrationCriteria, sortCriteria: storageManagerInterfaces.event.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.event.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.event.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.event.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.event.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,9 +69,9 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
         return this.convertToAbstract( foundEvents );
 
       } )
-      .then(( convertedEvents: interfaces.dataModel.event.Super[] ) => {
+      .then(( convertedEvents: interfaces.dataModel.core.event.Super[] ) => {
 
-        new Promise<interfaces.dataModel.event.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.core.event.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
@@ -111,7 +111,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.event.Super> => {
+  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.event.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,7 +124,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
         return this.convertToAbstract( [ foundEvent ] );
 
       } )
-      .then(( convertedEvents: interfaces.dataModel.event.Super[] ) => {
+      .then(( convertedEvents: interfaces.dataModel.core.event.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
@@ -167,7 +167,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly addBatch = ( events: storageManagerInterfaces.event.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.event.Super[]> => {
+  readonly addBatch = ( events: storageManagerInterfaces.core.event.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.event.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -188,7 +188,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
         return this.convertToAbstract( addedEvents );
 
       } )
-      .then(( convertedEvents: interfaces.dataModel.event.Super[] ) => {
+      .then(( convertedEvents: interfaces.dataModel.core.event.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
@@ -223,7 +223,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.event.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.event.Super> => {
+  readonly add = ( details: storageManagerInterfaces.core.event.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.event.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -243,7 +243,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
         return this.convertToAbstract( [ addedEvent ] );
 
       } )
-      .then(( convertedEvents: interfaces.dataModel.event.Super[] ) => {
+      .then(( convertedEvents: interfaces.dataModel.core.event.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
@@ -278,7 +278,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.event.FiltrationCriteria, details: storageManagerInterfaces.event.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.event.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.event.FiltrationCriteria, details: storageManagerInterfaces.core.event.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.event.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -317,7 +317,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
         return this.convertToAbstract( updatedEvents );
 
       } )
-      .then(( updatedEvents: interfaces.dataModel.event.Super[] ) => {
+      .then(( updatedEvents: interfaces.dataModel.core.event.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
@@ -354,7 +354,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.event.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.event.Super> => {
+  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.event.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.event.Super> => {
 
     let userObjectId: mongoose.Types.ObjectId;
 
@@ -387,7 +387,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
         return this.convertToAbstract( [ updatedEvent ] );
 
       } )
-      .then(( convertedEvents: interfaces.dataModel.event.Super[] ) => {
+      .then(( convertedEvents: interfaces.dataModel.core.event.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
@@ -424,7 +424,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.event.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.event.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -517,7 +517,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.event.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.event.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
@@ -547,7 +547,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.event.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.event.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
@@ -562,7 +562,7 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.event.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.event.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
@@ -605,18 +605,18 @@ class MongoEvent extends MongoController implements storageManagerInterfaces.Eve
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( events: Model[], forceThrow = false ): Promise<interfaces.dataModel.event.Super[]> => {
+  private readonly convertToAbstract = ( events: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.event.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.event.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.core.event.Super[]>(( resolve, reject ) => {
 
-          let returnEvents: interfaces.dataModel.event.Super[] = [];
+          let returnEvents: interfaces.dataModel.core.event.Super[] = [];
 
           events.forEach(( event ) => {
 
-            let returnEvent: interfaces.dataModel.event.Super = {
+            let returnEvent: interfaces.dataModel.core.event.Super = {
               id: ( <mongoose.Types.ObjectId>event._id ).toHexString(),
               context: event.context,
               identifier: event.identifier,
@@ -657,7 +657,7 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.Event => {
+} ): storageManagerInterfaces.core.Event => {
   return new MongoEvent( {
     emitter: emitterFactory( params.emitEvent ),
     Model: EventMongooseModel,

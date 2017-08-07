@@ -45,7 +45,7 @@ export interface GetByIdFailed extends storageManagerEvents.GetByIdFailed {
 /******************************************************************************/
 
 export interface AddedData extends storageManagerEvents.AddedData {
-  documents: interfaces.dataModel.event.Super[];
+  documents: interfaces.dataModel.core.event.Super[];
 }
 export interface Added extends storageManagerEvents.Added {
   context: context;
@@ -63,7 +63,7 @@ export interface AddFailed extends storageManagerEvents.AddFailed {
 /******************************************************************************/
 
 export interface UpdatedData extends storageManagerEvents.UpdatedData {
-  documents: interfaces.dataModel.event.Super[];
+  documents: interfaces.dataModel.core.event.Super[];
 }
 export interface Updated extends storageManagerEvents.Updated {
   context: context;

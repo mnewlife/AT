@@ -780,14 +780,23 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
       }
 
       if ( details.residentialDetails ) {
-        if ( details.residentialDetails.country ) {
-          document.residentialDetails.country = details.residentialDetails.country;
-        }
-        if ( details.residentialDetails.province ) {
-          document.residentialDetails.province = details.residentialDetails.province;
-        }
-        if ( details.residentialDetails.address ) {
-          document.residentialDetails.address = details.residentialDetails.address;
+        if ( details.residentialDetails.country || details.residentialDetails.province || details.residentialDetails.address ) {
+          if ( !document.residentialDetails ) {
+            document.residentialDetails = <any>{
+              country: "",
+              province: "",
+              address: ""
+            };
+          }
+          if ( details.residentialDetails.country ) {
+            document.residentialDetails.country = details.residentialDetails.country;
+          }
+          if ( details.residentialDetails.province ) {
+            document.residentialDetails.province = details.residentialDetails.province;
+          }
+          if ( details.residentialDetails.address ) {
+            document.residentialDetails.address = details.residentialDetails.address;
+          }
         }
       }
 
@@ -839,7 +848,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
               accessLevel: user.accessLevel,
               password: user.password,
               verification: {
-                id: user.verification._id,
+                id: ( user.verification._id as mongoose.Types.ObjectId ).toHexString(),
                 verified: user.verification.verified,
                 numVerAttempts: user.verification.numVerAttempts,
                 createdAt: user.verification.createdAt,
@@ -860,9 +869,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
             if ( user.personalDetails ) {
               returnUser.personalDetails = {
-                id: user.personalDetails._id,
+                id: ( user.personalDetails._id as mongoose.Types.ObjectId ).toHexString(),
                 firstName: user.personalDetails.firstName,
                 lastName: user.personalDetails.lastName,
+                dateOfBirth: user.personalDetails.dateOfBirth,
+                gender: user.personalDetails.gender,
                 createdAt: user.personalDetails.createdAt,
                 updatedAt: user.personalDetails.updatedAt
               };
@@ -870,11 +881,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
             if ( user.contactDetails ) {
               returnUser.contactDetails = {
-                id: user.contactDetails._id,
+                id: ( user.contactDetails._id as mongoose.Types.ObjectId ).toHexString(),
                 phoneNumbers: user.contactDetails.phoneNumbers,
                 createdAt: user.contactDetails.createdAt,
                 updatedAt: user.contactDetails.updatedAt
               };
+            }
+
+            if ( user.residentialDetails ) {
+              returnUser.residentialDetails = {
+                id: ( user.residentialDetails._id as mongoose.Types.ObjectId ).toHexString(),
+                country: user.residentialDetails.country,
+                province: user.residentialDetails.province,
+                address: user.residentialDetails.address,
+                createdAt: user.residentialDetails.createdAt,
+                updatedAt: user.residentialDetails.updatedAt
+              }
             }
 
             returnUsers.push( returnUser );

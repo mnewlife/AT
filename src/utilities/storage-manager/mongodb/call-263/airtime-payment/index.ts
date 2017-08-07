@@ -3,28 +3,28 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import { Model, Model_Partial, AirtimePaymentMongooseModel } from "./model";
 
 import * as interfaces from "../../../../../interfaces";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.user {
+class MongoAirtimePayment extends MongoController implements storageManagerInterfaces.call263.airtimePayment {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.call263.airtimePayment.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.call263.airtimePayment.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundAirtimePayments: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundAirtimePayments );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.call263.airtimePayment.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedAirtimePayments.map(( airtimePayment ) => {
+              return airtimePayment.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedAirtimePayments );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( airtimePaymentId: string, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( airtimePaymentId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundAirtimePayment: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundAirtimePayment ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: airtimePaymentId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedAirtimePayments[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: airtimePaymentId,
             reason: reason
           } );
           resolve();
@@ -167,71 +167,64 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( airtimePayments: storageManagerInterfaces.call263.airtimePayment.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( airtimePayments.map(( airtimePayment ) => {
+          let airtimePaymentDetails: Model_Partial = {
+            user: {
+              userId: mongoose.Types.ObjectId( airtimePayment.user.userId )
+            }
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
+          if ( airtimePayment.resetCode ) {
+            airtimePaymentDetails.resetCode = airtimePayment.resetCode;
           }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
+          if ( airtimePayment.verification.verificationCode ) {
+            airtimePaymentDetails.verification.verificationCode = airtimePayment.verification.verificationCode;
           }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
+          if ( airtimePayment.personalDetails ) {
+            airtimePaymentDetails.personalDetails = <any>{
+              firstName: airtimePayment.personalDetails.firstName,
+              lastName: airtimePayment.personalDetails.lastName,
               createdAt: new Date(),
               updatedAt: new Date()
             };
           }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
+          if ( airtimePayment.contactDetails ) {
+            airtimePaymentDetails.contactDetails = <any>{
+              phoneNumbers: airtimePayment.contactDetails.phoneNumbers,
               createdAt: new Date(),
               updatedAt: new Date()
             };
           }
-          return userDetails;
+          return airtimePaymentDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedAirtimePayments: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedAirtimePayments );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedAirtimePayments
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedAirtimePayments );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: airtimePayments,
             reason: reason
           } );
           resolve();
@@ -250,12 +243,12 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.call263.airtimePayment.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
+        let airtimePaymentDetails: Model_Partial = {
           emailAddress: details.emailAddress,
           password: details.password,
           accessLevel: details.accessLevel,
@@ -268,13 +261,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           activeApps: details.activeApps
         };
         if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
+          airtimePaymentDetails.resetCode = details.resetCode;
         }
         if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
+          airtimePaymentDetails.verification.verificationCode = details.verification.verificationCode;
         }
         if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
+          airtimePaymentDetails.personalDetails = <any>{
             firstName: details.personalDetails.firstName,
             lastName: details.personalDetails.lastName,
             createdAt: new Date(),
@@ -282,31 +275,31 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           };
         }
         if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
+          airtimePaymentDetails.contactDetails = <any>{
             phoneNumbers: details.contactDetails.phoneNumbers,
             createdAt: new Date(),
             updatedAt: new Date()
           };
         }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( airtimePaymentDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedAirtimePayment: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedAirtimePayment ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedAirtimePayments
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedAirtimePayments[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -332,7 +325,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, details: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -344,19 +337,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundAirtimePayments: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundAirtimePayments.map(( airtimePayment ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( airtimePayment, details )
+            .then(( fedAirtimePayment: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedAirtimePayment.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedAirtimePayment );
                   }
                 } );
               } );
@@ -366,22 +359,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedAirtimePayments: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedAirtimePayments );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedAirtimePayments
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedAirtimePayments );
 
       } )
       .catch(( reason: any ) => {
@@ -408,27 +401,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( airtimePaymentId: string, details: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let airtimePaymentObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( airtimePaymentId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( airtimePayment: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( airtimePayment, details )
+          .then(( fedAirtimePayment: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedAirtimePayment.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedAirtimePayment );
                 }
               } );
             } );
@@ -436,29 +429,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedAirtimePayment: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedAirtimePayment ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: airtimePaymentId,
+            documents: convertedAirtimePayments
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedAirtimePayments[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: airtimePaymentId,
             updates: details,
             reason: reason
           } );
@@ -478,7 +471,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -526,13 +519,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( airtimePaymentId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( airtimePaymentId )
         } );
 
       } )
@@ -540,7 +533,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: airtimePaymentId
           } );
           resolve();
         } );
@@ -552,7 +545,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: airtimePaymentId,
             reason: reason
           } );
           resolve();
@@ -571,7 +564,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
@@ -625,7 +618,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.call263.airtimePayment.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
@@ -644,7 +637,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.call263.airtimePayment.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
@@ -759,66 +752,66 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( airtimePayments: Model[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.call263.airtimePayment.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] = [];
 
-          users.forEach(( user ) => {
+          airtimePayments.forEach(( airtimePayment ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
+            let returnAirtimePayment: interfaces.dataModel.call263.airtimePayment.Super = {
+              id: ( <mongoose.Types.ObjectId>airtimePayment._id ).toHexString(),
+              emailAddress: airtimePayment.emailAddress,
+              accessLevel: airtimePayment.accessLevel,
+              password: airtimePayment.password,
               verification: {
-                id: user.verification._id,
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
+                id: airtimePayment.verification._id,
+                verified: airtimePayment.verification.verified,
+                numVerAttempts: airtimePayment.verification.numVerAttempts,
+                createdAt: airtimePayment.verification.createdAt,
+                updatedAt: airtimePayment.verification.updatedAt
               },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+              activeApps: airtimePayment.activeApps,
+              createdAt: airtimePayment.createdAt,
+              updatedAt: airtimePayment.updatedAt
             };
 
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
+            if ( airtimePayment.resetCode ) {
+              returnAirtimePayment.resetCode = airtimePayment.resetCode;
             }
 
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
+            if ( airtimePayment.verification.verificationCode ) {
+              returnAirtimePayment.verification.verificationCode = airtimePayment.verification.verificationCode;
             }
 
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: user.personalDetails._id,
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
+            if ( airtimePayment.personalDetails ) {
+              returnAirtimePayment.personalDetails = {
+                id: airtimePayment.personalDetails._id,
+                firstName: airtimePayment.personalDetails.firstName,
+                lastName: airtimePayment.personalDetails.lastName,
+                createdAt: airtimePayment.personalDetails.createdAt,
+                updatedAt: airtimePayment.personalDetails.updatedAt
               };
             }
 
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: user.contactDetails._id,
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
+            if ( airtimePayment.contactDetails ) {
+              returnAirtimePayment.contactDetails = {
+                id: airtimePayment.contactDetails._id,
+                phoneNumbers: airtimePayment.contactDetails.phoneNumbers,
+                createdAt: airtimePayment.contactDetails.createdAt,
+                updatedAt: airtimePayment.contactDetails.updatedAt
               };
             }
 
-            returnUsers.push( returnUser );
+            returnAirtimePayments.push( returnAirtimePayment );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnAirtimePayments );
 
         } );
 
@@ -848,10 +841,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.user => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.call263.airtimePayment => {
+  return new MongoAirtimePayment( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: AirtimePaymentMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

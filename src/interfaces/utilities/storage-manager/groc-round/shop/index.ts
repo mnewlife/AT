@@ -24,33 +24,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super[]>;
 }
 
 export interface UpdateById {
-  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.event.Super>;
+  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super>;
 }
 
 /******************************************************************************/

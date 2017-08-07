@@ -1,10 +1,10 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as interfaces from "../../../../../interfaces";
-import * as mongoDB from "../../../../../utilities/storage-manager/mongodb";
+import * as interfaces from "../../../../../../interfaces";
+import * as mongoDB from "../../../../../../utilities/storage-manager/mongodb";
 
-import { ignoreEmpty } from "../../preparation";
+import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
