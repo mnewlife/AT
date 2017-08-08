@@ -2,7 +2,7 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
 
 /******************************************************************************/

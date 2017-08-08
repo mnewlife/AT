@@ -2,24 +2,24 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/user/events";
-import * as userInterfaces from "../../../../../interfaces/utilities/storage-manager/user";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as amountss from "../../../../../../interfaces/utilities/storage-manager/routers/amounts/events";
+import * as amountsInterfaces from "../../../../../../interfaces/utilities/storage-manager/routers/amounts";
+import * as amountsManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class UserEmitter implements userInterfaces.Emitter {
+class AmountsEmitter implements amountsInterfaces.Emitter {
 
   /*****************************************************************/
 
-  constructor( private readonly emitEvent: eventManagerInterfaces.Emit ) { }
+  constructor( private readonly emitAmounts: amountsManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
-  readonly got = ( data: events.GotData ) => {
-    let event: events.Got = {
-      context: "User",
+  readonly got = ( data: amountss.GotData ) => {
+    let amounts: amountss.Got = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "Got",
       data: {
@@ -29,15 +29,15 @@ class UserEmitter implements userInterfaces.Emitter {
         ids: data.ids
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly getFailed = ( data: events.GetFailedData ) => {
-    let event: events.GetFailed = {
-      context: "User",
+  readonly getFailed = ( data: amountss.GetFailedData ) => {
+    let amounts: amountss.GetFailed = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -47,30 +47,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly gotById = ( data: events.GotByIdData ) => {
-    let event: events.GotById = {
-      context: "User",
+  readonly gotById = ( data: amountss.GotByIdData ) => {
+    let amounts: amountss.GotById = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "GotById",
       data: {
         id: data.id
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
-    let event: events.GetByIdFailed = {
-      context: "User",
+  readonly getByIdFailed = ( data: amountss.GetByIdFailedData ) => {
+    let amounts: amountss.GetByIdFailed = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -78,30 +78,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly added = ( data: events.AddedData ) => {
-    let event: events.Added = {
-      context: "User",
+  readonly added = ( data: amountss.AddedData ) => {
+    let amounts: amountss.Added = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "Added",
       data: {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly addFailed = ( data: events.AddFailedData ) => {
-    let event: events.AddFailed = {
-      context: "User",
+  readonly addFailed = ( data: amountss.AddFailedData ) => {
+    let amounts: amountss.AddFailed = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -109,15 +109,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly updated = ( data: events.UpdatedData ) => {
-    let event: events.Updated = {
-      context: "User",
+  readonly updated = ( data: amountss.UpdatedData ) => {
+    let amounts: amountss.Updated = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "Updated",
       data: {
@@ -126,15 +126,15 @@ class UserEmitter implements userInterfaces.Emitter {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly updateFailed = ( data: events.UpdateFailedData ) => {
-    let event: events.UpdateFailed = {
-      context: "User",
+  readonly updateFailed = ( data: amountss.UpdateFailedData ) => {
+    let amounts: amountss.UpdateFailed = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -144,15 +144,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly removed = ( data: events.RemovedData ) => {
-    let event: events.Removed = {
-      context: "User",
+  readonly removed = ( data: amountss.RemovedData ) => {
+    let amounts: amountss.Removed = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "Removed",
       data: {
@@ -160,15 +160,15 @@ class UserEmitter implements userInterfaces.Emitter {
         conditions: ( data.conditions ) ? data.conditions : null,
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
 
-  readonly removeFailed = ( data: events.RemoveFailedData ) => {
-    let event: events.RemoveFailed = {
-      context: "User",
+  readonly removeFailed = ( data: amountss.RemoveFailedData ) => {
+    let amounts: amountss.RemoveFailed = {
+      context: "Routers|Amounts",
       tags: [],
       identifier: "RemoveFailed",
       data: {
@@ -177,8 +177,8 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAmounts( amounts );
+    return amounts;
   }
 
   /*****************************************************************/
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitEvent );
+export default ( emitAmounts: amountsManagerInterfaces.Emit ): amountsInterfaces.Emitter => {
+  return new AmountsEmitter( emitAmounts );
 }
 
 /******************************************************************************/

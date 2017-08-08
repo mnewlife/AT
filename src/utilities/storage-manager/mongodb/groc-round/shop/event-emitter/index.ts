@@ -2,24 +2,24 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/user/events";
-import * as userInterfaces from "../../../../../interfaces/utilities/storage-manager/user";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as shops from "../../../../../../interfaces/utilities/storage-manager/groc-round/shop/events";
+import * as shopInterfaces from "../../../../../../interfaces/utilities/storage-manager/groc-round/shop";
+import * as shopManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class UserEmitter implements userInterfaces.Emitter {
+class ShopEmitter implements shopInterfaces.Emitter {
 
   /*****************************************************************/
 
-  constructor( private readonly emitEvent: eventManagerInterfaces.Emit ) { }
+  constructor( private readonly emitShop: shopManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
-  readonly got = ( data: events.GotData ) => {
-    let event: events.Got = {
-      context: "User",
+  readonly got = ( data: shops.GotData ) => {
+    let shop: shops.Got = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "Got",
       data: {
@@ -29,15 +29,15 @@ class UserEmitter implements userInterfaces.Emitter {
         ids: data.ids
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly getFailed = ( data: events.GetFailedData ) => {
-    let event: events.GetFailed = {
-      context: "User",
+  readonly getFailed = ( data: shops.GetFailedData ) => {
+    let shop: shops.GetFailed = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -47,30 +47,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly gotById = ( data: events.GotByIdData ) => {
-    let event: events.GotById = {
-      context: "User",
+  readonly gotById = ( data: shops.GotByIdData ) => {
+    let shop: shops.GotById = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "GotById",
       data: {
         id: data.id
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
-    let event: events.GetByIdFailed = {
-      context: "User",
+  readonly getByIdFailed = ( data: shops.GetByIdFailedData ) => {
+    let shop: shops.GetByIdFailed = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -78,30 +78,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly added = ( data: events.AddedData ) => {
-    let event: events.Added = {
-      context: "User",
+  readonly added = ( data: shops.AddedData ) => {
+    let shop: shops.Added = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "Added",
       data: {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly addFailed = ( data: events.AddFailedData ) => {
-    let event: events.AddFailed = {
-      context: "User",
+  readonly addFailed = ( data: shops.AddFailedData ) => {
+    let shop: shops.AddFailed = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -109,15 +109,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly updated = ( data: events.UpdatedData ) => {
-    let event: events.Updated = {
-      context: "User",
+  readonly updated = ( data: shops.UpdatedData ) => {
+    let shop: shops.Updated = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "Updated",
       data: {
@@ -126,15 +126,15 @@ class UserEmitter implements userInterfaces.Emitter {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly updateFailed = ( data: events.UpdateFailedData ) => {
-    let event: events.UpdateFailed = {
-      context: "User",
+  readonly updateFailed = ( data: shops.UpdateFailedData ) => {
+    let shop: shops.UpdateFailed = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -144,15 +144,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly removed = ( data: events.RemovedData ) => {
-    let event: events.Removed = {
-      context: "User",
+  readonly removed = ( data: shops.RemovedData ) => {
+    let shop: shops.Removed = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "Removed",
       data: {
@@ -160,15 +160,15 @@ class UserEmitter implements userInterfaces.Emitter {
         conditions: ( data.conditions ) ? data.conditions : null,
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
 
-  readonly removeFailed = ( data: events.RemoveFailedData ) => {
-    let event: events.RemoveFailed = {
-      context: "User",
+  readonly removeFailed = ( data: shops.RemoveFailedData ) => {
+    let shop: shops.RemoveFailed = {
+      context: "GrocRound|Shop",
       tags: [],
       identifier: "RemoveFailed",
       data: {
@@ -177,8 +177,8 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitShop( shop );
+    return shop;
   }
 
   /*****************************************************************/
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitEvent );
+export default ( emitShop: shopManagerInterfaces.Emit ): shopInterfaces.Emitter => {
+  return new ShopEmitter( emitShop );
 }
 
 /******************************************************************************/

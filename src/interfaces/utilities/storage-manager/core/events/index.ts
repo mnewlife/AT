@@ -95,8 +95,8 @@ export interface Added extends BaseEvent {
 /******************************************************************************/
 
 export interface AddFailedData {
-  details: AddDetailsRange;
-  reason: any
+  details: AddDetailsArrayRange;
+  reason: any;
 };
 export interface AddFailed extends BaseEvent {
   identifier: "AddFailed";

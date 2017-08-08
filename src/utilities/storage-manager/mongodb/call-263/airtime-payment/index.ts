@@ -13,7 +13,7 @@ import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoAirtimePayment extends MongoController implements storageManagerInterfaces.call263.airtimePayment {
+class MongoAirtimePayment extends MongoController implements storageManagerInterfaces.call263.AirtimePayment {
 
   /*****************************************************************/
 
@@ -175,30 +175,17 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
         return this.saveMultipleDocuments( airtimePayments.map(( airtimePayment ) => {
           let airtimePaymentDetails: Model_Partial = {
             user: {
-              userId: mongoose.Types.ObjectId( airtimePayment.user.userId )
+              userId: mongoose.Types.ObjectId( airtimePayment.user.userId ),
+              emailAddress: airtimePayment.user.emailAddress,
+              fullName: airtimePayment.user.fullName
+            },
+            channelId: mongoose.Types.ObjectId( airtimePayment.channelId ),
+            transaction: {
+              identifier: airtimePayment.transaction.identifier,
+              amount: airtimePayment.transaction.amount,
+              method: airtimePayment.transaction.method
             }
           };
-          if ( airtimePayment.resetCode ) {
-            airtimePaymentDetails.resetCode = airtimePayment.resetCode;
-          }
-          if ( airtimePayment.verification.verificationCode ) {
-            airtimePaymentDetails.verification.verificationCode = airtimePayment.verification.verificationCode;
-          }
-          if ( airtimePayment.personalDetails ) {
-            airtimePaymentDetails.personalDetails = <any>{
-              firstName: airtimePayment.personalDetails.firstName,
-              lastName: airtimePayment.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( airtimePayment.contactDetails ) {
-            airtimePaymentDetails.contactDetails = <any>{
-              phoneNumbers: airtimePayment.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
           return airtimePaymentDetails;
         } ) );
 
@@ -249,38 +236,18 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
       .then(( response: any ) => {
 
         let airtimePaymentDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
-            createdAt: new Date(),
-            updatedAt: new Date()
+          user: {
+            userId: mongoose.Types.ObjectId( details.user.userId ),
+            emailAddress: details.user.emailAddress,
+            fullName: details.user.fullName
           },
-          activeApps: details.activeApps
+          channelId: mongoose.Types.ObjectId( details.channelId ),
+          transaction: {
+            identifier: details.transaction.identifier,
+            amount: details.transaction.amount,
+            method: details.transaction.method
+          }
         };
-        if ( details.resetCode ) {
-          airtimePaymentDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          airtimePaymentDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          airtimePaymentDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails ) {
-          airtimePaymentDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
 
         return this.saveDocument( airtimePaymentDetails );
 
@@ -570,40 +537,35 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
-      }
-
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
-      }
-
-      if ( filtrationCriteria.verification ) {
-
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.user ) {
+        if ( filtrationCriteria.user.userId ) {
+          conditions[ "user.userId" ] = mongoose.Types.ObjectId( filtrationCriteria.user.userId );
         }
+        if ( filtrationCriteria.user.emailAddress ) {
+          conditions[ "user.emailAddress" ] = filtrationCriteria.user.emailAddress;
+        }
+        if ( filtrationCriteria.user.fullName ) {
+          conditions[ "user.fullName" ] = filtrationCriteria.user.fullName;
+        }
+      }
 
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
+      if ( filtrationCriteria.channelId ) {
+        conditions[ "channelId" ] = mongoose.Types.ObjectId( filtrationCriteria.channelId );
+      }
+
+      if ( filtrationCriteria.transaction ) {
+        if ( filtrationCriteria.transaction.identifier ) {
+          conditions[ "transaction.identifier" ] = filtrationCriteria.transaction.identifier;
+        }
+        if ( filtrationCriteria.transaction.amount ) {
+          conditions[ "transaction.amount" ] = {};
+          if ( filtrationCriteria.transaction.amount.min ) {
+            conditions[ "transaction.amount" ].$gte = filtrationCriteria.transaction.amount.min;
           }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
+          if ( filtrationCriteria.transaction.amount.max ) {
+            conditions[ "transaction.amount" ].$lte = filtrationCriteria.transaction.amount.max;
           }
         }
-
-      }
-
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
-        }
-      }
-
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
       }
 
       if ( filtrationCriteria.textSearch ) {
@@ -622,8 +584,8 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
+      if ( sortCriteria.criteria === "amount" ) {
+        sortString = "transaction.amount";
       } else {
         sortString = sortCriteria.criteria;
       }
@@ -641,107 +603,32 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
-      }
-
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
-      }
-
-      if ( details.password ) {
-        document.password = details.password;
-      }
-
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
+      if ( details.user ) {
+        if ( details.user.userId ) {
+          document.user.userId = mongoose.Types.ObjectId( details.user.userId );
         }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
+        if ( details.user.emailAddress ) {
+          document.user.emailAddress = details.user.emailAddress;
         }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
+        if ( details.user.fullName ) {
+          document.user.fullName = details.user.fullName;
         }
       }
 
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
+      if ( details.channelId ) {
+        document.channelId = mongoose.Types.ObjectId( details.channelId );
       }
 
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
+      if ( details.transaction ) {
+        if ( details.transaction.identifier ) {
+          document.transaction.identifier = details.transaction.identifier;
         }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
+        if ( details.transaction.amount ) {
+          document.transaction.amount = details.transaction.amount;
         }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
+        if ( details.transaction.method ) {
+          document.transaction.method = details.transaction.method;
         }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
       }
 
       resolve( document );
@@ -765,47 +652,23 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
 
             let returnAirtimePayment: interfaces.dataModel.call263.airtimePayment.Super = {
               id: ( <mongoose.Types.ObjectId>airtimePayment._id ).toHexString(),
-              emailAddress: airtimePayment.emailAddress,
-              accessLevel: airtimePayment.accessLevel,
-              password: airtimePayment.password,
-              verification: {
-                id: airtimePayment.verification._id,
-                verified: airtimePayment.verification.verified,
-                numVerAttempts: airtimePayment.verification.numVerAttempts,
-                createdAt: airtimePayment.verification.createdAt,
-                updatedAt: airtimePayment.verification.updatedAt
+              user: {
+                id: ( airtimePayment.user._id as mongoose.Types.ObjectId ).toHexString(),
+                userId: ( airtimePayment.user.userId as mongoose.Types.ObjectId ).toHexString(),
+                emailAddress: airtimePayment.user.emailAddress,
+                fullName: airtimePayment.user.fullName,
+                createdAt: airtimePayment.user.createdAt,
+                updatedAt: airtimePayment.user.updatedAt
               },
-              activeApps: airtimePayment.activeApps,
+              channelId: ( airtimePayment.channelId as mongoose.Types.ObjectId ).toHexString(),
+              transaction: {
+                identifier: airtimePayment.transaction.identifier,
+                amount: airtimePayment.transaction.amount,
+                method: airtimePayment.transaction.method
+              },
               createdAt: airtimePayment.createdAt,
               updatedAt: airtimePayment.updatedAt
             };
-
-            if ( airtimePayment.resetCode ) {
-              returnAirtimePayment.resetCode = airtimePayment.resetCode;
-            }
-
-            if ( airtimePayment.verification.verificationCode ) {
-              returnAirtimePayment.verification.verificationCode = airtimePayment.verification.verificationCode;
-            }
-
-            if ( airtimePayment.personalDetails ) {
-              returnAirtimePayment.personalDetails = {
-                id: airtimePayment.personalDetails._id,
-                firstName: airtimePayment.personalDetails.firstName,
-                lastName: airtimePayment.personalDetails.lastName,
-                createdAt: airtimePayment.personalDetails.createdAt,
-                updatedAt: airtimePayment.personalDetails.updatedAt
-              };
-            }
-
-            if ( airtimePayment.contactDetails ) {
-              returnAirtimePayment.contactDetails = {
-                id: airtimePayment.contactDetails._id,
-                phoneNumbers: airtimePayment.contactDetails.phoneNumbers,
-                createdAt: airtimePayment.contactDetails.createdAt,
-                updatedAt: airtimePayment.contactDetails.updatedAt
-              };
-            }
 
             returnAirtimePayments.push( returnAirtimePayment );
 
@@ -826,12 +689,16 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-  "activeApps"?: { $all: string[] };
+  "user.userId"?: mongoose.Types.ObjectId;
+  "user.emailAddress"?: string;
+  "user.fullName"?: string;
+
+  "channelId"?: mongoose.Types.ObjectId;
+
+  "transaction.identifier"?: string;
+  "transaction.method"?: string;
+  "transaction.amount"?: { $gte?: number; $lte?: number; };
+
   $text?: { $search: string };
 }
 
@@ -841,7 +708,7 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.call263.airtimePayment => {
+} ): storageManagerInterfaces.call263.AirtimePayment => {
   return new MongoAirtimePayment( {
     emitter: emitterFactory( params.emitEvent ),
     Model: AirtimePaymentMongooseModel,

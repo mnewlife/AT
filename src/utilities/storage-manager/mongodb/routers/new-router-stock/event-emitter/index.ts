@@ -2,24 +2,24 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/user/events";
-import * as userInterfaces from "../../../../../interfaces/utilities/storage-manager/user";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as newRouterStocks from "../../../../../../interfaces/utilities/storage-manager/routers/new-router-stock/events";
+import * as newRouterStockInterfaces from "../../../../../../interfaces/utilities/storage-manager/routers/new-router-stock";
+import * as newRouterStockManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class UserEmitter implements userInterfaces.Emitter {
+class NewRouterStockEmitter implements newRouterStockInterfaces.Emitter {
 
   /*****************************************************************/
 
-  constructor( private readonly emitEvent: eventManagerInterfaces.Emit ) { }
+  constructor( private readonly emitNewRouterStock: newRouterStockManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
-  readonly got = ( data: events.GotData ) => {
-    let event: events.Got = {
-      context: "User",
+  readonly got = ( data: newRouterStocks.GotData ) => {
+    let newRouterStock: newRouterStocks.Got = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "Got",
       data: {
@@ -29,15 +29,15 @@ class UserEmitter implements userInterfaces.Emitter {
         ids: data.ids
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly getFailed = ( data: events.GetFailedData ) => {
-    let event: events.GetFailed = {
-      context: "User",
+  readonly getFailed = ( data: newRouterStocks.GetFailedData ) => {
+    let newRouterStock: newRouterStocks.GetFailed = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -47,30 +47,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly gotById = ( data: events.GotByIdData ) => {
-    let event: events.GotById = {
-      context: "User",
+  readonly gotById = ( data: newRouterStocks.GotByIdData ) => {
+    let newRouterStock: newRouterStocks.GotById = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "GotById",
       data: {
         id: data.id
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
-    let event: events.GetByIdFailed = {
-      context: "User",
+  readonly getByIdFailed = ( data: newRouterStocks.GetByIdFailedData ) => {
+    let newRouterStock: newRouterStocks.GetByIdFailed = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -78,30 +78,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly added = ( data: events.AddedData ) => {
-    let event: events.Added = {
-      context: "User",
+  readonly added = ( data: newRouterStocks.AddedData ) => {
+    let newRouterStock: newRouterStocks.Added = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "Added",
       data: {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly addFailed = ( data: events.AddFailedData ) => {
-    let event: events.AddFailed = {
-      context: "User",
+  readonly addFailed = ( data: newRouterStocks.AddFailedData ) => {
+    let newRouterStock: newRouterStocks.AddFailed = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -109,15 +109,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly updated = ( data: events.UpdatedData ) => {
-    let event: events.Updated = {
-      context: "User",
+  readonly updated = ( data: newRouterStocks.UpdatedData ) => {
+    let newRouterStock: newRouterStocks.Updated = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "Updated",
       data: {
@@ -126,15 +126,15 @@ class UserEmitter implements userInterfaces.Emitter {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly updateFailed = ( data: events.UpdateFailedData ) => {
-    let event: events.UpdateFailed = {
-      context: "User",
+  readonly updateFailed = ( data: newRouterStocks.UpdateFailedData ) => {
+    let newRouterStock: newRouterStocks.UpdateFailed = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -144,15 +144,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly removed = ( data: events.RemovedData ) => {
-    let event: events.Removed = {
-      context: "User",
+  readonly removed = ( data: newRouterStocks.RemovedData ) => {
+    let newRouterStock: newRouterStocks.Removed = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "Removed",
       data: {
@@ -160,15 +160,15 @@ class UserEmitter implements userInterfaces.Emitter {
         conditions: ( data.conditions ) ? data.conditions : null,
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
 
-  readonly removeFailed = ( data: events.RemoveFailedData ) => {
-    let event: events.RemoveFailed = {
-      context: "User",
+  readonly removeFailed = ( data: newRouterStocks.RemoveFailedData ) => {
+    let newRouterStock: newRouterStocks.RemoveFailed = {
+      context: "Routers|NewRouterStock",
       tags: [],
       identifier: "RemoveFailed",
       data: {
@@ -177,8 +177,8 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitNewRouterStock( newRouterStock );
+    return newRouterStock;
   }
 
   /*****************************************************************/
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitEvent );
+export default ( emitNewRouterStock: newRouterStockManagerInterfaces.Emit ): newRouterStockInterfaces.Emitter => {
+  return new NewRouterStockEmitter( emitNewRouterStock );
 }
 
 /******************************************************************************/

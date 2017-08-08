@@ -1,9 +1,8 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
+import * as interfaces from "../../../../../interfaces";
 import * as events from "./events";
 
 /******************************************************************************/

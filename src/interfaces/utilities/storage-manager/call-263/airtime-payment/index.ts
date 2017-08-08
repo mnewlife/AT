@@ -83,7 +83,12 @@ export type UpdateDetails = Partial<{
 export type FiltrationCriteria = Partial<{
   user: Partial<interfaces.dataModel.core.UserInfo>;
   channelId: string;
-  transaction: Partial<interfaces.dataModel.call263.airtimePayment.Transaction>;
+  transaction: Partial<{
+    identifier: string;
+    amount: Partial<{ min: number; max: number }>;
+    method: string;
+  }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

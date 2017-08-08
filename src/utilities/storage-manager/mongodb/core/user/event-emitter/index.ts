@@ -2,10 +2,10 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/user/events";
-import * as userInterfaces from "../../../../../interfaces/utilities/storage-manager/user";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as users from "../../../../../../interfaces/utilities/storage-manager/core/user/events";
+import * as userInterfaces from "../../../../../../interfaces/utilities/storage-manager/core/user";
+import * as userManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
@@ -13,13 +13,13 @@ class UserEmitter implements userInterfaces.Emitter {
 
   /*****************************************************************/
 
-  constructor( private readonly emitEvent: eventManagerInterfaces.Emit ) { }
+  constructor( private readonly emitUser: userManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
-  readonly got = ( data: events.GotData ) => {
-    let event: events.Got = {
-      context: "User",
+  readonly got = ( data: users.GotData ) => {
+    let user: users.Got = {
+      context: "Core|User",
       tags: [],
       identifier: "Got",
       data: {
@@ -29,15 +29,15 @@ class UserEmitter implements userInterfaces.Emitter {
         ids: data.ids
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly getFailed = ( data: events.GetFailedData ) => {
-    let event: events.GetFailed = {
-      context: "User",
+  readonly getFailed = ( data: users.GetFailedData ) => {
+    let user: users.GetFailed = {
+      context: "Core|User",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -47,30 +47,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly gotById = ( data: events.GotByIdData ) => {
-    let event: events.GotById = {
-      context: "User",
+  readonly gotById = ( data: users.GotByIdData ) => {
+    let user: users.GotById = {
+      context: "Core|User",
       tags: [],
       identifier: "GotById",
       data: {
         id: data.id
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
-    let event: events.GetByIdFailed = {
-      context: "User",
+  readonly getByIdFailed = ( data: users.GetByIdFailedData ) => {
+    let user: users.GetByIdFailed = {
+      context: "Core|User",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -78,30 +78,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly added = ( data: events.AddedData ) => {
-    let event: events.Added = {
-      context: "User",
+  readonly added = ( data: users.AddedData ) => {
+    let user: users.Added = {
+      context: "Core|User",
       tags: [],
       identifier: "Added",
       data: {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly addFailed = ( data: events.AddFailedData ) => {
-    let event: events.AddFailed = {
-      context: "User",
+  readonly addFailed = ( data: users.AddFailedData ) => {
+    let user: users.AddFailed = {
+      context: "Core|User",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -109,15 +109,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly updated = ( data: events.UpdatedData ) => {
-    let event: events.Updated = {
-      context: "User",
+  readonly updated = ( data: users.UpdatedData ) => {
+    let user: users.Updated = {
+      context: "Core|User",
       tags: [],
       identifier: "Updated",
       data: {
@@ -126,15 +126,15 @@ class UserEmitter implements userInterfaces.Emitter {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly updateFailed = ( data: events.UpdateFailedData ) => {
-    let event: events.UpdateFailed = {
-      context: "User",
+  readonly updateFailed = ( data: users.UpdateFailedData ) => {
+    let user: users.UpdateFailed = {
+      context: "Core|User",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -144,15 +144,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly removed = ( data: events.RemovedData ) => {
-    let event: events.Removed = {
-      context: "User",
+  readonly removed = ( data: users.RemovedData ) => {
+    let user: users.Removed = {
+      context: "Core|User",
       tags: [],
       identifier: "Removed",
       data: {
@@ -160,15 +160,15 @@ class UserEmitter implements userInterfaces.Emitter {
         conditions: ( data.conditions ) ? data.conditions : null,
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
 
-  readonly removeFailed = ( data: events.RemoveFailedData ) => {
-    let event: events.RemoveFailed = {
-      context: "User",
+  readonly removeFailed = ( data: users.RemoveFailedData ) => {
+    let user: users.RemoveFailed = {
+      context: "Core|User",
       tags: [],
       identifier: "RemoveFailed",
       data: {
@@ -177,8 +177,8 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitUser( user );
+    return user;
   }
 
   /*****************************************************************/
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitEvent );
+export default ( emitUser: userManagerInterfaces.Emit ): userInterfaces.Emitter => {
+  return new UserEmitter( emitUser );
 }
 
 /******************************************************************************/

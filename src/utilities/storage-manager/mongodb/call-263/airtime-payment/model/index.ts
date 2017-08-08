@@ -10,12 +10,12 @@ import { ignoreEmpty } from "../../../preparation";
 
 export interface Model extends mongoose.Document, mongoDB.Document {
   user: mongoDB.UserInfo;
-  channelId: string;
+  channelId: mongoose.Types.ObjectId;
   transaction: Transaction;
 }
 export interface Model_Partial {
   user?: Partial<mongoDB.UserInfo>;
-  channelId?: string;
+  channelId?: mongoose.Types.ObjectId;
   transaction?: Partial<Transaction>;
 };
 
@@ -37,7 +37,7 @@ let airtimePaymentSchema = new mongoose.Schema( {
   channelId: mongoose.Schema.Types.ObjectId,
   transaction: {
     identifier: { type: String, set: ignoreEmpty },
-    amount: { type: Number, set: ignoreEmpty },
+    amount: { type: Number, min: 0, default: 0 },
     method: { type: String, set: ignoreEmpty }
   },
 

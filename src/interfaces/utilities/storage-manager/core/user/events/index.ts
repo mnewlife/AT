@@ -1,12 +1,12 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../../interfaces";
+import * as interfaces from "../../../../../../interfaces";
 import * as model from "../";
 import * as storageManagerEvents from "../../events";
 
 /******************************************************************************/
 
-export type context = "User";
+export type context = "Core|User";
 
 /******************************************************************************/
 

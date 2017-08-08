@@ -1,12 +1,12 @@
 /******************************************************************************/
 
-import * as interfaces from "../../../../../interfaces";
+import * as interfaces from "../../../../../../interfaces";
 import * as model from "../";
 import * as storageManagerEvents from "../../events";
 
 /******************************************************************************/
 
-export type context = "Event";
+export type context = "Call263|AirtimeTransfer";
 
 /******************************************************************************/
 
@@ -45,7 +45,7 @@ export interface GetByIdFailed extends storageManagerEvents.GetByIdFailed {
 /******************************************************************************/
 
 export interface AddedData extends storageManagerEvents.AddedData {
-  documents: interfaces.dataModel.core.event.Super[];
+  documents: interfaces.dataModel.call263.airtimeTransfer.Super[];
 }
 export interface Added extends storageManagerEvents.Added {
   context: context;
@@ -63,7 +63,7 @@ export interface AddFailed extends storageManagerEvents.AddFailed {
 /******************************************************************************/
 
 export interface UpdatedData extends storageManagerEvents.UpdatedData {
-  documents: interfaces.dataModel.core.event.Super[];
+  documents: interfaces.dataModel.call263.airtimeTransfer.Super[];
 }
 export interface Updated extends storageManagerEvents.Updated {
   context: context;

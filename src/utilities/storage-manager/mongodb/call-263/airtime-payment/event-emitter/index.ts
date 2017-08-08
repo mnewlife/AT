@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/user/events";
-import * as userInterfaces from "../../../../../interfaces/utilities/storage-manager/user";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as events from "../../../../../../interfaces/utilities/storage-manager/call-263/airtime-payment/events";
+import * as airtimePaymentInterfaces from "../../../../../../interfaces/utilities/storage-manager/call-263/airtime-payment";
+import * as eventManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class UserEmitter implements userInterfaces.Emitter {
+class AirtimePaymentEmitter implements airtimePaymentInterfaces.Emitter {
 
   /*****************************************************************/
 
@@ -19,7 +19,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly got = ( data: events.GotData ) => {
     let event: events.Got = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "Got",
       data: {
@@ -37,7 +37,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly getFailed = ( data: events.GetFailedData ) => {
     let event: events.GetFailed = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -55,7 +55,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly gotById = ( data: events.GotByIdData ) => {
     let event: events.GotById = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "GotById",
       data: {
@@ -70,7 +70,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
     let event: events.GetByIdFailed = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -86,7 +86,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly added = ( data: events.AddedData ) => {
     let event: events.Added = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "Added",
       data: {
@@ -101,7 +101,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly addFailed = ( data: events.AddFailedData ) => {
     let event: events.AddFailed = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -117,7 +117,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly updated = ( data: events.UpdatedData ) => {
     let event: events.Updated = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "Updated",
       data: {
@@ -134,7 +134,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly updateFailed = ( data: events.UpdateFailedData ) => {
     let event: events.UpdateFailed = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -152,7 +152,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly removed = ( data: events.RemovedData ) => {
     let event: events.Removed = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "Removed",
       data: {
@@ -168,7 +168,7 @@ class UserEmitter implements userInterfaces.Emitter {
 
   readonly removeFailed = ( data: events.RemoveFailedData ) => {
     let event: events.RemoveFailed = {
-      context: "User",
+      context: "Call263|AirtimePayment",
       tags: [],
       identifier: "RemoveFailed",
       data: {
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): airtimePaymentInterfaces.Emitter => {
+  return new AirtimePaymentEmitter( emitEvent );
 }
 
 /******************************************************************************/

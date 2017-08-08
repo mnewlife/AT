@@ -2,10 +2,10 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/event/events";
-import * as eventInterfaces from "../../../../../interfaces/utilities/storage-manager/event";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as events from "../../../../../../interfaces/utilities/storage-manager/core/event/events";
+import * as eventInterfaces from "../../../../../../interfaces/utilities/storage-manager/core/event";
+import * as eventManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
@@ -19,7 +19,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly got = ( data: events.GotData ) => {
     let event: events.Got = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "Got",
       data: {
@@ -37,7 +37,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly getFailed = ( data: events.GetFailedData ) => {
     let event: events.GetFailed = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -55,7 +55,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly gotById = ( data: events.GotByIdData ) => {
     let event: events.GotById = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "GotById",
       data: {
@@ -70,7 +70,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
     let event: events.GetByIdFailed = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -86,7 +86,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly added = ( data: events.AddedData ) => {
     let event: events.Added = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "Added",
       data: {
@@ -101,7 +101,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly addFailed = ( data: events.AddFailedData ) => {
     let event: events.AddFailed = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -117,7 +117,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly updated = ( data: events.UpdatedData ) => {
     let event: events.Updated = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "Updated",
       data: {
@@ -134,7 +134,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly updateFailed = ( data: events.UpdateFailedData ) => {
     let event: events.UpdateFailed = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -152,7 +152,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly removed = ( data: events.RemovedData ) => {
     let event: events.Removed = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "Removed",
       data: {
@@ -168,7 +168,7 @@ class EventEmitter implements eventInterfaces.Emitter {
 
   readonly removeFailed = ( data: events.RemoveFailedData ) => {
     let event: events.RemoveFailed = {
-      context: "Event",
+      context: "Core|Event",
       tags: [],
       identifier: "RemoveFailed",
       data: {

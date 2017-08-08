@@ -2,24 +2,24 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../interfaces";
-import * as events from "../../../../../interfaces/utilities/storage-manager/user/events";
-import * as userInterfaces from "../../../../../interfaces/utilities/storage-manager/user";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
+import * as interfaces from "../../../../../../interfaces";
+import * as airtimeSales from "../../../../../../interfaces/utilities/storage-manager/powertel/airtime-sale/events";
+import * as airtimeSaleInterfaces from "../../../../../../interfaces/utilities/storage-manager/powertel/airtime-sale";
+import * as airtimeSaleManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class UserEmitter implements userInterfaces.Emitter {
+class AirtimeSaleEmitter implements airtimeSaleInterfaces.Emitter {
 
   /*****************************************************************/
 
-  constructor( private readonly emitEvent: eventManagerInterfaces.Emit ) { }
+  constructor( private readonly emitAirtimeSale: airtimeSaleManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
-  readonly got = ( data: events.GotData ) => {
-    let event: events.Got = {
-      context: "User",
+  readonly got = ( data: airtimeSales.GotData ) => {
+    let airtimeSale: airtimeSales.Got = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "Got",
       data: {
@@ -29,15 +29,15 @@ class UserEmitter implements userInterfaces.Emitter {
         ids: data.ids
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly getFailed = ( data: events.GetFailedData ) => {
-    let event: events.GetFailed = {
-      context: "User",
+  readonly getFailed = ( data: airtimeSales.GetFailedData ) => {
+    let airtimeSale: airtimeSales.GetFailed = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "GetFailed",
       data: {
@@ -47,30 +47,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly gotById = ( data: events.GotByIdData ) => {
-    let event: events.GotById = {
-      context: "User",
+  readonly gotById = ( data: airtimeSales.GotByIdData ) => {
+    let airtimeSale: airtimeSales.GotById = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "GotById",
       data: {
         id: data.id
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
-    let event: events.GetByIdFailed = {
-      context: "User",
+  readonly getByIdFailed = ( data: airtimeSales.GetByIdFailedData ) => {
+    let airtimeSale: airtimeSales.GetByIdFailed = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "GetByIdFailed",
       data: {
@@ -78,30 +78,30 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly added = ( data: events.AddedData ) => {
-    let event: events.Added = {
-      context: "User",
+  readonly added = ( data: airtimeSales.AddedData ) => {
+    let airtimeSale: airtimeSales.Added = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "Added",
       data: {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly addFailed = ( data: events.AddFailedData ) => {
-    let event: events.AddFailed = {
-      context: "User",
+  readonly addFailed = ( data: airtimeSales.AddFailedData ) => {
+    let airtimeSale: airtimeSales.AddFailed = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "AddFailed",
       data: {
@@ -109,15 +109,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly updated = ( data: events.UpdatedData ) => {
-    let event: events.Updated = {
-      context: "User",
+  readonly updated = ( data: airtimeSales.UpdatedData ) => {
+    let airtimeSale: airtimeSales.Updated = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "Updated",
       data: {
@@ -126,15 +126,15 @@ class UserEmitter implements userInterfaces.Emitter {
         documents: data.documents
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly updateFailed = ( data: events.UpdateFailedData ) => {
-    let event: events.UpdateFailed = {
-      context: "User",
+  readonly updateFailed = ( data: airtimeSales.UpdateFailedData ) => {
+    let airtimeSale: airtimeSales.UpdateFailed = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "UpdateFailed",
       data: {
@@ -144,15 +144,15 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly removed = ( data: events.RemovedData ) => {
-    let event: events.Removed = {
-      context: "User",
+  readonly removed = ( data: airtimeSales.RemovedData ) => {
+    let airtimeSale: airtimeSales.Removed = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "Removed",
       data: {
@@ -160,15 +160,15 @@ class UserEmitter implements userInterfaces.Emitter {
         conditions: ( data.conditions ) ? data.conditions : null,
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
 
-  readonly removeFailed = ( data: events.RemoveFailedData ) => {
-    let event: events.RemoveFailed = {
-      context: "User",
+  readonly removeFailed = ( data: airtimeSales.RemoveFailedData ) => {
+    let airtimeSale: airtimeSales.RemoveFailed = {
+      context: "Powertel|AirtimeSale",
       tags: [],
       identifier: "RemoveFailed",
       data: {
@@ -177,8 +177,8 @@ class UserEmitter implements userInterfaces.Emitter {
         reason: data.reason
       }
     };
-    this.emitEvent( event );
-    return event;
+    this.emitAirtimeSale( airtimeSale );
+    return airtimeSale;
   }
 
   /*****************************************************************/
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitEvent );
+export default ( emitAirtimeSale: airtimeSaleManagerInterfaces.Emit ): airtimeSaleInterfaces.Emitter => {
+  return new AirtimeSaleEmitter( emitAirtimeSale );
 }
 
 /******************************************************************************/
