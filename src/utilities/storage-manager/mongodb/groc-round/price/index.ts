@@ -2,29 +2,29 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import MongoController from "../../mongo-controller";
+import { Model, Model_Partial, PriceMongooseModel } from "./model";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
+import * as interfaces from "../../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.user {
+class MongoPrice extends MongoController implements storageManagerInterfaces.grocRound.Price {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.grocRound.price.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.grocRound.price.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.grocRound.price.FiltrationCriteria, sortCriteria: storageManagerInterfaces.grocRound.price.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundPrices: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundPrices );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.grocRound.price.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedPrices.map(( price ) => {
+              return price.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedPrices );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( priceId: string, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( priceId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundPrice: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundPrice ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: priceId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedPrices[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: priceId,
             reason: reason
           } );
           resolve();
@@ -167,71 +167,44 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( prices: storageManagerInterfaces.grocRound.price.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( prices.map(( price ) => {
+          let priceDetails: Model_Partial = {
+            productId: mongoose.Types.ObjectId( price.productId ),
+            shopId: mongoose.Types.ObjectId( price.shopId ),
+            quantity: price.quantity,
+            price: price.price
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
-          }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
-          }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          return userDetails;
+          return priceDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedPrices: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedPrices );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedPrices
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedPrices );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: prices,
             reason: reason
           } );
           resolve();
@@ -250,63 +223,36 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.grocRound.price.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          activeApps: details.activeApps
+        let priceDetails: Model_Partial = {
+          productId: mongoose.Types.ObjectId( details.productId ),
+          shopId: mongoose.Types.ObjectId( details.shopId ),
+          quantity: details.quantity,
+          price: details.price
         };
-        if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( priceDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedPrice: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedPrice ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedPrices
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedPrices[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -332,7 +278,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.grocRound.price.FiltrationCriteria, details: storageManagerInterfaces.grocRound.price.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -344,19 +290,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundPrices: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundPrices.map(( price ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( price, details )
+            .then(( fedPrice: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedPrice.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedPrice );
                   }
                 } );
               } );
@@ -366,22 +312,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedPrices: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedPrices );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedPrices
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedPrices );
 
       } )
       .catch(( reason: any ) => {
@@ -408,27 +354,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( priceId: string, details: storageManagerInterfaces.grocRound.price.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let priceObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( priceId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( price: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( price, details )
+          .then(( fedPrice: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedPrice.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedPrice );
                 }
               } );
             } );
@@ -436,29 +382,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedPrice: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedPrice ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: priceId,
+            documents: convertedPrices
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedPrices[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: priceId,
             updates: details,
             reason: reason
           } );
@@ -478,7 +424,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.grocRound.price.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -526,13 +472,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( priceId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( priceId )
         } );
 
       } )
@@ -540,7 +486,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: priceId
           } );
           resolve();
         } );
@@ -552,7 +498,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: priceId,
             reason: reason
           } );
           resolve();
@@ -571,46 +517,38 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.grocRound.price.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
+      if ( filtrationCriteria.productId ) {
+        conditions[ "productId" ] = mongoose.Types.ObjectId( filtrationCriteria.productId );
       }
 
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
+      if ( filtrationCriteria.shopId ) {
+        conditions[ "shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.shopId );
       }
 
-      if ( filtrationCriteria.verification ) {
-
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.quantity ) {
+        conditions[ "quantity" ] = {};
+        if ( filtrationCriteria.quantity.min ) {
+          conditions[ "quantity" ].$gte = filtrationCriteria.quantity.min;
         }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
-          }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
-          }
-        }
-
-      }
-
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+        if ( filtrationCriteria.quantity.max ) {
+          conditions[ "quantity" ].$lte = filtrationCriteria.quantity.max;
         }
       }
 
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
+      if ( filtrationCriteria.price ) {
+        conditions[ "price" ] = {};
+        if ( filtrationCriteria.price.min ) {
+          conditions[ "price" ].$gte = filtrationCriteria.price.min;
+        }
+        if ( filtrationCriteria.price.max ) {
+          conditions[ "price" ].$lte = filtrationCriteria.price.max;
+        }
       }
 
       if ( filtrationCriteria.textSearch ) {
@@ -625,15 +563,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.grocRound.price.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
-      } else {
-        sortString = sortCriteria.criteria;
-      }
+      sortString = sortCriteria.criteria;
       if ( sortCriteria.order === "Descending" ) {
         sortString = "-" + sortString;
       }
@@ -644,111 +578,24 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.grocRound.price.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.productId ) {
+        document.productId = mongoose.Types.ObjectId( details.productId );
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
+      if ( details.shopId ) {
+        document.shopId = mongoose.Types.ObjectId( details.shopId );
       }
 
-      if ( details.password ) {
-        document.password = details.password;
+      if ( details.quantity ) {
+        document.quantity = details.quantity;
       }
 
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
-        }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
-        }
-      }
-
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
-        }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
+      if ( details.price ) {
+        document.price = details.price;
       }
 
       resolve( document );
@@ -759,66 +606,32 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( prices: Model[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.grocRound.price.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnPrices: interfaces.dataModel.grocRound.price.Super[] = [];
 
-          users.forEach(( user ) => {
+          prices.forEach(( price ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
-              verification: {
-                id: user.verification._id,
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
-              },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+            let returnPrice: interfaces.dataModel.grocRound.price.Super = {
+              id: ( <mongoose.Types.ObjectId>price._id ).toHexString(),
+              productId: ( price.productId as mongoose.Types.ObjectId ).toHexString(),
+              shopId: ( price.shopId as mongoose.Types.ObjectId ).toHexString(),
+              quantity: price.quantity,
+              price: price.price,
+              createdAt: price.createdAt,
+              updatedAt: price.updatedAt
             };
 
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
-            }
-
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
-            }
-
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: user.personalDetails._id,
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
-              };
-            }
-
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: user.contactDetails._id,
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
-              };
-            }
-
-            returnUsers.push( returnUser );
+            returnPrices.push( returnPrice );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnPrices );
 
         } );
 
@@ -833,12 +646,10 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-  "activeApps"?: { $all: string[] };
+  "productId"?: mongoose.Types.ObjectId;
+  "shopId"?: mongoose.Types.ObjectId;
+  "quantity"?: { $gte?: number; $lte?: number; };
+  "price"?: { $gte?: number; $lte?: number; };
   $text?: { $search: string };
 }
 
@@ -848,10 +659,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.user => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.grocRound.Price => {
+  return new MongoPrice( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: PriceMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

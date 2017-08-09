@@ -8,22 +8,31 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+export interface Model extends Model_Nuance, mongoose.Document { }
+export interface Model_Nuance extends mongoDB.Document {
+  mdnRange?: {
+    min: number;
+    max: number;
+  };
+  initialCount: number;
+  newCount: number;
+  amount: number;
 }
-export type Model_Partial = Partial<Model>;
+export interface Model_Partial extends Partial<Pick<Model, "initialCount" | "newCount" | "amount">> {
+  mdnRange?: Partial<Model[ "mdnRange" ]>;
+};
 
 /******************************************************************************/
 
-let eventSchema = new mongoose.Schema( {
+let newCardStockSchema = new mongoose.Schema( {
 
-  context: { type: String, set: ignoreEmpty },
-  identifier: { type: String, set: ignoreEmpty },
-  tags: [ String ],
-  data: mongoose.Schema.Types.Mixed,
+  mdnRange: {
+    min: { type: Number, min: 0, default: 0 },
+    max: { type: Number, min: 0, default: 0 }
+  },
+  initialCount: { type: Number, min: 0, default: 0 },
+  newCount: { type: Number, min: 0, default: 0 },
+  amount: { type: Number, min: 0, default: 0 },
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
@@ -32,8 +41,8 @@ let eventSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let EventMongooseModel = mongoose.model<Model>( "Event", eventSchema );
+let NewCardStockMongooseModel = mongoose.model<Model>( "NewCardStock", newCardStockSchema );
 
-export { EventMongooseModel };
+export { NewCardStockMongooseModel };
 
 /******************************************************************************/

@@ -99,6 +99,7 @@ export type FiltrationCriteria = Partial<{
     fullName: string;
   }>;
   user?: Partial<interfaces.dataModel.core.UserInfo>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

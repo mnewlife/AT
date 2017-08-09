@@ -14,15 +14,16 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   paymentId: mongoose.Types.ObjectId;
   transfer: Transfer;
 }
-interface Model_Partial extends Partial<Pick<Model, "userId" | "channelId" | "paymentId">> {
-  transfer?: Partial<Transfer>;
+export interface Model_Partial extends Partial<Pick<Model, "userId" | "channelId" | "paymentId">> {
+  transfer?: Partial<Transfer_Nuance>;
 }
 
-export interface Transfer {
+export interface Transfer_Nuance extends mongoDB.Document {
   identifier: string;
   amount: number;
   paymentRecorded: boolean;
 }
+export interface Transfer extends Transfer_Nuance, mongoose.Document { }
 
 /******************************************************************************/
 
@@ -34,7 +35,9 @@ let airtimeTransferSchema = new mongoose.Schema( {
   transfer: {
     identifier: { type: String, set: ignoreEmpty },
     amount: { type: Number, min: 0, default: 0 },
-    paymentRecorded: { type: String, set: ignoreEmpty }
+    paymentRecorded: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
 
   createdAt: { type: Date, default: Date.now },

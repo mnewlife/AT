@@ -2,29 +2,29 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import MongoController from "../../mongo-controller";
+import { Model, Model_Partial, CardMongooseModel } from "./model";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
+import * as interfaces from "../../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.user {
+class MongoCard extends MongoController implements storageManagerInterfaces.powertel.Card {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.powertel.card.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.powertel.card.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.powertel.card.FiltrationCriteria, sortCriteria: storageManagerInterfaces.powertel.card.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundCards: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundCards );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.powertel.card.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedCards.map(( card ) => {
+              return card.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedCards );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( cardId: string, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( cardId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundCard: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundCard ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: cardId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedCards[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: cardId,
             reason: reason
           } );
           resolve();
@@ -167,71 +167,56 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( cards: storageManagerInterfaces.powertel.card.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( cards.map(( card ) => {
+          let cardDetails: Model_Partial = {
+            pin: card.pin,
+            puk: card.puk,
+            mdn: card.mdn
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
-          }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
-          }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
+          if ( card.buyer ) {
+            cardDetails.buyer = {
+              cardSaleId: mongoose.Types.ObjectId( card.buyer.cardSaleId ),
+              fullName: card.buyer.fullName
             };
           }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
+          if ( card.user ) {
+            cardDetails.user = {
+              userId: mongoose.Types.ObjectId( card.user.userId ),
+              emailAddress: card.user.emailAddress,
+              fullName: card.user.fullName
             };
           }
-          return userDetails;
+          return cardDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedCards: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedCards );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedCards
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedCards );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: cards,
             reason: reason
           } );
           resolve();
@@ -250,63 +235,48 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.powertel.card.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          activeApps: details.activeApps
+        let cardDetails: Model_Partial = {
+          pin: details.pin,
+          puk: details.puk,
+          mdn: details.mdn
         };
-        if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
+        if ( details.buyer ) {
+          cardDetails.buyer = {
+            cardSaleId: mongoose.Types.ObjectId( details.buyer.cardSaleId ),
+            fullName: details.buyer.fullName
           };
         }
-        if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
+        if ( details.user ) {
+          cardDetails.user = {
+            userId: mongoose.Types.ObjectId( details.user.userId ),
+            emailAddress: details.user.emailAddress,
+            fullName: details.user.fullName
           };
         }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( cardDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedCard: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedCard ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedCards
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedCards[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -332,7 +302,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.powertel.card.FiltrationCriteria, details: storageManagerInterfaces.powertel.card.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -344,19 +314,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundCards: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundCards.map(( card ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( card, details )
+            .then(( fedCard: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedCard.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedCard );
                   }
                 } );
               } );
@@ -366,22 +336,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedCards: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedCards );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedCards: interfaces.dataModel.powertel.card.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedCards
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedCards );
 
       } )
       .catch(( reason: any ) => {
@@ -408,27 +378,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( cardId: string, details: storageManagerInterfaces.powertel.card.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let cardObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( cardId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( card: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( card, details )
+          .then(( fedCard: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedCard.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedCard );
                 }
               } );
             } );
@@ -436,29 +406,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedCard: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedCard ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: cardId,
+            documents: convertedCards
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedCards[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: cardId,
             updates: details,
             reason: reason
           } );
@@ -478,7 +448,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.powertel.card.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -526,13 +496,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( cardId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( cardId )
         } );
 
       } )
@@ -540,7 +510,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: cardId
           } );
           resolve();
         } );
@@ -552,7 +522,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: cardId,
             reason: reason
           } );
           resolve();
@@ -571,46 +541,43 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.powertel.card.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
+      if ( filtrationCriteria.pin ) {
+        conditions[ "pin" ] = filtrationCriteria.pin;
       }
 
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
+      if ( filtrationCriteria.puk ) {
+        conditions[ "puk" ] = filtrationCriteria.puk;
       }
 
-      if ( filtrationCriteria.verification ) {
+      if ( filtrationCriteria.mdn ) {
+        conditions[ "mdn" ] = filtrationCriteria.mdn;
+      }
 
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.buyer ) {
+        if ( filtrationCriteria.buyer.cardSaleId ) {
+          conditions[ "buyer.cardSaleId" ] = mongoose.Types.ObjectId( filtrationCriteria.buyer.cardSaleId );
         }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
-          }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
-          }
-        }
-
-      }
-
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+        if ( filtrationCriteria.buyer.fullName ) {
+          conditions[ "buyer.fullName" ] = filtrationCriteria.buyer.fullName;
         }
       }
 
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
+      if ( filtrationCriteria.user ) {
+        if ( filtrationCriteria.user.userId ) {
+          conditions[ "user.userId" ] = mongoose.Types.ObjectId( filtrationCriteria.user.userId );
+        }
+        if ( filtrationCriteria.user.emailAddress ) {
+          conditions[ "user.emailAddress" ] = filtrationCriteria.user.emailAddress;
+        }
+        if ( filtrationCriteria.user.fullName ) {
+          conditions[ "user.fullName" ] = filtrationCriteria.user.fullName;
+        }
       }
 
       if ( filtrationCriteria.textSearch ) {
@@ -625,15 +592,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.powertel.card.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
-      } else {
-        sortString = sortCriteria.criteria;
-      }
+      sortString = sortCriteria.criteria;
       if ( sortCriteria.order === "Descending" ) {
         sortString = "-" + sortString;
       }
@@ -644,111 +607,41 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.powertel.card.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.pin ) {
+        document.pin = details.pin;
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
+      if ( details.puk ) {
+        document.puk = details.puk;
       }
 
-      if ( details.password ) {
-        document.password = details.password;
+      if ( details.mdn ) {
+        document.mdn = details.mdn;
       }
 
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
+      if ( details.buyer ) {
+        if ( details.buyer.cardSaleId ) {
+          document.buyer.cardSaleId = mongoose.Types.ObjectId( details.buyer.cardSaleId );
         }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
+        if ( details.buyer.fullName ) {
+          document.buyer.fullName = details.buyer.fullName;
         }
       }
 
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
+      if ( details.user ) {
+        if ( details.user.userId ) {
+          document.user.userId = mongoose.Types.ObjectId( details.user.userId );
         }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
+        if ( details.user.emailAddress ) {
+          document.user.emailAddress = details.user.emailAddress;
         }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
+        if ( details.user.fullName ) {
+          document.user.fullName = details.user.fullName;
         }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
       }
 
       resolve( document );
@@ -759,66 +652,50 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( cards: Model[], forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.powertel.card.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnCards: interfaces.dataModel.powertel.card.Super[] = [];
 
-          users.forEach(( user ) => {
+          cards.forEach(( card ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
-              verification: {
-                id: user.verification._id,
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
-              },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+            let returnCard: interfaces.dataModel.powertel.card.Super = {
+              id: ( <mongoose.Types.ObjectId>card._id ).toHexString(),
+              pin: card.pin,
+              puk: card.puk,
+              mdn: card.mdn,
+              createdAt: card.createdAt,
+              updatedAt: card.updatedAt
             };
-
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
+            if ( card.buyer ) {
+              returnCard.buyer = {
+                id: ( card.buyer._id as mongoose.Types.ObjectId ).toHexString(),
+                cardSaleId: ( card.buyer.cardSaleId as mongoose.Types.ObjectId ).toHexString(),
+                fullName: card.buyer.fullName,
+                createdAt: card.buyer.createdAt,
+                updatedAt: card.buyer.updatedAt
+              };
             }
-
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
-            }
-
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: user.personalDetails._id,
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
+            if ( card.user ) {
+              returnCard.user = {
+                id: ( card.user._id as mongoose.Types.ObjectId ).toHexString(),
+                userId: ( card.user.userId as mongoose.Types.ObjectId ).toHexString(),
+                emailAddress: card.user.emailAddress,
+                fullName: card.user.fullName,
+                createdAt: card.user.createdAt,
+                updatedAt: card.user.updatedAt
               };
             }
 
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: user.contactDetails._id,
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
-              };
-            }
-
-            returnUsers.push( returnUser );
+            returnCards.push( returnCard );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnCards );
 
         } );
 
@@ -833,12 +710,17 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-  "activeApps"?: { $all: string[] };
+  "pin"?: number;
+  "puk"?: number;
+  "mdn"?: number;
+
+  "buyer.cardSaleId"?: mongoose.Types.ObjectId;
+  "buyer.fullName"?: string;
+
+  "user.userId"?: mongoose.Types.ObjectId;
+  "user.emailAddress"?: string;
+  "user.fullName"?: string;
+
   $text?: { $search: string };
 }
 
@@ -848,10 +730,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.user => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.powertel.Card => {
+  return new MongoCard( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: CardMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

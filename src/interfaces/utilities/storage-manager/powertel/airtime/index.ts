@@ -87,6 +87,7 @@ export type FiltrationCriteria = Partial<{
   newStockValue: Partial<{ min: number; max: number; }>;
   amountSold: Partial<{ min: number; max: number; }>;
   balance: Partial<{ min: number; max: number; }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

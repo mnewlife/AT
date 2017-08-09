@@ -23,33 +23,33 @@ export interface Emitter {
 /******************************************************************************/
 
 export interface Get {
-  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super[]>;
 }
 
 /******************************************************************************/
 
 export interface GetById {
-  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super>;
+  ( eventId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super>;
 }
 
 /******************************************************************************/
 
 export interface AddBatch {
-  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super[]>;
+  ( detailArray: AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super[]>;
 }
 
 export interface Add {
-  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super>;
+  ( details: AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super>;
 }
 
 /******************************************************************************/
 
 export interface Update {
-  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super[]>;
+  ( filtrationCriteria: FiltrationCriteria, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super[]>;
 }
 
 export interface UpdateById {
-  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.event.Super>;
+  ( eventId: string, updates: UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super>;
 }
 
 /******************************************************************************/
@@ -87,6 +87,7 @@ export type FiltrationCriteria = Partial<{
   shopName: string;
   images: string[];
   numProducts: Partial<{ min: number; max: number; }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

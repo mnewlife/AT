@@ -14,7 +14,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   tags: string[];
   data: any;
 }
-export type Model_Partial = Partial<Model>;
+export type Model_Partial = Partial<Pick<Model, "context" | "identifier" | "tags" | "data">>;
 
 /******************************************************************************/
 

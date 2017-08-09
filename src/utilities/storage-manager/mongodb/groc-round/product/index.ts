@@ -2,29 +2,29 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import MongoController from "../../mongo-controller";
+import { Model, Model_Partial, ProductMongooseModel } from "./model";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
+import * as interfaces from "../../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.user {
+class MongoProduct extends MongoController implements storageManagerInterfaces.grocRound.Product {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.grocRound.product.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.grocRound.product.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.grocRound.product.FiltrationCriteria, sortCriteria: storageManagerInterfaces.grocRound.product.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundProducts: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundProducts );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedProducts.map(( product ) => {
+              return product.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedProducts );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( productId: string, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( productId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundProduct: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundProduct ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: productId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedProducts[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: productId,
             reason: reason
           } );
           resolve();
@@ -167,71 +167,76 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( products: storageManagerInterfaces.grocRound.product.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( products.map(( product ) => {
+          let productDetails: Model_Partial = {
+            label: product.label,
+            priceValues: {},
+            effectivePrice: {
+              price: product.effectivePrice.price
+            }
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
+          if ( product.effectivePrice.shopId ) {
+            productDetails.effectivePrice.shopId = mongoose.Types.ObjectId( product.effectivePrice.shopId );
           }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
+          if ( product.images ) {
+            productDetails.images = product.images;
           }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
+          if ( product.priceValues.min ) {
+            productDetails.priceValues.min = {
+              shopId: mongoose.Types.ObjectId( product.priceValues.min.shopId ),
+              price: product.priceValues.min.price
             };
           }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
+          if ( product.priceValues.max ) {
+            productDetails.priceValues.max = {
+              shopId: mongoose.Types.ObjectId( product.priceValues.max.shopId ),
+              price: product.priceValues.max.price
             };
           }
-          return userDetails;
+          if ( product.priceValues.median ) {
+            productDetails.priceValues.median = {
+              shopId: mongoose.Types.ObjectId( product.priceValues.median.shopId ),
+              price: product.priceValues.median.price
+            };
+          }
+          if ( product.priceValues.mean ) {
+            productDetails.priceValues.mean = {
+              shopId: mongoose.Types.ObjectId( product.priceValues.mean.shopId ),
+              price: product.priceValues.mean.price
+            };
+          }
+
+          return productDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedProducts: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedProducts );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedProducts
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedProducts );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: products,
             reason: reason
           } );
           resolve();
@@ -250,63 +255,70 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.grocRound.product.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
+        let productDetails: Model_Partial = {
+          label: details.label,
+          priceValues: {
             createdAt: new Date(),
             updatedAt: new Date()
           },
-          activeApps: details.activeApps
+          effectivePrice: {
+            price: details.effectivePrice.price
+          }
         };
-        if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
+        if ( details.effectivePrice.shopId ) {
+          productDetails.effectivePrice.shopId = mongoose.Types.ObjectId( details.effectivePrice.shopId );
         }
-        if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
+        if ( details.images ) {
+          productDetails.images = details.images;
         }
-        if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
+        if ( details.priceValues.min ) {
+          productDetails.priceValues.min = {
+            shopId: mongoose.Types.ObjectId( details.priceValues.min.shopId ),
+            price: details.priceValues.min.price
           };
         }
-        if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
+        if ( details.priceValues.max ) {
+          productDetails.priceValues.max = {
+            shopId: mongoose.Types.ObjectId( details.priceValues.max.shopId ),
+            price: details.priceValues.max.price
+          };
+        }
+        if ( details.priceValues.median ) {
+          productDetails.priceValues.median = {
+            shopId: mongoose.Types.ObjectId( details.priceValues.median.shopId ),
+            price: details.priceValues.median.price
+          };
+        }
+        if ( details.priceValues.mean ) {
+          productDetails.priceValues.mean = {
+            shopId: mongoose.Types.ObjectId( details.priceValues.mean.shopId ),
+            price: details.priceValues.mean.price
           };
         }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( productDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedProduct: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedProduct ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedProducts
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedProducts[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -332,7 +344,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.grocRound.product.FiltrationCriteria, details: storageManagerInterfaces.grocRound.product.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -344,19 +356,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundProducts: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundProducts.map(( product ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( product, details )
+            .then(( fedProduct: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedProduct.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedProduct );
                   }
                 } );
               } );
@@ -366,22 +378,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedProducts: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedProducts );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedProducts
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedProducts );
 
       } )
       .catch(( reason: any ) => {
@@ -408,27 +420,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( productId: string, details: storageManagerInterfaces.grocRound.product.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let productObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( productId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( product: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( product, details )
+          .then(( fedProduct: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedProduct.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedProduct );
                 }
               } );
             } );
@@ -436,29 +448,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedProduct: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedProduct ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: productId,
+            documents: convertedProducts
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedProducts[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: productId,
             updates: details,
             reason: reason
           } );
@@ -478,7 +490,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.grocRound.product.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -526,13 +538,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( productId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( productId )
         } );
 
       } )
@@ -540,7 +552,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: productId
           } );
           resolve();
         } );
@@ -552,7 +564,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: productId,
             reason: reason
           } );
           resolve();
@@ -571,46 +583,97 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.grocRound.product.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
+      if ( filtrationCriteria.label ) {
+        conditions[ "label" ] = filtrationCriteria.label;
       }
 
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
+      if ( filtrationCriteria.images ) {
+        conditions[ "images" ] = { $all: filtrationCriteria.images };
       }
 
-      if ( filtrationCriteria.verification ) {
+      if ( filtrationCriteria.priceValues ) {
 
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
-        }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
+        if ( filtrationCriteria.priceValues.min ) {
+          if ( filtrationCriteria.priceValues.min.shopId ) {
+            conditions[ "priceValues.min.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.min.shopId );
           }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
+          if ( filtrationCriteria.priceValues.min.price ) {
+            conditions[ "priceValues.min.price" ] = {};
+            if ( filtrationCriteria.priceValues.min.price.min ) {
+              conditions[ "priceValues.min.price" ].$gte = filtrationCriteria.priceValues.min.price.min;
+            }
+            if ( filtrationCriteria.priceValues.min.price.max ) {
+              conditions[ "priceValues.min.price" ].$lte = filtrationCriteria.priceValues.min.price.max;
+            }
+          }
+        }
+
+        if ( filtrationCriteria.priceValues.max ) {
+          if ( filtrationCriteria.priceValues.max.shopId ) {
+            conditions[ "priceValues.max.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.max.shopId );
+          }
+          if ( filtrationCriteria.priceValues.max.price ) {
+            conditions[ "priceValues.max.price" ] = {};
+            if ( filtrationCriteria.priceValues.max.price.min ) {
+              conditions[ "priceValues.max.price" ].$gte = filtrationCriteria.priceValues.max.price.min;
+            }
+            if ( filtrationCriteria.priceValues.max.price.max ) {
+              conditions[ "priceValues.max.price" ].$lte = filtrationCriteria.priceValues.max.price.max;
+            }
+          }
+        }
+
+        if ( filtrationCriteria.priceValues.median ) {
+          if ( filtrationCriteria.priceValues.median.shopId ) {
+            conditions[ "priceValues.median.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.median.shopId );
+          }
+          if ( filtrationCriteria.priceValues.median.price ) {
+            conditions[ "priceValues.median.price" ] = {};
+            if ( filtrationCriteria.priceValues.median.price.min ) {
+              conditions[ "priceValues.median.price" ].$gte = filtrationCriteria.priceValues.median.price.min;
+            }
+            if ( filtrationCriteria.priceValues.median.price.max ) {
+              conditions[ "priceValues.median.price" ].$lte = filtrationCriteria.priceValues.median.price.max;
+            }
+          }
+        }
+
+        if ( filtrationCriteria.priceValues.mean ) {
+          if ( filtrationCriteria.priceValues.mean.shopId ) {
+            conditions[ "priceValues.mean.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.mean.shopId );
+          }
+          if ( filtrationCriteria.priceValues.mean.price ) {
+            conditions[ "priceValues.mean.price" ] = {};
+            if ( filtrationCriteria.priceValues.mean.price.min ) {
+              conditions[ "priceValues.mean.price" ].$gte = filtrationCriteria.priceValues.mean.price.min;
+            }
+            if ( filtrationCriteria.priceValues.mean.price.max ) {
+              conditions[ "priceValues.mean.price" ].$lte = filtrationCriteria.priceValues.mean.price.max;
+            }
           }
         }
 
       }
 
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+      if ( filtrationCriteria.effectivePrice ) {
+        if ( filtrationCriteria.effectivePrice.shopId ) {
+          conditions[ "effectivePrice.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.effectivePrice.shopId );
         }
-      }
-
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
+        if ( filtrationCriteria.effectivePrice.price ) {
+          conditions[ "effectivePrice.price" ] = {};
+          if ( filtrationCriteria.effectivePrice.price.min ) {
+            conditions[ "effectivePrice.price" ].$gte = filtrationCriteria.effectivePrice.price.min;
+          }
+          if ( filtrationCriteria.effectivePrice.price.max ) {
+            conditions[ "effectivePrice.price" ].$lte = filtrationCriteria.effectivePrice.price.max;
+          }
+        }
       }
 
       if ( filtrationCriteria.textSearch ) {
@@ -625,12 +688,12 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.grocRound.product.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
+      if ( sortCriteria.criteria === "effectivePrice" ) {
+        sortString = "effectivePrice.price";
       } else {
         sortString = sortCriteria.criteria;
       }
@@ -644,111 +707,56 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.grocRound.product.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.label ) {
+        document.label = details.label;
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
-      }
-
-      if ( details.password ) {
-        document.password = details.password;
-      }
-
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
-        }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
-        }
-      }
-
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
-        }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
+      if ( details.imagesToAdd ) {
+        details.imagesToAdd.forEach(( image ) => {
+          document.images.push( image );
         } );
       }
 
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
+      if ( details.imagesToRemove ) {
+        details.imagesToRemove.forEach(( image ) => {
+          let index = document.images.indexOf( image );
+          if ( index && index != -1 ) {
+            document.images.splice( index, 1 );
           }
         } );
+      }
+
+      if ( details.priceValues ) {
+        if ( details.priceValues.min ) {
+          document.priceValues.min.shopId = mongoose.Types.ObjectId( details.priceValues.min.shopId );
+          document.priceValues.min.price = details.priceValues.min.price;
+          document.priceValues.min.updatedAt = new Date();
+        }
+        if ( details.priceValues.max ) {
+          document.priceValues.max.shopId = mongoose.Types.ObjectId( details.priceValues.max.shopId );
+          document.priceValues.max.price = details.priceValues.max.price;
+          document.priceValues.max.updatedAt = new Date();
+        }
+        if ( details.priceValues.median ) {
+          document.priceValues.median.shopId = mongoose.Types.ObjectId( details.priceValues.median.shopId );
+          document.priceValues.median.price = details.priceValues.median.price;
+          document.priceValues.median.updatedAt = new Date();
+        }
+        if ( details.priceValues.mean ) {
+          document.priceValues.mean.shopId = mongoose.Types.ObjectId( details.priceValues.mean.shopId );
+          document.priceValues.mean.price = details.priceValues.mean.price;
+          document.priceValues.mean.updatedAt = new Date();
+        }
+      }
+
+      if ( details.effectivePrice ) {
+        document.effectivePrice.shopId = mongoose.Types.ObjectId( details.effectivePrice.shopId ),
+          document.effectivePrice.price = details.effectivePrice.price;
+        document.effectivePrice.updatedAt = new Date();
       }
 
       resolve( document );
@@ -759,66 +767,83 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( products: Model[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnProducts: interfaces.dataModel.grocRound.product.Super[] = [];
 
-          users.forEach(( user ) => {
+          products.forEach(( product ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
-              verification: {
-                id: user.verification._id,
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
+            let returnProduct: interfaces.dataModel.grocRound.product.Super = {
+              id: ( <mongoose.Types.ObjectId>product._id ).toHexString(),
+              label: product.label,
+              priceValues: {
+                id: ( <mongoose.Types.ObjectId>product.priceValues._id ).toHexString(),
+                createdAt: product.priceValues.createdAt,
+                updatedAt: product.priceValues.updatedAt
               },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+              effectivePrice: {
+                id: ( <mongoose.Types.ObjectId>product.effectivePrice._id ).toHexString(),
+                price: product.effectivePrice.price,
+                createdAt: product.effectivePrice.createdAt,
+                updatedAt: product.effectivePrice.updatedAt                
+              },
+              createdAt: product.createdAt,
+              updatedAt: product.updatedAt
             };
 
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
+            if ( product.effectivePrice.shopId ) {
+              returnProduct.effectivePrice.shopId = ( product.effectivePrice.shopId as mongoose.Types.ObjectId ).toHexString();
             }
-
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
+            if ( product.images ) {
+              returnProduct.images = product.images;
             }
-
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: user.personalDetails._id,
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
+            if ( product.priceValues.min ) {
+              returnProduct.priceValues.min = {
+                id: ( product.priceValues.min._id as mongoose.Types.ObjectId ).toHexString(),
+                shopId: ( product.priceValues.min.shopId as mongoose.Types.ObjectId ).toHexString(),
+                price: product.priceValues.min.price,
+                createdAt: product.priceValues.min.createdAt,
+                updatedAt: product.priceValues.min.updatedAt
+              };
+            }
+            if ( product.priceValues.max ) {
+              returnProduct.priceValues.max = {
+                id: ( product.priceValues.max._id as mongoose.Types.ObjectId ).toHexString(),
+                shopId: ( product.priceValues.max.shopId as mongoose.Types.ObjectId ).toHexString(),
+                price: product.priceValues.max.price,
+                createdAt: product.priceValues.max.createdAt,
+                updatedAt: product.priceValues.max.updatedAt
+              };
+            }
+            if ( product.priceValues.median ) {
+              returnProduct.priceValues.median = {
+                id: ( product.priceValues.median._id as mongoose.Types.ObjectId ).toHexString(),
+                shopId: ( product.priceValues.median.shopId as mongoose.Types.ObjectId ).toHexString(),
+                price: product.priceValues.median.price,
+                createdAt: product.priceValues.median.createdAt,
+                updatedAt: product.priceValues.median.updatedAt
+              };
+            }
+            if ( product.priceValues.mean ) {
+              returnProduct.priceValues.mean = {
+                id: ( product.priceValues.mean._id as mongoose.Types.ObjectId ).toHexString(),
+                shopId: ( product.priceValues.mean.shopId as mongoose.Types.ObjectId ).toHexString(),
+                price: product.priceValues.mean.price,
+                createdAt: product.priceValues.mean.createdAt,
+                updatedAt: product.priceValues.mean.updatedAt
               };
             }
 
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: user.contactDetails._id,
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
-              };
-            }
-
-            returnUsers.push( returnUser );
+            returnProducts.push( returnProduct );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnProducts );
 
         } );
 
@@ -833,12 +858,24 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-  "activeApps"?: { $all: string[] };
+  "label"?: string;
+  "images"?: { $all: string[] };
+
+  "priceValues.min.shopId"?: mongoose.Types.ObjectId;
+  "priceValues.min.price"?: { $gte?: number; $lte?: number; };
+
+  "priceValues.max.shopId"?: mongoose.Types.ObjectId;
+  "priceValues.max.price"?: { $gte?: number; $lte?: number; };
+
+  "priceValues.median.shopId"?: mongoose.Types.ObjectId;
+  "priceValues.median.price"?: { $gte?: number; $lte?: number; };
+
+  "priceValues.mean.shopId"?: mongoose.Types.ObjectId;
+  "priceValues.mean.price"?: { $gte?: number; $lte?: number; };
+
+  "effectivePrice.shopId"?: mongoose.Types.ObjectId;
+  "effectivePrice.price"?: { $gte?: number; $lte?: number; };
+
   $text?: { $search: string };
 }
 
@@ -848,10 +885,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.user => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.grocRound.Product => {
+  return new MongoProduct( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: ProductMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

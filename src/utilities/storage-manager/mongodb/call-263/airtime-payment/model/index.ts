@@ -14,12 +14,13 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   transaction: Transaction;
 }
 export interface Model_Partial {
-  user?: Partial<mongoDB.UserInfo>;
+  user?: Partial<mongoDB.UserInfo_Nuance>;
   channelId?: mongoose.Types.ObjectId;
-  transaction?: Partial<Transaction>;
+  transaction?: Partial<Transaction_Nuance>;
 };
 
-export interface Transaction {
+export interface Transaction extends Transaction_Nuance, mongoose.Document { }
+export interface Transaction_Nuance extends mongoDB.Document {
   identifier: string;
   amount: number;
   method: string;
@@ -32,13 +33,17 @@ let airtimePaymentSchema = new mongoose.Schema( {
   user: {
     userId: mongoose.Schema.Types.ObjectId,
     emailAddress: { type: String, set: ignoreEmpty },
-    fullName: { type: String, set: ignoreEmpty }
+    fullName: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
   channelId: mongoose.Schema.Types.ObjectId,
   transaction: {
     identifier: { type: String, set: ignoreEmpty },
     amount: { type: Number, min: 0, default: 0 },
-    method: { type: String, set: ignoreEmpty }
+    method: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
 
   createdAt: { type: Date, default: Date.now },

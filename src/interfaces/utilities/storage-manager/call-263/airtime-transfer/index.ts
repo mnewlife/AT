@@ -86,7 +86,12 @@ export type FiltrationCriteria = Partial<{
   userId: string;
   channelId: string;
   paymentId: string;
-  transfer: Partial<interfaces.dataModel.call263.airtimeTransfer.Transfer>;
+  transfer: Partial<{
+    identifier: string;
+    amount: Partial<{ min: number; max: number }>;
+    paymentRecorded: boolean;
+  }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

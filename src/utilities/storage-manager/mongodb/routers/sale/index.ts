@@ -2,18 +2,18 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../mongo-controller";
+import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, UserMongooseModel } from "./model";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
-import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
+import * as interfaces from "../../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.user {
+class MongoUser extends MongoController implements storageManagerInterfaces.core.User {
 
   /*****************************************************************/
 
@@ -206,6 +206,15 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
               updatedAt: new Date()
             };
           }
+          if ( user.residentialDetails ) {
+            userDetails.residentialDetails = <any>{
+              country: user.residentialDetails.country,
+              province: user.residentialDetails.province,
+              address: user.residentialDetails.address,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            };
+          }
           return userDetails;
         } ) );
 
@@ -284,6 +293,15 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         if ( details.contactDetails ) {
           userDetails.contactDetails = <any>{
             phoneNumbers: details.contactDetails.phoneNumbers,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+        }
+        if ( details.residentialDetails ) {
+          userDetails.residentialDetails = <any>{
+            country: details.residentialDetails.country,
+            province: details.residentialDetails.province,
+            address: details.residentialDetails.address,
             createdAt: new Date(),
             updatedAt: new Date()
           };
@@ -603,6 +621,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
       }
 
+      if ( filtrationCriteria.personalDetails ) {
+        if ( filtrationCriteria.personalDetails.firstName ) {
+          conditions[ "personalDetails.firstName" ] = filtrationCriteria.personalDetails.firstName;
+        }
+        if ( filtrationCriteria.personalDetails.lastName ) {
+          conditions[ "personalDetails.lastName" ] = filtrationCriteria.personalDetails.lastName;
+        }
+        if ( filtrationCriteria.personalDetails.dateOfBirth ) {
+          conditions[ "personalDetails.dateOfBirth" ] = {};
+          if ( filtrationCriteria.personalDetails.dateOfBirth.min ) {
+            conditions[ "personalDetails.dateOfBirth" ].$gte = filtrationCriteria.personalDetails.dateOfBirth.min;
+          }
+          if ( filtrationCriteria.personalDetails.dateOfBirth.max ) {
+            conditions[ "personalDetails.dateOfBirth" ].$lte = filtrationCriteria.personalDetails.dateOfBirth.max;
+          }
+        }
+        if ( filtrationCriteria.personalDetails.gender ) {
+          conditions[ "personalDetails.gender" ] = filtrationCriteria.personalDetails.gender;
+        }
+      }
+
       if ( filtrationCriteria.contactDetails ) {
         if ( filtrationCriteria.contactDetails.phoneNumbers ) {
           conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
@@ -611,6 +650,18 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
       if ( filtrationCriteria.activeApps ) {
         conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
+      }
+
+      if ( filtrationCriteria.residentialDetails ) {
+        if ( filtrationCriteria.residentialDetails.country ) {
+          conditions[ "residentialDetails.country" ] = filtrationCriteria.residentialDetails.country;
+        }
+        if ( filtrationCriteria.residentialDetails.province ) {
+          conditions[ "residentialDetails.province" ] = filtrationCriteria.residentialDetails.province;
+        }
+        if ( filtrationCriteria.residentialDetails.address ) {
+          conditions[ "residentialDetails.address" ] = filtrationCriteria.residentialDetails.address;
+        }
       }
 
       if ( filtrationCriteria.textSearch ) {
@@ -728,6 +779,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         }
       }
 
+      if ( details.residentialDetails ) {
+        if ( details.residentialDetails.country || details.residentialDetails.province || details.residentialDetails.address ) {
+          if ( !document.residentialDetails ) {
+            document.residentialDetails = <any>{
+              country: "",
+              province: "",
+              address: ""
+            };
+          }
+          if ( details.residentialDetails.country ) {
+            document.residentialDetails.country = details.residentialDetails.country;
+          }
+          if ( details.residentialDetails.province ) {
+            document.residentialDetails.province = details.residentialDetails.province;
+          }
+          if ( details.residentialDetails.address ) {
+            document.residentialDetails.address = details.residentialDetails.address;
+          }
+        }
+      }
+
       if ( details.activeAppsToAdd ) {
         if ( !document.activeApps ) {
           document.activeApps = [];
@@ -776,7 +848,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
               accessLevel: user.accessLevel,
               password: user.password,
               verification: {
-                id: user.verification._id,
+                id: ( user.verification._id as mongoose.Types.ObjectId ).toHexString(),
                 verified: user.verification.verified,
                 numVerAttempts: user.verification.numVerAttempts,
                 createdAt: user.verification.createdAt,
@@ -797,9 +869,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
             if ( user.personalDetails ) {
               returnUser.personalDetails = {
-                id: user.personalDetails._id,
+                id: ( user.personalDetails._id as mongoose.Types.ObjectId ).toHexString(),
                 firstName: user.personalDetails.firstName,
                 lastName: user.personalDetails.lastName,
+                dateOfBirth: user.personalDetails.dateOfBirth,
+                gender: user.personalDetails.gender,
                 createdAt: user.personalDetails.createdAt,
                 updatedAt: user.personalDetails.updatedAt
               };
@@ -807,11 +881,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
             if ( user.contactDetails ) {
               returnUser.contactDetails = {
-                id: user.contactDetails._id,
+                id: ( user.contactDetails._id as mongoose.Types.ObjectId ).toHexString(),
                 phoneNumbers: user.contactDetails.phoneNumbers,
                 createdAt: user.contactDetails.createdAt,
                 updatedAt: user.contactDetails.updatedAt
               };
+            }
+
+            if ( user.residentialDetails ) {
+              returnUser.residentialDetails = {
+                id: ( user.residentialDetails._id as mongoose.Types.ObjectId ).toHexString(),
+                country: user.residentialDetails.country,
+                province: user.residentialDetails.province,
+                address: user.residentialDetails.address,
+                createdAt: user.residentialDetails.createdAt,
+                updatedAt: user.residentialDetails.updatedAt
+              }
             }
 
             returnUsers.push( returnUser );
@@ -835,9 +920,21 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 interface QueryConditions {
   "emailAddress"?: string;
   "accessLevel"?: string;
+
   "verification.verified"?: boolean;
   "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
+
+  "personalDetails.firstName"?: string;
+  "personalDetails.lastName"?: string;
+  "personalDetails.dateOfBirth"?: { $gte?: Date; $lte?: Date; };
+  "personalDetails.gender"?: "Male" | "Female";
+
   "contactDetails.phoneNumbers"?: { $all: string[] };
+
+  "residentialDetails.country"?: string;
+  "residentialDetails.province"?: string;
+  "residentialDetails.address"?: string;
+
   "activeApps"?: { $all: string[] };
   $text?: { $search: string };
 }
@@ -848,7 +945,7 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.user => {
+} ): storageManagerInterfaces.core.User => {
   return new MongoUser( {
     emitter: emitterFactory( params.emitEvent ),
     Model: UserMongooseModel,

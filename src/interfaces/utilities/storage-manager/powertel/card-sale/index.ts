@@ -96,6 +96,7 @@ export type FiltrationCriteria = Partial<{
     withRouter: boolean;
     routerType: string;
   }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

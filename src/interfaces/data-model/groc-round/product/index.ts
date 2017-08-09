@@ -13,14 +13,14 @@ export interface Super extends interfaces.dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface PriceValues {
+export interface PriceValues extends interfaces.dataModel.DataModel {
   min?: PriceValue;
   max?: PriceValue;
   median?: PriceValue;
   mean?: PriceValue;
 };
 
-export interface PriceValue {
+export interface PriceValue extends interfaces.dataModel.DataModel {
   shopId?: string;
   price: number;
 };

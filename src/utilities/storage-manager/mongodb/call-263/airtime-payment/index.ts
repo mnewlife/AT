@@ -177,13 +177,17 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
             user: {
               userId: mongoose.Types.ObjectId( airtimePayment.user.userId ),
               emailAddress: airtimePayment.user.emailAddress,
-              fullName: airtimePayment.user.fullName
+              fullName: airtimePayment.user.fullName,
+              createdAt: new Date(),
+              updatedAt: new Date()
             },
             channelId: mongoose.Types.ObjectId( airtimePayment.channelId ),
             transaction: {
               identifier: airtimePayment.transaction.identifier,
               amount: airtimePayment.transaction.amount,
-              method: airtimePayment.transaction.method
+              method: airtimePayment.transaction.method,
+              createdAt: new Date(),
+              updatedAt: new Date()
             }
           };
           return airtimePaymentDetails;
@@ -239,13 +243,17 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
           user: {
             userId: mongoose.Types.ObjectId( details.user.userId ),
             emailAddress: details.user.emailAddress,
-            fullName: details.user.fullName
+            fullName: details.user.fullName,
+            createdAt: new Date(),
+            updatedAt: new Date()
           },
           channelId: mongoose.Types.ObjectId( details.channelId ),
           transaction: {
             identifier: details.transaction.identifier,
             amount: details.transaction.amount,
-            method: details.transaction.method
+            method: details.transaction.method,
+            createdAt: new Date(),
+            updatedAt: new Date()
           }
         };
 
@@ -662,9 +670,12 @@ class MongoAirtimePayment extends MongoController implements storageManagerInter
               },
               channelId: ( airtimePayment.channelId as mongoose.Types.ObjectId ).toHexString(),
               transaction: {
+                id: ( airtimePayment.transaction._id as mongoose.Types.ObjectId ).toHexString(),
                 identifier: airtimePayment.transaction.identifier,
                 amount: airtimePayment.transaction.amount,
-                method: airtimePayment.transaction.method
+                method: airtimePayment.transaction.method,
+                createdAt: airtimePayment.transaction.createdAt,
+                updatedAt: airtimePayment.transaction.updatedAt
               },
               createdAt: airtimePayment.createdAt,
               updatedAt: airtimePayment.updatedAt

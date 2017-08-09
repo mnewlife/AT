@@ -13,18 +13,18 @@ import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoAirtimeTransfer extends MongoController implements storageManagerInterfaces.core.airtimeTransfer {
+class MongoAirtimeTransfer extends MongoController implements storageManagerInterfaces.call263.AirtimeTransfer {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.airtimeTransfer.Emitter;
+  protected readonly emitter: storageManagerInterfaces.call263.airtimeTransfer.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.airtimeTransfer.Emitter;
+    emitter: storageManagerInterfaces.call263.airtimeTransfer.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.airtimeTransfer.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.airtimeTransfer.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,9 +69,9 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
         return this.convertToAbstract( foundAirtimeTransfers );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.airtimeTransfer.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
@@ -111,7 +111,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly getById = ( airtimeTransferId: string, forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super> => {
+  readonly getById = ( airtimeTransferId: string, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,7 +124,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
         return this.convertToAbstract( [ foundAirtimeTransfer ] );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
@@ -167,45 +167,24 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly addBatch = ( airtimeTransfers: storageManagerInterfaces.core.airtimeTransfer.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super[]> => {
+  readonly addBatch = ( airtimeTransfers: storageManagerInterfaces.call263.airtimeTransfer.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.saveMultipleDocuments( airtimeTransfers.map(( airtimeTransfer ) => {
           let airtimeTransferDetails: Model_Partial = {
-            emailAddress: airtimeTransfer.emailAddress,
-            password: airtimeTransfer.password,
-            accessLevel: airtimeTransfer.accessLevel,
-            verification: {
-              verified: airtimeTransfer.verification.verified,
-              numVerAttempts: airtimeTransfer.verification.numVerAttempts,
+            userId: mongoose.Types.ObjectId( airtimeTransfer.userId ),
+            channelId: mongoose.Types.ObjectId( airtimeTransfer.userId ),
+            paymentId: mongoose.Types.ObjectId( airtimeTransfer.userId ),
+            transfer: {
+              identifier: airtimeTransfer.transfer.identifier,
+              amount: airtimeTransfer.transfer.amount,
+              paymentRecorded: airtimeTransfer.transfer.paymentRecorded,
               createdAt: new Date(),
               updatedAt: new Date()
-            },
-            activeApps: []
+            }
           };
-          if ( airtimeTransfer.resetCode ) {
-            airtimeTransferDetails.resetCode = airtimeTransfer.resetCode;
-          }
-          if ( airtimeTransfer.verification.verificationCode ) {
-            airtimeTransferDetails.verification.verificationCode = airtimeTransfer.verification.verificationCode;
-          }
-          if ( airtimeTransfer.personalDetails ) {
-            airtimeTransferDetails.personalDetails = <any>{
-              firstName: airtimeTransfer.personalDetails.firstName,
-              lastName: airtimeTransfer.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( airtimeTransfer.contactDetails ) {
-            airtimeTransferDetails.contactDetails = <any>{
-              phoneNumbers: airtimeTransfer.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
           return airtimeTransferDetails;
         } ) );
 
@@ -215,7 +194,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
         return this.convertToAbstract( addedAirtimeTransfers );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
@@ -250,44 +229,23 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.airtimeTransfer.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super> => {
+  readonly add = ( details: storageManagerInterfaces.call263.airtimeTransfer.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         let airtimeTransferDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
+          userId: mongoose.Types.ObjectId( details.userId ),
+          channelId: mongoose.Types.ObjectId( details.userId ),
+          paymentId: mongoose.Types.ObjectId( details.userId ),
+          transfer: {
+            identifier: details.transfer.identifier,
+            amount: details.transfer.amount,
+            paymentRecorded: details.transfer.paymentRecorded,
             createdAt: new Date(),
             updatedAt: new Date()
-          },
-          activeApps: details.activeApps
+          }
         };
-        if ( details.resetCode ) {
-          airtimeTransferDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          airtimeTransferDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          airtimeTransferDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails ) {
-          airtimeTransferDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
 
         return this.saveDocument( airtimeTransferDetails );
 
@@ -297,7 +255,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
         return this.convertToAbstract( [ addedAirtimeTransfer ] );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
@@ -332,7 +290,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.airtimeTransfer.FiltrationCriteria, details: storageManagerInterfaces.core.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, details: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -371,7 +329,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
         return this.convertToAbstract( updatedAirtimeTransfers );
 
       } )
-      .then(( updatedAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] ) => {
+      .then(( updatedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
@@ -408,7 +366,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly updateById = ( airtimeTransferId: string, details: storageManagerInterfaces.core.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super> => {
+  readonly updateById = ( airtimeTransferId: string, details: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
 
     let airtimeTransferObjectId: mongoose.Types.ObjectId;
 
@@ -441,7 +399,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
         return this.convertToAbstract( [ updatedAirtimeTransfer ] );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
@@ -478,7 +436,7 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.airtimeTransfer.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -571,46 +529,38 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.airtimeTransfer.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
+      if ( filtrationCriteria.userId ) {
+        conditions[ "userId" ] = mongoose.Types.ObjectId( filtrationCriteria.userId );
+      }
+      if ( filtrationCriteria.channelId ) {
+        conditions[ "channelId" ] = mongoose.Types.ObjectId( filtrationCriteria.channelId );
+      }
+      if ( filtrationCriteria.paymentId ) {
+        conditions[ "paymentId" ] = mongoose.Types.ObjectId( filtrationCriteria.paymentId );
       }
 
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
-      }
-
-      if ( filtrationCriteria.verification ) {
-
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.transfer ) {
+        if ( filtrationCriteria.transfer.identifier ) {
+          conditions[ "transfer.identifier" ] = filtrationCriteria.transfer.identifier;
         }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
+        if ( filtrationCriteria.transfer.amount ) {
+          conditions[ "transfer.amount" ] = {};
+          if ( filtrationCriteria.transfer.amount.min ) {
+            conditions[ "transfer.amount" ].$gte = filtrationCriteria.transfer.amount.min;
           }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
+          if ( filtrationCriteria.transfer.amount.max ) {
+            conditions[ "transfer.amount" ].$lte = filtrationCriteria.transfer.amount.max;
           }
         }
-
-      }
-
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+        if ( filtrationCriteria.transfer.paymentRecorded ) {
+          conditions[ "transfer.paymentRecorded" ] = filtrationCriteria.transfer.paymentRecorded;
         }
-      }
-
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
       }
 
       if ( filtrationCriteria.textSearch ) {
@@ -625,12 +575,12 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.airtimeTransfer.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.call263.airtimeTransfer.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
+      if ( sortCriteria.criteria === "amount" ) {
+        sortString = "transfer.amount";
       } else {
         sortString = sortCriteria.criteria;
       }
@@ -644,111 +594,32 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.airtimeTransfer.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.userId ) {
+        document.userId = mongoose.Types.ObjectId( details.userId );
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
+      if ( details.channelId ) {
+        document.channelId = mongoose.Types.ObjectId( details.channelId );
       }
 
-      if ( details.password ) {
-        document.password = details.password;
+      if ( details.paymentId ) {
+        document.paymentId = mongoose.Types.ObjectId( details.paymentId );
       }
 
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
+      if ( details.transfer ) {
+        if ( details.transfer.identifier ) {
+          document.transfer.identifier = details.transfer.identifier;
         }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
+        if ( details.transfer.amount ) {
+          document.transfer.amount = details.transfer.amount;
         }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
+        if ( details.transfer.paymentRecorded ) {
+          document.transfer.paymentRecorded = details.transfer.paymentRecorded;
         }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
-        }
-      }
-
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
-        }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
       }
 
       resolve( document );
@@ -759,60 +630,33 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( airtimeTransfers: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.airtimeTransfer.Super[]> => {
+  private readonly convertToAbstract = ( airtimeTransfers: Model[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.airtimeTransfer.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
 
-          let returnAirtimeTransfers: interfaces.dataModel.core.airtimeTransfer.Super[] = [];
+          let returnAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] = [];
 
           airtimeTransfers.forEach(( airtimeTransfer ) => {
 
-            let returnAirtimeTransfer: interfaces.dataModel.core.airtimeTransfer.Super = {
+            let returnAirtimeTransfer: interfaces.dataModel.call263.airtimeTransfer.Super = {
               id: ( <mongoose.Types.ObjectId>airtimeTransfer._id ).toHexString(),
-              emailAddress: airtimeTransfer.emailAddress,
-              accessLevel: airtimeTransfer.accessLevel,
-              password: airtimeTransfer.password,
-              verification: {
-                id: airtimeTransfer.verification._id,
-                verified: airtimeTransfer.verification.verified,
-                numVerAttempts: airtimeTransfer.verification.numVerAttempts,
-                createdAt: airtimeTransfer.verification.createdAt,
-                updatedAt: airtimeTransfer.verification.updatedAt
+              userId: ( <mongoose.Types.ObjectId>airtimeTransfer.userId ).toHexString(),
+              channelId: ( <mongoose.Types.ObjectId>airtimeTransfer.channelId ).toHexString(),
+              paymentId: ( <mongoose.Types.ObjectId>airtimeTransfer.paymentId ).toHexString(),
+              transfer: {
+                id: ( <mongoose.Types.ObjectId>airtimeTransfer._id ).toHexString(),
+                identifier: airtimeTransfer.transfer.identifier,
+                amount: airtimeTransfer.transfer.amount,
+                paymentRecorded: airtimeTransfer.transfer.paymentRecorded,
+                createdAt: airtimeTransfer.transfer.createdAt,
+                updatedAt: airtimeTransfer.transfer.updatedAt
               },
-              activeApps: airtimeTransfer.activeApps,
               createdAt: airtimeTransfer.createdAt,
               updatedAt: airtimeTransfer.updatedAt
             };
-
-            if ( airtimeTransfer.resetCode ) {
-              returnAirtimeTransfer.resetCode = airtimeTransfer.resetCode;
-            }
-
-            if ( airtimeTransfer.verification.verificationCode ) {
-              returnAirtimeTransfer.verification.verificationCode = airtimeTransfer.verification.verificationCode;
-            }
-
-            if ( airtimeTransfer.personalDetails ) {
-              returnAirtimeTransfer.personalDetails = {
-                id: airtimeTransfer.personalDetails._id,
-                firstName: airtimeTransfer.personalDetails.firstName,
-                lastName: airtimeTransfer.personalDetails.lastName,
-                createdAt: airtimeTransfer.personalDetails.createdAt,
-                updatedAt: airtimeTransfer.personalDetails.updatedAt
-              };
-            }
-
-            if ( airtimeTransfer.contactDetails ) {
-              returnAirtimeTransfer.contactDetails = {
-                id: airtimeTransfer.contactDetails._id,
-                phoneNumbers: airtimeTransfer.contactDetails.phoneNumbers,
-                createdAt: airtimeTransfer.contactDetails.createdAt,
-                updatedAt: airtimeTransfer.contactDetails.updatedAt
-              };
-            }
 
             returnAirtimeTransfers.push( returnAirtimeTransfer );
 
@@ -833,12 +677,14 @@ class MongoAirtimeTransfer extends MongoController implements storageManagerInte
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-  "activeApps"?: { $all: string[] };
+  "userId"?: mongoose.Types.ObjectId;
+  "channelId"?: mongoose.Types.ObjectId;
+  "paymentId"?: mongoose.Types.ObjectId;
+
+  "transfer.identifier"?: string;
+  "transfer.amount"?: { $gte?: number; $lte?: number; };
+  "transfer.paymentRecorded"?: boolean;
+
   $text?: { $search: string };
 }
 
@@ -848,7 +694,7 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.airtimeTransfer => {
+} ): storageManagerInterfaces.call263.AirtimeTransfer => {
   return new MongoAirtimeTransfer( {
     emitter: emitterFactory( params.emitEvent ),
     Model: AirtimeTransferMongooseModel,

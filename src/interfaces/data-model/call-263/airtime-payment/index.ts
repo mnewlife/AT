@@ -12,7 +12,7 @@ export interface Super extends interfaces.dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface Transaction {
+export interface Transaction extends interfaces.dataModel.DataModel {
   identifier: string;
   amount: number;
   method: string;

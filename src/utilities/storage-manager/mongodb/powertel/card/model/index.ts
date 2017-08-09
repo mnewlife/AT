@@ -12,22 +12,40 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   pin: number;
   puk: number;
   mdn: number;
-  buyer?: {
-    cardSaleId: string;
-    fullName: string;
-  };
-  user?: interfaces.dataModel.core.UserInfo;
+  buyer?: Buyer;
+  user?: mongoDB.UserInfo;
 }
-export type Model_Partial = Partial<Model>;
+export interface Model_Partial extends Partial<Pick<Model, "pin" | "puk" | "mdn">> {
+  buyer?: Partial<Buyer_Nuance>;
+  user?: Partial<mongoDB.UserInfo_Nuance>;
+};
+
+export interface Buyer extends Buyer_Nuance, mongoose.Document { }
+export interface Buyer_Nuance extends mongoDB.Document {
+  cardSaleId: mongoose.Types.ObjectId;
+  fullName: string;
+}
 
 /******************************************************************************/
 
-let eventSchema = new mongoose.Schema( {
+let cardSchema = new mongoose.Schema( {
 
-  context: { type: String, set: ignoreEmpty },
-  identifier: { type: String, set: ignoreEmpty },
-  tags: [ String ],
-  data: mongoose.Schema.Types.Mixed,
+  pin: { type: Number, min: 0, default: 0 },
+  puk: { type: Number, min: 0, default: 0 },
+  mdn: { type: Number, min: 0, default: 0 },
+  buyer: {
+    cardSaleId: mongoose.Schema.Types.ObjectId,
+    fullName: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+  },
+  user: {
+    userId: mongoose.Schema.Types.ObjectId,
+    emailAddress: { type: String, set: ignoreEmpty },
+    fullName: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+  },
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
@@ -36,8 +54,8 @@ let eventSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let EventMongooseModel = mongoose.model<Model>( "Event", eventSchema );
+let CardMongooseModel = mongoose.model<Model>( "Card", cardSchema );
 
-export { EventMongooseModel };
+export { CardMongooseModel };
 
 /******************************************************************************/

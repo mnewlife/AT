@@ -100,7 +100,7 @@ export type FiltrationCriteria = Partial<{
   buyerName: string;
   card: {
     cardId: string;
-    mdn: number;
+    mdn: Partial<{ min: number; max: number; }>;
   };
   user: Partial<interfaces.dataModel.core.UserInfo>;
   amount: Partial<{ min: number; max: number; }>;
@@ -108,6 +108,7 @@ export type FiltrationCriteria = Partial<{
     gb: Partial<{ min: number; max: number; }>;
     days: Partial<{ min: number; max: number; }>;
   };
+  textSearch: string;
 }>;
 
 /******************************************************************************/

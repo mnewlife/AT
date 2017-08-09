@@ -32,28 +32,32 @@ type ModelPartial_Details_Flat = "emailAddress" | "accessLevel" | "password"
 
 /******************************************************************************/
 
-export interface Verification extends mongoose.Document, mongoDB.Document {
+export interface Verification_Nuance extends mongoDB.Document {
   verified: boolean;
   verificationCode?: string;
   numVerAttempts: number;
 }
+export interface Verification extends Verification_Nuance, mongoose.Document { }
 
-export interface PersonalDetails extends mongoose.Document, mongoDB.Document {
+export interface PersonalDetails_Nuance extends mongoDB.Document {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
   gender: "Male" | "Female";
 }
+export interface PersonalDetails extends mongoose.Document, PersonalDetails_Nuance { }
 
-export interface ContactDetails extends mongoose.Document, mongoDB.Document {
+export interface ContactDetails_Nuance extends mongoose.Document, mongoDB.Document {
   phoneNumbers: string[];
 }
+export interface ContactDetails extends mongoose.Document, ContactDetails_Nuance { }
 
-export interface ResidentialDetails extends mongoose.Document, mongoDB.Document {
+export interface ResidentialDetails_Nuance extends mongoose.Document, mongoDB.Document {
   country: string;
   province: string;
   address: string;
 }
+export interface ResidentialDetails extends mongoose.Document, ResidentialDetails_Nuance { }
 
 /******************************************************************************/
 
@@ -90,7 +94,9 @@ let userSchema = new mongoose.Schema( {
   residentialDetails: {
     country: { type: String, set: ignoreEmpty },
     province: { type: String, set: ignoreEmpty },
-    address: { type: String, set: ignoreEmpty }
+    address: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
 
   activeApps: [ String ],

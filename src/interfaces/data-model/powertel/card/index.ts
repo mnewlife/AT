@@ -8,11 +8,15 @@ export interface Super extends interfaces.dataModel.DataModel {
   pin: number;
   puk: number;
   mdn: number;
-  buyer?: {
-    cardSaleId: string;
-    fullName: string;
-  };
+  buyer?: Buyer;
   user?: interfaces.dataModel.core.UserInfo;
+}
+
+/******************************************************************************/
+
+export interface Buyer extends interfaces.dataModel.DataModel {
+  cardSaleId: string;
+  fullName: string;
 }
 
 /******************************************************************************/

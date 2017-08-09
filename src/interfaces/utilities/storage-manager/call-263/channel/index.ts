@@ -90,6 +90,7 @@ export type FiltrationCriteria = Partial<{
   code: string;
   phoneNumber: string;
   password: string;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

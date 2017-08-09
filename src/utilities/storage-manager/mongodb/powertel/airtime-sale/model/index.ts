@@ -10,10 +10,7 @@ import { ignoreEmpty } from "../../../preparation";
 
 export interface Model extends mongoose.Document, mongoDB.Document {
   buyerName: string;
-  card?: {
-    cardId: string;
-    mdn: number;
-  };
+  card?: CardInfo;
   user?: mongoDB.UserInfo;
   amount: number;
   bundles?: {
@@ -23,17 +20,20 @@ export interface Model extends mongoose.Document, mongoDB.Document {
 }
 export type Model_Partial = Partial<{
   buyerName: string;
-  card: Partial<{
-    cardId: string;
-    mdn: number;
-  }>;
-  user: Partial<mongoDB.UserInfo>;
+  card: Partial<CardInfo_Nuance>;
+  user: Partial<mongoDB.UserInfo_Nuance>;
   amount: number;
   bundles: Partial<{
     gb: number;
     days: number;
   }>;
 }>;
+
+export interface CardInfo extends CardInfo_Nuance, mongoose.Document { }
+export interface CardInfo_Nuance extends mongoDB.Document {
+  cardId: mongoose.Types.ObjectId;
+  mdn: number;
+}
 
 /******************************************************************************/
 
@@ -42,12 +42,16 @@ let airtimeSaleSchema = new mongoose.Schema( {
   buyerName: { type: String, set: ignoreEmpty },
   card: {
     cardId: { type: String, set: ignoreEmpty },
-    mdn: { type: Number, min: 0, default: 0 }
+    mdn: { type: Number, min: 0, default: 0 },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
   user: {
     userId: mongoose.Schema.Types.ObjectId,
     emailAddress: { type: String, set: ignoreEmpty },
-    fullName: { type: String, set: ignoreEmpty }
+    fullName: { type: String, set: ignoreEmpty },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
   amount: { type: Number, min: 0, default: 0 },
   bundles: {

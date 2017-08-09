@@ -8,22 +8,29 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+export interface Model extends Model_Nuance, mongoose.Document { }
+export interface Model_Nuance extends mongoDB.Document {
+  cardId: mongoose.Types.ObjectId;
+  mdn: number;
+  cost: number;
+  conditions?: {
+    withRouter?: boolean;
+    routerType?: string;
+  };
 }
-export type Model_Partial = Partial<Model>;
+export type Model_Partial = Partial<Model_Nuance>;
 
 /******************************************************************************/
 
-let eventSchema = new mongoose.Schema( {
+let cardSaleSchema = new mongoose.Schema( {
 
-  context: { type: String, set: ignoreEmpty },
-  identifier: { type: String, set: ignoreEmpty },
-  tags: [ String ],
-  data: mongoose.Schema.Types.Mixed,
+  cardId: mongoose.Schema.Types.ObjectId,
+  mdn: { type: Number, min: 0, default: 0 },
+  cost: { type: Number, min: 0, default: 0 },
+  conditions: {
+    withRouter: { type: Boolean, default: false },
+    routerType: { type: String, set: ignoreEmpty },
+  },
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
@@ -32,8 +39,8 @@ let eventSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let EventMongooseModel = mongoose.model<Model>( "Event", eventSchema );
+let CardSaleMongooseModel = mongoose.model<Model>( "CardSale", cardSaleSchema );
 
-export { EventMongooseModel };
+export { CardSaleMongooseModel };
 
 /******************************************************************************/

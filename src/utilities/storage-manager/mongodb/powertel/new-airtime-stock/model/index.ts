@@ -8,22 +8,21 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
-  context: string;
-  identifier: string;
-  tags: string[];
-  data: any;
+export interface Model extends Model_Nuance, mongoose.Document { }
+export interface Model_Nuance extends mongoDB.Document {
+  initialBalance: number;
+  newBalance: number;
+  amount: number;
 }
-export type Model_Partial = Partial<Model>;
+export type Model_Partial = Partial<Model_Nuance>;
 
 /******************************************************************************/
 
-let eventSchema = new mongoose.Schema( {
+let newAirtimeStockSchema = new mongoose.Schema( {
 
-  context: { type: String, set: ignoreEmpty },
-  identifier: { type: String, set: ignoreEmpty },
-  tags: [ String ],
-  data: mongoose.Schema.Types.Mixed,
+  initialBalance: { type: Number, min: 0, default: 0 },
+  newBalance: { type: Number, min: 0, default: 0 },
+  amount: { type: Number, min: 0, default: 0 },
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
@@ -32,8 +31,8 @@ let eventSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let EventMongooseModel = mongoose.model<Model>( "Event", eventSchema );
+let NewAirtimeStockMongooseModel = mongoose.model<Model>( "NewAirtimeStock", newAirtimeStockSchema );
 
-export { EventMongooseModel };
+export { NewAirtimeStockMongooseModel };
 
 /******************************************************************************/

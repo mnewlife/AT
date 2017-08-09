@@ -87,6 +87,7 @@ export type FiltrationCriteria = Partial<{
   shopId: string;
   quantity: Partial<{ min: number; max: number; }>;
   price: Partial<{ min: number; max: number; }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

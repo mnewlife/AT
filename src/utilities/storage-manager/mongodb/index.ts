@@ -7,17 +7,11 @@ import * as mongoose from "mongoose";
 import * as interfaces from "../../../interfaces";
 import * as storageManagerInterfaces from "../../../interfaces/utilities/storage-manager";
 
-import userFactory from "./user";
-import eventFactory from "./event";
-import progressionFactory from "./progression";
-import notificationFactory from "./notification";
-import subscriptionFactory from "./subscription";
-
-import amendmentRequestFactory from "./amendment-request";
-import customerGroupFactory from "./customer-group";
-import orderFactory from "./order";
-import productFactory from "./product";
-import productTypeFactory from "./product-type";
+import call263Factory from "./call-263";
+import coreFactory from "./core";
+import grocRoundFactory from "./groc-round";
+import powertelFactory from "./powertel";
+import routersFactory from "./routers";
 
 /******************************************************************************/
 
@@ -26,28 +20,22 @@ export interface Document {
   updatedAt: Date;
 }
 
-export interface UserInfo extends Document, mongoose.Document {
+export interface UserInfo_Nuance extends Document {
   userId: mongoose.Types.ObjectId;
   emailAddress: string;
   fullName: string;
 }
-export type UserInfo_Partial = Partial<UserInfo>;
+export interface UserInfo extends UserInfo_Nuance, mongoose.Document { }
 
 /******************************************************************************/
 
 class MongodbStorage implements interfaces.utilities.StorageManager {
 
-  readonly user: storageManagerInterfaces.core.user;
-  readonly event: storageManagerInterfaces.Event;
-  readonly progression: storageManagerInterfaces.Progression;
-  readonly notification: storageManagerInterfaces.Notification;
-  readonly subscription: storageManagerInterfaces.Subscription;
-
-  readonly amendmentRequest: storageManagerInterfaces.AmendmentRequest;
-  readonly customerGroup: storageManagerInterfaces.CustomerGroup;
-  readonly order: storageManagerInterfaces.Order;
-  readonly product: storageManagerInterfaces.Product;
-  readonly productType: storageManagerInterfaces.ProductType;
+  readonly call263: storageManagerInterfaces.Call263;
+  readonly core: storageManagerInterfaces.Core;
+  readonly grocRound: storageManagerInterfaces.GrocRound;
+  readonly powertel: storageManagerInterfaces.Powertel;
+  readonly routers: storageManagerInterfaces.Routers;
 
   readonly middleware: express.RequestHandler[] = [];
 
@@ -55,31 +43,20 @@ class MongodbStorage implements interfaces.utilities.StorageManager {
 
   constructor( params: {
     linkToDB: string;
-    user: storageManagerInterfaces.core.user;
-    event: storageManagerInterfaces.Event;
-    progression: storageManagerInterfaces.Progression;
-    notification: storageManagerInterfaces.Notification;
-    subscription: storageManagerInterfaces.Subscription;
-    amendmentRequest: storageManagerInterfaces.AmendmentRequest;
-    customerGroup: storageManagerInterfaces.CustomerGroup;
-    order: storageManagerInterfaces.Order;
-    product: storageManagerInterfaces.Product;
-    productType: storageManagerInterfaces.ProductType;
+    call263: storageManagerInterfaces.Call263;
+    core: storageManagerInterfaces.Core;
+    grocRound: storageManagerInterfaces.GrocRound;
+    powertel: storageManagerInterfaces.Powertel;
+    routers: storageManagerInterfaces.Routers;
   } ) {
 
     this.connectToDatabase( params.linkToDB );
 
-    this.user = params.user;
-    this.event = params.event;
-    this.notification = params.notification;
-    this.progression = params.progression;
-    this.subscription = params.subscription;
-
-    this.amendmentRequest = params.amendmentRequest;
-    this.customerGroup = params.customerGroup;
-    this.order = params.order;
-    this.product = params.product;
-    this.productType = params.productType;
+    this.call263 = params.call263;
+    this.core = params.core;
+    this.grocRound = params.grocRound;
+    this.powertel = params.powertel;
+    this.routers = params.routers;
 
   }
 
@@ -116,17 +93,12 @@ export default ( config: interfaces.Config ): interfaces.utilities.StorageManage
   return new MongodbStorage( {
     linkToDB: ( config.environment.production ? productionLink : developmentLink ),
 
-    user: userFactory( commonParams ),
-    event: eventFactory( commonParams ),
-    progression: progressionFactory( commonParams ),
-    notification: notificationFactory( commonParams ),
-    subscription: subscriptionFactory( commonParams ),
+    call263: call263Factory( commonParams ),
+    core: coreFactory( commonParams ),
+    grocRound: grocRoundFactory( commonParams ),
+    powertel: powertelFactory( commonParams ),
+    routers: routersFactory( commonParams ),
 
-    amendmentRequest: amendmentRequestFactory( commonParams ),
-    customerGroup: customerGroupFactory( commonParams ),
-    order: orderFactory( commonParams ),
-    product: productFactory( commonParams ),
-    productType: productTypeFactory( commonParams )
   } );
 
 };
