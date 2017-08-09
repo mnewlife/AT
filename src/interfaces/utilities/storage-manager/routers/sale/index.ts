@@ -114,9 +114,10 @@ export type FiltrationCriteria = Partial<{
   }>;
   type: string;
   paymentMethod: string;
-  unitCost: number;
-  amount: number;
-  totalCost: number;
+  unitCost: { min?: number; max?: number; };
+  amount: { min?: number; max?: number; };
+  totalCost: { min?: number; max?: number; };
+  textSearch: string;
 }>;
 
 /******************************************************************************/

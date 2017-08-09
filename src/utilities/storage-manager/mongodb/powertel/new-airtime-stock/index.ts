@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import { Model, Model_Partial, NewAirtimeStockMongooseModel } from "./model";
 
 import * as interfaces from "../../../../../interfaces";
 import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
@@ -13,18 +13,18 @@ import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.User {
+class MongoNewAirtimeStock extends MongoController implements storageManagerInterfaces.powertel.NewAirtimeStock {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.powertel.newAirtimeStock.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.powertel.newAirtimeStock.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.powertel.newAirtimeStock.FiltrationCriteria, sortCriteria: storageManagerInterfaces.powertel.newAirtimeStock.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundNewAirtimeStocks: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundNewAirtimeStocks );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.powertel.newAirtimeStock.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedNewAirtimeStocks.map(( newAirtimeStock ) => {
+              return newAirtimeStock.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedNewAirtimeStocks );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( newAirtimeStockId: string, forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( newAirtimeStockId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundNewAirtimeStock: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundNewAirtimeStock ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: newAirtimeStockId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedNewAirtimeStocks[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: newAirtimeStockId,
             reason: reason
           } );
           resolve();
@@ -167,80 +167,43 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( newAirtimeStocks: storageManagerInterfaces.powertel.newAirtimeStock.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( newAirtimeStocks.map(( newAirtimeStock ) => {
+          let newAirtimeStockDetails: Model_Partial = {
+            initialBalance: newAirtimeStock.initialBalance,
+            newBalance: newAirtimeStock.newBalance,
+            amount: newAirtimeStock.amount
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
-          }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
-          }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.residentialDetails ) {
-            userDetails.residentialDetails = <any>{
-              country: user.residentialDetails.country,
-              province: user.residentialDetails.province,
-              address: user.residentialDetails.address,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          return userDetails;
+          return newAirtimeStockDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedNewAirtimeStocks: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedNewAirtimeStocks );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedNewAirtimeStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedNewAirtimeStocks );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: newAirtimeStocks,
             reason: reason
           } );
           resolve();
@@ -259,72 +222,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.powertel.newAirtimeStock.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          activeApps: details.activeApps
+        let newAirtimeStockDetails: Model_Partial = {
+          initialBalance: details.initialBalance,
+          newBalance: details.newBalance,
+          amount: details.amount
         };
-        if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.residentialDetails ) {
-          userDetails.residentialDetails = <any>{
-            country: details.residentialDetails.country,
-            province: details.residentialDetails.province,
-            address: details.residentialDetails.address,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( newAirtimeStockDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedNewAirtimeStock: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedNewAirtimeStock ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedNewAirtimeStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedNewAirtimeStocks[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -350,7 +276,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.powertel.newAirtimeStock.FiltrationCriteria, details: storageManagerInterfaces.powertel.newAirtimeStock.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -362,19 +288,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundNewAirtimeStocks: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundNewAirtimeStocks.map(( newAirtimeStock ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( newAirtimeStock, details )
+            .then(( fedNewAirtimeStock: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedNewAirtimeStock.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedNewAirtimeStock );
                   }
                 } );
               } );
@@ -384,22 +310,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedNewAirtimeStocks: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedNewAirtimeStocks );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedNewAirtimeStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedNewAirtimeStocks );
 
       } )
       .catch(( reason: any ) => {
@@ -426,27 +352,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( newAirtimeStockId: string, details: storageManagerInterfaces.powertel.newAirtimeStock.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let newAirtimeStockObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( newAirtimeStockId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( newAirtimeStock: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( newAirtimeStock, details )
+          .then(( fedNewAirtimeStock: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedNewAirtimeStock.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedNewAirtimeStock );
                 }
               } );
             } );
@@ -454,29 +380,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedNewAirtimeStock: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedNewAirtimeStock ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: newAirtimeStockId,
+            documents: convertedNewAirtimeStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedNewAirtimeStocks[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: newAirtimeStockId,
             updates: details,
             reason: reason
           } );
@@ -496,7 +422,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.powertel.newAirtimeStock.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -544,13 +470,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( newAirtimeStockId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( newAirtimeStockId )
         } );
 
       } )
@@ -558,7 +484,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: newAirtimeStockId
           } );
           resolve();
         } );
@@ -570,7 +496,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: newAirtimeStockId,
             reason: reason
           } );
           resolve();
@@ -589,78 +515,39 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.powertel.newAirtimeStock.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
-      }
-
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
-      }
-
-      if ( filtrationCriteria.verification ) {
-
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.initialBalance ) {
+        conditions[ "initialBalance" ] = {};
+        if ( filtrationCriteria.initialBalance.min ) {
+          conditions[ "initialBalance" ].$gte = filtrationCriteria.initialBalance.min;
         }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
-          }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
-          }
-        }
-
-      }
-
-      if ( filtrationCriteria.personalDetails ) {
-        if ( filtrationCriteria.personalDetails.firstName ) {
-          conditions[ "personalDetails.firstName" ] = filtrationCriteria.personalDetails.firstName;
-        }
-        if ( filtrationCriteria.personalDetails.lastName ) {
-          conditions[ "personalDetails.lastName" ] = filtrationCriteria.personalDetails.lastName;
-        }
-        if ( filtrationCriteria.personalDetails.dateOfBirth ) {
-          conditions[ "personalDetails.dateOfBirth" ] = {};
-          if ( filtrationCriteria.personalDetails.dateOfBirth.min ) {
-            conditions[ "personalDetails.dateOfBirth" ].$gte = filtrationCriteria.personalDetails.dateOfBirth.min;
-          }
-          if ( filtrationCriteria.personalDetails.dateOfBirth.max ) {
-            conditions[ "personalDetails.dateOfBirth" ].$lte = filtrationCriteria.personalDetails.dateOfBirth.max;
-          }
-        }
-        if ( filtrationCriteria.personalDetails.gender ) {
-          conditions[ "personalDetails.gender" ] = filtrationCriteria.personalDetails.gender;
+        if ( filtrationCriteria.initialBalance.max ) {
+          conditions[ "initialBalance" ].$lte = filtrationCriteria.initialBalance.max;
         }
       }
 
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+      if ( filtrationCriteria.newBalance ) {
+        conditions[ "newBalance" ] = {};
+        if ( filtrationCriteria.newBalance.min ) {
+          conditions[ "newBalance" ].$gte = filtrationCriteria.newBalance.min;
+        }
+        if ( filtrationCriteria.newBalance.max ) {
+          conditions[ "newBalance" ].$lte = filtrationCriteria.newBalance.max;
         }
       }
 
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
-      }
-
-      if ( filtrationCriteria.residentialDetails ) {
-        if ( filtrationCriteria.residentialDetails.country ) {
-          conditions[ "residentialDetails.country" ] = filtrationCriteria.residentialDetails.country;
+      if ( filtrationCriteria.amount ) {
+        conditions[ "amount" ] = {};
+        if ( filtrationCriteria.amount.min ) {
+          conditions[ "amount" ].$gte = filtrationCriteria.amount.min;
         }
-        if ( filtrationCriteria.residentialDetails.province ) {
-          conditions[ "residentialDetails.province" ] = filtrationCriteria.residentialDetails.province;
-        }
-        if ( filtrationCriteria.residentialDetails.address ) {
-          conditions[ "residentialDetails.address" ] = filtrationCriteria.residentialDetails.address;
+        if ( filtrationCriteria.amount.max ) {
+          conditions[ "amount" ].$lte = filtrationCriteria.amount.max;
         }
       }
 
@@ -676,15 +563,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.powertel.newAirtimeStock.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
-      } else {
-        sortString = sortCriteria.criteria;
-      }
+      sortString = sortCriteria.criteria;
       if ( sortCriteria.order === "Descending" ) {
         sortString = "-" + sortString;
       }
@@ -695,132 +578,20 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.powertel.newAirtimeStock.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.initialBalance ) {
+        document.initialBalance = details.initialBalance;
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
+      if ( details.newBalance ) {
+        document.newBalance = details.newBalance;
       }
 
-      if ( details.password ) {
-        document.password = details.password;
-      }
-
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
-        }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
-        }
-      }
-
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
-        }
-      }
-
-      if ( details.residentialDetails ) {
-        if ( details.residentialDetails.country || details.residentialDetails.province || details.residentialDetails.address ) {
-          if ( !document.residentialDetails ) {
-            document.residentialDetails = <any>{
-              country: "",
-              province: "",
-              address: ""
-            };
-          }
-          if ( details.residentialDetails.country ) {
-            document.residentialDetails.country = details.residentialDetails.country;
-          }
-          if ( details.residentialDetails.province ) {
-            document.residentialDetails.province = details.residentialDetails.province;
-          }
-          if ( details.residentialDetails.address ) {
-            document.residentialDetails.address = details.residentialDetails.address;
-          }
-        }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
+      if ( details.amount ) {
+        document.amount = details.amount;
       }
 
       resolve( document );
@@ -831,79 +602,31 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( newAirtimeStocks: Model[], forceThrow = false ): Promise<interfaces.dataModel.powertel.newAirtimeStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.powertel.newAirtimeStock.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnNewAirtimeStocks: interfaces.dataModel.powertel.newAirtimeStock.Super[] = [];
 
-          users.forEach(( user ) => {
+          newAirtimeStocks.forEach(( newAirtimeStock ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
-              verification: {
-                id: ( user.verification._id as mongoose.Types.ObjectId ).toHexString(),
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
-              },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+            let returnNewAirtimeStock: interfaces.dataModel.powertel.newAirtimeStock.Super = {
+              id: ( <mongoose.Types.ObjectId>newAirtimeStock._id ).toHexString(),
+              initialBalance: newAirtimeStock.initialBalance,
+              newBalance: newAirtimeStock.newBalance,
+              amount: newAirtimeStock.amount,
+              createdAt: newAirtimeStock.createdAt,
+              updatedAt: newAirtimeStock.updatedAt
             };
 
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
-            }
-
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
-            }
-
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: ( user.personalDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                dateOfBirth: user.personalDetails.dateOfBirth,
-                gender: user.personalDetails.gender,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
-              };
-            }
-
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: ( user.contactDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
-              };
-            }
-
-            if ( user.residentialDetails ) {
-              returnUser.residentialDetails = {
-                id: ( user.residentialDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                country: user.residentialDetails.country,
-                province: user.residentialDetails.province,
-                address: user.residentialDetails.address,
-                createdAt: user.residentialDetails.createdAt,
-                updatedAt: user.residentialDetails.updatedAt
-              }
-            }
-
-            returnUsers.push( returnUser );
+            returnNewAirtimeStocks.push( returnNewAirtimeStock );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnNewAirtimeStocks );
 
         } );
 
@@ -918,24 +641,10 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
+  "initialBalance"?: { $gte?: number; $lte?: number; };
+  "newBalance"?: { $gte?: number; $lte?: number; };
+  "amount"?: { $gte?: number; $lte?: number; };
 
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-
-  "personalDetails.firstName"?: string;
-  "personalDetails.lastName"?: string;
-  "personalDetails.dateOfBirth"?: { $gte?: Date; $lte?: Date; };
-  "personalDetails.gender"?: "Male" | "Female";
-
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-
-  "residentialDetails.country"?: string;
-  "residentialDetails.province"?: string;
-  "residentialDetails.address"?: string;
-
-  "activeApps"?: { $all: string[] };
   $text?: { $search: string };
 }
 
@@ -945,10 +654,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.User => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.powertel.NewAirtimeStock => {
+  return new MongoNewAirtimeStock( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: NewAirtimeStockMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

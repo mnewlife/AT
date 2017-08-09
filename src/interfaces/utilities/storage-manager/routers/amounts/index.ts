@@ -87,6 +87,7 @@ export type FiltrationCriteria = Partial<{
   count: Partial<{ min: number; max: number; }>;
   newStock: Partial<{ min: number; max: number; }>;
   sold: Partial<{ min: number; max: number; }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

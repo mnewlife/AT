@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import { Model, Model_Partial, AmountsMongooseModel } from "./model";
 
 import * as interfaces from "../../../../../interfaces";
 import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
@@ -13,18 +13,18 @@ import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.User {
+class MongoAmounts extends MongoController implements storageManagerInterfaces.routers.Amounts {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.routers.amounts.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.routers.amounts.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.routers.amounts.FiltrationCriteria, sortCriteria: storageManagerInterfaces.routers.amounts.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundAmountss: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundAmountss );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.routers.amounts.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedAmountss.map(( amounts ) => {
+              return amounts.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedAmountss );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( amountsId: string, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( amountsId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundAmounts: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundAmounts ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: amountsId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedAmountss[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: amountsId,
             reason: reason
           } );
           resolve();
@@ -167,80 +167,44 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( amountss: storageManagerInterfaces.routers.amounts.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( amountss.map(( amounts ) => {
+          let amountsDetails: Model_Partial = {
+            type: amounts.type,
+            count: amounts.count,
+            newStock: amounts.newStock,
+            sold: amounts.sold
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
-          }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
-          }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.residentialDetails ) {
-            userDetails.residentialDetails = <any>{
-              country: user.residentialDetails.country,
-              province: user.residentialDetails.province,
-              address: user.residentialDetails.address,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          return userDetails;
+          return amountsDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedAmountss: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedAmountss );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedAmountss
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedAmountss );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: amountss,
             reason: reason
           } );
           resolve();
@@ -259,72 +223,36 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.routers.amounts.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          activeApps: details.activeApps
+        let amountsDetails: Model_Partial = {
+          type: details.type,
+          count: details.count,
+          newStock: details.newStock,
+          sold: details.sold
         };
-        if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.residentialDetails ) {
-          userDetails.residentialDetails = <any>{
-            country: details.residentialDetails.country,
-            province: details.residentialDetails.province,
-            address: details.residentialDetails.address,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( amountsDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedAmounts: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedAmounts ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedAmountss
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedAmountss[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -350,7 +278,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.routers.amounts.FiltrationCriteria, details: storageManagerInterfaces.routers.amounts.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -362,19 +290,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundAmountss: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundAmountss.map(( amounts ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( amounts, details )
+            .then(( fedAmounts: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedAmounts.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedAmounts );
                   }
                 } );
               } );
@@ -384,22 +312,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedAmountss: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedAmountss );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedAmountss
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedAmountss );
 
       } )
       .catch(( reason: any ) => {
@@ -426,27 +354,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( amountsId: string, details: storageManagerInterfaces.routers.amounts.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let amountsObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( amountsId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( amounts: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( amounts, details )
+          .then(( fedAmounts: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedAmounts.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedAmounts );
                 }
               } );
             } );
@@ -454,29 +382,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedAmounts: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedAmounts ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: amountsId,
+            documents: convertedAmountss
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedAmountss[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: amountsId,
             updates: details,
             reason: reason
           } );
@@ -496,7 +424,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.routers.amounts.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -544,13 +472,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( amountsId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( amountsId )
         } );
 
       } )
@@ -558,7 +486,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: amountsId
           } );
           resolve();
         } );
@@ -570,7 +498,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: amountsId,
             reason: reason
           } );
           resolve();
@@ -589,78 +517,43 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.routers.amounts.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
+      if ( filtrationCriteria.type ) {
+        conditions[ "type" ] = filtrationCriteria.type;
       }
 
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
-      }
-
-      if ( filtrationCriteria.verification ) {
-
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.count ) {
+        conditions[ "count" ] = {};
+        if ( filtrationCriteria.count.min ) {
+          conditions[ "count" ].$gte = filtrationCriteria.count.min;
         }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
-          }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
-          }
-        }
-
-      }
-
-      if ( filtrationCriteria.personalDetails ) {
-        if ( filtrationCriteria.personalDetails.firstName ) {
-          conditions[ "personalDetails.firstName" ] = filtrationCriteria.personalDetails.firstName;
-        }
-        if ( filtrationCriteria.personalDetails.lastName ) {
-          conditions[ "personalDetails.lastName" ] = filtrationCriteria.personalDetails.lastName;
-        }
-        if ( filtrationCriteria.personalDetails.dateOfBirth ) {
-          conditions[ "personalDetails.dateOfBirth" ] = {};
-          if ( filtrationCriteria.personalDetails.dateOfBirth.min ) {
-            conditions[ "personalDetails.dateOfBirth" ].$gte = filtrationCriteria.personalDetails.dateOfBirth.min;
-          }
-          if ( filtrationCriteria.personalDetails.dateOfBirth.max ) {
-            conditions[ "personalDetails.dateOfBirth" ].$lte = filtrationCriteria.personalDetails.dateOfBirth.max;
-          }
-        }
-        if ( filtrationCriteria.personalDetails.gender ) {
-          conditions[ "personalDetails.gender" ] = filtrationCriteria.personalDetails.gender;
+        if ( filtrationCriteria.count.max ) {
+          conditions[ "count" ].$lte = filtrationCriteria.count.max;
         }
       }
 
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+      if ( filtrationCriteria.newStock ) {
+        conditions[ "newStock" ] = {};
+        if ( filtrationCriteria.newStock.min ) {
+          conditions[ "newStock" ].$gte = filtrationCriteria.newStock.min;
+        }
+        if ( filtrationCriteria.newStock.max ) {
+          conditions[ "newStock" ].$lte = filtrationCriteria.newStock.max;
         }
       }
 
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
-      }
-
-      if ( filtrationCriteria.residentialDetails ) {
-        if ( filtrationCriteria.residentialDetails.country ) {
-          conditions[ "residentialDetails.country" ] = filtrationCriteria.residentialDetails.country;
+      if ( filtrationCriteria.sold ) {
+        conditions[ "sold" ] = {};
+        if ( filtrationCriteria.sold.min ) {
+          conditions[ "sold" ].$gte = filtrationCriteria.sold.min;
         }
-        if ( filtrationCriteria.residentialDetails.province ) {
-          conditions[ "residentialDetails.province" ] = filtrationCriteria.residentialDetails.province;
-        }
-        if ( filtrationCriteria.residentialDetails.address ) {
-          conditions[ "residentialDetails.address" ] = filtrationCriteria.residentialDetails.address;
+        if ( filtrationCriteria.sold.max ) {
+          conditions[ "sold" ].$lte = filtrationCriteria.sold.max;
         }
       }
 
@@ -676,15 +569,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.routers.amounts.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
-      } else {
-        sortString = sortCriteria.criteria;
-      }
+      sortString = sortCriteria.criteria;
       if ( sortCriteria.order === "Descending" ) {
         sortString = "-" + sortString;
       }
@@ -695,132 +584,42 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.routers.amounts.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.type ) {
+        document.type = details.type;
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
+      if ( details.countPlus ) {
+        document.count += details.countPlus;
+      }
+      if ( details.countMinus ) {
+        document.count -= details.countMinus;
+      }
+      if ( details.count ) {
+        document.count = details.count;
       }
 
-      if ( details.password ) {
-        document.password = details.password;
+      if ( details.newStockPlus ) {
+        document.newStock += details.newStockPlus;
+      }
+      if ( details.newStockMinus ) {
+        document.newStock -= details.newStockMinus;
+      }
+      if ( details.newStock ) {
+        document.newStock = details.newStock;
       }
 
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
+      if ( details.soldPlus ) {
+        document.sold += details.soldPlus;
       }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
-        }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
-        }
+      if ( details.soldMinus ) {
+        document.sold -= details.soldMinus;
       }
-
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
-        }
-      }
-
-      if ( details.residentialDetails ) {
-        if ( details.residentialDetails.country || details.residentialDetails.province || details.residentialDetails.address ) {
-          if ( !document.residentialDetails ) {
-            document.residentialDetails = <any>{
-              country: "",
-              province: "",
-              address: ""
-            };
-          }
-          if ( details.residentialDetails.country ) {
-            document.residentialDetails.country = details.residentialDetails.country;
-          }
-          if ( details.residentialDetails.province ) {
-            document.residentialDetails.province = details.residentialDetails.province;
-          }
-          if ( details.residentialDetails.address ) {
-            document.residentialDetails.address = details.residentialDetails.address;
-          }
-        }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
+      if ( details.sold ) {
+        document.sold = details.sold;
       }
 
       resolve( document );
@@ -831,79 +630,32 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( amountss: Model[], forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.routers.amounts.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnAmountss: interfaces.dataModel.routers.amounts.Super[] = [];
 
-          users.forEach(( user ) => {
+          amountss.forEach(( amounts ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
-              verification: {
-                id: ( user.verification._id as mongoose.Types.ObjectId ).toHexString(),
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
-              },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+            let returnAmounts: interfaces.dataModel.routers.amounts.Super = {
+              id: ( <mongoose.Types.ObjectId>amounts._id ).toHexString(),
+              type: amounts.type,
+              count: amounts.count,
+              newStock: amounts.newStock,
+              sold: amounts.sold,
+              createdAt: amounts.createdAt,
+              updatedAt: amounts.updatedAt
             };
 
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
-            }
-
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
-            }
-
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: ( user.personalDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                dateOfBirth: user.personalDetails.dateOfBirth,
-                gender: user.personalDetails.gender,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
-              };
-            }
-
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: ( user.contactDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
-              };
-            }
-
-            if ( user.residentialDetails ) {
-              returnUser.residentialDetails = {
-                id: ( user.residentialDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                country: user.residentialDetails.country,
-                province: user.residentialDetails.province,
-                address: user.residentialDetails.address,
-                createdAt: user.residentialDetails.createdAt,
-                updatedAt: user.residentialDetails.updatedAt
-              }
-            }
-
-            returnUsers.push( returnUser );
+            returnAmountss.push( returnAmounts );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnAmountss );
 
         } );
 
@@ -918,24 +670,10 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-
-  "personalDetails.firstName"?: string;
-  "personalDetails.lastName"?: string;
-  "personalDetails.dateOfBirth"?: { $gte?: Date; $lte?: Date; };
-  "personalDetails.gender"?: "Male" | "Female";
-
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-
-  "residentialDetails.country"?: string;
-  "residentialDetails.province"?: string;
-  "residentialDetails.address"?: string;
-
-  "activeApps"?: { $all: string[] };
+  "type"?: string;
+  "count"?: { $gte?: number; $lte?: number; };
+  "newStock"?: { $gte?: number; $lte?: number; };
+  "sold"?: { $gte?: number; $lte?: number; };
   $text?: { $search: string };
 }
 
@@ -945,10 +683,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.User => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.routers.Amounts => {
+  return new MongoAmounts( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: AmountsMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

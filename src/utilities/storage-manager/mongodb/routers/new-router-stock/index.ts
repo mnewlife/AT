@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, UserMongooseModel } from "./model";
+import { Model, Model_Partial, NewRouterStockMongooseModel } from "./model";
 
 import * as interfaces from "../../../../../interfaces";
 import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
@@ -13,18 +13,18 @@ import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class MongoUser extends MongoController implements storageManagerInterfaces.core.User {
+class MongoNewRouterStock extends MongoController implements storageManagerInterfaces.routers.NewRouterStock {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageManagerInterfaces.core.user.Emitter;
+  protected readonly emitter: storageManagerInterfaces.routers.newRouterStock.Emitter;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageManagerInterfaces.core.user.Emitter;
+    emitter: storageManagerInterfaces.routers.newRouterStock.Emitter;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
@@ -40,7 +40,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageManagerInterfaces.routers.newRouterStock.FiltrationCriteria, sortCriteria: storageManagerInterfaces.routers.newRouterStock.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -64,26 +64,26 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( holder.conditions, holder.sortString, limit );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundNewRouterStocks: Model[] ) => {
 
-        return this.convertToAbstract( foundUsers );
+        return this.convertToAbstract( foundNewRouterStocks );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        new Promise<interfaces.dataModel.routers.newRouterStock.Super[]>(( resolve, reject ) => {
           this.emitter.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: convertedUsers.map(( user ) => {
-              return user.id;
+            ids: convertedNewRouterStocks.map(( newRouterStock ) => {
+              return newRouterStock.id;
             } )
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedNewRouterStocks );
 
       } )
       .catch(( reason: any ) => {
@@ -111,35 +111,35 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( newRouterStockId: string, forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( newRouterStockId ) );
 
       } )
-      .then(( foundUser: Model ) => {
+      .then(( foundNewRouterStock: Model ) => {
 
-        return this.convertToAbstract( [ foundUser ] );
+        return this.convertToAbstract( [ foundNewRouterStock ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.gotById( {
-            id: userId
+            id: newRouterStockId
           } );
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedNewRouterStocks[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.getByIdFailed( {
-            id: userId,
+            id: newRouterStockId,
             reason: reason
           } );
           resolve();
@@ -167,80 +167,44 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageManagerInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( newRouterStocks: storageManagerInterfaces.routers.newRouterStock.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( users.map(( user ) => {
-          let userDetails: Model_Partial = {
-            emailAddress: user.emailAddress,
-            password: user.password,
-            accessLevel: user.accessLevel,
-            verification: {
-              verified: user.verification.verified,
-              numVerAttempts: user.verification.numVerAttempts,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            },
-            activeApps: []
+        return this.saveMultipleDocuments( newRouterStocks.map(( newRouterStock ) => {
+          let newRouterStockDetails: Model_Partial = {
+            type: newRouterStock.type,
+            initialCount: newRouterStock.initialCount,
+            newCount: newRouterStock.newCount,
+            amount: newRouterStock.amount
           };
-          if ( user.resetCode ) {
-            userDetails.resetCode = user.resetCode;
-          }
-          if ( user.verification.verificationCode ) {
-            userDetails.verification.verificationCode = user.verification.verificationCode;
-          }
-          if ( user.personalDetails ) {
-            userDetails.personalDetails = <any>{
-              firstName: user.personalDetails.firstName,
-              lastName: user.personalDetails.lastName,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.contactDetails ) {
-            userDetails.contactDetails = <any>{
-              phoneNumbers: user.contactDetails.phoneNumbers,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( user.residentialDetails ) {
-            userDetails.residentialDetails = <any>{
-              country: user.residentialDetails.country,
-              province: user.residentialDetails.province,
-              address: user.residentialDetails.address,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          return userDetails;
+          return newRouterStockDetails;
         } ) );
 
       } )
-      .then(( addedUsers: Model[] ) => {
+      .then(( addedNewRouterStocks: Model[] ) => {
 
-        return this.convertToAbstract( addedUsers );
+        return this.convertToAbstract( addedNewRouterStocks );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedNewRouterStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers );
+        return Promise.resolve( convertedNewRouterStocks );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.addFailed( {
-            details: users,
+            details: newRouterStocks,
             reason: reason
           } );
           resolve();
@@ -259,72 +223,36 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly add = ( details: storageManagerInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageManagerInterfaces.routers.newRouterStock.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        let userDetails: Model_Partial = {
-          emailAddress: details.emailAddress,
-          password: details.password,
-          accessLevel: details.accessLevel,
-          verification: {
-            verified: details.verification.verified,
-            numVerAttempts: details.verification.numVerAttempts,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          activeApps: details.activeApps
+        let newRouterStockDetails: Model_Partial = {
+          type: details.type,
+          initialCount: details.initialCount,
+          newCount: details.newCount,
+          amount: details.amount
         };
-        if ( details.resetCode ) {
-          userDetails.resetCode = details.resetCode;
-        }
-        if ( details.verification.verificationCode ) {
-          userDetails.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.personalDetails ) {
-          userDetails.personalDetails = <any>{
-            firstName: details.personalDetails.firstName,
-            lastName: details.personalDetails.lastName,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails ) {
-          userDetails.contactDetails = <any>{
-            phoneNumbers: details.contactDetails.phoneNumbers,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.residentialDetails ) {
-          userDetails.residentialDetails = <any>{
-            country: details.residentialDetails.country,
-            province: details.residentialDetails.province,
-            address: details.residentialDetails.address,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
 
-        return this.saveDocument( userDetails );
+        return this.saveDocument( newRouterStockDetails );
 
       } )
-      .then(( addedUser: Model ) => {
+      .then(( addedNewRouterStock: Model ) => {
 
-        return this.convertToAbstract( [ addedUser ] );
+        return this.convertToAbstract( [ addedNewRouterStock ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.emitter.added( {
-            documents: convertedUsers
+            documents: convertedNewRouterStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedNewRouterStocks[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -350,7 +278,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageManagerInterfaces.routers.newRouterStock.FiltrationCriteria, details: storageManagerInterfaces.routers.newRouterStock.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -362,19 +290,19 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         return this.find( conditions, null, null );
 
       } )
-      .then(( foundUsers: Model[] ) => {
+      .then(( foundNewRouterStocks: Model[] ) => {
 
-        return Promise.all( foundUsers.map(( user ) => {
+        return Promise.all( foundNewRouterStocks.map(( newRouterStock ) => {
 
-          return this.generateUpdateDetails( user, details )
-            .then(( fedUser: Model ) => {
+          return this.generateUpdateDetails( newRouterStock, details )
+            .then(( fedNewRouterStock: Model ) => {
 
               return new Promise<Model>(( resolve, reject ) => {
-                fedUser.save(( err: any ) => {
+                fedNewRouterStock.save(( err: any ) => {
                   if ( err ) {
                     reject( err );
                   } else {
-                    resolve( fedUser );
+                    resolve( fedNewRouterStock );
                   }
                 } );
               } );
@@ -384,22 +312,22 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
         } ) );
 
       } )
-      .then(( updatedUsers: Model[] ) => {
+      .then(( updatedNewRouterStocks: Model[] ) => {
 
-        return this.convertToAbstract( updatedUsers );
+        return this.convertToAbstract( updatedNewRouterStocks );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
             conditions: filtrationCriteria,
-            documents: updatedUsers
+            documents: updatedNewRouterStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( updatedUsers );
+        return Promise.resolve( updatedNewRouterStocks );
 
       } )
       .catch(( reason: any ) => {
@@ -426,27 +354,27 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( newRouterStockId: string, details: storageManagerInterfaces.routers.newRouterStock.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super> => {
 
-    let userObjectId: mongoose.Types.ObjectId;
+    let newRouterStockObjectId: mongoose.Types.ObjectId;
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.findById( mongoose.Types.ObjectId( userId ) );
+        return this.findById( mongoose.Types.ObjectId( newRouterStockId ) );
 
       } )
-      .then(( user: Model ) => {
+      .then(( newRouterStock: Model ) => {
 
-        return this.generateUpdateDetails( user, details )
-          .then(( fedUser: Model ) => {
+        return this.generateUpdateDetails( newRouterStock, details )
+          .then(( fedNewRouterStock: Model ) => {
 
             return new Promise<Model>(( resolve, reject ) => {
-              fedUser.save(( err: any ) => {
+              fedNewRouterStock.save(( err: any ) => {
                 if ( err ) {
                   reject( err );
                 } else {
-                  resolve( fedUser );
+                  resolve( fedNewRouterStock );
                 }
               } );
             } );
@@ -454,29 +382,29 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
           } );
 
       } )
-      .then(( updatedUser: Model ) => {
+      .then(( updatedNewRouterStock: Model ) => {
 
-        return this.convertToAbstract( [ updatedUser ] );
+        return this.convertToAbstract( [ updatedNewRouterStock ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updated( {
-            id: userId,
-            documents: convertedUsers
+            id: newRouterStockId,
+            documents: convertedNewRouterStocks
           } );
           resolve();
         } );
 
-        return Promise.resolve( convertedUsers[ 0 ] );
+        return Promise.resolve( convertedNewRouterStocks[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.updateFailed( {
-            id: userId,
+            id: newRouterStockId,
             updates: details,
             reason: reason
           } );
@@ -496,7 +424,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: storageManagerInterfaces.routers.newRouterStock.FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -544,13 +472,13 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  readonly removeById = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  readonly removeById = ( newRouterStockId: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
         return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( userId )
+          "_id": mongoose.Types.ObjectId( newRouterStockId )
         } );
 
       } )
@@ -558,7 +486,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removed( {
-            id: userId
+            id: newRouterStockId
           } );
           resolve();
         } );
@@ -570,7 +498,7 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
         new Promise<any>(( resolve, reject ) => {
           this.emitter.removeFailed( {
-            id: userId,
+            id: newRouterStockId,
             reason: reason
           } );
           resolve();
@@ -589,80 +517,46 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria ): Promise<QueryConditions> => {
+  private readonly makeConditions = ( filtrationCriteria: storageManagerInterfaces.routers.newRouterStock.FiltrationCriteria ): Promise<QueryConditions> => {
 
     return new Promise<QueryConditions>(( resolve, reject ) => {
 
       let conditions: QueryConditions = {};
 
-      if ( filtrationCriteria.emailAddress ) {
-        conditions[ "emailAddress" ] = filtrationCriteria.emailAddress;
+      if ( filtrationCriteria.type ) {
+        conditions[ "type" ] = filtrationCriteria.type;
       }
 
-      if ( filtrationCriteria.accessLevel ) {
-        conditions[ "accessLevel" ] = filtrationCriteria.accessLevel;
-      }
-
-      if ( filtrationCriteria.verification ) {
-
-        if ( filtrationCriteria.verification.verified ) {
-          conditions[ "verification.verified" ] = filtrationCriteria.verification.verified;
+      if ( filtrationCriteria.initialCount ) {
+        conditions[ "initialCount" ] = {};
+        if ( filtrationCriteria.initialCount.min ) {
+          conditions[ "initialCount" ].$gte = filtrationCriteria.initialCount.min;
         }
-
-        if ( filtrationCriteria.verification.numVerAttempts ) {
-          conditions[ "verification.numVerAttempts" ] = {};
-          if ( filtrationCriteria.verification.numVerAttempts.min ) {
-            conditions[ "verification.numVerAttempts" ].$gte = filtrationCriteria.verification.numVerAttempts.min;
-          }
-          if ( filtrationCriteria.verification.numVerAttempts.max ) {
-            conditions[ "verification.numVerAttempts" ].$lte = filtrationCriteria.verification.numVerAttempts.max;
-          }
-        }
-
-      }
-
-      if ( filtrationCriteria.personalDetails ) {
-        if ( filtrationCriteria.personalDetails.firstName ) {
-          conditions[ "personalDetails.firstName" ] = filtrationCriteria.personalDetails.firstName;
-        }
-        if ( filtrationCriteria.personalDetails.lastName ) {
-          conditions[ "personalDetails.lastName" ] = filtrationCriteria.personalDetails.lastName;
-        }
-        if ( filtrationCriteria.personalDetails.dateOfBirth ) {
-          conditions[ "personalDetails.dateOfBirth" ] = {};
-          if ( filtrationCriteria.personalDetails.dateOfBirth.min ) {
-            conditions[ "personalDetails.dateOfBirth" ].$gte = filtrationCriteria.personalDetails.dateOfBirth.min;
-          }
-          if ( filtrationCriteria.personalDetails.dateOfBirth.max ) {
-            conditions[ "personalDetails.dateOfBirth" ].$lte = filtrationCriteria.personalDetails.dateOfBirth.max;
-          }
-        }
-        if ( filtrationCriteria.personalDetails.gender ) {
-          conditions[ "personalDetails.gender" ] = filtrationCriteria.personalDetails.gender;
+        if ( filtrationCriteria.initialCount.max ) {
+          conditions[ "initialCount" ].$lte = filtrationCriteria.initialCount.max;
         }
       }
 
-      if ( filtrationCriteria.contactDetails ) {
-        if ( filtrationCriteria.contactDetails.phoneNumbers ) {
-          conditions[ "contactDetails.phoneNumbers" ] = { $all: filtrationCriteria.contactDetails.phoneNumbers };
+      if ( filtrationCriteria.newCount ) {
+        conditions[ "newCount" ] = {};
+        if ( filtrationCriteria.newCount.min ) {
+          conditions[ "newCount" ].$gte = filtrationCriteria.newCount.min;
+        }
+        if ( filtrationCriteria.newCount.max ) {
+          conditions[ "newCount" ].$lte = filtrationCriteria.newCount.max;
         }
       }
 
-      if ( filtrationCriteria.activeApps ) {
-        conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
+      if ( filtrationCriteria.amount ) {
+        conditions[ "amount" ] = {};
+        if ( filtrationCriteria.amount.min ) {
+          conditions[ "amount" ].$gte = filtrationCriteria.amount.min;
+        }
+        if ( filtrationCriteria.amount.max ) {
+          conditions[ "amount" ].$lte = filtrationCriteria.amount.max;
+        }
       }
 
-      if ( filtrationCriteria.residentialDetails ) {
-        if ( filtrationCriteria.residentialDetails.country ) {
-          conditions[ "residentialDetails.country" ] = filtrationCriteria.residentialDetails.country;
-        }
-        if ( filtrationCriteria.residentialDetails.province ) {
-          conditions[ "residentialDetails.province" ] = filtrationCriteria.residentialDetails.province;
-        }
-        if ( filtrationCriteria.residentialDetails.address ) {
-          conditions[ "residentialDetails.address" ] = filtrationCriteria.residentialDetails.address;
-        }
-      }
 
       if ( filtrationCriteria.textSearch ) {
         conditions.$text = { $search: filtrationCriteria.textSearch };
@@ -676,15 +570,11 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.core.user.SortCriteria ): Promise<string> => {
+  private readonly makeSortCriteria = ( sortCriteria: storageManagerInterfaces.routers.newRouterStock.SortCriteria ): Promise<string> => {
 
     return new Promise<string>(( resolve, reject ) => {
       let sortString;
-      if ( sortCriteria.criteria === "numVerAttempts" ) {
-        sortString = "verification.numVerAttempts";
-      } else {
-        sortString = sortCriteria.criteria;
-      }
+      sortString = sortCriteria.criteria;
       if ( sortCriteria.order === "Descending" ) {
         sortString = "-" + sortString;
       }
@@ -695,132 +585,24 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.core.user.UpdateDetails ): Promise<Model> => {
+  private readonly generateUpdateDetails = ( document: Model, details: storageManagerInterfaces.routers.newRouterStock.UpdateDetails ): Promise<Model> => {
 
     return new Promise<Model>(( resolve, reject ) => {
 
-      if ( details.emailAddress ) {
-        document.emailAddress = details.emailAddress;
+      if ( details.type ) {
+        document.type = details.type;
       }
 
-      if ( details.accessLevel ) {
-        document.accessLevel = details.accessLevel;
+      if ( details.initialCount ) {
+        document.initialCount = details.initialCount;
       }
 
-      if ( details.password ) {
-        document.password = details.password;
+      if ( details.newCount ) {
+        document.newCount = details.newCount;
       }
 
-      if ( details.resetCode ) {
-        document.resetCode = details.resetCode;
-      }
-
-      if ( details.verification ) {
-        if ( details.verification.verified ) {
-          document.verification.verified = details.verification.verified;
-        }
-        if ( details.verification.verificationCode ) {
-          document.verification.verificationCode = details.verification.verificationCode;
-        }
-        if ( details.verification.numVerAttemptsMinus ) {
-          document.verification.numVerAttempts -= details.verification.numVerAttemptsMinus;
-        }
-        if ( details.verification.numVerAttemptsPlus ) {
-          document.verification.numVerAttempts += details.verification.numVerAttemptsPlus;
-        }
-        if ( details.verification.numVerAttempts ) {
-          document.verification.numVerAttempts = details.verification.numVerAttempts;
-        }
-      }
-
-      if ( details.personalDetails ) {
-        if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-          if ( !document.personalDetails ) {
-            document.personalDetails = <any>{
-              firstName: "",
-              lastName: "",
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.personalDetails.firstName ) {
-            document.personalDetails.firstName = details.personalDetails.firstName;
-          }
-          if ( details.personalDetails.lastName ) {
-            document.personalDetails.lastName = details.personalDetails.lastName;
-          }
-        }
-      }
-
-      if ( details.contactDetails ) {
-        if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-          if ( !document.contactDetails ) {
-            document.contactDetails = <any>{
-              phoneNumbers: [],
-              createdAt: new Date(),
-              updatedAt: new Date()
-            };
-          }
-          if ( details.contactDetails.phoneNumbersToRemove ) {
-            details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-              let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-                return ( subject === phoneNumber );
-              } );
-              if ( matches.length ) {
-                document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-              }
-            } );
-          }
-          if ( details.contactDetails.phoneNumbersToAdd ) {
-            details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-              document.contactDetails.phoneNumbers.push( phoneNumber );
-            } );
-          }
-        }
-      }
-
-      if ( details.residentialDetails ) {
-        if ( details.residentialDetails.country || details.residentialDetails.province || details.residentialDetails.address ) {
-          if ( !document.residentialDetails ) {
-            document.residentialDetails = <any>{
-              country: "",
-              province: "",
-              address: ""
-            };
-          }
-          if ( details.residentialDetails.country ) {
-            document.residentialDetails.country = details.residentialDetails.country;
-          }
-          if ( details.residentialDetails.province ) {
-            document.residentialDetails.province = details.residentialDetails.province;
-          }
-          if ( details.residentialDetails.address ) {
-            document.residentialDetails.address = details.residentialDetails.address;
-          }
-        }
-      }
-
-      if ( details.activeAppsToAdd ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToAdd.forEach(( app ) => {
-          document.activeApps.push( app );
-        } );
-      }
-
-      if ( details.activeAppsToRemove ) {
-        if ( !document.activeApps ) {
-          document.activeApps = [];
-        }
-        details.activeAppsToRemove.forEach(( app ) => {
-          let matches = document.activeApps.filter(( subject ) => {
-            return ( subject == app );
-          } );
-          if ( matches.length ) {
-            document.activeApps.splice( document.activeApps.indexOf( matches[ 0 ] ), 1 );
-          }
-        } );
+      if ( details.amount ) {
+        document.amount = details.amount;
       }
 
       resolve( document );
@@ -831,79 +613,32 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( newRouterStocks: Model[], forceThrow = false ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.routers.newRouterStock.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnNewRouterStocks: interfaces.dataModel.routers.newRouterStock.Super[] = [];
 
-          users.forEach(( user ) => {
+          newRouterStocks.forEach(( newRouterStock ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
-              id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
-              emailAddress: user.emailAddress,
-              accessLevel: user.accessLevel,
-              password: user.password,
-              verification: {
-                id: ( user.verification._id as mongoose.Types.ObjectId ).toHexString(),
-                verified: user.verification.verified,
-                numVerAttempts: user.verification.numVerAttempts,
-                createdAt: user.verification.createdAt,
-                updatedAt: user.verification.updatedAt
-              },
-              activeApps: user.activeApps,
-              createdAt: user.createdAt,
-              updatedAt: user.updatedAt
+            let returnNewRouterStock: interfaces.dataModel.routers.newRouterStock.Super = {
+              id: ( <mongoose.Types.ObjectId>newRouterStock._id ).toHexString(),
+              type: newRouterStock.type,
+              initialCount: newRouterStock.initialCount,
+              newCount: newRouterStock.newCount,
+              amount: newRouterStock.amount,
+              createdAt: newRouterStock.createdAt,
+              updatedAt: newRouterStock.updatedAt
             };
 
-            if ( user.resetCode ) {
-              returnUser.resetCode = user.resetCode;
-            }
-
-            if ( user.verification.verificationCode ) {
-              returnUser.verification.verificationCode = user.verification.verificationCode;
-            }
-
-            if ( user.personalDetails ) {
-              returnUser.personalDetails = {
-                id: ( user.personalDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                firstName: user.personalDetails.firstName,
-                lastName: user.personalDetails.lastName,
-                dateOfBirth: user.personalDetails.dateOfBirth,
-                gender: user.personalDetails.gender,
-                createdAt: user.personalDetails.createdAt,
-                updatedAt: user.personalDetails.updatedAt
-              };
-            }
-
-            if ( user.contactDetails ) {
-              returnUser.contactDetails = {
-                id: ( user.contactDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                phoneNumbers: user.contactDetails.phoneNumbers,
-                createdAt: user.contactDetails.createdAt,
-                updatedAt: user.contactDetails.updatedAt
-              };
-            }
-
-            if ( user.residentialDetails ) {
-              returnUser.residentialDetails = {
-                id: ( user.residentialDetails._id as mongoose.Types.ObjectId ).toHexString(),
-                country: user.residentialDetails.country,
-                province: user.residentialDetails.province,
-                address: user.residentialDetails.address,
-                createdAt: user.residentialDetails.createdAt,
-                updatedAt: user.residentialDetails.updatedAt
-              }
-            }
-
-            returnUsers.push( returnUser );
+            returnNewRouterStocks.push( returnNewRouterStock );
 
           } );
 
-          resolve( returnUsers );
+          resolve( returnNewRouterStocks );
 
         } );
 
@@ -918,24 +653,10 @@ class MongoUser extends MongoController implements storageManagerInterfaces.core
 /******************************************************************************/
 
 interface QueryConditions {
-  "emailAddress"?: string;
-  "accessLevel"?: string;
-
-  "verification.verified"?: boolean;
-  "verification.numVerAttempts"?: { $gte?: number; $lte?: number; };
-
-  "personalDetails.firstName"?: string;
-  "personalDetails.lastName"?: string;
-  "personalDetails.dateOfBirth"?: { $gte?: Date; $lte?: Date; };
-  "personalDetails.gender"?: "Male" | "Female";
-
-  "contactDetails.phoneNumbers"?: { $all: string[] };
-
-  "residentialDetails.country"?: string;
-  "residentialDetails.province"?: string;
-  "residentialDetails.address"?: string;
-
-  "activeApps"?: { $all: string[] };
+  "type"?: string;
+  "initialCount"?: { $gte?: number; $lte?: number; };
+  "newCount"?: { $gte?: number; $lte?: number; };
+  "amount"?: { $gte?: number; $lte?: number; };
   $text?: { $search: string };
 }
 
@@ -945,10 +666,10 @@ export default ( params: {
   emitEvent: interfaces.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageManagerInterfaces.core.User => {
-  return new MongoUser( {
+} ): storageManagerInterfaces.routers.NewRouterStock => {
+  return new MongoNewRouterStock( {
     emitter: emitterFactory( params.emitEvent ),
-    Model: UserMongooseModel,
+    Model: NewRouterStockMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow
   } );

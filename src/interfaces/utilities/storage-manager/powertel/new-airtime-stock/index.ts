@@ -84,6 +84,7 @@ export type FiltrationCriteria = Partial<{
   initialBalance: Partial<{ min: number; max: number; }>;
   newBalance: Partial<{ min: number; max: number; }>;
   amount: Partial<{ min: number; max: number; }>;
+  textSearch: string;
 }>;
 
 /******************************************************************************/

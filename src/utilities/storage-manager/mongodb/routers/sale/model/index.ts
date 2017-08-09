@@ -19,8 +19,8 @@ export interface Model_Nuance extends mongoDB.Document {
   totalCost: number;
 }
 export interface Model_Partial extends Partial<Pick<Model_Nuance, "type" | "paymentMethod" | "unitCost" | "amount" | "totalCost">> {
-  buyer: Partial<Buyer_Nuance>;
-  simCard: Partial<SimCard_Nuance>;
+  buyer?: Partial<Buyer_Nuance>;
+  simCard?: Partial<SimCard_Nuance>;
 };
 
 export interface Buyer extends Buyer_Nuance, mongoose.Document { }
