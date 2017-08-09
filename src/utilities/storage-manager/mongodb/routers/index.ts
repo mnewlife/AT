@@ -1,23 +1,14 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-import * as express from "express";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../interfaces";
-import * as storageManagerInterfaces from "../../../interfaces/utilities/storage-manager";
+import * as interfaces from "../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 
-import userFactory from "./user";
-import eventFactory from "./event";
-import progressionFactory from "./progression";
-import notificationFactory from "./notification";
-import subscriptionFactory from "./subscription";
-
-import amendmentRequestFactory from "./amendment-request";
-import customerGroupFactory from "./customer-group";
-import orderFactory from "./order";
-import productFactory from "./product";
-import productTypeFactory from "./product-type";
+import amountsFactory from "./amounts";
+import newRouterStockFactory from "./new-router-stock";
+import saleFactory from "./sale";
 
 /******************************************************************************/
 
@@ -35,64 +26,23 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class MongodbStorage implements interfaces.utilities.StorageManager {
+class Routers implements interfaces.utilities.storageManager.Routers {
 
-  readonly user: storageManagerInterfaces.core.user;
-  readonly event: storageManagerInterfaces.Event;
-  readonly progression: storageManagerInterfaces.Progression;
-  readonly notification: storageManagerInterfaces.Notification;
-  readonly subscription: storageManagerInterfaces.Subscription;
-
-  readonly amendmentRequest: storageManagerInterfaces.AmendmentRequest;
-  readonly customerGroup: storageManagerInterfaces.CustomerGroup;
-  readonly order: storageManagerInterfaces.Order;
-  readonly product: storageManagerInterfaces.Product;
-  readonly productType: storageManagerInterfaces.ProductType;
-
-  readonly middleware: express.RequestHandler[] = [];
+  readonly amounts: storageManagerInterfaces.routers.Amounts;
+  readonly newRouterStock: storageManagerInterfaces.routers.NewRouterStock;
+  readonly sale: storageManagerInterfaces.routers.Sale;
 
   /*****************************************************************/
 
   constructor( params: {
-    linkToDB: string;
-    user: storageManagerInterfaces.core.user;
-    event: storageManagerInterfaces.Event;
-    progression: storageManagerInterfaces.Progression;
-    notification: storageManagerInterfaces.Notification;
-    subscription: storageManagerInterfaces.Subscription;
-    amendmentRequest: storageManagerInterfaces.AmendmentRequest;
-    customerGroup: storageManagerInterfaces.CustomerGroup;
-    order: storageManagerInterfaces.Order;
-    product: storageManagerInterfaces.Product;
-    productType: storageManagerInterfaces.ProductType;
+    amounts: storageManagerInterfaces.routers.Amounts;
+    newRouterStock: storageManagerInterfaces.routers.NewRouterStock;
+    sale: storageManagerInterfaces.routers.Sale;
   } ) {
 
-    this.connectToDatabase( params.linkToDB );
-
-    this.user = params.user;
-    this.event = params.event;
-    this.notification = params.notification;
-    this.progression = params.progression;
-    this.subscription = params.subscription;
-
-    this.amendmentRequest = params.amendmentRequest;
-    this.customerGroup = params.customerGroup;
-    this.order = params.order;
-    this.product = params.product;
-    this.productType = params.productType;
-
-  }
-
-  /*****************************************************************/
-
-  private readonly connectToDatabase = ( linkToDB: string ): void => {
-    mongoose.connect( linkToDB, function ( err: any, res: any ) {
-      if ( err ) {
-        throw new Error( "Error connecting to database : " + linkToDB + ", Error details : " + err );
-      } else {
-        console.log( "Connected to MongoDB database : " + linkToDB );
-      }
-    } );
+    this.amounts = params.amounts;
+    this.newRouterStock = params.newRouterStock;
+    this.sale = params.sale;
 
   }
 
@@ -102,10 +52,7 @@ class MongodbStorage implements interfaces.utilities.StorageManager {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.utilities.StorageManager => {
-
-  let productionLink = "mongodb://AllanSimoyi:tatenda#1@ds157499.mlab.com:57499/ximex";
-  let developmentLink = "mongodb://127.0.0.1:27017/Ximex";
+export default ( config: interfaces.Config ): interfaces.utilities.storageManager.Routers => {
 
   let commonParams = ( {
     emitEvent: config.eventManager.emit,
@@ -113,20 +60,10 @@ export default ( config: interfaces.Config ): interfaces.utilities.StorageManage
     checkThrow: config.utilities.sharedLogic.moders.checkThrow
   } );
 
-  return new MongodbStorage( {
-    linkToDB: ( config.environment.production ? productionLink : developmentLink ),
-
-    user: userFactory( commonParams ),
-    event: eventFactory( commonParams ),
-    progression: progressionFactory( commonParams ),
-    notification: notificationFactory( commonParams ),
-    subscription: subscriptionFactory( commonParams ),
-
-    amendmentRequest: amendmentRequestFactory( commonParams ),
-    customerGroup: customerGroupFactory( commonParams ),
-    order: orderFactory( commonParams ),
-    product: productFactory( commonParams ),
-    productType: productTypeFactory( commonParams )
+  return new Routers( {
+    amounts: amountsFactory( commonParams ),
+    newRouterStock: newRouterStockFactory( commonParams ),
+    sale: saleFactory( commonParams )
   } );
 
 };

@@ -84,20 +84,14 @@ export default ( config: interfaces.Config ): interfaces.utilities.StorageManage
   let productionLink = "mongodb://AllanSimoyi:tatenda#1@ds157499.mlab.com:57499/ximex";
   let developmentLink = "mongodb://127.0.0.1:27017/Ximex";
 
-  let commonParams = ( {
-    emitEvent: config.eventManager.emit,
-    mapDetails: config.utilities.sharedLogic.dataStructures.mapDetails,
-    checkThrow: config.utilities.sharedLogic.moders.checkThrow
-  } );
-
   return new MongodbStorage( {
     linkToDB: ( config.environment.production ? productionLink : developmentLink ),
 
-    call263: call263Factory( commonParams ),
-    core: coreFactory( commonParams ),
-    grocRound: grocRoundFactory( commonParams ),
-    powertel: powertelFactory( commonParams ),
-    routers: routersFactory( commonParams ),
+    call263: call263Factory( config ),
+    core: coreFactory( config ),
+    grocRound: grocRoundFactory( config ),
+    powertel: powertelFactory( config ),
+    routers: routersFactory( config )
 
   } );
 

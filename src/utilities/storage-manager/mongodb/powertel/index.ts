@@ -1,23 +1,17 @@
 /******************************************************************************/
 
 import * as Promise from "bluebird";
-import * as express from "express";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../interfaces";
-import * as storageManagerInterfaces from "../../../interfaces/utilities/storage-manager";
+import * as interfaces from "../../../../interfaces";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 
-import userFactory from "./user";
-import eventFactory from "./event";
-import progressionFactory from "./progression";
-import notificationFactory from "./notification";
-import subscriptionFactory from "./subscription";
-
-import amendmentRequestFactory from "./amendment-request";
-import customerGroupFactory from "./customer-group";
-import orderFactory from "./order";
-import productFactory from "./product";
-import productTypeFactory from "./product-type";
+import airtimeFactory from "./airtime";
+import airtimeSaleFactory from "./airtime-sale";
+import cardFactory from "./card";
+import cardSaleFactory from "./card-sale";
+import newAirtimeStockFactory from "./new-airtime-stock";
+import newCardStockFactory from "./new-card-stock";
 
 /******************************************************************************/
 
@@ -35,64 +29,33 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class MongodbStorage implements interfaces.utilities.StorageManager {
+class Powertel implements interfaces.utilities.storageManager.Powertel {
 
-  readonly user: storageManagerInterfaces.core.user;
-  readonly event: storageManagerInterfaces.Event;
-  readonly progression: storageManagerInterfaces.Progression;
-  readonly notification: storageManagerInterfaces.Notification;
-  readonly subscription: storageManagerInterfaces.Subscription;
-
-  readonly amendmentRequest: storageManagerInterfaces.AmendmentRequest;
-  readonly customerGroup: storageManagerInterfaces.CustomerGroup;
-  readonly order: storageManagerInterfaces.Order;
-  readonly product: storageManagerInterfaces.Product;
-  readonly productType: storageManagerInterfaces.ProductType;
-
-  readonly middleware: express.RequestHandler[] = [];
+  readonly airtime: storageManagerInterfaces.powertel.Airtime;
+  readonly airtimeSale: storageManagerInterfaces.powertel.AirtimeSale;
+  readonly card: storageManagerInterfaces.powertel.Card;
+  readonly cardSale: storageManagerInterfaces.powertel.CardSale;
+  readonly newAirtimeStock: storageManagerInterfaces.powertel.NewAirtimeStock;
+  readonly newCardStock: storageManagerInterfaces.powertel.NewCardStock;
 
   /*****************************************************************/
 
   constructor( params: {
-    linkToDB: string;
-    user: storageManagerInterfaces.core.user;
-    event: storageManagerInterfaces.Event;
-    progression: storageManagerInterfaces.Progression;
-    notification: storageManagerInterfaces.Notification;
-    subscription: storageManagerInterfaces.Subscription;
-    amendmentRequest: storageManagerInterfaces.AmendmentRequest;
-    customerGroup: storageManagerInterfaces.CustomerGroup;
-    order: storageManagerInterfaces.Order;
-    product: storageManagerInterfaces.Product;
-    productType: storageManagerInterfaces.ProductType;
+    airtime: storageManagerInterfaces.powertel.Airtime;
+    airtimeSale: storageManagerInterfaces.powertel.AirtimeSale;
+    card: storageManagerInterfaces.powertel.Card;
+    cardSale: storageManagerInterfaces.powertel.CardSale;
+    newAirtimeStock: storageManagerInterfaces.powertel.NewAirtimeStock;
+    newCardStock: storageManagerInterfaces.powertel.NewCardStock;
   } ) {
 
-    this.connectToDatabase( params.linkToDB );
+    this.airtime = params.airtime;
+    this.airtimeSale = params.airtimeSale;
+    this.card = params.card;
+    this.cardSale = params.cardSale;
+    this.newAirtimeStock = params.newAirtimeStock;
+    this.newCardStock = params.newCardStock;
 
-    this.user = params.user;
-    this.event = params.event;
-    this.notification = params.notification;
-    this.progression = params.progression;
-    this.subscription = params.subscription;
-
-    this.amendmentRequest = params.amendmentRequest;
-    this.customerGroup = params.customerGroup;
-    this.order = params.order;
-    this.product = params.product;
-    this.productType = params.productType;
-
-  }
-
-  /*****************************************************************/
-
-  private readonly connectToDatabase = ( linkToDB: string ): void => {
-    mongoose.connect( linkToDB, function ( err: any, res: any ) {
-      if ( err ) {
-        throw new Error( "Error connecting to database : " + linkToDB + ", Error details : " + err );
-      } else {
-        console.log( "Connected to MongoDB database : " + linkToDB );
-      }
-    } );
 
   }
 
@@ -102,10 +65,7 @@ class MongodbStorage implements interfaces.utilities.StorageManager {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.utilities.StorageManager => {
-
-  let productionLink = "mongodb://AllanSimoyi:tatenda#1@ds157499.mlab.com:57499/ximex";
-  let developmentLink = "mongodb://127.0.0.1:27017/Ximex";
+export default ( config: interfaces.Config ): interfaces.utilities.storageManager.Powertel => {
 
   let commonParams = ( {
     emitEvent: config.eventManager.emit,
@@ -113,20 +73,13 @@ export default ( config: interfaces.Config ): interfaces.utilities.StorageManage
     checkThrow: config.utilities.sharedLogic.moders.checkThrow
   } );
 
-  return new MongodbStorage( {
-    linkToDB: ( config.environment.production ? productionLink : developmentLink ),
-
-    user: userFactory( commonParams ),
-    event: eventFactory( commonParams ),
-    progression: progressionFactory( commonParams ),
-    notification: notificationFactory( commonParams ),
-    subscription: subscriptionFactory( commonParams ),
-
-    amendmentRequest: amendmentRequestFactory( commonParams ),
-    customerGroup: customerGroupFactory( commonParams ),
-    order: orderFactory( commonParams ),
-    product: productFactory( commonParams ),
-    productType: productTypeFactory( commonParams )
+  return new Powertel( {
+    airtime: airtimeFactory( commonParams ),
+    airtimeSale: airtimeSaleFactory( commonParams ),
+    card: cardFactory( commonParams ),
+    cardSale: cardSaleFactory( commonParams ),
+    newAirtimeStock: newAirtimeStockFactory( commonParams ),
+    newCardStock: newCardStockFactory( commonParams )
   } );
 
 };
