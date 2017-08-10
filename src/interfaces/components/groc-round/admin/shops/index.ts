@@ -26,7 +26,7 @@ export interface Add {
 }
 
 export interface Update {
-  ( shopId: string, updates: storageManagerInterfaces.grocRound.shop.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super[]>;
+  ( shopId: string, updates: storageManagerInterfaces.grocRound.shop.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.shop.Super>;
 }
 
 export interface Remove {

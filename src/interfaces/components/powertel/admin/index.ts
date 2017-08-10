@@ -32,7 +32,7 @@ export interface AirtimeSales {
 export interface CardSales {
   readonly get: cardSales.Get;
   readonly getOne: cardSales.GetOne;
-  readonly makeTransfer: cardSales.Add;
+  readonly add: cardSales.Add;
   readonly update: cardSales.Update;
   readonly remove: cardSales.Remove;
 }

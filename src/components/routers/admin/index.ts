@@ -2,62 +2,52 @@
 
 import * as interfaces from "../../../interfaces";
 import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
-import * as coreInterfaces from "../../../interfaces/components/core";
+import * as routersInterfaces from "../../../interfaces/components/routers";
 
-import adminsFactory from "./admins";
-import logisticsFactory from "./logistics";
-import salesRepsFactory from "./sales-reps";
-
-import authFactory from "./auth";
-import profileFactory from "./profile";
-import registrationFactory from "./registration";
+import amountsFactory from "./amounts";
+import newRoutersFactory from "./new-routers";
+import salesFactory from "./sales";
 
 /******************************************************************************/
 
-class Admin implements coreInterfaces.Admin {
-
-  readonly admins: coreInterfaces.admin.Admins;
-  readonly logistics: coreInterfaces.admin.Admins;
-  readonly salesReps: coreInterfaces.admin.SalesReps;
-
-  readonly auth: coreInterfaces.admin.Auth;
-  readonly profile: coreInterfaces.admin.Profile;
-  readonly registration: coreInterfaces.admin.Registration;
-
-  constructor( params: {
-    auth: coreInterfaces.admin.Auth,
-    profile: coreInterfaces.admin.Profile,
-    registration: coreInterfaces.admin.Registration
-  } ) {
-    this.auth = params.auth;
-    this.profile = params.profile;
-    this.registration = params.registration;
-  }
-
+class Admin implements routersInterfaces.Admin {
+  constructor(
+    readonly amounts: routersInterfaces.admin.Amounts,
+    readonly newRouterStock: routersInterfaces.admin.NewRouterStock,
+    readonly sales: routersInterfaces.admin.Sales
+  ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): coreInterfaces.Admin => {
-  return new Admin( {
-    admins: adminsFactory( {} ),
-    logistics: logisticsFactory( {} ),
-    salesReps: salesRepsFactory( {} ),
-    auth: authFactory( {
-      emitEvent: config.eventManager.emit,
-      authSignIn: config.utilities.authenticationManager.signIn,
-      authSignOut: config.utilities.authenticationManager.signOut,
-      checkThrow: config.utilities.sharedLogic.moders.checkThrow
-    } ),
-    profile: profileFactory( config.eventManager.emit ),
-    registration: registrationFactory( {
-      emitEvent: config.eventManager.emit,
-      storeNewUser: config.utilities.storageManager.user.add,
-      checkThrow: config.utilities.sharedLogic.moders.checkThrow,
-      getCurrentUserFromSession: config.utilities.sessionManager.getCurrentUser
-    } )
-  } );
+export default ( config: interfaces.Config ): routersInterfaces.Admin => {
+  return new Admin( amountsFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getAmounts: config.utilities.storageManager.routers.amounts.get,
+    getAmountsById: config.utilities.storageManager.routers.amounts.getById,
+    addNewAmounts: config.utilities.storageManager.routers.amounts.add,
+    updateAmountsById: config.utilities.storageManager.routers.amounts.updateById,
+    removeAmountsById: config.utilities.storageManager.routers.amounts.removeById,
+  } ),
+  newRoutersFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getNewRouterStock: config.utilities.storageManager.routers.newRouterStock.get,
+    getNewRouterStockById: config.utilities.storageManager.routers.newRouterStock.getById,
+    addNewNewRouterStock: config.utilities.storageManager.routers.newRouterStock.add,
+    updateNewRouterStockById: config.utilities.storageManager.routers.newRouterStock.updateById,
+    removeNewRouterStockById: config.utilities.storageManager.routers.newRouterStock.removeById,
+  } ),
+  salesFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getSales: config.utilities.storageManager.routers.sale.get,
+    getSaleById: config.utilities.storageManager.routers.sale.getById,
+    addNewSale: config.utilities.storageManager.routers.sale.add,
+    updateSaleById: config.utilities.storageManager.routers.sale.updateById,
+    removeSaleById: config.utilities.storageManager.routers.sale.removeById,
+  } ) );
 }
 
 /******************************************************************************/
-

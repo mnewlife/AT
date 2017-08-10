@@ -27,13 +27,73 @@ class Channels implements adminInterfaces.Channels {
     private readonly removeChannelById: storageManagerInterfaces.call263.channel.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageManagerInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.channel.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { }
+  get = ( filtrationCriteria: storageManagerInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.channel.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => {
 
-  getOne = ( channelId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super> => { };
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
 
-  add = ( channels: storageManagerInterfaces.call263.channel.AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { };
+        return this.getChannels( filtrationCriteria, sortCriteria, limit );
 
-  addOne = ( channel: storageManagerInterfaces.call263.channel.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super> => { }
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
+
+  getOne = ( channelId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super> => {
+
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.getChannelById( channelId );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "MakeTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  };
+
+  add = ( channels: storageManagerInterfaces.call263.channel.AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.addNewChannels( channels );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "MakeTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  };
+
+  addOne = ( channel: storageManagerInterfaces.call263.channel.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super> => {
+
+  }
 
   update = ( channelId: string, updates: storageManagerInterfaces.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { }
 

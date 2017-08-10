@@ -51,8 +51,8 @@ export default ( config: interfaces.Config ): interfaces.Utilities => {
     storageManager: storageManagerFactory( config ),
     authenticationManager: authenticationManagerFactory( {
       emit: config.eventManager.emit,
-      getUserFromStorage: config.utilities.storageManager.user.get,
-      getUserByIdFromStorage: config.utilities.storageManager.user.getById,
+      getUserFromStorage: config.utilities.storageManager.core.user.get,
+      getUserByIdFromStorage: config.utilities.storageManager.core.user.getById,
       setCurrentUserInSession: config.utilities.sessionManager.setCurrentUser,
       getCurrentUserFromSession: config.utilities.sessionManager.getCurrentUser,
       signOutOfSession: config.utilities.sessionManager.signOut,

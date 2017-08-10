@@ -32,4 +32,3 @@ export default ( config: interfaces.Config ): interfaces.Components => {
 }
 
 /******************************************************************************/
-

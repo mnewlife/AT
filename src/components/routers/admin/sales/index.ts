@@ -19,7 +19,7 @@ class Sales implements adminInterfaces.Sales {
     private readonly emitter: adminInterfaces.sales.Emitter,
     private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-    private readonly getSale: storageManagerInterfaces.routers.sale.Get,
+    private readonly getSales: storageManagerInterfaces.routers.sale.Get,
     private readonly getSaleById: storageManagerInterfaces.routers.sale.GetById,
     private readonly addNewSale: storageManagerInterfaces.routers.sale.Add,
     private readonly updateSaleById: storageManagerInterfaces.routers.sale.UpdateById,
@@ -44,7 +44,7 @@ export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
   checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  getSale: storageManagerInterfaces.routers.sale.Get,
+  getSales: storageManagerInterfaces.routers.sale.Get,
   getSaleById: storageManagerInterfaces.routers.sale.GetById,
   addNewSale: storageManagerInterfaces.routers.sale.Add,
   updateSaleById: storageManagerInterfaces.routers.sale.UpdateById,
@@ -54,7 +54,7 @@ export default ( params: {
     emitterFactory( params.emitEvent ),
     params.checkThrow,
 
-    params.getSale,
+    params.getSales,
     params.getSaleById,
     params.addNewSale,
     params.updateSaleById,

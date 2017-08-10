@@ -41,7 +41,7 @@ export interface SignIn {
 }
 
 export interface SignOut {
-  ( req: express.Request, forceThrow?: boolean ): Promise<any>;
+  ( req: express.Request, forceThrow?: boolean ): Promise<void>;
 }
 
 export interface GetCurrentUser {
@@ -49,11 +49,11 @@ export interface GetCurrentUser {
 }
 
 export interface AuthPassword {
-  ( userId: string, password: string, forceThrow?: boolean ): Promise<any>;
+  ( userId: string, password: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface CreateHashedPassword {
-  ( password: string, forceThrow?: boolean ): Promise<any>;
+  ( password: string, forceThrow?: boolean ): Promise<string>;
 }
 
 /******************************************************************************/

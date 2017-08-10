@@ -30,7 +30,7 @@ export interface AddOne {
 }
 
 export interface Update {
-  ( channelId: string, updates: storageManagerInterfaces.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]>;
+  ( channelId: string, updates: storageManagerInterfaces.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super>;
 }
 
 export interface Remove {

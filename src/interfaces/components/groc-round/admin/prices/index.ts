@@ -26,7 +26,7 @@ export interface Add {
 }
 
 export interface Update {
-  ( priceId: string, updates: storageManagerInterfaces.grocRound.price.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super[]>;
+  ( priceId: string, updates: storageManagerInterfaces.grocRound.price.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.price.Super>;
 }
 
 export interface Remove {

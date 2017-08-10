@@ -58,7 +58,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        req.session.currentUser = user;
+        req.session.currentUser = user.id;
         new Promise<void>(( resolve, reject ) => {
           this.emitter.setCurrentUser( {
             user: user,
@@ -66,7 +66,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
           } );
           resolve();
         } );
-        return Promise.resolve( req.session.currentUser );
+        return Promise.resolve( user );
       } )
       .catch(( reason: any ) => {
 

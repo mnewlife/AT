@@ -28,25 +28,130 @@ class AirtimeTransfers implements adminInterfaces.AirtimeTransfers {
 
   get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
 
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.getAirtimeTransfers( filtrationCriteria, sortCriteria, limit );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
   }
 
   getOne = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.getAirtimeTransferById( airtimeTransferId );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
   };
 
-  makeTransfer = ( airtimeTransferId: string, amount: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+  makeTransfer = ( airtimeTransferId: string, amount: number, forceThrow?: boolean ): Promise<any> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return Promise.resolve();
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "MakeTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
 
   }
 
   recordTransfer = ( airtimeTransfer: storageManagerInterfaces.call263.airtimeTransfer.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
 
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.addNewAirtimeTransfer( airtimeTransfer );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "RecordTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
   }
 
-  update = ( airtimeTransferId: string, updates: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
+  update = ( airtimeTransferId: string, updates: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.updateAirtimeTransferById( airtimeTransferId, updates );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "UpdateTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
 
   }
 
-  remove = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<void> => {}
-  
+  remove = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<void> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.removeAirtimeTransferById( airtimeTransferId );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "RemoveTransferFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
+
 }
 
 /******************************************************************************/

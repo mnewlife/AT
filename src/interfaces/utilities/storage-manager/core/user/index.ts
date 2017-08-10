@@ -69,10 +69,25 @@ export interface AddDetails {
   accessLevel: interfaces.dataModel.core.AccessLevel;
   password: string;
   resetCode?: string;
-  verification: interfaces.dataModel.core.user.Verification;
-  personalDetails?: interfaces.dataModel.core.user.PersonalDetails;
-  contactDetails?: interfaces.dataModel.core.user.ContactDetails;
-  residentialDetails?: interfaces.dataModel.core.user.ResidentialDetails;
+  verification: {
+    verified: boolean;
+    verificationCode: string;
+    numVerAttempts: number;
+  };
+  personalDetails?: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: Date;
+    gender: "Male" | "Female";
+  };
+  contactDetails?: {
+    phoneNumbers: string[];
+  };
+  residentialDetails?: {
+    country: string;
+    province: string;
+    address: string;
+  };
   activeApps: interfaces.AppName[];
 }
 

@@ -4,9 +4,11 @@ import * as express from "express";
 
 import * as interfaces from "../interfaces";
 
-import route_core from "./core";
-import route_call263 from "./call-263";
-import route_grocRound from "./groc-round";
+import call263Routes from "./call-263";
+import coreRoutes from "./core";
+import grocRoundRoutes from "./groc-round";
+import powertelRoutes from "./powertel";
+import routersRoutes from "./routers";
 
 import authChecks from "./auth-checks";
 
@@ -16,9 +18,11 @@ export default function routes ( config: interfaces.Config, app: express.Applica
 
   let responseManager = config.utilities.responseManager;
 
-  const core = route_core( app, authChecks.core, config );
-  const call263 = route_call263( app, authChecks.call263, config );
-  const grocRound = route_grocRound( app, authChecks.grocRound, config );
+  app.use( "/call263", call263Routes( config ) );
+  app.use( "/core", coreRoutes( config ) );
+  app.use( "/grocRound", grocRoundRoutes( config ) );
+  app.use( "/powertel", powertelRoutes( config ) );
+  app.use( "/routers", routersRoutes( config ) );
 
   app.get( "/", function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
 
@@ -27,7 +31,6 @@ export default function routes ( config: interfaces.Config, app: express.Applica
     if ( req.query.extraData ) {
 
       let extraData: any = {};
-
       try {
         extraData = JSON.parse( req.query.extraData );
       } catch ( ex ) {
@@ -50,10 +53,6 @@ export default function routes ( config: interfaces.Config, app: express.Applica
     return responseManager.send( res, "passpoint", null, null, payload );
 
   } );
-
-  app.use( "/core", core );
-  app.use( "/call263", call263 );
-  app.use( "/grocRound", grocRound );
 
 }
 

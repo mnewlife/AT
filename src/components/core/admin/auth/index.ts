@@ -15,24 +15,14 @@ import emitterFactory from "./event-emitter";
 
 class Auth implements adminInterfaces.Auth {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.auth.Emitter,
+    private readonly authSignIn: authenticationManagerInterfaces.SignIn,
+    private readonly authSignOut: authenticationManagerInterfaces.SignOut,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow
+  ) { }
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
-
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Developer> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -40,13 +30,34 @@ class Auth implements adminInterfaces.Auth {
         return this.authSignIn( emailAddress, password, req );
 
       } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
+      .then(( signedInUser: interfaces.dataModel.core.user.Super ) => {
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
+        return new Promise<interfaces.dataModel.core.user.Developer>(( resolve, reject ) => {
+          if ( signedInUser.accessLevel == "admin" ) {
+            resolve( signedInUser as interfaces.dataModel.core.user.Developer );
+          } else {
+            reject( {
+              identifier: "NotDeveloper",
+              data: {}
+            } );
+          }
+        } );
+
+      } )
+      .then(( prunedUser: interfaces.dataModel.core.user.Developer ) => {
+
+        prunedUser.password = "";
+        return Promise.resolve( prunedUser );
 
       } )
       .catch(( reason: any ) => {
+
+        if ( reason && reason.identifier === "NotDeveloper" ) {
+          return Promise.reject( {
+            identifier: "NotDeveloper",
+            data: {}
+          } );
+        }
 
         return Promise.reject( {
           identifier: "SignInFailed",
@@ -95,12 +106,12 @@ export default ( params: {
   authSignOut: authenticationManagerInterfaces.SignOut,
   checkThrow: sharedLogicInterfaces.moders.CheckThrow
 } ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  return new Auth(
+    emitterFactory( params.emitEvent ),
+    params.authSignIn,
+    params.authSignOut,
+    params.checkThrow
+  )
 }
 
 /******************************************************************************/

@@ -1,5 +1,7 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as interfaces from "../../../../../interfaces";
 import * as storageManagerInterfaces from "../../../../../interfaces/utilities/storage-manager";
 
@@ -10,15 +12,15 @@ export interface Emitter {
 }
 
 export interface GetDetails {
-  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Developer>;
+  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface UpdateDetails {
-  ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Developer>;
+  ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface ChangeEmailAddress {
-  ( userId: string, password: string, newEmailAddress: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Developer>;
+  ( userId: string, password: string, newEmailAddress: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface ChangePassword {
@@ -30,7 +32,7 @@ export interface RequestPasswordResetCode {
 }
 
 export interface ResetPassword {
-  ( userId: string, resetCode: string, forceThrow?: boolean ): Promise<void>;
+  ( userId: string, resetCode: string, newPassword?: string, forceThrow?: boolean ): Promise<boolean>;
 }
 
 export interface DeleteAccount {

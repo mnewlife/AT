@@ -12,15 +12,15 @@ export interface Emitter {
 }
 
 export interface GetDetails {
-  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Admin>;
+  ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface UpdateDetails {
-  ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Admin>;
+  ( userId: string, details: storageManagerInterfaces.core.user.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface ChangeEmailAddress {
-  ( userId: string, password: string, newEmailAddress: string, req: express.Request, forceThrow?: boolean ): Promise<void>;
+  ( userId: string, password: string, newEmailAddress: string, req: express.Request, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super>;
 }
 
 export interface ChangePassword {
@@ -32,7 +32,7 @@ export interface RequestPasswordResetCode {
 }
 
 export interface ResetPassword {
-  ( userId: string, resetCode: string, forceThrow?: boolean ): Promise<void>;
+  ( userId: string, resetCode: string, newPassword?: string, forceThrow?: boolean ): Promise<boolean>;
 }
 
 export interface DeleteAccount {

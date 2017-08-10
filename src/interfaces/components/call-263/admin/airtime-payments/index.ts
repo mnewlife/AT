@@ -26,7 +26,7 @@ export interface Add {
 }
 
 export interface Update {
-  ( airtimePaymentId: string, updates: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]>;
+  ( airtimePaymentId: string, updates: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super>;
 }
 
 export interface Remove {

@@ -26,7 +26,7 @@ export interface Add {
 }
 
 export interface Update {
-  ( cardId: string, updates: storageManagerInterfaces.powertel.card.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.card.Super[]>;
+  ( cardId: string, updates: storageManagerInterfaces.powertel.card.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.card.Super>;
 }
 
 export interface Remove {

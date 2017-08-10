@@ -26,15 +26,110 @@ class AirtimePayments implements adminInterfaces.AirtimePayments {
     private readonly removeAirtimePaymentById: storageManagerInterfaces.call263.airtimePayment.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => { }
+  get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
 
-  getOne = ( airtimePaymentId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => { };
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
 
-  add = ( airtimePayment: storageManagerInterfaces.call263.airtimePayment.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => { }
+        return this.getAirtimePayments( filtrationCriteria, sortCriteria, limit );
 
-  update = ( airtimePaymentId: string, updates: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => { }
+      } )
+      .catch(( reason: any ) => {
 
-  remove = ( airtimePaymentId: string, forceThrow?: boolean ): Promise<void> => { }
+        return Promise.reject( {
+          identifier: "GetPaymentsFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
+
+  getOne = ( airtimePaymentId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.getAirtimePaymentById( airtimePaymentId );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetPaymentFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  };
+
+  add = ( airtimePayment: storageManagerInterfaces.call263.airtimePayment.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.add( airtimePayment );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetPaymentFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
+
+  update = ( airtimePaymentId: string, updates: storageManagerInterfaces.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.updateAirtimePaymentById( airtimePaymentId, updates );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetPaymentFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
+
+  remove = ( airtimePaymentId: string, forceThrow?: boolean ): Promise<void> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return this.removeAirtimePaymentById( airtimePaymentId );
+
+      } )
+      .catch(( reason: any ) => {
+
+        return Promise.reject( {
+          identifier: "GetPaymentFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
 
 }
 

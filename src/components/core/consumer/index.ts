@@ -8,34 +8,41 @@ import authFactory from "./auth";
 import profileFactory from "./profile";
 import registrationFactory from "./registration";
 
-import sharedCodeFactory from "./shared-code";
-
 /******************************************************************************/
 
 class Consumer implements coreInterfaces.Consumer {
-
-  readonly auth: coreInterfaces.consumer.Auth;
-  readonly profile: coreInterfaces.consumer.Profile;
-  readonly registration: coreInterfaces.consumer.Registration;
-
-  constructor( params: coreInterfaces.consumer.Params ) {
-    this.auth = params.auth;
-    this.profile = params.profile;
-    this.registration = params.registration;
-  }
-
+  constructor(
+    readonly auth: coreInterfaces.consumer.Auth,
+    readonly profile: coreInterfaces.consumer.Profile,
+    readonly registration: coreInterfaces.consumer.Registration
+  ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config, sharedCode: coreInterfaces.SharedCode ): coreInterfaces.Consumer => {
-  let localSharedCode = sharedCodeFactory( config, sharedCode );
-  return new Consumer( {
-    auth: authFactory( config.eventManager.emit, localSharedCode ),
-    profile: profileFactory( config.eventManager.emit, localSharedCode ),
-    registration: registrationFactory( config.eventManager.emit, localSharedCode )
-  } );
+export default ( config: interfaces.Config ): coreInterfaces.Consumer => {
+  return new Consumer( authFactory( {
+    emitEvent: config.eventManager.emit,
+    authSignIn: config.utilities.authenticationManager.signIn,
+    authSignOut: config.utilities.authenticationManager.signOut,
+    generateRandomNumber: config.utilities.sharedLogic.numbers.generateRandomNumber,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow
+  } ),
+  profileFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getUserById: config.utilities.storageManager.core.user.getById,
+    updateUserById: config.utilities.storageManager.core.user.updateById,
+    removeUserById: config.utilities.storageManager.core.user.removeById,
+    sendEmail: config.utilities.communicationManager.mailAgent.sendEmail,
+    authPassword: config.utilities.authenticationManager.authPassword
+  } ),
+  registrationFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getUserById: config.utilities.storageManager.core.user.getById,
+    updateUserById: config.utilities.storageManager.core.user.updateById    
+  } ) );
 }
 
 /******************************************************************************/
-

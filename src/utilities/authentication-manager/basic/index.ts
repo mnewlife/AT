@@ -221,7 +221,7 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
 
   /*****************************************************************/
 
-  readonly authPassword = ( userId: string, password: string, forceThrow = false ): Promise<void> => {
+  readonly authPassword = ( userId: string, password: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -229,10 +229,10 @@ class BasicAuthenticationManager implements interfaces.utilities.AuthenticationM
       } )
       .then(( foundUser: interfaces.dataModel.core.user.Super ) => {
 
-        return new Promise<void>(( resolve, reject ) => {
+        return new Promise<interfaces.dataModel.core.user.Super>(( resolve, reject ) => {
 
           if ( this.isValidPassword( password, foundUser.password ) ) {
-            return resolve();
+            return resolve( foundUser );
           }
 
           new Promise<void>(( resolve, reject ) => {

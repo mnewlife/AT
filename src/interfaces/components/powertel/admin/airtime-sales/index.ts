@@ -26,7 +26,7 @@ export interface Add {
 }
 
 export interface Update {
-  ( airtimeSaleId: string, updates: storageManagerInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]>;
+  ( airtimeSaleId: string, updates: storageManagerInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.airtimeSale.Super>;
 }
 
 export interface Remove {

@@ -20,7 +20,7 @@ export interface Admin {
 }
 
 export interface Consumer {
-  readonly users: admin.Users;
+  readonly user: consumer.User;
 }
 
 /******************************************************************************/

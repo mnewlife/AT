@@ -2,62 +2,62 @@
 
 import * as interfaces from "../../../interfaces";
 import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
-import * as coreInterfaces from "../../../interfaces/components/core";
+import * as grocRoundInterfaces from "../../../interfaces/components/groc-round";
 
-import adminsFactory from "./admins";
-import logisticsFactory from "./logistics";
-import salesRepsFactory from "./sales-reps";
-
-import authFactory from "./auth";
-import profileFactory from "./profile";
-import registrationFactory from "./registration";
+import pricesFactory from "./prices";
+import productsFactory from "./products";
+import shopsFactory from "./shops";
+import usersFactory from "./users";
 
 /******************************************************************************/
 
-class Admin implements coreInterfaces.Admin {
-
-  readonly admins: coreInterfaces.admin.Admins;
-  readonly logistics: coreInterfaces.admin.Admins;
-  readonly salesReps: coreInterfaces.admin.SalesReps;
-
-  readonly auth: coreInterfaces.admin.Auth;
-  readonly profile: coreInterfaces.admin.Profile;
-  readonly registration: coreInterfaces.admin.Registration;
-
-  constructor( params: {
-    auth: coreInterfaces.admin.Auth,
-    profile: coreInterfaces.admin.Profile,
-    registration: coreInterfaces.admin.Registration
-  } ) {
-    this.auth = params.auth;
-    this.profile = params.profile;
-    this.registration = params.registration;
-  }
-
+class Admin implements grocRoundInterfaces.Admin {
+  constructor(
+    readonly prices: grocRoundInterfaces.admin.Prices,
+    readonly products: grocRoundInterfaces.admin.Products,
+    readonly shops: grocRoundInterfaces.admin.Shops,
+    readonly users: grocRoundInterfaces.admin.Users,
+  ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): coreInterfaces.Admin => {
-  return new Admin( {
-    admins: adminsFactory( {} ),
-    logistics: logisticsFactory( {} ),
-    salesReps: salesRepsFactory( {} ),
-    auth: authFactory( {
-      emitEvent: config.eventManager.emit,
-      authSignIn: config.utilities.authenticationManager.signIn,
-      authSignOut: config.utilities.authenticationManager.signOut,
-      checkThrow: config.utilities.sharedLogic.moders.checkThrow
-    } ),
-    profile: profileFactory( config.eventManager.emit ),
-    registration: registrationFactory( {
-      emitEvent: config.eventManager.emit,
-      storeNewUser: config.utilities.storageManager.user.add,
-      checkThrow: config.utilities.sharedLogic.moders.checkThrow,
-      getCurrentUserFromSession: config.utilities.sessionManager.getCurrentUser
-    } )
-  } );
+export default ( config: interfaces.Config ): grocRoundInterfaces.Admin => {
+  return new Admin( pricesFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getPrices: config.utilities.storageManager.grocRound.price.get,
+    getPriceById: config.utilities.storageManager.grocRound.price.getById,
+    addNewPrice: config.utilities.storageManager.grocRound.price.add,
+    updatePriceById: config.utilities.storageManager.grocRound.price.updateById,
+    removePriceById: config.utilities.storageManager.grocRound.price.removeById,
+  } ),
+  productsFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getProducts: config.utilities.storageManager.grocRound.product.get,
+    getProductById: config.utilities.storageManager.grocRound.product.getById,
+    addNewProduct: config.utilities.storageManager.grocRound.product.add,
+    updateProductById: config.utilities.storageManager.grocRound.product.updateById,
+    removeProductById: config.utilities.storageManager.grocRound.product.removeById,
+  } ),
+  shopsFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getShops: config.utilities.storageManager.grocRound.shop.get,
+    getShopById: config.utilities.storageManager.grocRound.shop.getById,
+    addNewShop: config.utilities.storageManager.grocRound.shop.add,
+    updateShopById: config.utilities.storageManager.grocRound.shop.updateById,
+    removeShopById: config.utilities.storageManager.grocRound.shop.removeById,
+  } ),
+  usersFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getUsers: config.utilities.storageManager.core.user.get,
+    getUserById: config.utilities.storageManager.core.user.getById,
+    removeUserById: config.utilities.storageManager.core.user.removeById
+  } )
+ );
 }
 
 /******************************************************************************/
-

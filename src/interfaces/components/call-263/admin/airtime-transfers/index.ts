@@ -22,7 +22,7 @@ export interface GetOne {
 }
 
 export interface MakeTransfer {
-  ( channelId: string, amount: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super>;
+  ( channelId: string, amount: number, forceThrow?: boolean ): Promise<any>;
 }
 
 export interface RecordTransfer {
@@ -30,7 +30,7 @@ export interface RecordTransfer {
 }
 
 export interface Update {
-  ( airtimeTransferId: string, updates: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]>;
+  ( airtimeTransferId: string, updates: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super>;
 }
 
 export interface Remove {
