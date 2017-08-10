@@ -5,56 +5,30 @@ import * as express from "express";
 
 import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/admin/registration";
-import * as registrationInterfaces from "../../../../../interfaces/components/core/admin/registration";
+import * as events from "../../../../../interfaces/components/call-263/admin/channels/events";
+import * as channelsInterfaces from "../../../../../interfaces/components/call-263/admin/channels";
 import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class RegistrationEmitter implements registrationInterfaces.Emitter {
+class ChannelsEmitter implements channelsInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly addedAdmin = ( data: storageManagerEvents.AddedAdminData ) => {
-
-    let event: storageManagerEvents.AddedAdmin = {
-      context: "Core|Admin|Registration",
+  readonly example = ( data: events.ExampleData ) => {
+    let event: events.Example = {
+      context: "Core|Admin|Admins",
       tags: [],
-      identifier: "AddedAdmin",
-      data: {
-        user: data.user
-      }
+      identifier: "Example",
+      data: {}
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
-  readonly addAdminFailed = ( data: storageManagerEvents.AddAdminFailedData ) => {
-
-    let event: storageManagerEvents.AddAdminFailed = {
-      context: "Core|Admin|Registration",
-      tags: [],
-      identifier: "AddAdminFailed",
-      data: {
-        emailAddress: data.emailAddress,
-        reason: data.reason
-      }
-    };
-
-    this.emitEvent( event );
-
-    return event;
-
-  }
-
-  /*****************************************************************/
-
-  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) {}
+  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
@@ -62,8 +36,8 @@ class RegistrationEmitter implements registrationInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): registrationInterfaces.Emitter => {
-  return new RegistrationEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): channelsInterfaces.Emitter => {
+  return new ChannelsEmitter( emitEvent );
 }
 
 /******************************************************************************/

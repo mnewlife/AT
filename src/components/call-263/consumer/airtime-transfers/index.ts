@@ -1,40 +1,48 @@
 /******************************************************************************/
 
+import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as consumerInterfaces from "../../../../interfaces/components/core/consumer";
+import * as consumerInterfaces from "../../../../interfaces/components/call-263/consumer";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Registration implements consumerInterfaces.Registration {
+class AirtimeTransfers implements consumerInterfaces.AirtimeTransfers {
 
-  private readonly emitter: consumerInterfaces.registration.Emitter;
+  constructor(
+    private readonly emitter: consumerInterfaces.airtimeTransfers.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: consumerInterfaces.registration.Params ) {
-    this.emitter = params.emitter;
-  }
+    private readonly getAirtimeTransfers: storageManagerInterfaces.call263.airtimeTransfer.Get,
+    private readonly getAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.GetById
+  ) { }
 
-  signUp = (): Promise<any> => {
-    return Promise.resolve();
-  }
+  get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => { }
 
-  verification = (): Promise<any> => {
-    return Promise.resolve();
-  }
+  getOne = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => { };
 
 }
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit, sharedCode: consumerInterfaces.SharedCode ): consumerInterfaces.Registration => {
-  return new Registration( {
-    emitter: emitterFactory( emitEvent )
-  } )
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit,
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  readonly getAirtimeTransfers: storageManagerInterfaces.call263.airtimeTransfer.Get,
+  readonly getAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.GetById
+} ): consumerInterfaces.AirtimeTransfers => {
+  return new AirtimeTransfers(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+    params.getAirtimeTransfers,
+    params.getAirtimeTransferById
+  );
 }
 
 /******************************************************************************/
-

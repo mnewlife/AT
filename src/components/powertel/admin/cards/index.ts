@@ -5,85 +5,36 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/powertel/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class Cards implements adminInterfaces.Cards {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.cards.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getCards: storageManagerInterfaces.powertel.card.Get,
+    private readonly getCardById: storageManagerInterfaces.powertel.card.GetById,
+    private readonly addNewCard: storageManagerInterfaces.powertel.card.Add,
+    private readonly updateCardById: storageManagerInterfaces.powertel.card.UpdateById,
+    private readonly removeCardById: storageManagerInterfaces.powertel.card.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  get = ( filtrationCriteria: storageManagerInterfaces.powertel.card.FiltrationCriteria, sortCriteria: storageManagerInterfaces.powertel.card.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.card.Super[]> => { }
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  getOne = ( cardId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.card.Super> => { };
 
-        return this.authSignIn( emailAddress, password, req );
+  add = ( card: storageManagerInterfaces.powertel.card.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.card.Super[]> => { };
 
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
+  update = ( cardId: string, updates: storageManagerInterfaces.powertel.card.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.powertel.card.Super[]> => { }
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
+  remove = ( cardId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
@@ -91,17 +42,24 @@ class Auth implements adminInterfaces.Auth {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getCards: storageManagerInterfaces.powertel.card.Get,
+  getCardById: storageManagerInterfaces.powertel.card.GetById,
+  addNewCard: storageManagerInterfaces.powertel.card.Add,
+  updateCardById: storageManagerInterfaces.powertel.card.UpdateById,
+  removeCardById: storageManagerInterfaces.powertel.card.RemoveById
+} ): adminInterfaces.Cards => {
+  return new Cards(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getCards,
+    params.getCardById,
+    params.addNewCard,
+    params.updateCardById,
+    params.removeCardById
+  );
 }
 
 /******************************************************************************/
-

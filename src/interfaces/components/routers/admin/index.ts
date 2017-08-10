@@ -29,7 +29,7 @@ export interface NewRouterStock {
 export interface Sales {
   readonly get: sales.Get;
   readonly getOne: sales.GetOne;
-  readonly makeTransfer: sales.Add;
+  readonly add: sales.Add;
   readonly update: sales.Update;
   readonly remove: sales.Remove;
 }

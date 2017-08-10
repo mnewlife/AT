@@ -11,8 +11,8 @@ export { channel, airtimePayments, airtimeTransfers };
 /******************************************************************************/
 
 export interface Channel {
-  readonly get: channel.GetDetails;
-  readonly getOne: channel.GetBalances;
+  readonly getDetails: channel.GetDetails;
+  readonly getBalances: channel.GetBalances;
 }
 
 export interface AirtimePayments {

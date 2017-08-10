@@ -30,7 +30,7 @@ export interface Products {
 export interface Shops {
   readonly get: shops.Get;
   readonly getOne: shops.GetOne;
-  readonly makeTransfer: shops.Add;
+  readonly add: shops.Add;
   readonly update: shops.Update;
   readonly remove: shops.Remove;
 }

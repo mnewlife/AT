@@ -2,40 +2,43 @@
 
 import * as interfaces from "../../../interfaces";
 import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
-import * as coreInterfaces from "../../../interfaces/components/core";
+import * as call263Interfaces from "../../../interfaces/components/call-263";
 
-import authFactory from "./auth";
-import profileFactory from "./profile";
-import registrationFactory from "./registration";
-
-import sharedCodeFactory from "./shared-code";
+import airtimePaymentsFactory from "./airtime-payments";
+import airtimeTransfersFactory from "./airtime-transfers";
+import channelFactory from "./channel";
 
 /******************************************************************************/
 
-class Consumer implements coreInterfaces.Consumer {
-
-  readonly auth: coreInterfaces.consumer.Auth;
-  readonly profile: coreInterfaces.consumer.Profile;
-  readonly registration: coreInterfaces.consumer.Registration;
-
-  constructor( params: coreInterfaces.consumer.Params ) {
-    this.auth = params.auth;
-    this.profile = params.profile;
-    this.registration = params.registration;
-  }
-
+class Consumer implements call263Interfaces.Consumer {
+  constructor(
+    readonly airtimePayments: call263Interfaces.consumer.AirtimePayments,
+    readonly airtimeTransfers: call263Interfaces.consumer.AirtimeTransfers,
+    readonly channel: call263Interfaces.consumer.Channel
+  ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config, sharedCode: coreInterfaces.SharedCode ): coreInterfaces.Consumer => {
-  let localSharedCode = sharedCodeFactory( config, sharedCode );
-  return new Consumer( {
-    auth: authFactory( config.eventManager.emit, localSharedCode ),
-    profile: profileFactory( config.eventManager.emit, localSharedCode ),
-    registration: registrationFactory( config.eventManager.emit, localSharedCode )
-  } );
+export default ( config: interfaces.Config ): call263Interfaces.Consumer => {
+  return new Consumer( airtimePaymentsFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getAirtimePayments: config.utilities.storageManager.call263.airtimePayment.get,
+    getAirtimePaymentById: config.utilities.storageManager.call263.airtimePayment.getById,
+    addNewAirtimePayment: config.utilities.storageManager.call263.airtimePayment.add
+  } ),
+  airtimeTransfersFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getAirtimeTransfers: config.utilities.storageManager.call263.airtimeTransfer.get,
+    getAirtimeTransferById: config.utilities.storageManager.call263.airtimeTransfer.getById
+  } ),
+  channelFactory( {
+    emitEvent: config.eventManager.emit,
+    checkThrow: config.utilities.sharedLogic.moders.checkThrow,
+    getChannelById: config.utilities.storageManager.call263.channel.getById
+  } ) );
 }
 
 /******************************************************************************/
-

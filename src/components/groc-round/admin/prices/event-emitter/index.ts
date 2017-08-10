@@ -5,36 +5,30 @@ import * as express from "express";
 
 import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/admin/auth";
-import * as authInterfaces from "../../../../../interfaces/components/core/admin/auth";
+import * as events from "../../../../../interfaces/components/call-263/admin/channels/events";
+import * as channelsInterfaces from "../../../../../interfaces/components/call-263/admin/channels";
 import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AuthEmitter implements authInterfaces.Emitter {
+class ChannelsEmitter implements channelsInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly example = ( data: storageManagerEvents.ExampleData ) => {
-
-    let event: storageManagerEvents.Example = {
-      context: "Core|Admin|Auth",
+  readonly example = ( data: events.ExampleData ) => {
+    let event: events.Example = {
+      context: "Core|Admin|Admins",
       tags: [],
       identifier: "Example",
-      data: {
-        user: data.user
-      }
+      data: {}
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) {}
+  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
@@ -42,8 +36,8 @@ class AuthEmitter implements authInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): authInterfaces.Emitter => {
-  return new AuthEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): channelsInterfaces.Emitter => {
+  return new ChannelsEmitter( emitEvent );
 }
 
 /******************************************************************************/

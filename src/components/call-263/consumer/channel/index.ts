@@ -1,40 +1,46 @@
 /******************************************************************************/
 
+import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as consumerInterfaces from "../../../../interfaces/components/core/consumer";
+import * as consumerInterfaces from "../../../../interfaces/components/call-263/consumer";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements consumerInterfaces.Auth {
+class Channel implements consumerInterfaces.Channel {
 
-  private readonly emitter: consumerInterfaces.auth.Emitter;
+  constructor(
+    private readonly emitter: consumerInterfaces.channel.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: consumerInterfaces.auth.Params ) {
-    this.emitter = params.emitter;
-  }
+    private readonly getChannelById: storageManagerInterfaces.call263.channel.GetById
+  ) { }
 
-  signIn = (): Promise<any> => {
-    return Promise.resolve();
-  }
+  getDetails = ( channelId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { }
 
-  signOut = (): Promise<any> => {
-    return Promise.resolve();
-  }
+  getBalances = ( channelId: string, forceThrow?: boolean ): Promise<any> => { };
 
 }
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit, sharedCode: consumerInterfaces.SharedCode ): consumerInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( emitEvent )
-  } )
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit,
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getChannelById: storageManagerInterfaces.call263.channel.GetById
+} ): consumerInterfaces.Channel => {
+  return new Channel(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+    params.getChannelById
+  );
 }
 
 /******************************************************************************/
-

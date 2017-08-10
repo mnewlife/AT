@@ -5,85 +5,36 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/groc-round/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class Products implements adminInterfaces.Products {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.products.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getProducts: storageManagerInterfaces.grocRound.product.Get,
+    private readonly getProductById: storageManagerInterfaces.grocRound.product.GetById,
+    private readonly addNewProduct: storageManagerInterfaces.grocRound.product.Add,
+    private readonly updateProductById: storageManagerInterfaces.grocRound.product.UpdateById,
+    private readonly removeProductById: storageManagerInterfaces.grocRound.product.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  get = ( filtrationCriteria: storageManagerInterfaces.grocRound.product.FiltrationCriteria, sortCriteria: storageManagerInterfaces.grocRound.product.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.product.Super[]> => { }
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  getOne = ( productId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.product.Super> => { };
 
-        return this.authSignIn( emailAddress, password, req );
+  add = ( product: storageManagerInterfaces.grocRound.product.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.product.Super> => { }
 
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
+  update = ( productId: string, updates: storageManagerInterfaces.grocRound.product.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.grocRound.product.Super[]> => { }
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
+  remove = ( productId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
@@ -91,17 +42,24 @@ class Auth implements adminInterfaces.Auth {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getProducts: storageManagerInterfaces.grocRound.product.Get,
+  getProductById: storageManagerInterfaces.grocRound.product.GetById,
+  addNewProduct: storageManagerInterfaces.grocRound.product.Add,
+  updateProductById: storageManagerInterfaces.grocRound.product.UpdateById,
+  removeProductById: storageManagerInterfaces.grocRound.product.RemoveById
+} ): adminInterfaces.Products => {
+  return new Products(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getProducts,
+    params.getProductById,
+    params.addNewProduct,
+    params.updateProductById,
+    params.removeProductById
+  );
 }
 
 /******************************************************************************/
-

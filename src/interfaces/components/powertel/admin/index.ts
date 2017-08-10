@@ -3,7 +3,7 @@
 import * as airtime from "./airtime";
 import * as airtimeSales from "./airtime-sales";
 import * as cardSales from "./card-sales";
-import * as cards from "./airtime";
+import * as cards from "./cards";
 import * as newAirtimeStock from "./new-airtime-stock";
 import * as newCardStock from "./new-card-stock";
 

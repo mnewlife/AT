@@ -5,36 +5,30 @@ import * as express from "express";
 
 import * as interfaces from "../../../../../interfaces";
 
-import * as events from "../../../../../interfaces/events/components/core/consumer/profile";
-import * as profileInterfaces from "../../../../../interfaces/components/core/consumer/profile";
+import * as events from "../../../../../interfaces/components/call-263/admin/channels/events";
+import * as channelsInterfaces from "../../../../../interfaces/components/call-263/admin/channels";
 import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
 
 /******************************************************************************/
 
-class ProfileEmitter implements profileInterfaces.Emitter {
+class ChannelsEmitter implements channelsInterfaces.Emitter {
 
   /*****************************************************************/
 
-  readonly example = ( data: storageManagerEvents.ExampleData ) => {
-
-    let event: storageManagerEvents.Example = {
-      context: "Core|Consumer|Profile",
+  readonly example = ( data: events.ExampleData ) => {
+    let event: events.Example = {
+      context: "Core|Admin|Admins",
       tags: [],
       identifier: "Example",
-      data: {
-        user: data.user
-      }
+      data: {}
     };
-
     this.emitEvent( event );
-
     return event;
-
   }
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) {}
+  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) { }
 
   /*****************************************************************/
 
@@ -42,8 +36,8 @@ class ProfileEmitter implements profileInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): profileInterfaces.Emitter => {
-  return new ProfileEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): channelsInterfaces.Emitter => {
+  return new ChannelsEmitter( emitEvent );
 }
 
 /******************************************************************************/

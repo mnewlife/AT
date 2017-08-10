@@ -5,85 +5,30 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/groc-round/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class Users implements adminInterfaces.Users {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.users.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getUsers: storageManagerInterfaces.core.user.Get,
+    private readonly getUserById: storageManagerInterfaces.core.user.GetById,
+    private readonly removeUserById: storageManagerInterfaces.core.user.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  get = ( filtrationCriteria: storageManagerInterfaces.core.user.FiltrationCriteria, sortCriteria: storageManagerInterfaces.core.user.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super[]> => { }
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  getOne = ( userId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.core.user.Super> => { };
 
-        return this.authSignIn( emailAddress, password, req );
-
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
-
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
+  remove = ( userId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
@@ -91,17 +36,20 @@ class Auth implements adminInterfaces.Auth {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getUsers: storageManagerInterfaces.core.user.Get,
+  getUserById: storageManagerInterfaces.core.user.GetById,
+  removeUserById: storageManagerInterfaces.core.user.RemoveById
+} ): adminInterfaces.Users => {
+  return new Users(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getUsers,
+    params.getUserById,
+    params.removeUserById
+  );
 }
 
 /******************************************************************************/
-

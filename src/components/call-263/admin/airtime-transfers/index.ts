@@ -5,103 +5,72 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/call-263/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class AirtimeTransfers implements adminInterfaces.AirtimeTransfers {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.airtimeTransfers.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getAirtimeTransfers: storageManagerInterfaces.call263.airtimeTransfer.Get,
+    private readonly getAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.GetById,
+    private readonly addNewAirtimeTransfer: storageManagerInterfaces.call263.airtimeTransfer.Add,
+    private readonly updateAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.UpdateById,
+    private readonly removeAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignIn( emailAddress, password, req );
-
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
-
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
+  get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
 
   }
 
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
+  getOne = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+  };
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
+  makeTransfer = ( airtimeTransferId: string, amount: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
 
   }
 
+  recordTransfer = ( airtimeTransfer: storageManagerInterfaces.call263.airtimeTransfer.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+
+  }
+
+  update = ( airtimeTransferId: string, updates: storageManagerInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
+
+  }
+
+  remove = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<void> => {}
+  
 }
 
 /******************************************************************************/
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getAirtimeTransfers: storageManagerInterfaces.call263.airtimeTransfer.Get,
+  getAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.GetById,
+  addNewAirtimeTransfer: storageManagerInterfaces.call263.airtimeTransfer.Add,
+  updateAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.UpdateById,
+  removeAirtimeTransferById: storageManagerInterfaces.call263.airtimeTransfer.RemoveById
+} ): adminInterfaces.AirtimeTransfers => {
+  return new AirtimeTransfers(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getAirtimeTransfers,
+    params.getAirtimeTransferById,
+    params.addNewAirtimeTransfer,
+    params.updateAirtimeTransferById,
+    params.removeAirtimeTransferById
+  );
 }
 
 /******************************************************************************/
-

@@ -5,85 +5,36 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/routers/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class NewRouterStock implements adminInterfaces.NewRouterStock {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.newRouterStock.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getNewRouterStock: storageManagerInterfaces.routers.newRouterStock.Get,
+    private readonly getNewRouterStockById: storageManagerInterfaces.routers.newRouterStock.GetById,
+    private readonly addNewNewRouterStock: storageManagerInterfaces.routers.newRouterStock.Add,
+    private readonly updateNewRouterStockById: storageManagerInterfaces.routers.newRouterStock.UpdateById,
+    private readonly removeNewRouterStockById: storageManagerInterfaces.routers.newRouterStock.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  get = ( filtrationCriteria: storageManagerInterfaces.routers.newRouterStock.FiltrationCriteria, sortCriteria: storageManagerInterfaces.routers.newRouterStock.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]> => { }
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  getOne = ( newRouterStockId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super> => { };
 
-        return this.authSignIn( emailAddress, password, req );
+  add = ( newRouterStock: storageManagerInterfaces.routers.newRouterStock.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super> => { }
 
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
+  update = ( newRouterStockId: string, updates: storageManagerInterfaces.routers.newRouterStock.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.newRouterStock.Super[]> => { }
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
+  remove = ( newRouterStockId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
@@ -91,17 +42,24 @@ class Auth implements adminInterfaces.Auth {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getNewRouterStock: storageManagerInterfaces.routers.newRouterStock.Get,
+  getNewRouterStockById: storageManagerInterfaces.routers.newRouterStock.GetById,
+  addNewNewRouterStock: storageManagerInterfaces.routers.newRouterStock.Add,
+  updateNewRouterStockById: storageManagerInterfaces.routers.newRouterStock.UpdateById,
+  removeNewRouterStockById: storageManagerInterfaces.routers.newRouterStock.RemoveById
+} ): adminInterfaces.NewRouterStock => {
+  return new NewRouterStock(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getNewRouterStock,
+    params.getNewRouterStockById,
+    params.addNewNewRouterStock,
+    params.updateNewRouterStockById,
+    params.removeNewRouterStockById
+  );
 }
 
 /******************************************************************************/
-

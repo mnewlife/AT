@@ -5,85 +5,36 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/routers/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class Sales implements adminInterfaces.Sales {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.sales.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getSale: storageManagerInterfaces.routers.sale.Get,
+    private readonly getSaleById: storageManagerInterfaces.routers.sale.GetById,
+    private readonly addNewSale: storageManagerInterfaces.routers.sale.Add,
+    private readonly updateSaleById: storageManagerInterfaces.routers.sale.UpdateById,
+    private readonly removeSaleById: storageManagerInterfaces.routers.sale.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  get = ( filtrationCriteria: storageManagerInterfaces.routers.sale.FiltrationCriteria, sortCriteria: storageManagerInterfaces.routers.sale.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.sale.Super[]> => { }
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  getOne = ( saleId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.sale.Super> => { };
 
-        return this.authSignIn( emailAddress, password, req );
+  add = ( sale: storageManagerInterfaces.routers.sale.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.sale.Super> => { }
 
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
+  update = ( saleId: string, updates: storageManagerInterfaces.routers.sale.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.routers.sale.Super[]> => { }
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
+  remove = ( saleId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
@@ -91,17 +42,24 @@ class Auth implements adminInterfaces.Auth {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getSale: storageManagerInterfaces.routers.sale.Get,
+  getSaleById: storageManagerInterfaces.routers.sale.GetById,
+  addNewSale: storageManagerInterfaces.routers.sale.Add,
+  updateSaleById: storageManagerInterfaces.routers.sale.UpdateById,
+  removeSaleById: storageManagerInterfaces.routers.sale.RemoveById
+} ): adminInterfaces.Sales => {
+  return new Sales(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getSale,
+    params.getSaleById,
+    params.addNewSale,
+    params.updateSaleById,
+    params.removeSaleById
+  );
 }
 
 /******************************************************************************/
-

@@ -5,85 +5,39 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as adminInterfaces from "../../../../interfaces/components/core/admin";
-import * as authenticationManagerInterfaces from "../../../../interfaces/utilities/authentication-manager";
+import * as adminInterfaces from "../../../../interfaces/components/call-263/admin";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
 import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements adminInterfaces.Auth {
+class Channels implements adminInterfaces.Channels {
 
-  private readonly emitter: adminInterfaces.auth.Emitter;
-  private readonly authSignIn: authenticationManagerInterfaces.SignIn;
-  private readonly authSignOut: authenticationManagerInterfaces.SignOut;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  constructor(
+    private readonly emitter: adminInterfaces.channels.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: {
-    emitter: adminInterfaces.auth.Emitter,
-    authSignIn: authenticationManagerInterfaces.SignIn,
-    authSignOut: authenticationManagerInterfaces.SignOut,
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  } ) {
-    this.emitter = params.emitter;
-    this.authSignIn = params.authSignIn;
-    this.authSignOut = params.authSignOut;
-    this.checkThrow = params.checkThrow;
-  }
+    private readonly getChannels: storageManagerInterfaces.call263.channel.Get,
+    private readonly getChannelById: storageManagerInterfaces.call263.channel.GetById,
+    private readonly addNewChannels: storageManagerInterfaces.call263.channel.AddBatch,
+    private readonly addNewChannel: storageManagerInterfaces.call263.channel.Add,
+    private readonly updateChannelById: storageManagerInterfaces.call263.channel.UpdateById,
+    private readonly removeChannelById: storageManagerInterfaces.call263.channel.RemoveById
+  ) { }
 
-  signIn = ( emailAddress: string, password: string, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Admin> => {
+  get = ( filtrationCriteria: storageManagerInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.channel.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { }
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  getOne = ( channelId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super> => { };
 
-        return this.authSignIn( emailAddress, password, req );
+  add = ( channels: storageManagerInterfaces.call263.channel.AddDetails[], forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { };
 
-      } )
-      .then(( signedInUser: interfaces.dataModel.core.user.Admin ) => {
+  addOne = ( channel: storageManagerInterfaces.call263.channel.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super> => { }
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
+  update = ( channelId: string, updates: storageManagerInterfaces.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.channel.Super[]> => { }
 
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignInFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.authSignOut( req );
-
-      } )
-      .then(( response: any ) => {
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
+  remove = ( channelId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
@@ -91,17 +45,26 @@ class Auth implements adminInterfaces.Auth {
 
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit,
-  authSignIn: authenticationManagerInterfaces.SignIn,
-  authSignOut: authenticationManagerInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): adminInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( params.emitEvent ),
-    authSignIn: params.authSignIn,
-    authSignOut: params.authSignOut,
-    checkThrow: params.checkThrow
-  } )
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+
+  getChannels: storageManagerInterfaces.call263.channel.Get,
+  getChannelById: storageManagerInterfaces.call263.channel.GetById,
+  addNewChannels: storageManagerInterfaces.call263.channel.AddBatch,
+  addNewChannel: storageManagerInterfaces.call263.channel.Add,
+  updateChannelById: storageManagerInterfaces.call263.channel.UpdateById,
+  removeChannelById: storageManagerInterfaces.call263.channel.RemoveById
+} ): adminInterfaces.Channels => {
+  return new Channels(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+
+    params.getChannels,
+    params.getChannelById,
+    params.addNewChannels,
+    params.addNewChannel,
+    params.updateChannelById,
+    params.removeChannelById
+  );
 }
 
 /******************************************************************************/
-

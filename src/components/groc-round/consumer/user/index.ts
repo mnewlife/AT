@@ -1,40 +1,43 @@
 /******************************************************************************/
 
+import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as consumerInterfaces from "../../../../interfaces/components/core/consumer";
+import * as consumerInterfaces from "../../../../interfaces/components/groc-round/consumer";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Auth implements consumerInterfaces.Auth {
+class User implements consumerInterfaces.User {
 
-  private readonly emitter: consumerInterfaces.auth.Emitter;
+  constructor(
+    private readonly emitter: consumerInterfaces.user.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: consumerInterfaces.auth.Params ) {
-    this.emitter = params.emitter;
-  }
+    private readonly updateUserById: storageManagerInterfaces.core.user.UpdateById
+  ) { }
 
-  signIn = (): Promise<any> => {
-    return Promise.resolve();
-  }
-
-  signOut = (): Promise<any> => {
-    return Promise.resolve();
-  }
+  join = ( userId: string, forceThrow?: boolean ): Promise<void> => { }
 
 }
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit, sharedCode: consumerInterfaces.SharedCode ): consumerInterfaces.Auth => {
-  return new Auth( {
-    emitter: emitterFactory( emitEvent )
-  } )
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit,
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  updateUserById: storageManagerInterfaces.core.user.UpdateById
+} ): consumerInterfaces.User => {
+  return new User(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+    params.updateUserById
+  );
 }
 
 /******************************************************************************/
-

@@ -26,6 +26,7 @@ export interface Profile {
 }
 
 export interface Registration {
+  readonly addAdmin: registration.AddAdmin;
   readonly verifyAccount: registration.VerifyAccount;
 }
 

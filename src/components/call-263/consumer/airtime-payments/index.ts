@@ -1,56 +1,60 @@
 /******************************************************************************/
 
+import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../interfaces";
 import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as consumerInterfaces from "../../../../interfaces/components/core/consumer";
+import * as consumerInterfaces from "../../../../interfaces/components/call-263/consumer";
+import * as storageManagerInterfaces from "../../../../interfaces/utilities/storage-manager";
+import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-logic";
 
 import emitterFactory from "./event-emitter";
 
 /******************************************************************************/
 
-class Profile implements consumerInterfaces.Profile {
+class AirtimePayments implements consumerInterfaces.AirtimePayments {
 
-  private readonly emitter: consumerInterfaces.profile.Emitter;
+  constructor(
+    private readonly emitter: consumerInterfaces.airtimePayments.Emitter,
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
 
-  constructor( params: consumerInterfaces.profile.Params ) {
-    this.emitter = params.emitter;
+    private readonly getAirtimePayments: storageManagerInterfaces.call263.airtimePayment.Get,
+    private readonly getAirtimePaymentById: storageManagerInterfaces.call263.airtimePayment.GetById,
+    private readonly addNewAirtimePayment: storageManagerInterfaces.call263.airtimePayment.Add
+
+  ) { }
+
+  get = ( filtrationCriteria: storageManagerInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageManagerInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => { }
+
+  getOne = ( airtimePaymentId: string, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => { };
+
+  makePayment = ( userId: string, channelId: string, amount: number, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+
   }
 
-  getDetails = (): Promise<any> => {
-    return Promise.resolve();
-  }
+  recordPayment = ( airtimePayment: storageManagerInterfaces.call263.airtimePayment.AddDetails, forceThrow?: boolean ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
 
-  UpdateDetails = (): Promise<any> => {
-    return Promise.resolve();
-  }
-
-  changeEmailAddress = (): Promise<any> => {
-    return Promise.resolve();
-  }
-
-  changePassword = (): Promise<any> => {
-    return Promise.resolve();
-  }
-
-  requestPasswordResetCode = (): Promise<any> => {
-    return Promise.resolve();
-  }
-
-  deleteAccount = (): Promise<any> => {
-    return Promise.resolve();
   }
 
 }
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit, sharedCode: consumerInterfaces.SharedCode ): consumerInterfaces.Profile => {
-  return new Profile( {
-    emitter: emitterFactory( emitEvent )
-  } )
+export default ( params: {
+  emitEvent: eventManagerInterfaces.Emit,
+  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  readonly getAirtimePayments: storageManagerInterfaces.call263.airtimePayment.Get,
+  readonly getAirtimePaymentById: storageManagerInterfaces.call263.airtimePayment.GetById,
+  readonly addNewAirtimePayment: storageManagerInterfaces.call263.airtimePayment.Add
+} ): consumerInterfaces.AirtimePayments => {
+  return new AirtimePayments(
+    emitterFactory( params.emitEvent ),
+    params.checkThrow,
+    params.getAirtimePayments,
+    params.getAirtimePaymentById,
+    params.addNewAirtimePayment
+  );
 }
 
 /******************************************************************************/
-

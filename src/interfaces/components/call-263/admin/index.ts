@@ -31,7 +31,7 @@ export interface AirtimeTransfers {
   readonly get: airtimeTransfers.Get;
   readonly getOne: airtimeTransfers.GetOne;
   readonly makeTransfer: airtimeTransfers.MakeTransfer;
-  readonly record: airtimeTransfers.Record;
+  readonly recordTransfer: airtimeTransfers.RecordTransfer;
   readonly update: airtimeTransfers.Update;
   readonly remove: airtimeTransfers.Remove;
 }
