@@ -11,8 +11,8 @@ var EventManager = (function () {
     EventManager.prototype.emit = function (happening) { };
     return EventManager;
 }());
-function setupEventManager(utilities, components) {
-    var hookStructure = index_1.default(utilities, components);
+function setupEventManager(components, tasks) {
+    var hookStructure = index_1.default(components, tasks);
     return new EventManager(hookStructure);
 }
 exports.default = setupEventManager;

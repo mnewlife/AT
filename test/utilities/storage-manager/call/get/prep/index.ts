@@ -4,7 +4,7 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../../../src/interfaces/index";
 
-import { CallModel, CallMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/call/model/index";
+import { CallModel, CallMongooseModel } from "../../../../../../src/components/storage/mongodb/call/model/index";
 
 import fixturesFactory from "./data/index";
 

@@ -10,13 +10,13 @@ var compression = require("compression");
 var bodyParser = require("body-parser");
 /******************************************************************************/
 var index_1 = require("./setup-config/index");
-var index_2 = require("./utilities/index");
-var index_3 = require("./components/index");
+var index_2 = require("./components/index");
+var index_3 = require("./tasks/index");
 var index_4 = require("./routes/index");
 /******************************************************************************/
-var utilities = index_2.default(index_1.default);
-var components = index_3.default(index_1.default);
-index_1.default.registerReferences(utilities, components);
+var components = index_2.default(index_1.default);
+var tasks = index_3.default(index_1.default);
+index_1.default.registerReferences(components, tasks);
 /******************************************************************************/
 // INITIALIZE EXPRESS FRAMEWORK
 // CREATE HTTP SERVER
@@ -36,14 +36,14 @@ var mware = {
     bodyParser_urlEncoded: [bodyParser.urlencoded({ extended: false })],
     bodyParser_json: [bodyParser.json()]
 };
-for (var utility in utilities) {
-    if (utilities.hasOwnProperty(utility)) {
-        utilities.sharedLogic.middleware.retrieveMwareLists(mware, utilities[utility]);
+for (var utility in components) {
+    if (components.hasOwnProperty(utility)) {
+        components.sharedLogic.middleware.retrieveMwareLists(mware, components[utility]);
     }
 }
-for (var component in components) {
-    if (components.hasOwnProperty(component)) {
-        utilities.sharedLogic.middleware.retrieveMwareLists(mware, components[component]);
+for (var component in tasks) {
+    if (tasks.hasOwnProperty(component)) {
+        components.sharedLogic.middleware.retrieveMwareLists(mware, tasks[component]);
     }
 }
 /*************************************************/

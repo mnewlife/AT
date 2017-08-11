@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageUserFactory from "../../../../../src/utilities/storage-manager/mongodb/user/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { UserModel } from "../../../../../src/utilities/storage-manager/mongodb/user/model/index";
+import { UserModel } from "../../../../../src/components/storage/mongodb/user/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "User GET-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: UserModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageUser: interfaces.utilities.storageManager.StorageUser;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageUser: interfaces.components.storage.StorageUser;
 
   /************************************************************/
 
@@ -108,10 +108,10 @@ it( "should emit event upon retrieving user document", () => {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent: interfaces.events.utilities.storageManager.user.GotById;
+      let emittedEvent: interfaces.events.components.storage.user.GotById;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.user.GotById ) => {
+      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.GotById ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -160,10 +160,10 @@ it( "should emit failed event upon erring", () => {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent: interfaces.events.utilities.storageManager.user.GetByIdFailed;
+      let emittedEvent: interfaces.events.components.storage.user.GetByIdFailed;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.user.GetByIdFailed ) => {
+      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.GetByIdFailed ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );

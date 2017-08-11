@@ -4,7 +4,7 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../../../src/interfaces/index";
 
-import { AirtimeTransferModel, AirtimeTransferMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/airtime-transfer/model/index";
+import { AirtimeTransferModel, AirtimeTransferMongooseModel } from "../../../../../../src/components/storage/mongodb/airtime-transfer/model/index";
 
 import fixturesFactory from "./data/index";
 

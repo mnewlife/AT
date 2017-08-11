@@ -2,7 +2,7 @@
 
 import * as Promise from "bluebird";
 import * as interfaces from "../../../../../../src/interfaces";
-import { UserMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/user/model";
+import { UserMongooseModel } from "../../../../../../src/components/storage/mongodb/user/model";
 
 /******************************************************************************/
 

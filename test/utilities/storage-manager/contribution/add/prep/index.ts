@@ -4,7 +4,7 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../../../src/interfaces/index";
 
-import { ContributionMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/contribution/model/index";
+import { ContributionMongooseModel } from "../../../../../../src/components/storage/mongodb/contribution/model/index";
 
 let logger = require( "tracer" ).colorConsole();
 

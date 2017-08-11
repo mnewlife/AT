@@ -8,11 +8,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageShopFactory from "../../../../../src/utilities/storage-manager/mongodb/shop/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { ShopModel, ShopMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/shop/model/index";
+import { ShopModel, ShopMongooseModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -29,8 +29,8 @@ describe( "Shop UPDATE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ShopModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageShop: interfaces.utilities.storageManager.StorageShop;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageShop: interfaces.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -113,7 +113,7 @@ describe( "Shop UPDATE", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.utilities.storageManager.shop.Updated;
+          let emittedEvent: interfaces.events.components.storage.shop.Updated;
 
           for ( let i = 0; i < 3; i++ ) {
 
@@ -173,10 +173,10 @@ describe( "Shop UPDATE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.shop.UpdateFailed;
+        let emittedEvent: interfaces.events.components.storage.shop.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.shop.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

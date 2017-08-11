@@ -10,8 +10,8 @@ class Hooks implements interfaces.setupConfig.eventManager.Hooks {
 
   /*****************************************************************/
 
-  private utilities : interfaces.Utilities;
-  private components : interfaces.Components;
+  private components : interfaces.components;
+  private tasks : interfaces.tasks;
   hookStructure : interfaces.setupConfig.eventManager.HookStructure;
 
   /*****************************************************************/
@@ -20,10 +20,10 @@ class Hooks implements interfaces.setupConfig.eventManager.Hooks {
 
   /*****************************************************************/
 
-  readonly updateReferences = ( utilities : interfaces.Utilities , components : interfaces.Components ) : void => {
+  readonly updateReferences = ( components : interfaces.components , tasks : interfaces.tasks ) : void => {
 
-    this.utilities = utilities;
     this.components = components;
+    this.tasks = tasks;
 
     this.defineHooks();
 

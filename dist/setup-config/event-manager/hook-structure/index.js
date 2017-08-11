@@ -2,7 +2,7 @@
 /******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 /******************************************************************************/
-function setupHookStructure(utilities, components) {
+function setupHookStructure(components, tasks) {
     return {
         auth: {
             Connected_To_Database: {

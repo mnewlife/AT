@@ -8,12 +8,12 @@ import * as bCrypt from "bcrypt-nodejs";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageUserFactory from "../../../../../src/utilities/storage-manager/mongodb/user";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures";
-import modersFactory from "../../../../../src/utilities/shared-logic/basic/moders";
+import storageUserFactory from "../../../../../src/components/storage/mongodb/user";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures";
+import modersFactory from "../../../../../src/components/shared-logic/basic/moders";
 
 import * as interfaces from "../../../../../src/interfaces";
-import { Model } from "../../../../../src/utilities/storage-manager/mongodb/user/model";
+import { Model } from "../../../../../src/components/storage/mongodb/user/model";
 
 require( "../../connect-database" );
 import prep from "./prep";
@@ -29,9 +29,9 @@ describe( "User ADD", function (): void {
   let sandbox: sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy: sinon.SinonSpy;
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let moders: interfaces.utilities.sharedLogic.Moders;
-  let storageUser: interfaces.utilities.storageManager.User;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let moders: interfaces.components.sharedLogic.Moders;
+  let storageUser: interfaces.components.storage.User;
 
   /************************************************************/
 
@@ -142,10 +142,10 @@ describe( "User ADD", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.user.Added;
+        let emittedEvent: interfaces.events.components.storage.user.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.user.Added ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -198,10 +198,10 @@ describe( "User ADD", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.user.AddFailed;
+        let emittedEvent: interfaces.events.components.storage.user.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.user.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

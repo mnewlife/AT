@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storagePriceFactory from "../../../../../src/utilities/storage-manager/mongodb/price/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storagePriceFactory from "../../../../../src/components/storage/mongodb/price/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { PriceModel } from "../../../../../src/utilities/storage-manager/mongodb/price/model/index";
+import { PriceModel } from "../../../../../src/components/storage/mongodb/price/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "Price GET-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: PriceModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storagePrice: interfaces.utilities.storageManager.StoragePrice;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storagePrice: interfaces.components.storage.StoragePrice;
 
   /************************************************************/
 
@@ -108,10 +108,10 @@ it( "should emit event upon retrieving Price document", () => {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent: interfaces.events.utilities.storageManager.price.GotById;
+      let emittedEvent: interfaces.events.components.storage.price.GotById;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.price.GotById ) => {
+      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.GotById ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -160,10 +160,10 @@ it( "should emit failed event upon erring", () => {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent: interfaces.events.utilities.storageManager.price.GetByIdFailed;
+      let emittedEvent: interfaces.events.components.storage.price.GetByIdFailed;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.price.GetByIdFailed ) => {
+      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.GetByIdFailed ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );

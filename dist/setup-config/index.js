@@ -9,13 +9,13 @@ var Config = (function () {
     function Config(environment) {
         this.environment = environment;
     }
-    Config.prototype.registerReferences = function (utilities, components) {
-        this.utilities = utilities;
+    Config.prototype.registerReferences = function (components, tasks) {
         this.components = components;
+        this.tasks = tasks;
         this.initiateEventManager();
     };
     Config.prototype.initiateEventManager = function () {
-        this.eventManager = index_1.default(this.utilities, this.components);
+        this.eventManager = index_1.default(this.components, this.tasks);
     };
     return Config;
 }());

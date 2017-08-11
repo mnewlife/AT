@@ -4,7 +4,7 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../../../src/interfaces/index";
 
-import { ChannelMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/channel/model/index";
+import { ChannelMongooseModel } from "../../../../../../src/components/storage/mongodb/channel/model/index";
 
 let logger = require( "tracer" ).colorConsole();
 

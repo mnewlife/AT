@@ -1,7 +1,6 @@
 /******************************************************************************/
 
 import * as interfaces from "../../../interfaces";
-
 import * as hooks from "./hooks";
 
 /******************************************************************************/
@@ -15,7 +14,7 @@ export interface Emit {
 }
 
 export interface UpdateReferences {
-  ( utilities : interfaces.Utilities , components : interfaces.Components ) : void
+  ( components : interfaces.Components , tasks : interfaces.Tasks ) : void
 }
 
 /******************************************************************************/

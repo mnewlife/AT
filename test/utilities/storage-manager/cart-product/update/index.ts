@@ -8,11 +8,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageCartProductFactory from "../../../../../src/utilities/storage-manager/mongodb/cart-product/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageCartProductFactory from "../../../../../src/components/storage/mongodb/cart-product/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { CartProductModel } from "../../../../../src/utilities/storage-manager/mongodb/cart-product/model/index";
+import { CartProductModel } from "../../../../../src/components/storage/mongodb/cart-product/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -29,8 +29,8 @@ describe( "CartProduct UPDATE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CartProductModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageCartProduct: interfaces.utilities.storageManager.StorageCartProduct;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageCartProduct: interfaces.components.storage.StorageCartProduct;
 
   /************************************************************/
 
@@ -113,7 +113,7 @@ describe( "CartProduct UPDATE", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.utilities.storageManager.cartProduct.Updated;
+          let emittedEvent: interfaces.events.components.storage.cartProduct.Updated;
 
           emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
@@ -169,10 +169,10 @@ describe( "CartProduct UPDATE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.cartProduct.UpdateFailed;
+        let emittedEvent: interfaces.events.components.storage.cartProduct.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.cartProduct.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

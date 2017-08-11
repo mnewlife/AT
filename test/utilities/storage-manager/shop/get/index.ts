@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageShopFactory from "../../../../../src/utilities/storage-manager/mongodb/shop/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { ShopModel } from "../../../../../src/utilities/storage-manager/mongodb/shop/model/index";
+import { ShopModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "Shop GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ShopModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageShop: interfaces.utilities.storageManager.StorageShop;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageShop: interfaces.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -197,10 +197,10 @@ describe( "Shop GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.shop.Got;
+        let emittedEvent: interfaces.events.components.storage.shop.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.shop.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -266,10 +266,10 @@ describe( "Shop GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.shop.GetFailed;
+        let emittedEvent: interfaces.events.components.storage.shop.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.shop.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

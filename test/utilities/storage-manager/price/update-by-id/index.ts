@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storagePriceFactory from "../../../../../src/utilities/storage-manager/mongodb/price/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storagePriceFactory from "../../../../../src/components/storage/mongodb/price/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { PriceModel, PriceMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/price/model/index";
+import { PriceModel, PriceMongooseModel } from "../../../../../src/components/storage/mongodb/price/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "Price UPDATE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: PriceModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storagePrice: interfaces.utilities.storageManager.StoragePrice;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storagePrice: interfaces.components.storage.StoragePrice;
 
   /************************************************************/
 
@@ -107,10 +107,10 @@ describe( "Price UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.price.Updated;
+        let emittedEvent: interfaces.events.components.storage.price.Updated;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.price.Updated ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.Updated ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -164,10 +164,10 @@ describe( "Price UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.price.UpdateFailed;
+        let emittedEvent: interfaces.events.components.storage.price.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.price.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

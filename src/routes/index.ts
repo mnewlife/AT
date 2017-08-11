@@ -17,8 +17,8 @@ export default function routes ( config: interfaces.Config, app: express.Applica
 
   /**********************************************************/
 
-  let responseManager = config.utilities.responseManager;
-  let sessionManager = config.utilities.sessionManager;
+  let response = config.components.response;
+  let session = config.components.session;
 
   /**********************************************************/
 
@@ -64,17 +64,17 @@ export default function routes ( config: interfaces.Config, app: express.Applica
 
         if ( req.session.userId ) {
 
-          return sessionManager.getCurrentUser( req )
+          return session.getCurrentUser( req )
             .then(( currentUser: interfaces.dataModel.core.user.Super ) => {
 
               payload.currentUser = currentUser;
-              responseManager.send( res, "passpoint", null, null, payload );
+              response.send( res, "passpoint", null, null, payload );
 
             } );
 
         } else {
 
-          responseManager.send( res, "passpoint", null, null, payload );
+          response.send( res, "passpoint", null, null, payload );
 
         }
 

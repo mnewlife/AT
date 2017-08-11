@@ -7,11 +7,11 @@ import * as bCrypt from "bcrypt-nodejs";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageCallFactory from "../../../../../src/utilities/storage-manager/mongodb/call/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageCallFactory from "../../../../../src/components/storage/mongodb/call/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { CallModel } from "../../../../../src/utilities/storage-manager/mongodb/call/model/index";
+import { CallModel } from "../../../../../src/components/storage/mongodb/call/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -30,8 +30,8 @@ describe( "Call ADD", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CallModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageCall: interfaces.utilities.storageManager.StorageCall;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageCall: interfaces.components.storage.StorageCall;
 
   /************************************************************/
 
@@ -109,10 +109,10 @@ describe( "Call ADD", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.call.Added;
+        let emittedEvent: interfaces.events.components.storage.call.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.call.Added ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.call.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -161,10 +161,10 @@ describe( "Call ADD", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.call.AddFailed;
+        let emittedEvent: interfaces.events.components.storage.call.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.call.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.call.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

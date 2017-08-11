@@ -1,15 +1,16 @@
 /******************************************************************************/
 
 import * as http from "http";
+import * as express from "express";
 
 import * as setupConfig from "./setup-config";
-import * as utilities from "./utilities";
 import * as components from "./components";
+import * as tasks from "./tasks";
 import * as dataModel from "./data-model";
 
 /******************************************************************************/
 
-export { setupConfig, utilities, components, dataModel };
+export { setupConfig, components, tasks, dataModel };
 
 /******************************************************************************/
 
@@ -18,8 +19,8 @@ export type AppName = "Core" | "GrocRound" | "Call263" | "Routers" | "Powertel";
 /******************************************************************************/
 
 export interface Config {
-  utilities: Utilities;
   components: Components;
+  tasks: Tasks;
   server: http.Server;
 
   eventManager: setupConfig.EventManager;
@@ -28,26 +29,31 @@ export interface Config {
 
 /******************************************************************************/
 
-export interface Utilities {
-  sharedLogic: utilities.SharedLogic;
-  sessionManager: utilities.SessionManager;
-  storageManager: utilities.StorageManager;
-  authenticationManager: utilities.AuthenticationManager;
-  communicationManager: utilities.CommunicationManager;
-  responseManager: utilities.ResponseManager;
-  [ index: string ]: Utilities[ keyof Utilities ];
+export interface Components {
+  session: components.Session;
+  storage: components.Storage;
+  authentication: components.Authentication;
+  communication: components.Communication;
+  response: components.Response;
+  [ index: string ]: Components[ keyof Components ];
 };
 
 /******************************************************************************/
 
-export interface Components {
-  core: components.Core;
-  grocRound: components.GrocRound;
-  call263: components.Call263;
-  routers: components.Routers;
-  powertel: components.Powertel;
-  [ index: string ]: Components[ keyof Components ];
+export interface Tasks {
+  core: tasks.Core;
+  grocRound: tasks.GrocRound;
+  call263: tasks.Call263;
+  routers: tasks.Routers;
+  powertel: tasks.Powertel;
+  [ index: string ]: Tasks[ keyof Tasks ];
 };
+
+/******************************************************************************/
+
+export interface AppMiddleware {
+  [ index: string ]: express.RequestHandler[];
+}
 
 /******************************************************************************/
 

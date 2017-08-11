@@ -9,13 +9,9 @@ import * as compression from "compression";
 import * as bodyParser from "body-parser";
 
 import * as interfaces from "./interfaces";
-
 import config from "./setup-config";
-
-import utilitiesFactory from "./utilities";
-
 import componentsFactory from "./components";
-
+import tasksFactory from "./tasks";
 import routes from "./routes";
 
 /******************************************************************************/
@@ -25,11 +21,9 @@ const server = http.createServer( app );
 
 /******************************************************************************/
 
-const utilities: interfaces.Utilities = utilitiesFactory( config );
-
 const components: interfaces.Components = componentsFactory( config );
-
-config.registerReferences( utilities, components, server );
+const tasks: interfaces.Tasks = tasksFactory( config );
+config.registerReferences( tasks, tasks, server );
 
 /******************************************************************************/
 
@@ -41,7 +35,7 @@ app.locals.basedir = __dirname + "/public";
 
 /*************************************************/
 
-let mware: interfaces.utilities.sharedLogic.AppMiddleware = {
+let mware: interfaces.components.sharedLogic.AppMiddleware = {
 
   helmet: [ helmet() ],
   favicon: [ favicon( path.join( __dirname, "/public/favicon.ico" ) ) ],
@@ -52,15 +46,15 @@ let mware: interfaces.utilities.sharedLogic.AppMiddleware = {
 
 };
 
-for ( let utility in utilities ) {
-  if ( utilities.hasOwnProperty( utility ) ) {
-    utilities.sharedLogic.middleware.retrieveMwareLists( mware, utility, utilities[ utility ] );
+for ( let utility in components ) {
+  if ( components.hasOwnProperty( utility ) ) {
+    components.sharedLogic.middleware.retrieveMwareLists( mware, utility, components[ utility ] );
   }
 }
 
-for ( var component in components ) {
-  if ( components.hasOwnProperty( component ) ) {
-    utilities.sharedLogic.middleware.retrieveMwareLists( mware, component, components[ component ] );
+for ( var component in tasks ) {
+  if ( tasks.hasOwnProperty( component ) ) {
+    components.sharedLogic.middleware.retrieveMwareLists( mware, component, tasks[ component ] );
   }
 }
 

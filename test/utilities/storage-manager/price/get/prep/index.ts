@@ -4,7 +4,7 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../../../../src/interfaces/index";
 
-import { PriceModel, PriceMongooseModel } from "../../../../../../src/utilities/storage-manager/mongodb/price/model/index";
+import { PriceModel, PriceMongooseModel } from "../../../../../../src/components/storage/mongodb/price/model/index";
 
 import fixturesFactory from "./data/index";
 

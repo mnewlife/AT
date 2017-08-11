@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageChannelFactory from "../../../../../src/utilities/storage-manager/mongodb/channel/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageChannelFactory from "../../../../../src/components/storage/mongodb/channel/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { ChannelModel, ChannelMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/channel/model/index";
+import { ChannelModel, ChannelMongooseModel } from "../../../../../src/components/storage/mongodb/channel/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "Channel REMOVE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ChannelModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageChannel: interfaces.utilities.storageManager.StorageChannel;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageChannel: interfaces.components.storage.StorageChannel;
 
   /************************************************************/
 
@@ -102,10 +102,10 @@ describe( "Channel REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.channel.Removed;
+        let emittedEvent: interfaces.events.components.storage.channel.Removed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.channel.Removed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.Removed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -154,10 +154,10 @@ describe( "Channel REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.channel.RemoveFailed;
+        let emittedEvent: interfaces.events.components.storage.channel.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.channel.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

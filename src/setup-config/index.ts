@@ -13,8 +13,8 @@ class Config implements interfaces.Config {
 
   /*****************************************************************/
 
-  utilities: interfaces.Utilities;
-  components: interfaces.Components;
+  components: interfaces.components;
+  tasks: interfaces.tasks;
   server: http.Server;
 
   eventManager: interfaces.setupConfig.EventManager;
@@ -29,13 +29,13 @@ class Config implements interfaces.Config {
 
   /*****************************************************************/
 
-  readonly registerReferences = ( utilities: interfaces.Utilities, components: interfaces.Components, server: http.Server ): void => {
+  readonly registerReferences = ( components: interfaces.components, tasks: interfaces.tasks, server: http.Server ): void => {
 
-    this.utilities = utilities;
     this.components = components;
+    this.tasks = tasks;
     this.server = server;
 
-    this.eventManager.updateReferences( utilities, components );
+    this.eventManager.updateReferences( components, tasks );
 
   }
 

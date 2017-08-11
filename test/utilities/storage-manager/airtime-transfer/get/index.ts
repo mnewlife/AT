@@ -7,11 +7,11 @@ let logger = require( "tracer" ).colorConsole();
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageAirtimeTransferFactory from "../../../../../src/utilities/storage-manager/mongodb/airtime-transfer/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageAirtimeTransferFactory from "../../../../../src/components/storage/mongodb/airtime-transfer/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { AirtimeTransferModel } from "../../../../../src/utilities/storage-manager/mongodb/airtime-transfer/model/index";
+import { AirtimeTransferModel } from "../../../../../src/components/storage/mongodb/airtime-transfer/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "AirtimeTransfer GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: AirtimeTransferModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageAirtimeTransfer: interfaces.utilities.storageManager.StorageAirtimeTransfer;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageAirtimeTransfer: interfaces.components.storage.StorageAirtimeTransfer;
 
   /************************************************************/
 
@@ -271,10 +271,10 @@ describe( "AirtimeTransfer GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.airtimeTransfer.Got;
+        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.airtimeTransfer.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -340,10 +340,10 @@ describe( "AirtimeTransfer GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.airtimeTransfer.GetFailed;
+        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.airtimeTransfer.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

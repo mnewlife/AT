@@ -8,11 +8,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageProductFactory from "../../../../../src/utilities/storage-manager/mongodb/product/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageProductFactory from "../../../../../src/components/storage/mongodb/product/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { ProductModel, ProductMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/product/model/index";
+import { ProductModel, ProductMongooseModel } from "../../../../../src/components/storage/mongodb/product/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -29,8 +29,8 @@ describe( "Product UPDATE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ProductModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageProduct: interfaces.utilities.storageManager.StorageProduct;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageProduct: interfaces.components.storage.StorageProduct;
 
   /************************************************************/
 
@@ -118,7 +118,7 @@ describe( "Product UPDATE", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.utilities.storageManager.product.Updated;
+          let emittedEvent: interfaces.events.components.storage.product.Updated;
 
           for ( let i = 0; i < 3; i++ ) {
 
@@ -178,10 +178,10 @@ describe( "Product UPDATE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.product.UpdateFailed;
+        let emittedEvent: interfaces.events.components.storage.product.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.product.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.product.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageCartProductFactory from "../../../../../src/utilities/storage-manager/mongodb/cart-product/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageCartProductFactory from "../../../../../src/components/storage/mongodb/cart-product/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { CartProductModel, CartProductMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/cart-product/model/index";
+import { CartProductModel, CartProductMongooseModel } from "../../../../../src/components/storage/mongodb/cart-product/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "CartProduct REMOVE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CartProductModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageCartProduct: interfaces.utilities.storageManager.StorageCartProduct;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageCartProduct: interfaces.components.storage.StorageCartProduct;
 
   /************************************************************/
 
@@ -104,10 +104,10 @@ describe( "CartProduct REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.cartProduct.Removed;
+        let emittedEvent: interfaces.events.components.storage.cartProduct.Removed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.cartProduct.Removed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.Removed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -156,10 +156,10 @@ describe( "CartProduct REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.cartProduct.RemoveFailed;
+        let emittedEvent: interfaces.events.components.storage.cartProduct.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.cartProduct.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

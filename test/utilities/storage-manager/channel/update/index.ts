@@ -8,11 +8,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageChannelFactory from "../../../../../src/utilities/storage-manager/mongodb/channel/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageChannelFactory from "../../../../../src/components/storage/mongodb/channel/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { ChannelModel, ChannelMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/channel/model/index";
+import { ChannelModel, ChannelMongooseModel } from "../../../../../src/components/storage/mongodb/channel/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -29,8 +29,8 @@ describe( "Channel UPDATE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ChannelModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageChannel: interfaces.utilities.storageManager.StorageChannel;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageChannel: interfaces.components.storage.StorageChannel;
 
   /************************************************************/
 
@@ -109,7 +109,7 @@ describe( "Channel UPDATE", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.utilities.storageManager.channel.Updated;
+          let emittedEvent: interfaces.events.components.storage.channel.Updated;
 
           emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
@@ -165,10 +165,10 @@ describe( "Channel UPDATE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.channel.UpdateFailed;
+        let emittedEvent: interfaces.events.components.storage.channel.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.channel.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

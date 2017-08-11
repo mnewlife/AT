@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageUserFactory from "../../../../../src/utilities/storage-manager/mongodb/user/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { UserModel, UserMongooseModel } from "../../../../../src/utilities/storage-manager/mongodb/user/model/index";
+import { UserModel, UserMongooseModel } from "../../../../../src/components/storage/mongodb/user/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "User REMOVE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: UserModel[] = [];
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageUser: interfaces.utilities.storageManager.StorageUser;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageUser: interfaces.components.storage.StorageUser;
 
   /************************************************************/
 
@@ -104,10 +104,10 @@ describe( "User REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.user.Removed;
+        let emittedEvent: interfaces.events.components.storage.user.Removed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.user.Removed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.Removed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -156,10 +156,10 @@ describe( "User REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.user.RemoveFailed;
+        let emittedEvent: interfaces.events.components.storage.user.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.user.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

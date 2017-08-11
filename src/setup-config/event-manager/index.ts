@@ -15,9 +15,9 @@ class EventManager implements interfaces.setupConfig.EventManager {
 
   /*****************************************************************/
 
-  readonly updateReferences = ( utilities: interfaces.Utilities, components: interfaces.Components ): void => {
+  readonly updateReferences = ( components: interfaces.components, tasks: interfaces.tasks ): void => {
 
-    this.hooks.updateReferences( utilities, components );
+    this.hooks.updateReferences( components, tasks );
 
   }
 

@@ -8,11 +8,11 @@ import * as bCrypt from "bcrypt-nodejs";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageShopFactory from "../../../../../src/utilities/storage-manager/mongodb/shop/index";
-import dataStructuresFactory from "../../../../../src/utilities/shared-logic/basic/data-structures/index";
+import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
+import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as interfaces from "../../../../../src/interfaces/index";
-import { ShopModel } from "../../../../../src/utilities/storage-manager/mongodb/shop/model/index";
+import { ShopModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
 import prep from "./prep/index";
@@ -28,8 +28,8 @@ describe( "Shop ADD-BATCH", function (): void {
   let sandbox: sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy: sinon.SinonSpy;
 
-  let dataStructures: interfaces.utilities.sharedLogic.DataStructures;
-  let storageShop: interfaces.utilities.storageManager.StorageShop;
+  let dataStructures: interfaces.components.sharedLogic.DataStructures;
+  let storageShop: interfaces.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -135,7 +135,7 @@ describe( "Shop ADD-BATCH", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.utilities.storageManager.shop.Added;
+          let emittedEvent: interfaces.events.components.storage.shop.Added;
 
           for ( let i = 0; i < 3; i++ ) {
 
@@ -190,10 +190,10 @@ describe( "Shop ADD-BATCH", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.utilities.storageManager.shop.AddFailed;
+        let emittedEvent: interfaces.events.components.storage.shop.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.utilities.storageManager.shop.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
