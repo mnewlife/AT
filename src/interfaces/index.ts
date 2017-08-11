@@ -35,6 +35,7 @@ export interface Utilities {
   authenticationManager: utilities.AuthenticationManager;
   communicationManager: utilities.CommunicationManager;
   responseManager: utilities.ResponseManager;
+  [ index: string ]: Utilities[ keyof Utilities ];
 };
 
 /******************************************************************************/
@@ -45,6 +46,7 @@ export interface Components {
   call263: components.Call263;
   routers: components.Routers;
   powertel: components.Powertel;
+  [ index: string ]: Components[ keyof Components ];
 };
 
 /******************************************************************************/

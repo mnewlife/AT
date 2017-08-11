@@ -1,5 +1,7 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as interfaces from "../../interfaces";
 
 import developerFactory from "./developer";
@@ -9,10 +11,14 @@ import consumerFactory from "./consumer";
 /******************************************************************************/
 
 class Routers implements interfaces.components.Routers {
+
+  readonly middleware: express.RequestHandler[] = [];
+
   constructor(
     readonly developer: interfaces.components.routers.Developer,
     readonly admin: interfaces.components.routers.Admin,
     readonly consumer: interfaces.components.routers.Consumer ) { }
+    
 }
 
 /******************************************************************************/

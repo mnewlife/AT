@@ -1,26 +1,30 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as interfaces from "../../../interfaces";
 import * as sharedLogicInterfaces from "../../../interfaces/utilities/shared-logic";
 import dataStructuresFactory from "./data-structures";
 import modersFactory from "./moders";
 import numbersFactory from "./numbers";
-import middlewareFactory from "./middleware";
+import mwareFactory from "./mware";
 
 /******************************************************************************/
 
 class BasicSharedLogic implements interfaces.utilities.SharedLogic {
 
+  middleware: express.RequestHandler[] = [];
+  
   readonly dataStructures: sharedLogicInterfaces.DataStructures;
   readonly moders: sharedLogicInterfaces.Moders;
   readonly numbers: sharedLogicInterfaces.Numbers;
-  readonly middleware: sharedLogicInterfaces.Middleware;
+  readonly mware: sharedLogicInterfaces.Mware;
 
   constructor( params: sharedLogicInterfaces.Params ) {
     this.dataStructures = params.dataStructures;
     this.moders = params.moders;
     this.numbers = params.numbers;
-    this.middleware = params.middleware;
+    this.mware = params.mware;
   }
 
 }
@@ -33,7 +37,7 @@ export default ( emitEvent: interfaces.setupConfig.eventManager.Emit ): interfac
     dataStructures: dataStructuresFactory( emitEvent ),
     moders: modersFactory(),
     numbers: numbersFactory( emitEvent ),
-    middleware: middlewareFactory()
+    mware: mwareFactory()
   } );
 
 }

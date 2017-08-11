@@ -1,5 +1,7 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as interfaces from "../../interfaces";
 
 import developerFactory from "./developer";
@@ -9,6 +11,8 @@ import consumerFactory from "./consumer";
 /******************************************************************************/
 
 class Core implements interfaces.components.Core {
+  
+  readonly middleware: express.RequestHandler[] = [];
 
   constructor(
     readonly developer: interfaces.components.core.Developer,

@@ -1,5 +1,7 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as interfaces from "../../interfaces";
 
 import developerFactory from "./developer";
@@ -9,10 +11,14 @@ import consumerFactory from "./consumer";
 /******************************************************************************/
 
 class GrocRound implements interfaces.components.GrocRound {
+
+  readonly middleware: express.RequestHandler[] = [];
+
   constructor(
     readonly developer: interfaces.components.grocRound.Developer,
     readonly admin: interfaces.components.grocRound.Admin,
     readonly consumer: interfaces.components.grocRound.Consumer ) { }
+
 }
 
 /******************************************************************************/

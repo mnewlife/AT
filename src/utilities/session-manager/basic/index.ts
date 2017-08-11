@@ -6,6 +6,7 @@ import * as expressSession from "express-session";
 
 import * as interfaces from "../../../interfaces";
 import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as storageManagerInterfaces from "../../../interfaces/utilities/storage-manager";
 import * as sessionManagerInterfaces from "../../../interfaces/utilities/session-manager";
 import * as sharedLogicInterfaces from "../../../interfaces/utilities/shared-logic";
 
@@ -19,6 +20,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
   private readonly emitter: sessionManagerInterfaces.Emitter;
   private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
+  private readonly getUserById: storageManagerInterfaces.core.user.GetById;
   private readonly production: boolean;
 
   /*****************************************************************/
@@ -26,6 +28,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
   constructor( params: sessionManagerInterfaces.Params ) {
     this.emitter = params.emitter;
     this.checkThrow = params.checkThrow;
+    this.getUserById = params.getUserById;
     let attemptSession = function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
       if ( req.session ) {
         return next();
@@ -58,7 +61,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        req.session.currentUser = user.id;
+        req.session.userId = user.id;
         new Promise<void>(( resolve, reject ) => {
           this.emitter.setCurrentUser( {
             user: user,
@@ -134,21 +137,25 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        if ( req.session.currentUser ) {
-          return Promise.resolve( req.session.currentUser );
-        }
+        if ( req.session.userId ) {
+          
+          return this.getUserById( req.session.userId );
+          
+        } else {
 
-        new Promise<void>(( resolve, reject ) => {
-          this.emitter.noCurrentUser( {
-            req: req
+          new Promise<void>(( resolve, reject ) => {
+            this.emitter.noCurrentUser( {
+              req: req
+            } );
+            resolve();
           } );
-          resolve();
-        } );
 
-        return Promise.reject( {
-          identifier: "NoCurrentUser",
-          data: {}
-        } );
+          return Promise.reject( {
+            identifier: "NoCurrentUser",
+            data: {}
+          } );
+
+        }
 
       } )
       .catch(( reason: any ) => {
@@ -190,6 +197,7 @@ class BasicSessionManager implements interfaces.utilities.SessionManager {
 export default ( params: {
   emitEvent: eventManagerInterfaces.Emit;
   production: boolean;
+  getUserById: storageManagerInterfaces.core.user.GetById;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): interfaces.utilities.SessionManager => {
 
@@ -207,6 +215,7 @@ export default ( params: {
   return new BasicSessionManager( {
     emitter: emitterFactory( params.emitEvent ),
     production: params.production,
+    getUserById: params.getUserById,
     middlewareConfiguration: middlewareConfiguration,
     checkThrow: params.checkThrow
   } );

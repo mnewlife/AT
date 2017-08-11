@@ -5,13 +5,13 @@ import * as Promise from "bluebird";
 
 import * as interfaces from "../../../interfaces";
 import * as dataStructures from "./data-structures";
-import * as middleware from "./middleware";
+import * as mware from "./mware";
 import * as moders from "./moders";
 import * as numbers from "./numbers";
 
 /******************************************************************************/
 
-export { dataStructures, middleware, moders, numbers };
+export { dataStructures, mware, moders, numbers };
 
 /******************************************************************************/
 
@@ -25,7 +25,7 @@ export interface DataStructures {
 
 export interface Params {
   dataStructures: DataStructures;
-  middleware: Middleware;
+  mware: Mware;
   numbers: Numbers;
   moders: Moders;
 };
@@ -40,8 +40,8 @@ export interface Numbers {
   readonly generateRandomNumber: numbers.GenerateRandomNumber;
 };
 
-export interface Middleware {
-  readonly retrieveMwareLists: middleware.RetrieveMwareLists;
+export interface Mware {
+  readonly retrieveMwareLists: mware.RetrieveMwareLists;
 };
 
 /******************************************************************************/

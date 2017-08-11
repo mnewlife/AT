@@ -7,7 +7,7 @@ import * as sharedLogicInterfaces from "../../../../interfaces/utilities/shared-
 
 /******************************************************************************/
 
-class Middleware implements sharedLogicInterfaces.Middleware {
+class Mware implements sharedLogicInterfaces.Mware {
 
   /*****************************************************************/
 
@@ -26,8 +26,8 @@ class Middleware implements sharedLogicInterfaces.Middleware {
 
 /******************************************************************************/
 
-export default () : sharedLogicInterfaces.Middleware => {
-  return new Middleware();
+export default () : sharedLogicInterfaces.Mware => {
+  return new Mware();
 }
 
 /******************************************************************************/

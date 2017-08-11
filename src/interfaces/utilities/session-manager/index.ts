@@ -19,6 +19,7 @@ export interface Emitter {
 export interface Params {
   production: boolean;
   middlewareConfiguration: express.RequestHandler;
+  getUserById: interfaces.utilities.storageManager.core.user.GetById;
   emitter: Emitter;
   checkThrow: interfaces.utilities.sharedLogic.moders.CheckThrow;
 }

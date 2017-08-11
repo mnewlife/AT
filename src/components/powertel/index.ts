@@ -1,5 +1,7 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as interfaces from "../../interfaces";
 
 import developerFactory from "./developer";
@@ -9,10 +11,14 @@ import consumerFactory from "./consumer";
 /******************************************************************************/
 
 class Powertel implements interfaces.components.Powertel {
+
+  readonly middleware: express.RequestHandler[] = [];
+
   constructor(
     readonly developer: interfaces.components.powertel.Developer,
     readonly admin: interfaces.components.powertel.Admin,
     readonly consumer: interfaces.components.powertel.Consumer ) { }
+
 }
 
 /******************************************************************************/

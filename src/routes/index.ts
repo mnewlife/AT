@@ -1,6 +1,7 @@
 /******************************************************************************/
 
 import * as express from "express";
+import * as Promise from "bluebird";
 
 import * as interfaces from "../interfaces";
 
@@ -10,13 +11,16 @@ import grocRoundRoutes from "./groc-round";
 import powertelRoutes from "./powertel";
 import routersRoutes from "./routers";
 
-import authChecks from "./auth-checks";
-
 /******************************************************************************/
 
 export default function routes ( config: interfaces.Config, app: express.Application ): void {
 
+  /**********************************************************/
+
   let responseManager = config.utilities.responseManager;
+  let sessionManager = config.utilities.sessionManager;
+
+  /**********************************************************/
 
   app.use( "/call263", call263Routes( config ) );
   app.use( "/core", coreRoutes( config ) );
@@ -24,35 +28,66 @@ export default function routes ( config: interfaces.Config, app: express.Applica
   app.use( "/powertel", powertelRoutes( config ) );
   app.use( "/routers", routersRoutes( config ) );
 
+  /**********************************************************/
+
   app.get( "/", function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
 
     let payload: any = {};
 
-    if ( req.query.extraData ) {
+    return new Promise<void>(( resolve, reject ) => {
 
-      let extraData: any = {};
-      try {
-        extraData = JSON.parse( req.query.extraData );
-      } catch ( ex ) {
-        extraData = {};
-        console.log( "\n" + ">>> JSON PARSE ERROR -> " + ex );
+      if ( req.query.extraData ) {
+        return resolve( JSON.parse( req.query.extraData ) );
+      } else {
+        return resolve();
       }
 
-      for ( let dataItem in extraData ) {
-        if ( extraData.hasOwnProperty( dataItem ) ) {
-          payload[ dataItem ] = extraData[ dataItem ];
+    } )
+      .then(( extraData: any ) => {
+
+        return new Promise<void>(( resolve, reject ) => {
+          for ( let dataItem in extraData ) {
+            if ( extraData.hasOwnProperty( dataItem ) ) {
+              payload[ dataItem ] = extraData[ dataItem ];
+            }
+          }
+          resolve();
+        } );
+
+      } )
+      .catch(( reason: any ) => {
+
+        console.log( "\n" + ">>> PRIMARY ROUTE ERROR -> " + reason );
+
+      } )
+      .then(( extraData: any ) => {
+
+        if ( req.session.userId ) {
+
+          return sessionManager.getCurrentUser( req )
+            .then(( currentUser: interfaces.dataModel.core.user.Super ) => {
+
+              payload.currentUser = currentUser;
+              responseManager.send( res, "passpoint", null, null, payload );
+
+            } );
+
+        } else {
+
+          responseManager.send( res, "passpoint", null, null, payload );
+
         }
-      }
 
-    }
+      } )
+      .catch(( reason: any ) => {
 
-    if ( req.session.currentUser ) {
-      payload.currentUser = req.session.currentUser;
-    }
+        console.log( "\n" + ">>> PRIMARY ROUTE ERROR -> " + reason );
 
-    return responseManager.send( res, "passpoint", null, null, payload );
+      } );
 
   } );
+
+  /**********************************************************/
 
 }
 
