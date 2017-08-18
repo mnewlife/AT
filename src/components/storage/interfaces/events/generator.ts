@@ -8,8 +8,8 @@ import * as baseEvent from "./";
 /******************************************************************************/
 
 export interface Generate <C extends string, FC, SC extends storage.BaseSortCriteria, AD, UD, DMA extends dataModel.ModelArrayRange> {
-  methods: GenerateMethods<C, FC, SC, AD, UD, DMA>;
-  structure: GenerateStructure<C, FC, SC, AD, UD, DMA>;
+  Methods: GenerateMethods<C, FC, SC, AD, UD, DMA>;
+  Structure: GenerateStructure<C, FC, SC, AD, UD, DMA>;
 }
 
 /******************************************************************************/

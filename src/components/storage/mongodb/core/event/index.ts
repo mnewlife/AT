@@ -3,49 +3,62 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
+import * as eventListener from "../../../../../event-listener/interfaces";
+import * as dataModel from "../../../../../data-model";
+import * as dataStructures from "../../../../helpers/data-structures/interfaces";
+import * as moders from "../../../../helpers/moders/interfaces";
+
 import ModelController from "../../generic-model-class";
+import Events from "../../generic-event-class";
 
 import { Model, Model_Partial, EventMongooseModel } from "./model";
 
+import * as storage from "../../../interfaces";
 import * as interfaces from "../../../interfaces/core/event";
+
+/*******************************************************************************/
+
+export default (
+  emitEvent: eventListener.Emit,
+  mapDetails: dataStructures.MapDetails,
+  checkThrow: moders.CheckThrow,
+  context: interfaces.Context
+): interfaces.ClassInstance => {
+
+  let events = new Events<interfaces.Context, interfaces.FiltrationCriteria,
+    interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
+    dataModel.core.event.Super[]>( emitEvent, "Core|Event" );
+
+  return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
+    interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
+    dataModel.core.event.Super, dataModel.core.event.Super[], interfaces.Events>(
+
+    events,
+    EventMongooseModel,
+    mapDetails,
+    checkThrow,
+    makeConditions,
+    makeSortCriteria,
+    convertAddDetails,
+    generateUpdateDetails,
+    convertToAbstract
+
+    );
+
+}
 
 /******************************************************************************/
 
-/*
-FC extends any, SC extends interfaces.BaseSortCriteria,
-AD extends any, UD extends any,
-QC extends any, Document extends mongoose.Document,
-DM extends dataModel.ModelRange, DMA extends dataModel.ModelArrayRange,
-E extends events.BaseMethods>*/
-let avfv: interfaces.FiltrationCriteria
+interface QueryConditions {
+  "context"?: string;
+  "identifier"?: string;
+  "tags"?: { $all: string[] };
+  $text?: { $search: string };
+}
 
-let a = new ModelController<
-interfaces.FiltrationCriteria, string,
-string, string,
-string, string,
-string, string
-any>(
-  events,
-  Model,
-  mapDetails,
-  checkThrow,
-  makeConditions,
-  makeSortCriteria,
-  convertAddDetails,
-  generateUpdateDetails,
-  convertToAbstract
-);
+/******************************************************************************/
 
-/*
-
-let eventDetails: Model_Partial = {
-  context: event.context,
-  identifier: event.identifier,
-  tags: event.tags,
-  data: event.data
-};
-
-private readonly makeConditions = ( filtrationCriteria: storage.core.event.FiltrationCriteria ): Promise<QueryConditions> => {
+function makeConditions ( filtrationCriteria: storage.core.event.FiltrationCriteria ): Promise<QueryConditions> {
 
   return new Promise<QueryConditions>(( resolve, reject ) => {
 
@@ -72,7 +85,10 @@ private readonly makeConditions = ( filtrationCriteria: storage.core.event.Filtr
   } );
 
 }
-    private readonly makeSortCriteria = ( sortCriteria: storage.core.event.SortCriteria ): Promise<string> => {
+
+/******************************************************************************/
+
+function makeSortCriteria ( sortCriteria: storage.core.event.SortCriteria ): Promise<string> {
 
   return new Promise<string>(( resolve, reject ) => {
     let sortString;
@@ -84,7 +100,33 @@ private readonly makeConditions = ( filtrationCriteria: storage.core.event.Filtr
   } );
 
 }
-    private readonly generateUpdateDetails = ( document: Model, details: storage.core.event.UpdateDetails ): Promise<Model> => {
+
+/******************************************************************************/
+
+function convertAddDetails ( events: interfaces.AddDetails[] ): any[] {
+
+  let returnDetails: any[] = [];
+
+  events.forEach(( event ) => {
+
+    let eventDetails: Model_Partial = {
+      context: event.context,
+      identifier: event.identifier,
+      tags: event.tags,
+      data: event.data
+    };
+
+    returnDetails.push( eventDetails );
+
+  } );
+
+  return returnDetails;
+
+}
+
+/******************************************************************************/
+
+function generateUpdateDetails ( document: Model, details: storage.core.event.UpdateDetails ): Promise<Model> {
 
   return new Promise<Model>(( resolve, reject ) => {
 
@@ -125,9 +167,9 @@ private readonly makeConditions = ( filtrationCriteria: storage.core.event.Filtr
 
 }
 
-    /*****************************************************************
-  
-    private readonly convertToAbstract = ( events: Model[], forceThrow = false ): Promise<dataModel.core.event.Super[]> => {
+/******************************************************************************/
+
+function convertToAbstract ( events: Model[], forceThrow = false ): Promise<dataModel.core.event.Super[]> {
 
   return this.checkThrow( forceThrow )
     .then(( response: any ) => {
@@ -158,30 +200,6 @@ private readonly makeConditions = ( filtrationCriteria: storage.core.event.Filtr
 
     } );
 
-}
-
-/******************************************************************************
-
-interface QueryConditions {
-  "context"?: string;
-  "identifier"?: string;
-  "tags"?: { $all: string[] };
-  $text?: { $search: string };
-}
-
-/******************************************************************************
-
-export default ( params: {
-  emitEvent: src.setupConfig.eventManager.Emit;
-  mapDetails: sharedLogic.dataStructures.MapDetails;
-  checkThrow: sharedLogic.moders.CheckThrow;
-} ): storage.core.Event => {
-  return new MongoEvent( {
-    events: eventsFactory( params.emitEvent ),
-    Model: EventMongooseModel,
-    mapDetails: params.mapDetails,
-    checkThrow: params.checkThrow
-  } );
 }
 
 /******************************************************************************/

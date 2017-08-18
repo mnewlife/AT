@@ -13,8 +13,7 @@ import * as events from "../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export default abstract class MongoController<
-  FC extends any, SC extends interfaces.BaseSortCriteria,
+export default abstract class MongoController<FC extends any, SC extends interfaces.BaseSortCriteria,
   AD extends any, UD extends any,
   QC extends any, Document extends mongoose.Document,
   DM extends dataModel.ModelRange, DMA extends dataModel.ModelArrayRange,
@@ -219,7 +218,7 @@ export default abstract class MongoController<
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveDocument( this.convertAddDetails( [ details ] ) );
+        return this.saveDocument( this.convertAddDetails( [ details ] )[ 0 ] );
 
       } )
       .then(( addedDocument: Document ) => {
