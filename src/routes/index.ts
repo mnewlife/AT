@@ -3,7 +3,7 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../interfaces";
+import * as src from "../src";
 
 import call263Routes from "./call-263";
 import coreRoutes from "./core";
@@ -13,7 +13,7 @@ import routersRoutes from "./routers";
 
 /******************************************************************************/
 
-export default function routes ( config: interfaces.Config, app: express.Application ): void {
+export default function routes ( config: src.Config, app: express.Application ): void {
 
   /**********************************************************/
 
@@ -65,7 +65,7 @@ export default function routes ( config: interfaces.Config, app: express.Applica
         if ( req.session.userId ) {
 
           return session.getCurrentUser( req )
-            .then(( currentUser: interfaces.dataModel.core.user.Super ) => {
+            .then(( currentUser: dataModel.core.user.Super ) => {
 
               payload.currentUser = currentUser;
               response.send( res, "passpoint", null, null, payload );

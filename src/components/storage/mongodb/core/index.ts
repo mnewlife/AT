@@ -3,8 +3,8 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageInterfaces from "../../../../interfaces/components/storage";
+import * as src from "../../../../src";
+import * as storageInterfaces from "../../../../src/components/storage";
 
 import eventFactory from "./event";
 import userFactory from "./user";
@@ -25,7 +25,7 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class Core implements interfaces.components.storage.Core {
+class Core implements src.components.storage.Core {
 
   readonly event: storageInterfaces.core.Event;
   readonly user: storageInterfaces.core.User;
@@ -48,7 +48,7 @@ class Core implements interfaces.components.storage.Core {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.components.storage.Core => {
+export default ( config: src.Config ): src.components.storage.Core => {
 
   let commonParams = ( {
     emitEvent: config.eventManager.emit,

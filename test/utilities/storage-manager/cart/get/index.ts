@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCartFactory from "../../../../../src/components/storage/mongodb/cart/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CartModel } from "../../../../../src/components/storage/mongodb/cart/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Cart GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CartModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageCart: interfaces.components.storage.StorageCart;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageCart: src.components.storage.StorageCart;
 
   /************************************************************/
 
@@ -74,9 +74,9 @@ describe( "Cart GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.Cart[][] ) => {
+      .then(( results: dataModel.Cart[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Cart[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Cart[][] ) => {
 
           /**********************************************/
 
@@ -141,9 +141,9 @@ describe( "Cart GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.Cart[][] ) => {
+      .then(( results: dataModel.Cart[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Cart[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Cart[][] ) => {
 
           /**********************************************/
 
@@ -166,7 +166,7 @@ describe( "Cart GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( cart: interfaces.dataModel.Cart ) => {
+          let culprits = results[ 0 ].filter(( cart: dataModel.Cart ) => {
             return ( String( cart.roundId ) !== String( testInstances[ 0 ].roundId ) );
           } );
 
@@ -177,7 +177,7 @@ describe( "Cart GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( cart: interfaces.dataModel.Cart ) => {
+          culprits = results[ 1 ].filter(( cart: dataModel.Cart ) => {
             return ( String( cart.roundId ) !== String( testInstances[ 1 ].roundId ) );
           } );
 
@@ -211,14 +211,14 @@ describe( "Cart GET", function (): void {
   it( "should emit event upon retrieving cart documents", () => {
 
     return storageCart.get( null, null, null )
-      .then(( foundCarts: interfaces.dataModel.Cart[] ) => {
+      .then(( foundCarts: dataModel.Cart[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cart.Got;
+        let emittedEvent: src.events.components.storage.cart.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cart.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cart.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -284,10 +284,10 @@ describe( "Cart GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cart.GetFailed;
+        let emittedEvent: src.events.components.storage.cart.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cart.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cart.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

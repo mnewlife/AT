@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageArticleFactory from "../../../../../src/components/storage/mongodb/article/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ArticleModel } from "../../../../../src/components/storage/mongodb/article/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Article GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ArticleModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageArticle: interfaces.components.storage.StorageArticle;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageArticle: src.components.storage.StorageArticle;
 
   /************************************************************/
 
@@ -73,9 +73,9 @@ describe( "Article GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.Article[][] ) => {
+      .then(( results: dataModel.Article[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Article[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Article[][] ) => {
 
           /**********************************************/
 
@@ -98,7 +98,7 @@ describe( "Article GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( article: interfaces.dataModel.Article ) => {
+          let culprits = results[ 0 ].filter(( article: dataModel.Article ) => {
             return ( article.tags.indexOf( "bach" ) == -1 );
           } );
 
@@ -109,7 +109,7 @@ describe( "Article GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( article: interfaces.dataModel.Article ) => {
+          culprits = results[ 1 ].filter(( article: dataModel.Article ) => {
             return ( article.tags.indexOf( "film" ) == -1 );
           } );
 
@@ -143,14 +143,14 @@ describe( "Article GET", function (): void {
   it( "should emit event upon retrieving article documents", () => {
 
     return storageArticle.get( null, null, null )
-      .then(( foundArticles: interfaces.dataModel.Article[] ) => {
+      .then(( foundArticles: dataModel.Article[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.article.Got;
+        let emittedEvent: src.events.components.storage.article.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.article.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.article.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -216,10 +216,10 @@ describe( "Article GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.article.GetFailed;
+        let emittedEvent: src.events.components.storage.article.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.article.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.article.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

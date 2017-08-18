@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageProductFactory from "../../../../../src/components/storage/mongodb/product/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ProductModel } from "../../../../../src/components/storage/mongodb/product/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Product GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ProductModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageProduct: interfaces.components.storage.StorageProduct;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageProduct: src.components.storage.StorageProduct;
 
   /************************************************************/
 
@@ -83,9 +83,9 @@ describe( "Product GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.Product[][] ) => {
+      .then(( results: dataModel.Product[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Product[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Product[][] ) => {
 
           /**********************************************/
 
@@ -96,11 +96,11 @@ describe( "Product GET", function (): void {
 
           /**********************************************/
 
-          let controlGroupAscending: interfaces.dataModel.Product[] = results[ 0 ];
-          let controlGroupDescending: interfaces.dataModel.Product[] = results[ 1 ];
+          let controlGroupAscending: dataModel.Product[] = results[ 0 ];
+          let controlGroupDescending: dataModel.Product[] = results[ 1 ];
 
-          let testGroupAscending: interfaces.dataModel.Product[] = results[ 2 ];
-          let testGroupDescending: interfaces.dataModel.Product[] = results[ 3 ];
+          let testGroupAscending: dataModel.Product[] = results[ 2 ];
+          let testGroupDescending: dataModel.Product[] = results[ 3 ];
 
           /**********************************************/
 
@@ -158,11 +158,11 @@ describe( "Product GET", function (): void {
       effectivePriceMin : 10 ,
       effectivePriceMax : 100
     }, null, null )
-      .then(( foundProducts: interfaces.dataModel.Product[] ) => {
+      .then(( foundProducts: dataModel.Product[] ) => {
 
-        expect( foundProducts ).to.satisfy(( Products: interfaces.dataModel.Product[] ) => {
+        expect( foundProducts ).to.satisfy(( Products: dataModel.Product[] ) => {
 
-          let culprits = Products.filter(( Product: interfaces.dataModel.Product ) => {
+          let culprits = Products.filter(( Product: dataModel.Product ) => {
             return ( Product.effectivePrice.price < 10 || Product.effectivePrice.price > 100 );
           } );
 
@@ -193,14 +193,14 @@ describe( "Product GET", function (): void {
   it( "should emit event upon retrieving Product documents", () => {
 
     return storageProduct.get( null, null, null )
-      .then(( foundProducts: interfaces.dataModel.Product[] ) => {
+      .then(( foundProducts: dataModel.Product[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.product.Got;
+        let emittedEvent: src.events.components.storage.product.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.product.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.product.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -266,10 +266,10 @@ describe( "Product GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.product.GetFailed;
+        let emittedEvent: src.events.components.storage.product.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.product.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.product.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

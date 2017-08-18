@@ -4,19 +4,19 @@ import * as Promise from "bluebird";
 import * as http from "http";
 import * as IO from "socket.io";
 
-import * as interfaces from "../../../../interfaces";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as storageInterfaces from "../../../../interfaces/components/storage";
-import * as communicationInterfaces from "../../../../interfaces/components/communication";
-import * as modersInterfaces from "../../../../interfaces/components/shared-logic/moders";
+import * as src from "../../../../src";
+import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
+import * as storageInterfaces from "../../../../src/components/storage";
+import * as communicationInterfaces from "../../../../src/components/communication";
+import * as modersInterfaces from "../../../../src/components/shared-logic/moders";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
 class BasicWebSocket implements communicationInterfaces.WebSocket {
 
-  private readonly emitter: communicationInterfaces.webSocket.Emitter;
+  private readonly events: communicationInterfaces.webSocket.Events;
   private readonly checkThrow: modersInterfaces.CheckThrow;
   private io: SocketIO.Server;
   private readonly getSubscriptionByIdFromStorage: storageInterfaces.subscription.GetById;
@@ -24,7 +24,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
   /*****************************************************************/
 
   constructor( params: communicationInterfaces.webSocket.Params ) {
-    this.emitter = params.emitter;
+    this.events = params.events;
     this.io = ( params.production ) ? IO.listen( params.httpServer ) : IO( params.httpServer );
     this.getSubscriptionByIdFromStorage = params.getSubscriptionByIdFromStorage;
     this.checkThrow = params.checkThrow;
@@ -56,7 +56,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getUserSocketFailed( {
+          this.events.getUserSocketFailed( {
             userId: userId,
             reason: reason
           } );
@@ -98,7 +98,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .then(( response: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.pushedToOtherUsers( {
+          this.events.pushedToOtherUsers( {
             userId: userId,
             identifier: identifier,
             payload: payload
@@ -112,7 +112,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.pushToOtherUsersFailed( {
+          this.events.pushToOtherUsersFailed( {
             userId: userId,
             identifier: identifier,
             payload: payload,
@@ -146,7 +146,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       } )
       .then(( response: any ) => {
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.pushedToCurrentUser( {
+          this.events.pushedToCurrentUser( {
             userId: userId,
             identifier: identifier,
             payload: payload
@@ -158,7 +158,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.pushToCurrentUserFailed( {
+          this.events.pushToCurrentUserFailed( {
             userId: userId,
             identifier: identifier,
             payload: payload,
@@ -190,7 +190,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
           channels.forEach(( channel: string ) => {
             this.io.sockets.in( channel ).emit( channel, payload );
             new Promise<void>(( resolve, reject ) => {
-              this.emitter.pushedToChannel( {
+              this.events.pushedToChannel( {
                 channel: channel,
                 payload: payload
               } );
@@ -206,7 +206,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.pushToChannelsFailed( {
+          this.events.pushToChannelsFailed( {
             channels: channels,
             payload: payload,
             reason: reason
@@ -238,7 +238,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
         channels.forEach(( channel: string ) => {
           socket.join( channel );
           new Promise<void>(( resolve, reject ) => {
-            this.emitter.joinedChannel( {
+            this.events.joinedChannel( {
               channel: channel,
               userId: userId
             } );
@@ -252,7 +252,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.joinChannelsFailed( {
+          this.events.joinChannelsFailed( {
             channels: channels,
             userId: userId,
             reason: reason
@@ -284,7 +284,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
         channels.forEach(( channel: string ) => {
           socket.leave( channel );
           new Promise<void>(( resolve, reject ) => {
-            this.emitter.leftChannel( {
+            this.events.leftChannel( {
               channel: channel,
               userId: userId
             } );
@@ -298,7 +298,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.leaveChannelsFailed( {
+          this.events.leaveChannelsFailed( {
             channels: channels,
             userId: userId,
             reason: reason
@@ -339,9 +339,9 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
         this.getSubscriptionByIdFromStorage( {
           userId: user.id
         }, null, null )
-          .then(( subscriptions: interfaces.dataModel.subscription.Super[] ) => {
+          .then(( subscriptions: dataModel.subscription.Super[] ) => {
             return new Promise<string[]>(( resolve, reject ) => {
-              let channels: string[] = subscriptions.map(( subscription: interfaces.dataModel.subscription.Super ) => {
+              let channels: string[] = subscriptions.map(( subscription: dataModel.subscription.Super ) => {
                 return subscription.subscription;
               } );
               resolve( channels );
@@ -352,7 +352,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
             channels.forEach(( channel: string ) => {
               socket.join( channel );
               new Promise<void>(( resolve, reject ) => {
-                this.emitter.joinedChannel( {
+                this.events.joinedChannel( {
                   channel: channel,
                   userId: user._id
                 } );
@@ -363,7 +363,7 @@ class BasicWebSocket implements communicationInterfaces.WebSocket {
           .catch(( reason: any ) => {
 
             new Promise<void>(( resolve, reject ) => {
-              this.emitter.getUserSubscriptionsFailed( {
+              this.events.getUserSubscriptionsFailed( {
                 userId: user._id,
                 reason: reason
               } );
@@ -395,7 +395,7 @@ export default ( params: {
   getSubscriptionByIdFromStorage: storageInterfaces.subscription.GetById
 } ): communicationInterfaces.WebSocket => {
   return new BasicWebSocket( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     commSettings: params.commSettings,
     checkThrow: params.checkThrow,
     httpServer: params.httpServer,

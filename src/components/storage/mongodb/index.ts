@@ -4,8 +4,9 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../interfaces";
-import * as storageInterfaces from "../../../interfaces/components/storage";
+import * as Components from "../../interfaces";
+
+import * as Storage from "../interfaces";
 
 import call263Factory from "./call-263";
 import coreFactory from "./core";
@@ -29,13 +30,13 @@ export interface UserInfo extends UserInfo_Nuance, mongoose.Document { }
 
 /******************************************************************************/
 
-class MongodbStorage implements interfaces.components.Storage {
+class MongodbStorage implements Components.Storage {
 
-  readonly call263: storageInterfaces.Call263;
-  readonly core: storageInterfaces.Core;
-  readonly grocRound: storageInterfaces.GrocRound;
-  readonly powertel: storageInterfaces.Powertel;
-  readonly routers: storageInterfaces.Routers;
+  readonly call263: Storage.Call263;
+  readonly core: Storage.Core;
+  readonly grocRound: Storage.GrocRound;
+  readonly powertel: Storage.Powertel;
+  readonly routers: Storage.Routers;
 
   readonly middleware: express.RequestHandler[] = [];
 
@@ -43,11 +44,11 @@ class MongodbStorage implements interfaces.components.Storage {
 
   constructor( params: {
     linkToDB: string;
-    call263: storageInterfaces.Call263;
-    core: storageInterfaces.Core;
-    grocRound: storageInterfaces.GrocRound;
-    powertel: storageInterfaces.Powertel;
-    routers: storageInterfaces.Routers;
+    call263: Storage.Call263;
+    core: Storage.Core;
+    grocRound: Storage.GrocRound;
+    powertel: Storage.Powertel;
+    routers: Storage.Routers;
   } ) {
 
     this.connectToDatabase( params.linkToDB );
@@ -79,7 +80,7 @@ class MongodbStorage implements interfaces.components.Storage {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.components.Storage => {
+export default ( config: src.Config ): Components.Storage => {
 
   let productionLink = "mongodb://AllanSimoyi:tatenda#1@ds157499.mlab.com:57499/ximex";
   let developmentLink = "mongodb://127.0.0.1:27017/Ximex";

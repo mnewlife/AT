@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as shops from "../../../../../../interfaces/components/storage/groc-round/shop/events";
-import * as shopInterfaces from "../../../../../../interfaces/components/storage/groc-round/shop";
-import * as shopManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as shops from "../../../../../../src/components/storage/groc-round/shop/events";
+import * as shopInterfaces from "../../../../../../src/components/storage/groc-round/shop";
+import * as shopManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class ShopEmitter implements shopInterfaces.Emitter {
+class ShopEvents implements shopInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class ShopEmitter implements shopInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitShop: shopManagerInterfaces.Emit ): shopInterfaces.Emitter => {
-  return new ShopEmitter( emitShop );
+export default ( emitShop: shopManagerInterfaces.Emit ): shopInterfaces.Events => {
+  return new ShopEvents( emitShop );
 }
 
 /******************************************************************************/

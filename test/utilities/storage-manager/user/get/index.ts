@@ -14,7 +14,7 @@ import aFactory from "../../../../../src/components/shared-logic/basic/data-stru
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 >>>>>>> workarea
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { UserModel } from "../../../../../src/components/storage/mongodb/user/model/index";
 
 require( "../../connect-database" );
@@ -32,8 +32,8 @@ describe( "User GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: UserModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageUser: interfaces.components.storage.StorageUser;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageUser: src.components.storage.StorageUser;
 
   /************************************************************/
 
@@ -181,9 +181,9 @@ describe( "User GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.core.user[][] ) => {
+      .then(( results: dataModel.core.user[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.core.user[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.core.user[][] ) => {
 
           /**********************************************/
 
@@ -194,8 +194,8 @@ describe( "User GET", function (): void {
 
           /**********************************************/
 
-          let verifiedUsers: interfaces.dataModel.core.user[] = results[ 0 ];
-          let unverifiedUsers: interfaces.dataModel.core.user[] = results[ 1 ];
+          let verifiedUsers: dataModel.core.user[] = results[ 0 ];
+          let unverifiedUsers: dataModel.core.user[] = results[ 1 ];
 
           /**********************************************/
 
@@ -211,7 +211,7 @@ describe( "User GET", function (): void {
 
           /**********************************************/
 
-          let culprits = verifiedUsers.filter(( user: interfaces.dataModel.core.user ) => {
+          let culprits = verifiedUsers.filter(( user: dataModel.core.user ) => {
             return ( !user.verification.verified );
           } );
 
@@ -222,7 +222,7 @@ describe( "User GET", function (): void {
 
           /**********************************************/
 
-          culprits = unverifiedUsers.filter(( user: interfaces.dataModel.core.user ) => {
+          culprits = unverifiedUsers.filter(( user: dataModel.core.user ) => {
             return ( user.verification.verified );
           } );
 
@@ -257,16 +257,16 @@ describe( "User GET", function (): void {
       numVerAttemptsMin: 5,
       numVerAttemptsMax: 8
     }, null, null )
-      .then(( foundUsers: interfaces.dataModel.core.user[] ) => {
+      .then(( foundUsers: dataModel.core.user[] ) => {
 
-        expect( foundUsers ).to.satisfy(( users: interfaces.dataModel.core.user[] ) => {
+        expect( foundUsers ).to.satisfy(( users: dataModel.core.user[] ) => {
 
           if ( !users || users.length !== 2 ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
             return false;
           }
 
-          let culprits = users.filter(( user: interfaces.dataModel.core.user ) => {
+          let culprits = users.filter(( user: dataModel.core.user ) => {
             return ( user.verification.numVerAttempts < 5 || user.verification.numVerAttempts > 8 );
           } );
 
@@ -297,16 +297,16 @@ describe( "User GET", function (): void {
       gender: "Female",
       ageMin: 20
     }, null, null )
-      .then(( foundUsers: interfaces.dataModel.core.user[] ) => {
+      .then(( foundUsers: dataModel.core.user[] ) => {
 
-        expect( foundUsers ).to.satisfy(( foundUsers: interfaces.dataModel.core.user[] ) => {
+        expect( foundUsers ).to.satisfy(( foundUsers: dataModel.core.user[] ) => {
 
           if ( !foundUsers || !foundUsers.length ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
             return false;
           }
 
-          let culprits = foundUsers.filter(( user: interfaces.dataModel.core.user ) => {
+          let culprits = foundUsers.filter(( user: dataModel.core.user ) => {
             return ( user.personalDetails.age < 20 || user.personalDetails.gender !== "Female" );
           } );
 
@@ -354,9 +354,9 @@ describe( "User GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.core.user[][] ) => {
+      .then(( results: dataModel.core.user[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.core.user[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.core.user[][] ) => {
 
           /**********************************************/
 
@@ -367,8 +367,8 @@ describe( "User GET", function (): void {
 
           /**********************************************/
 
-          let call263Users: interfaces.dataModel.core.user[] = results[ 0 ];
-          let grocRoundUsers: interfaces.dataModel.core.user[] = results[ 1 ];
+          let call263Users: dataModel.core.user[] = results[ 0 ];
+          let grocRoundUsers: dataModel.core.user[] = results[ 1 ];
 
           /**********************************************/
 
@@ -383,7 +383,7 @@ describe( "User GET", function (): void {
 
           /**********************************************/
 
-          let culprits = call263Users.filter(( user: interfaces.dataModel.core.user ) => {
+          let culprits = call263Users.filter(( user: dataModel.core.user ) => {
             return ( user.activeApps.indexOf( "Call263" ) === -1 );
           } );
 
@@ -392,7 +392,7 @@ describe( "User GET", function (): void {
             return false;
           }
 
-          culprits = grocRoundUsers.filter(( user: interfaces.dataModel.core.user ) => {
+          culprits = grocRoundUsers.filter(( user: dataModel.core.user ) => {
             return ( user.activeApps.indexOf( "GrocRound" ) === -1 );
           } );
 
@@ -425,18 +425,18 @@ describe( "User GET", function (): void {
 =======
 >>>>>>> workarea
     return storageUser.get( null , null , null )
-      .then( ( foundUsers : interfaces.dataModel.core.user[] ) => {
+      .then( ( foundUsers : dataModel.core.user[] ) => {
 =======
     return storageUser.get( null, null, null )
-      .then(( foundUsers: interfaces.dataModel.core.user[] ) => {
+      .then(( foundUsers: dataModel.core.user[] ) => {
 >>>>>>> workarea
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.user.Got;
+        let emittedEvent: src.events.components.storage.user.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.user.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -513,10 +513,10 @@ describe( "User GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.user.GetFailed;
+        let emittedEvent: src.events.components.storage.user.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.user.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

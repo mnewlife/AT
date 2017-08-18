@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as src from "../../../../src/index";
 
 /******************************************************************************/
 
-export interface Emitter {
+export interface Events {
 
   got : ( params : any ) => any;
   getFailed : ( params : any ) => any;
@@ -29,7 +29,7 @@ export interface Emitter {
 
 export interface Get {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.invitation.FiltrationCriteria , sortCriteria : interfaces.dataModel.getParams.invitation.SortCriteria , limit : number ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.invitation.FiltrationCriteria , sortCriteria : dataModel.getParams.invitation.SortCriteria , limit : number ) : Promise<any>;
 
 }
 
@@ -46,8 +46,8 @@ export interface GetById {
 export interface AddBatchParams {
 
   inviterId : string;
-  app : interfaces.AppName;
-  invitees : interfaces.dataModel.Invitee[];
+  app : src.AppName;
+  invitees : dataModel.Invitee[];
 
 }
 
@@ -59,7 +59,7 @@ export interface AddBatch {
 
 export interface Add {
 
-  ( inviterId : string , app : interfaces.AppName , invitees : interfaces.dataModel.Invitee[] ) : Promise<any>;
+  ( inviterId : string , app : src.AppName , invitees : dataModel.Invitee[] ) : Promise<any>;
 
 }
 
@@ -67,7 +67,7 @@ export interface Add {
 
 export interface Update {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.invitation.FiltrationCriteria , details : any ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.invitation.FiltrationCriteria , details : any ) : Promise<any>;
 
 }
 
@@ -81,7 +81,7 @@ export interface UpdateById {
 
 export interface Remove {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.invitation.FiltrationCriteria ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.invitation.FiltrationCriteria ) : Promise<any>;
 
 }
 

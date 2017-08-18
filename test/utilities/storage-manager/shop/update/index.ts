@@ -11,7 +11,7 @@ mongoose.Promise = Promise;
 import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ShopModel, ShopMongooseModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Shop UPDATE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ShopModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageShop: interfaces.components.storage.StorageShop;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageShop: src.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -113,7 +113,7 @@ describe( "Shop UPDATE", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.components.storage.shop.Updated;
+          let emittedEvent: src.events.components.storage.shop.Updated;
 
           for ( let i = 0; i < 3; i++ ) {
 
@@ -173,10 +173,10 @@ describe( "Shop UPDATE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.shop.UpdateFailed;
+        let emittedEvent: src.events.components.storage.shop.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.shop.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

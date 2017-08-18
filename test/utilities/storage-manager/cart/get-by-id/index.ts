@@ -11,7 +11,7 @@ import storageCartFactory from "../../../../../src/components/storage/mongodb/ca
 
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CartModel } from "../../../../../src/components/storage/mongodb/cart/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Cart GET-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CartModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageCart: interfaces.components.storage.StorageCart;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageCart: src.components.storage.StorageCart;
 
   /************************************************************/
 
@@ -114,10 +114,10 @@ describe( "Cart GET-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cart.GotById;
+        let emittedEvent: src.events.components.storage.cart.GotById;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cart.GotById ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cart.GotById ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -166,10 +166,10 @@ describe( "Cart GET-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cart.GetByIdFailed;
+        let emittedEvent: src.events.components.storage.cart.GetByIdFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cart.GetByIdFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cart.GetByIdFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

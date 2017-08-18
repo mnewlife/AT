@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, ProductMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.grocRound.product.Emitter;
+  protected readonly events: storageInterfaces.grocRound.product.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.grocRound.product.Emitter;
+    events: storageInterfaces.grocRound.product.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.grocRound.product.FiltrationCriteria, sortCriteria: storageInterfaces.grocRound.product.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.grocRound.product.FiltrationCriteria, sortCriteria: storageInterfaces.grocRound.product.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
         return this.convertToAbstract( foundProducts );
 
       } )
-      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
+      .then(( convertedProducts: dataModel.grocRound.product.Super[] ) => {
 
-        new Promise<interfaces.dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  readonly getById = ( productId: string, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super> => {
+  readonly getById = ( productId: string, forceThrow = false ): Promise<dataModel.grocRound.product.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
         return this.convertToAbstract( [ foundProduct ] );
 
       } )
-      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
+      .then(( convertedProducts: dataModel.grocRound.product.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: productId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: productId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  readonly addBatch = ( products: storageInterfaces.grocRound.product.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
+  readonly addBatch = ( products: storageInterfaces.grocRound.product.AddDetails[], forceThrow = false ): Promise<dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -220,10 +220,10 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
         return this.convertToAbstract( addedProducts );
 
       } )
-      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
+      .then(( convertedProducts: dataModel.grocRound.product.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedProducts
           } );
           resolve();
@@ -235,7 +235,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: products,
             reason: reason
           } );
@@ -255,7 +255,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.grocRound.product.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super> => {
+  readonly add = ( details: storageInterfaces.grocRound.product.AddDetails, forceThrow = false ): Promise<dataModel.grocRound.product.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -309,10 +309,10 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
         return this.convertToAbstract( [ addedProduct ] );
 
       } )
-      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
+      .then(( convertedProducts: dataModel.grocRound.product.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedProducts
           } );
           resolve();
@@ -324,7 +324,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -344,7 +344,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.grocRound.product.FiltrationCriteria, details: storageInterfaces.grocRound.product.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.grocRound.product.FiltrationCriteria, details: storageInterfaces.grocRound.product.UpdateDetails, forceThrow = false ): Promise<dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -383,10 +383,10 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
         return this.convertToAbstract( updatedProducts );
 
       } )
-      .then(( updatedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
+      .then(( updatedProducts: dataModel.grocRound.product.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedProducts
           } );
@@ -399,7 +399,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -420,7 +420,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  readonly updateById = ( productId: string, details: storageInterfaces.grocRound.product.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super> => {
+  readonly updateById = ( productId: string, details: storageInterfaces.grocRound.product.UpdateDetails, forceThrow = false ): Promise<dataModel.grocRound.product.Super> => {
 
     let productObjectId: mongoose.Types.ObjectId;
 
@@ -453,10 +453,10 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
         return this.convertToAbstract( [ updatedProduct ] );
 
       } )
-      .then(( convertedProducts: interfaces.dataModel.grocRound.product.Super[] ) => {
+      .then(( convertedProducts: dataModel.grocRound.product.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: productId,
             documents: convertedProducts
           } );
@@ -469,7 +469,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: productId,
             updates: details,
             reason: reason
@@ -506,7 +506,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -518,7 +518,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -551,7 +551,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: productId
           } );
           resolve();
@@ -563,7 +563,7 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: productId,
             reason: reason
           } );
@@ -767,18 +767,18 @@ class MongoProduct extends MongoController implements storageInterfaces.grocRoun
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( products: Model[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.product.Super[]> => {
+  private readonly convertToAbstract = ( products: Model[], forceThrow = false ): Promise<dataModel.grocRound.product.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
 
-          let returnProducts: interfaces.dataModel.grocRound.product.Super[] = [];
+          let returnProducts: dataModel.grocRound.product.Super[] = [];
 
           products.forEach(( product ) => {
 
-            let returnProduct: interfaces.dataModel.grocRound.product.Super = {
+            let returnProduct: dataModel.grocRound.product.Super = {
               id: ( <mongoose.Types.ObjectId>product._id ).toHexString(),
               label: product.label,
               priceValues: {
@@ -882,12 +882,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.grocRound.Product => {
   return new MongoProduct( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: ProductMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

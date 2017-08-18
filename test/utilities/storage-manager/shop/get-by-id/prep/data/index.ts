@@ -3,11 +3,11 @@
 import * as Promise from "bluebird";
 import * as bCrypt from "bcrypt-nodejs";
 
-import * as interfaces from "../../../../../../../src/interfaces/index";
+import * as src from "../../../../../../../src/src/index";
 
 /******************************************************************************/
 
-export default () : interfaces.dataModel.Shop[] => {
+export default () : dataModel.Shop[] => {
 
   return [
 

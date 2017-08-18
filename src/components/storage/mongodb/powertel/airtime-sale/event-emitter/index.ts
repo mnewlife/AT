@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as airtimeSales from "../../../../../../interfaces/components/storage/powertel/airtime-sale/events";
-import * as airtimeSaleInterfaces from "../../../../../../interfaces/components/storage/powertel/airtime-sale";
-import * as airtimeSaleManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as airtimeSales from "../../../../../../src/components/storage/powertel/airtime-sale/events";
+import * as airtimeSaleInterfaces from "../../../../../../src/components/storage/powertel/airtime-sale";
+import * as airtimeSaleManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AirtimeSaleEmitter implements airtimeSaleInterfaces.Emitter {
+class AirtimeSaleEvents implements airtimeSaleInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class AirtimeSaleEmitter implements airtimeSaleInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitAirtimeSale: airtimeSaleManagerInterfaces.Emit ): airtimeSaleInterfaces.Emitter => {
-  return new AirtimeSaleEmitter( emitAirtimeSale );
+export default ( emitAirtimeSale: airtimeSaleManagerInterfaces.Emit ): airtimeSaleInterfaces.Events => {
+  return new AirtimeSaleEvents( emitAirtimeSale );
 }
 
 /******************************************************************************/

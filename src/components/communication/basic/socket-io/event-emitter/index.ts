@@ -1,12 +1,12 @@
 /******************************************************************************/
 
-import * as events from "../../../../../interfaces/components/communication/web-socket/events";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
-import * as communicationInterfaces from "../../../../../interfaces/components/communication";
+import * as events from "../../../../../src/components/communication/web-socket/events";
+import * as eventManagerInterfaces from "../../../../../src/setup-config/event-manager";
+import * as communicationInterfaces from "../../../../../src/components/communication";
 
 /******************************************************************************/
 
-class WebSocketEmitter implements communicationInterfaces.webSocket.Emitter {
+class WebSocketEvents implements communicationInterfaces.webSocket.Events {
 
   /*****************************************************************/
 
@@ -219,8 +219,8 @@ class WebSocketEmitter implements communicationInterfaces.webSocket.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): communicationInterfaces.webSocket.Emitter => {
-  return new WebSocketEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): communicationInterfaces.webSocket.Events => {
+  return new WebSocketEvents( emitEvent );
 }
 
 /******************************************************************************/

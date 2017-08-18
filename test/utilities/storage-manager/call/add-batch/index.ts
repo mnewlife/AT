@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCallFactory from "../../../../../src/components/storage/mongodb/call/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CallModel } from "../../../../../src/components/storage/mongodb/call/model/index";
 
 require( "../../connect-database" );
@@ -30,8 +30,8 @@ describe( "Call ADD-BATCH" , function () : void {
   let emitEventSpy : sinon.SinonSpy;
   let testInstances : CallModel[] = [];
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageCall : interfaces.components.storage.StorageCall;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageCall : src.components.storage.StorageCall;
 
   /************************************************************/
 
@@ -146,7 +146,7 @@ describe( "Call ADD-BATCH" , function () : void {
 
         expect( emitEventSpy ).to.satisfy( ( emitEventSpy : sinon.SinonSpy ) => {
 
-          let emittedEvent : interfaces.events.components.storage.call.Added;
+          let emittedEvent : src.events.components.storage.call.Added;
 
           for ( let i = 0; i < 3 ; i++ ) {
 
@@ -201,10 +201,10 @@ describe( "Call ADD-BATCH" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.call.AddFailed;
+        let emittedEvent : src.events.components.storage.call.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.call.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.call.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

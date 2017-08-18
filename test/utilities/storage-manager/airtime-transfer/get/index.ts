@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageAirtimeTransferFactory from "../../../../../src/components/storage/mongodb/airtime-transfer/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { AirtimeTransferModel } from "../../../../../src/components/storage/mongodb/airtime-transfer/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "AirtimeTransfer GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: AirtimeTransferModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageAirtimeTransfer: interfaces.components.storage.StorageAirtimeTransfer;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageAirtimeTransfer: src.components.storage.StorageAirtimeTransfer;
 
   /************************************************************/
 
@@ -81,9 +81,9 @@ describe( "AirtimeTransfer GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+      .then(( results: dataModel.AirtimeTransfer[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.AirtimeTransfer[][] ) => {
 
           /**********************************************/
 
@@ -163,9 +163,9 @@ describe( "AirtimeTransfer GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+      .then(( results: dataModel.AirtimeTransfer[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.AirtimeTransfer[][] ) => {
 
           /**********************************************/
 
@@ -188,7 +188,7 @@ describe( "AirtimeTransfer GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( airtimeTransfer: interfaces.dataModel.AirtimeTransfer ) => {
+          let culprits = results[ 0 ].filter(( airtimeTransfer: dataModel.AirtimeTransfer ) => {
             return ( !airtimeTransfer.paymentRecorded );
           } );
 
@@ -199,7 +199,7 @@ describe( "AirtimeTransfer GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( airtimeTransfer: interfaces.dataModel.AirtimeTransfer ) => {
+          culprits = results[ 1 ].filter(( airtimeTransfer: dataModel.AirtimeTransfer ) => {
             return ( airtimeTransfer.paymentRecorded );
           } );
 
@@ -228,16 +228,16 @@ describe( "AirtimeTransfer GET", function (): void {
       transferAmountMin: 4,
       transferAmountMax: 18
     }, null, null )
-      .then(( foundAirtimeTransfers: interfaces.dataModel.AirtimeTransfer[] ) => {
+      .then(( foundAirtimeTransfers: dataModel.AirtimeTransfer[] ) => {
 
-        expect( foundAirtimeTransfers ).to.satisfy(( airtimeTransfers: interfaces.dataModel.AirtimeTransfer[] ) => {
+        expect( foundAirtimeTransfers ).to.satisfy(( airtimeTransfers: dataModel.AirtimeTransfer[] ) => {
 
           if ( !airtimeTransfers || airtimeTransfers.length !== 2 ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
             return false;
           }
 
-          let culprits = airtimeTransfers.filter(( airtimeTransfer: interfaces.dataModel.AirtimeTransfer ) => {
+          let culprits = airtimeTransfers.filter(( airtimeTransfer: dataModel.AirtimeTransfer ) => {
             return ( airtimeTransfer.transferDetails.amount < 4 || airtimeTransfer.transferDetails.amount > 18 );
           } );
 
@@ -267,14 +267,14 @@ describe( "AirtimeTransfer GET", function (): void {
   it( "should emit event upon retrieving airtimeTransfer documents", () => {
 
     return storageAirtimeTransfer.get( null, null, null )
-      .then(( foundAirtimeTransfers: interfaces.dataModel.AirtimeTransfer[] ) => {
+      .then(( foundAirtimeTransfers: dataModel.AirtimeTransfer[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.Got;
+        let emittedEvent: src.events.components.storage.airtimeTransfer.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.airtimeTransfer.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -340,10 +340,10 @@ describe( "AirtimeTransfer GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.GetFailed;
+        let emittedEvent: src.events.components.storage.airtimeTransfer.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.airtimeTransfer.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

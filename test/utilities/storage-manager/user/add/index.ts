@@ -12,7 +12,7 @@ import storageUserFactory from "../../../../../src/components/storage/mongodb/us
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures";
 import modersFactory from "../../../../../src/components/shared-logic/basic/moders";
 
-import * as interfaces from "../../../../../src/interfaces";
+import * as src from "../../../../../src/src";
 import { Model } from "../../../../../src/components/storage/mongodb/user/model";
 
 require( "../../connect-database" );
@@ -29,9 +29,9 @@ describe( "User ADD", function (): void {
   let sandbox: sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy: sinon.SinonSpy;
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let moders: interfaces.components.sharedLogic.Moders;
-  let storageUser: interfaces.components.storage.User;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let moders: src.components.sharedLogic.Moders;
+  let storageUser: src.components.storage.User;
 
   /************************************************************/
 
@@ -67,7 +67,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
+    let accessLevel: dataModel.core.user.AccessLevel = "admin";
 
     return storageUser.add( {
       emailAddress: "allansimoyi@gmail.com",
@@ -86,9 +86,9 @@ describe( "User ADD", function (): void {
       },
       activeApps: [ "Core" ]
     } )
-      .then(( user: interfaces.dataModel.core.user.Super ) => {
+      .then(( user: dataModel.core.user.Super ) => {
 
-        expect( user ).to.satisfy(( user: interfaces.dataModel.core.user.Super ) => {
+        expect( user ).to.satisfy(( user: dataModel.core.user.Super ) => {
 
           if ( !user || !user.id ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -119,7 +119,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
+    let accessLevel: dataModel.core.user.AccessLevel = "admin";
 
     return storageUser.add( {
       emailAddress: "allansimoyi@gmail.com",
@@ -138,14 +138,14 @@ describe( "User ADD", function (): void {
       },
       activeApps: [ "Core" ]
     } )
-      .then(( user: interfaces.dataModel.core.user.Super ) => {
+      .then(( user: dataModel.core.user.Super ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.user.Added;
+        let emittedEvent: src.events.components.storage.user.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.Added ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.user.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -186,7 +186,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
+    let accessLevel: dataModel.core.user.AccessLevel = "admin";
 
     return storageUser.add( null, true )
       .then(( response: any ) => {
@@ -198,10 +198,10 @@ describe( "User ADD", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.user.AddFailed;
+        let emittedEvent: src.events.components.storage.user.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.user.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -246,7 +246,7 @@ describe( "User ADD", function (): void {
 
     let emailAddress = "allansimoyi@gmail.com";
     let password = hashedPassword;
-    let accessLevel: interfaces.datModel.core.AccessLevel = "admin";
+    let accessLevel: dataModel.core.user.AccessLevel = "admin";
 
     return storageUser.add( null, true )
       .then(( response: any ) => {

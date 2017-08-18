@@ -6,7 +6,7 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 

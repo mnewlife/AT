@@ -3,8 +3,8 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageInterfaces from "../../../../interfaces/components/storage";
+import * as src from "../../../../src";
+import * as storageInterfaces from "../../../../src/components/storage";
 
 import priceFactory from "./price";
 import productFactory from "./product";
@@ -26,7 +26,7 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class GrocRound implements interfaces.components.storage.GrocRound {
+class GrocRound implements src.components.storage.GrocRound {
 
   readonly price: storageInterfaces.grocRound.Price;
   readonly product: storageInterfaces.grocRound.Product;
@@ -52,7 +52,7 @@ class GrocRound implements interfaces.components.storage.GrocRound {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.components.storage.GrocRound => {
+export default ( config: src.Config ): src.components.storage.GrocRound => {
 
   let commonParams = ( {
     emitEvent: config.eventManager.emit,

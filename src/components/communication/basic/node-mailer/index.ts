@@ -4,18 +4,18 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as nodemailer from "nodemailer";
 
-import * as interfaces from "../../../../interfaces";
-import * as communicationInterfaces from "../../../../interfaces/components/communication";
-import * as modersInterfaces from "../../../../interfaces/components/shared-logic/moders";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../src";
+import * as communicationInterfaces from "../../../../src/components/communication";
+import * as modersInterfaces from "../../../../src/components/shared-logic/moders";
+import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
 class BasicMailAgent implements communicationInterfaces.MailAgent {
 
-  private readonly emitter: communicationInterfaces.mailAgent.Emitter;
+  private readonly events: communicationInterfaces.mailAgent.Events;
   private readonly checkThrow: modersInterfaces.CheckThrow;
   private transporter: nodemailer.Transporter;
 
@@ -23,7 +23,7 @@ class BasicMailAgent implements communicationInterfaces.MailAgent {
 
   constructor( params: communicationInterfaces.mailAgent.Params ) {
 
-    this.emitter = params.emitter;
+    this.events = params.events;
     this.checkThrow = params.checkThrow;
 
     this.transporter = nodemailer.createTransport( {
@@ -57,7 +57,7 @@ class BasicMailAgent implements communicationInterfaces.MailAgent {
               reject( err );
             } else {
               new Promise<void>(( resolve, reject ) => {
-                this.emitter.emailSent( {
+                this.events.emailSent( {
                   from: from,
                   to: to,
                   subject: subject,
@@ -76,7 +76,7 @@ class BasicMailAgent implements communicationInterfaces.MailAgent {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.sendEmailFailed( {
+          this.events.sendEmailFailed( {
             from: from,
             to: to,
             subject: subject,
@@ -109,7 +109,7 @@ export default ( params: {
   commSettings: communicationInterfaces.CommSettings
 } ): communicationInterfaces.MailAgent => {
   return new BasicMailAgent( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     checkThrow: params.checkThrow,
     commSettings: params.commSettings
   } );

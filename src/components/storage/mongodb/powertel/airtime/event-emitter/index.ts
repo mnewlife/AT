@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as airtimes from "../../../../../../interfaces/components/storage/powertel/airtime/events";
-import * as airtimeInterfaces from "../../../../../../interfaces/components/storage/powertel/airtime";
-import * as airtimeManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as airtimes from "../../../../../../src/components/storage/powertel/airtime/events";
+import * as airtimeInterfaces from "../../../../../../src/components/storage/powertel/airtime";
+import * as airtimeManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AirtimeEmitter implements airtimeInterfaces.Emitter {
+class AirtimeEvents implements airtimeInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class AirtimeEmitter implements airtimeInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitAirtime: airtimeManagerInterfaces.Emit ): airtimeInterfaces.Emitter => {
-  return new AirtimeEmitter( emitAirtime );
+export default ( emitAirtime: airtimeManagerInterfaces.Emit ): airtimeInterfaces.Events => {
+  return new AirtimeEvents( emitAirtime );
 }
 
 /******************************************************************************/

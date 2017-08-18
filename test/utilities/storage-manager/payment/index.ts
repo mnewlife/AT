@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as src from "../../../../src/index";
 
 /******************************************************************************/
 
-export interface Emitter {
+export interface Events {
 
   got : ( params : any ) => any;
   getFailed : ( params : any ) => any;
@@ -29,7 +29,7 @@ export interface Emitter {
 
 export interface Get {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.payment.FiltrationCriteria , sortCriteria : interfaces.dataModel.getParams.payment.SortCriteria , limit : number ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.payment.FiltrationCriteria , sortCriteria : dataModel.getParams.payment.SortCriteria , limit : number ) : Promise<any>;
 
 }
 
@@ -47,7 +47,7 @@ export interface AddBatchParams {
 
   userId : string;
   channelId : string;
-  transactionDetails : interfaces.dataModel.TransactionDetails;
+  transactionDetails : dataModel.TransactionDetails;
   transferDone : boolean;
 
 }
@@ -60,7 +60,7 @@ export interface AddBatch {
 
 export interface Add {
 
-  ( userId : string , channelId : string , transactionDetails : interfaces.dataModel.TransactionDetails , transferDone : boolean ) : Promise<any>;
+  ( userId : string , channelId : string , transactionDetails : dataModel.TransactionDetails , transferDone : boolean ) : Promise<any>;
 
 }
 
@@ -68,7 +68,7 @@ export interface Add {
 
 export interface Update {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.payment.FiltrationCriteria , details : any ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.payment.FiltrationCriteria , details : any ) : Promise<any>;
 
 }
 
@@ -82,7 +82,7 @@ export interface UpdateById {
 
 export interface Remove {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.payment.FiltrationCriteria ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.payment.FiltrationCriteria ) : Promise<any>;
 
 }
 

@@ -5,42 +5,44 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, ChannelMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import * as IChannel from "../../../interfaces/call-263/channel";
+
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
-class MongoChannel extends MongoController implements storageInterfaces.call263.Channel {
+class MongoChannel extends MongoController implements IChannel.Interfaces {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.call263.channel.Emitter;
+  protected readonly events: storageInterfaces.call263.channel.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.call263.channel.Emitter;
+    events: storageInterfaces.call263.channel.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageInterfaces.call263.channel.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageInterfaces.call263.channel.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.call263.channel.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +71,10 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
         return this.convertToAbstract( foundChannels );
 
       } )
-      .then(( convertedChannels: interfaces.dataModel.call263.channel.Super[] ) => {
+      .then(( convertedChannels: dataModel.call263.channel.Super[] ) => {
 
-        new Promise<interfaces.dataModel.call263.channel.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.call263.channel.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +91,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +113,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
 
   /*****************************************************************/
 
-  readonly getById = ( channelId: string, forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super> => {
+  readonly getById = ( channelId: string, forceThrow = false ): Promise<dataModel.call263.channel.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +126,10 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
         return this.convertToAbstract( [ foundChannel ] );
 
       } )
-      .then(( convertedChannels: interfaces.dataModel.call263.channel.Super[] ) => {
+      .then(( convertedChannels: dataModel.call263.channel.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: channelId
           } );
         } );
@@ -138,7 +140,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: channelId,
             reason: reason
           } );
@@ -167,7 +169,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
 
   /*****************************************************************/
 
-  readonly addBatch = ( channels: storageInterfaces.call263.channel.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super[]> => {
+  readonly addBatch = ( channels: storageInterfaces.call263.channel.AddDetails[], forceThrow = false ): Promise<dataModel.call263.channel.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -189,10 +191,10 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
         return this.convertToAbstract( addedChannels );
 
       } )
-      .then(( convertedChannels: interfaces.dataModel.call263.channel.Super[] ) => {
+      .then(( convertedChannels: dataModel.call263.channel.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedChannels
           } );
           resolve();
@@ -204,7 +206,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: channels,
             reason: reason
           } );
@@ -224,7 +226,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.call263.channel.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super> => {
+  readonly add = ( details: storageInterfaces.call263.channel.AddDetails, forceThrow = false ): Promise<dataModel.call263.channel.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -245,10 +247,10 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
         return this.convertToAbstract( [ addedChannel ] );
 
       } )
-      .then(( convertedChannels: interfaces.dataModel.call263.channel.Super[] ) => {
+      .then(( convertedChannels: dataModel.call263.channel.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedChannels
           } );
           resolve();
@@ -260,7 +262,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -280,7 +282,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.call263.channel.FiltrationCriteria, details: storageInterfaces.call263.channel.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.call263.channel.FiltrationCriteria, details: storageInterfaces.call263.channel.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.channel.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -319,10 +321,10 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
         return this.convertToAbstract( updatedChannels );
 
       } )
-      .then(( updatedChannels: interfaces.dataModel.call263.channel.Super[] ) => {
+      .then(( updatedChannels: dataModel.call263.channel.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedChannels
           } );
@@ -335,7 +337,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -356,7 +358,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
 
   /*****************************************************************/
 
-  readonly updateById = ( channelId: string, details: storageInterfaces.call263.channel.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super> => {
+  readonly updateById = ( channelId: string, details: storageInterfaces.call263.channel.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.channel.Super> => {
 
     let channelObjectId: mongoose.Types.ObjectId;
 
@@ -389,10 +391,10 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
         return this.convertToAbstract( [ updatedChannel ] );
 
       } )
-      .then(( convertedChannels: interfaces.dataModel.call263.channel.Super[] ) => {
+      .then(( convertedChannels: dataModel.call263.channel.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: channelId,
             documents: convertedChannels
           } );
@@ -405,7 +407,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: channelId,
             updates: details,
             reason: reason
@@ -442,7 +444,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -454,7 +456,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -487,7 +489,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: channelId
           } );
           resolve();
@@ -499,7 +501,7 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: channelId,
             reason: reason
           } );
@@ -604,18 +606,18 @@ class MongoChannel extends MongoController implements storageInterfaces.call263.
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( channels: Model[], forceThrow = false ): Promise<interfaces.dataModel.call263.channel.Super[]> => {
+  private readonly convertToAbstract = ( channels: Model[], forceThrow = false ): Promise<dataModel.call263.channel.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.call263.channel.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.call263.channel.Super[]>(( resolve, reject ) => {
 
-          let returnChannels: interfaces.dataModel.call263.channel.Super[] = [];
+          let returnChannels: dataModel.call263.channel.Super[] = [];
 
           channels.forEach(( channel ) => {
 
-            let returnChannel: interfaces.dataModel.call263.channel.Super = {
+            let returnChannel: dataModel.call263.channel.Super = {
               id: ( <mongoose.Types.ObjectId>channel._id ).toHexString(),
               allocated: channel.allocated,
               allocatedTo: ( channel.allocatedTo as mongoose.Types.ObjectId ).toHexString(),
@@ -656,12 +658,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.call263.Channel => {
   return new MongoChannel( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: ChannelMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

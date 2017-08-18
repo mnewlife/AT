@@ -3,14 +3,14 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../interfaces";
-import * as events from "../../../../interfaces/components/session/events";
-import * as sessionInterfaces from "../../../../interfaces/components/session";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../src";
+import * as events from "../../../../src/components/session/events";
+import * as sessionInterfaces from "../../../../src/components/session";
+import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class SessionEmitter implements sessionInterfaces.Emitter {
+class SessionEvents implements sessionInterfaces.Events {
 
   /*****************************************************************/
 
@@ -114,7 +114,7 @@ class SessionEmitter implements sessionInterfaces.Emitter {
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: interfaces.setupConfig.eventManager.Emit ) { }
+  constructor( readonly emitEvent: src.setupConfig.eventManager.Emit ) { }
 
   /*****************************************************************/
 
@@ -122,9 +122,9 @@ class SessionEmitter implements sessionInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): sessionInterfaces.Emitter => {
+export default ( emitEvent: eventManagerInterfaces.Emit ): sessionInterfaces.Events => {
 
-  return new SessionEmitter( emitEvent );
+  return new SessionEvents( emitEvent );
 
 }
 

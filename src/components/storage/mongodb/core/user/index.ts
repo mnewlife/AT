@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, UserMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.core.user.Emitter;
+  protected readonly events: storageInterfaces.core.user.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.core.user.Emitter;
+    events: storageInterfaces.core.user.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.core.user.FiltrationCriteria, sortCriteria: storageInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.core.user.FiltrationCriteria, sortCriteria: storageInterfaces.core.user.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
         return this.convertToAbstract( foundUsers );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedUsers: dataModel.core.user.Super[] ) => {
 
-        new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.core.user.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  readonly getById = ( userId: string, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getById = ( userId: string, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
         return this.convertToAbstract( [ foundUser ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedUsers: dataModel.core.user.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: userId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: userId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  readonly addBatch = ( users: storageInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly addBatch = ( users: storageInterfaces.core.user.AddDetails[], forceThrow = false ): Promise<dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -224,10 +224,10 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
         return this.convertToAbstract( addedUsers );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedUsers: dataModel.core.user.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedUsers
           } );
           resolve();
@@ -239,7 +239,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: users,
             reason: reason
           } );
@@ -259,7 +259,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.core.user.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly add = ( details: storageInterfaces.core.user.AddDetails, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -315,10 +315,10 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
         return this.convertToAbstract( [ addedUser ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedUsers: dataModel.core.user.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedUsers
           } );
           resolve();
@@ -330,7 +330,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -350,7 +350,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.core.user.FiltrationCriteria, details: storageInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.core.user.FiltrationCriteria, details: storageInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -389,10 +389,10 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
         return this.convertToAbstract( updatedUsers );
 
       } )
-      .then(( updatedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( updatedUsers: dataModel.core.user.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedUsers
           } );
@@ -405,7 +405,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -426,7 +426,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  readonly updateById = ( userId: string, details: storageInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly updateById = ( userId: string, details: storageInterfaces.core.user.UpdateDetails, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
     let userObjectId: mongoose.Types.ObjectId;
 
@@ -459,10 +459,10 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
         return this.convertToAbstract( [ updatedUser ] );
 
       } )
-      .then(( convertedUsers: interfaces.dataModel.core.user.Super[] ) => {
+      .then(( convertedUsers: dataModel.core.user.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: userId,
             documents: convertedUsers
           } );
@@ -475,7 +475,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: userId,
             updates: details,
             reason: reason
@@ -512,7 +512,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -524,7 +524,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -557,7 +557,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: userId
           } );
           resolve();
@@ -569,7 +569,7 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: userId,
             reason: reason
           } );
@@ -831,18 +831,18 @@ class MongoUser extends MongoController implements storageInterfaces.core.User {
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<interfaces.dataModel.core.user.Super[]> => {
+  private readonly convertToAbstract = ( users: Model[], forceThrow = false ): Promise<dataModel.core.user.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.core.user.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.core.user.Super[]>(( resolve, reject ) => {
 
-          let returnUsers: interfaces.dataModel.core.user.Super[] = [];
+          let returnUsers: dataModel.core.user.Super[] = [];
 
           users.forEach(( user ) => {
 
-            let returnUser: interfaces.dataModel.core.user.Super = {
+            let returnUser: dataModel.core.user.Super = {
               id: ( <mongoose.Types.ObjectId>user._id ).toHexString(),
               emailAddress: user.emailAddress,
               accessLevel: user.accessLevel,
@@ -942,12 +942,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.core.User => {
   return new MongoUser( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: UserMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

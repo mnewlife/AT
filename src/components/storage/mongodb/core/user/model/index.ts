@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as interfaces from "../../../../../../interfaces";
+import * as src from "../../../../../../src";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -10,7 +10,7 @@ import { ignoreEmpty } from "../../../preparation";
 
 export interface Model extends mongoose.Document, mongoDB.Document {
   emailAddress: string;
-  accessLevel: interfaces.dataModel.core.AccessLevel;
+  accessLevel: dataModel.core.user.AccessLevel;
   password: string;
   resetCode?: string;
 
@@ -19,7 +19,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   contactDetails?: ContactDetails;
   residentialDetails?: ResidentialDetails;
 
-  activeApps: interfaces.AppName[];
+  activeApps: src.AppName[];
 }
 export interface Model_Partial extends Partial<Pick<Model, ModelPartial_Details_Flat>> {
   verification?: Partial<Verification>;

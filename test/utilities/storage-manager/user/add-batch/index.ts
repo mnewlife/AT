@@ -11,7 +11,7 @@ mongoose.Promise = Promise;
 import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { UserModel } from "../../../../../src/components/storage/mongodb/user/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "User ADD-BATCH" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageUser : interfaces.components.storage.StorageUser;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageUser : src.components.storage.StorageUser;
 
   /************************************************************/
 
@@ -58,9 +58,9 @@ describe( "User ADD-BATCH" , function () : void {
 
   it( "should add a batch of new user records" , () => {
 
-    let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
-    let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";
-    let consumerAccessLevel : interfaces.datModel.core.AccessLevel = "consumer";
+    let adminAccessLevel : dataModel.core.user.AccessLevel = "admin";
+    let developerAccessLevel : dataModel.core.user.AccessLevel = "developer";
+    let consumerAccessLevel : dataModel.core.user.AccessLevel = "consumer";
 
     let newUserBatch = [
       {
@@ -107,9 +107,9 @@ describe( "User ADD-BATCH" , function () : void {
 
   it( "should emit event upon adding a batch of new user documents" , () => {
 
-    let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
-    let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";
-    let consumerAccessLevel : interfaces.datModel.core.AccessLevel = "consumer";
+    let adminAccessLevel : dataModel.core.user.AccessLevel = "admin";
+    let developerAccessLevel : dataModel.core.user.AccessLevel = "developer";
+    let consumerAccessLevel : dataModel.core.user.AccessLevel = "consumer";
 
     let newUserBatch = [
       {
@@ -136,7 +136,7 @@ describe( "User ADD-BATCH" , function () : void {
 
         expect( emitEventSpy ).to.satisfy( ( emitEventSpy : sinon.SinonSpy ) => {
 
-          let emittedEvent : interfaces.events.components.storage.user.Added;
+          let emittedEvent : src.events.components.storage.user.Added;
 
           for ( let i = 0; i < 3 ; i++ ) {
 
@@ -191,10 +191,10 @@ describe( "User ADD-BATCH" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.user.AddFailed;
+        let emittedEvent : src.events.components.storage.user.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.user.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.user.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

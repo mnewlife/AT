@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, CardSaleMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.powertel.cardSale.Emitter;
+  protected readonly events: storageInterfaces.powertel.cardSale.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.powertel.cardSale.Emitter;
+    events: storageInterfaces.powertel.cardSale.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.powertel.cardSale.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.cardSale.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.powertel.cardSale.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.cardSale.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.powertel.cardSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
         return this.convertToAbstract( foundCardSales );
 
       } )
-      .then(( convertedCardSales: interfaces.dataModel.powertel.cardSale.Super[] ) => {
+      .then(( convertedCardSales: dataModel.powertel.cardSale.Super[] ) => {
 
-        new Promise<interfaces.dataModel.powertel.cardSale.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.powertel.cardSale.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  readonly getById = ( cardSaleId: string, forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super> => {
+  readonly getById = ( cardSaleId: string, forceThrow = false ): Promise<dataModel.powertel.cardSale.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
         return this.convertToAbstract( [ foundCardSale ] );
 
       } )
-      .then(( convertedCardSales: interfaces.dataModel.powertel.cardSale.Super[] ) => {
+      .then(( convertedCardSales: dataModel.powertel.cardSale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: cardSaleId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: cardSaleId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  readonly addBatch = ( cardSales: storageInterfaces.powertel.cardSale.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super[]> => {
+  readonly addBatch = ( cardSales: storageInterfaces.powertel.cardSale.AddDetails[], forceThrow = false ): Promise<dataModel.powertel.cardSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -196,10 +196,10 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
         return this.convertToAbstract( addedCardSales );
 
       } )
-      .then(( convertedCardSales: interfaces.dataModel.powertel.cardSale.Super[] ) => {
+      .then(( convertedCardSales: dataModel.powertel.cardSale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedCardSales
           } );
           resolve();
@@ -211,7 +211,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: cardSales,
             reason: reason
           } );
@@ -231,7 +231,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.powertel.cardSale.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super> => {
+  readonly add = ( details: storageInterfaces.powertel.cardSale.AddDetails, forceThrow = false ): Promise<dataModel.powertel.cardSale.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -259,10 +259,10 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
         return this.convertToAbstract( [ addedCardSale ] );
 
       } )
-      .then(( convertedCardSales: interfaces.dataModel.powertel.cardSale.Super[] ) => {
+      .then(( convertedCardSales: dataModel.powertel.cardSale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedCardSales
           } );
           resolve();
@@ -274,7 +274,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -294,7 +294,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.powertel.cardSale.FiltrationCriteria, details: storageInterfaces.powertel.cardSale.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.powertel.cardSale.FiltrationCriteria, details: storageInterfaces.powertel.cardSale.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.cardSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -333,10 +333,10 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
         return this.convertToAbstract( updatedCardSales );
 
       } )
-      .then(( updatedCardSales: interfaces.dataModel.powertel.cardSale.Super[] ) => {
+      .then(( updatedCardSales: dataModel.powertel.cardSale.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedCardSales
           } );
@@ -349,7 +349,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -370,7 +370,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  readonly updateById = ( cardSaleId: string, details: storageInterfaces.powertel.cardSale.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super> => {
+  readonly updateById = ( cardSaleId: string, details: storageInterfaces.powertel.cardSale.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.cardSale.Super> => {
 
     let cardSaleObjectId: mongoose.Types.ObjectId;
 
@@ -403,10 +403,10 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
         return this.convertToAbstract( [ updatedCardSale ] );
 
       } )
-      .then(( convertedCardSales: interfaces.dataModel.powertel.cardSale.Super[] ) => {
+      .then(( convertedCardSales: dataModel.powertel.cardSale.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: cardSaleId,
             documents: convertedCardSales
           } );
@@ -419,7 +419,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: cardSaleId,
             updates: details,
             reason: reason
@@ -456,7 +456,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -468,7 +468,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -501,7 +501,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: cardSaleId
           } );
           resolve();
@@ -513,7 +513,7 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: cardSaleId,
             reason: reason
           } );
@@ -620,18 +620,18 @@ class MongoCardSale extends MongoController implements storageInterfaces.powerte
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( cardSales: Model[], forceThrow = false ): Promise<interfaces.dataModel.powertel.cardSale.Super[]> => {
+  private readonly convertToAbstract = ( cardSales: Model[], forceThrow = false ): Promise<dataModel.powertel.cardSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.powertel.cardSale.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.powertel.cardSale.Super[]>(( resolve, reject ) => {
 
-          let returnCardSales: interfaces.dataModel.powertel.cardSale.Super[] = [];
+          let returnCardSales: dataModel.powertel.cardSale.Super[] = [];
 
           cardSales.forEach(( cardSale ) => {
 
-            let returnCardSale: interfaces.dataModel.powertel.cardSale.Super = {
+            let returnCardSale: dataModel.powertel.cardSale.Super = {
               id: ( <mongoose.Types.ObjectId>cardSale._id ).toHexString(),
               cardId: ( cardSale.cardId as mongoose.Types.ObjectId ).toHexString(),
               mdn: cardSale.mdn,
@@ -680,12 +680,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.powertel.CardSale => {
   return new MongoCardSale( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: CardSaleMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

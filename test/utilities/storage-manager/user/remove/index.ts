@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { UserModel , UserMongooseModel } from "../../../../../src/components/storage/mongodb/user/model/index";
 
 require( "../../connect-database" );
@@ -26,10 +26,10 @@ describe( "User REMOVE" , function () : void {
 
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
-  let testInstances : interfaces.dataModel.core.user[] = [];
+  let testInstances : dataModel.core.user[] = [];
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageUser : interfaces.components.storage.StorageUser;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageUser : src.components.storage.StorageUser;
 
   /************************************************************/
 
@@ -103,10 +103,10 @@ describe( "User REMOVE" , function () : void {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent : interfaces.events.components.storage.user.Removed;
+      let emittedEvent : src.events.components.storage.user.Removed;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.user.Removed ) => {
+      expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.user.Removed ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -155,10 +155,10 @@ describe( "User REMOVE" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.user.RemoveFailed;
+        let emittedEvent : src.events.components.storage.user.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.user.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.user.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

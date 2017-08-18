@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as products from "../../../../../../interfaces/components/storage/groc-round/product/events";
-import * as productInterfaces from "../../../../../../interfaces/components/storage/groc-round/product";
-import * as productManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as products from "../../../../../../src/components/storage/groc-round/product/events";
+import * as productInterfaces from "../../../../../../src/components/storage/groc-round/product";
+import * as productManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class ProductEmitter implements productInterfaces.Emitter {
+class ProductEvents implements productInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class ProductEmitter implements productInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitProduct: productManagerInterfaces.Emit ): productInterfaces.Emitter => {
-  return new ProductEmitter( emitProduct );
+export default ( emitProduct: productManagerInterfaces.Emit ): productInterfaces.Events => {
+  return new ProductEvents( emitProduct );
 }
 
 /******************************************************************************/

@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageChannelFactory from "../../../../../src/components/storage/mongodb/channel/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ChannelModel, ChannelMongooseModel } from "../../../../../src/components/storage/mongodb/channel/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Channel UPDATE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ChannelModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageChannel: interfaces.components.storage.StorageChannel;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageChannel: src.components.storage.StorageChannel;
 
   /************************************************************/
 
@@ -103,10 +103,10 @@ describe( "Channel UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.channel.Updated;
+        let emittedEvent: src.events.components.storage.channel.Updated;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.Updated ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.channel.Updated ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -160,10 +160,10 @@ describe( "Channel UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.channel.UpdateFailed;
+        let emittedEvent: src.events.components.storage.channel.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.channel.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

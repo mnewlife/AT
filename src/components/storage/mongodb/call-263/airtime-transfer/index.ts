@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, AirtimeTransferMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.call263.airtimeTransfer.Emitter;
+  protected readonly events: storageInterfaces.call263.airtimeTransfer.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.call263.airtimeTransfer.Emitter;
+    events: storageInterfaces.call263.airtimeTransfer.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
         return this.convertToAbstract( foundAirtimeTransfers );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
 
-        new Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  readonly getById = ( airtimeTransferId: string, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+  readonly getById = ( airtimeTransferId: string, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
         return this.convertToAbstract( [ foundAirtimeTransfer ] );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: airtimeTransferId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: airtimeTransferId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  readonly addBatch = ( airtimeTransfers: storageInterfaces.call263.airtimeTransfer.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
+  readonly addBatch = ( airtimeTransfers: storageInterfaces.call263.airtimeTransfer.AddDetails[], forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -194,10 +194,10 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
         return this.convertToAbstract( addedAirtimeTransfers );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAirtimeTransfers
           } );
           resolve();
@@ -209,7 +209,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: airtimeTransfers,
             reason: reason
           } );
@@ -229,7 +229,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.call263.airtimeTransfer.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+  readonly add = ( details: storageInterfaces.call263.airtimeTransfer.AddDetails, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -255,10 +255,10 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
         return this.convertToAbstract( [ addedAirtimeTransfer ] );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAirtimeTransfers
           } );
           resolve();
@@ -270,7 +270,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -290,7 +290,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -329,10 +329,10 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
         return this.convertToAbstract( updatedAirtimeTransfers );
 
       } )
-      .then(( updatedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
+      .then(( updatedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedAirtimeTransfers
           } );
@@ -345,7 +345,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -366,7 +366,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  readonly updateById = ( airtimeTransferId: string, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super> => {
+  readonly updateById = ( airtimeTransferId: string, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super> => {
 
     let airtimeTransferObjectId: mongoose.Types.ObjectId;
 
@@ -399,10 +399,10 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
         return this.convertToAbstract( [ updatedAirtimeTransfer ] );
 
       } )
-      .then(( convertedAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] ) => {
+      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: airtimeTransferId,
             documents: convertedAirtimeTransfers
           } );
@@ -415,7 +415,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: airtimeTransferId,
             updates: details,
             reason: reason
@@ -452,7 +452,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -464,7 +464,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -497,7 +497,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: airtimeTransferId
           } );
           resolve();
@@ -509,7 +509,7 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: airtimeTransferId,
             reason: reason
           } );
@@ -630,18 +630,18 @@ class MongoAirtimeTransfer extends MongoController implements storageInterfaces.
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( airtimeTransfers: Model[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]> => {
+  private readonly convertToAbstract = ( airtimeTransfers: Model[], forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
 
-          let returnAirtimeTransfers: interfaces.dataModel.call263.airtimeTransfer.Super[] = [];
+          let returnAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] = [];
 
           airtimeTransfers.forEach(( airtimeTransfer ) => {
 
-            let returnAirtimeTransfer: interfaces.dataModel.call263.airtimeTransfer.Super = {
+            let returnAirtimeTransfer: dataModel.call263.airtimeTransfer.Super = {
               id: ( <mongoose.Types.ObjectId>airtimeTransfer._id ).toHexString(),
               userId: ( <mongoose.Types.ObjectId>airtimeTransfer.userId ).toHexString(),
               channelId: ( <mongoose.Types.ObjectId>airtimeTransfer.channelId ).toHexString(),
@@ -691,12 +691,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.call263.AirtimeTransfer => {
   return new MongoAirtimeTransfer( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: AirtimeTransferMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

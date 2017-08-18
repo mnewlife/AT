@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCartFactory from "../../../../../src/components/storage/mongodb/cart/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CartModel } from "../../../../../src/components/storage/mongodb/cart/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Cart ADD-BATCH" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageCart : interfaces.components.storage.StorageCart;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageCart : src.components.storage.StorageCart;
 
   /************************************************************/
 
@@ -136,7 +136,7 @@ describe( "Cart ADD-BATCH" , function () : void {
 
         expect( emitEventSpy ).to.satisfy( ( emitEventSpy : sinon.SinonSpy ) => {
 
-          let emittedEvent : interfaces.events.components.storage.cart.Added;
+          let emittedEvent : src.events.components.storage.cart.Added;
 
           for ( let i = 0; i < 3 ; i++ ) {
 
@@ -191,10 +191,10 @@ describe( "Cart ADD-BATCH" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.cart.AddFailed;
+        let emittedEvent : src.events.components.storage.cart.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.cart.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.cart.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

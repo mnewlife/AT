@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ShopModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Shop GET-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ShopModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageShop: interfaces.components.storage.StorageShop;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageShop: src.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -108,10 +108,10 @@ it( "should emit event upon retrieving Shop document", () => {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent: interfaces.events.components.storage.shop.GotById;
+      let emittedEvent: src.events.components.storage.shop.GotById;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.GotById ) => {
+      expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.shop.GotById ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -160,10 +160,10 @@ it( "should emit failed event upon erring", () => {
 
       sinon.assert.calledOnce( emitEventSpy );
 
-      let emittedEvent: interfaces.events.components.storage.shop.GetByIdFailed;
+      let emittedEvent: src.events.components.storage.shop.GetByIdFailed;
       emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-      expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.GetByIdFailed ) => {
+      expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.shop.GetByIdFailed ) => {
 
         if ( !happening ) {
           logger.debug( "<<<<<<<<<<<-- GUILTY!" );

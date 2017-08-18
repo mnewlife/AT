@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as users from "../../../../../../interfaces/components/storage/core/user/events";
-import * as userInterfaces from "../../../../../../interfaces/components/storage/core/user";
-import * as userManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as users from "../../../../../../src/components/storage/core/user/events";
+import * as userInterfaces from "../../../../../../src/components/storage/core/user";
+import * as userManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class UserEmitter implements userInterfaces.Emitter {
+class UserEvents implements userInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class UserEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitUser: userManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new UserEmitter( emitUser );
+export default ( emitUser: userManagerInterfaces.Emit ): userInterfaces.Events => {
+  return new UserEvents( emitUser );
 }
 
 /******************************************************************************/

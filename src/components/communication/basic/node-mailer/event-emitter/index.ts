@@ -1,12 +1,12 @@
 /******************************************************************************/
 
-import * as communicationInterfaces from "../../../../../interfaces/components/communication";
-import * as eventManagerInterfaces from "../../../../../interfaces/setup-config/event-manager";
-import * as events from "../../../../../interfaces/components/communication/mail-agent/events";
+import * as communicationInterfaces from "../../../../../src/components/communication";
+import * as eventManagerInterfaces from "../../../../../src/setup-config/event-manager";
+import * as events from "../../../../../src/components/communication/mail-agent/events";
 
 /******************************************************************************/
 
-class MailAgentEmitter implements communicationInterfaces.mailAgent.Emitter {
+class MailAgentEvents implements communicationInterfaces.mailAgent.Events {
 
   /*****************************************************************/
 
@@ -53,8 +53,8 @@ class MailAgentEmitter implements communicationInterfaces.mailAgent.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): communicationInterfaces.mailAgent.Emitter => {
-  return new MailAgentEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): communicationInterfaces.mailAgent.Events => {
+  return new MailAgentEvents( emitEvent );
 }
 
 /******************************************************************************/

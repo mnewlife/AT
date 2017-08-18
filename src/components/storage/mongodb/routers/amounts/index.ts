@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, AmountsMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.routers.amounts.Emitter;
+  protected readonly events: storageInterfaces.routers.amounts.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.routers.amounts.Emitter;
+    events: storageInterfaces.routers.amounts.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.routers.amounts.FiltrationCriteria, sortCriteria: storageInterfaces.routers.amounts.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.routers.amounts.FiltrationCriteria, sortCriteria: storageInterfaces.routers.amounts.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
         return this.convertToAbstract( foundAmountss );
 
       } )
-      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
+      .then(( convertedAmountss: dataModel.routers.amounts.Super[] ) => {
 
-        new Promise<interfaces.dataModel.routers.amounts.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.routers.amounts.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  readonly getById = ( amountsId: string, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super> => {
+  readonly getById = ( amountsId: string, forceThrow = false ): Promise<dataModel.routers.amounts.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
         return this.convertToAbstract( [ foundAmounts ] );
 
       } )
-      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
+      .then(( convertedAmountss: dataModel.routers.amounts.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: amountsId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: amountsId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  readonly addBatch = ( amountss: storageInterfaces.routers.amounts.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
+  readonly addBatch = ( amountss: storageInterfaces.routers.amounts.AddDetails[], forceThrow = false ): Promise<dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -188,10 +188,10 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
         return this.convertToAbstract( addedAmountss );
 
       } )
-      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
+      .then(( convertedAmountss: dataModel.routers.amounts.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAmountss
           } );
           resolve();
@@ -203,7 +203,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: amountss,
             reason: reason
           } );
@@ -223,7 +223,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.routers.amounts.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super> => {
+  readonly add = ( details: storageInterfaces.routers.amounts.AddDetails, forceThrow = false ): Promise<dataModel.routers.amounts.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -243,10 +243,10 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
         return this.convertToAbstract( [ addedAmounts ] );
 
       } )
-      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
+      .then(( convertedAmountss: dataModel.routers.amounts.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAmountss
           } );
           resolve();
@@ -258,7 +258,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -278,7 +278,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.routers.amounts.FiltrationCriteria, details: storageInterfaces.routers.amounts.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.routers.amounts.FiltrationCriteria, details: storageInterfaces.routers.amounts.UpdateDetails, forceThrow = false ): Promise<dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -317,10 +317,10 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
         return this.convertToAbstract( updatedAmountss );
 
       } )
-      .then(( updatedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
+      .then(( updatedAmountss: dataModel.routers.amounts.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedAmountss
           } );
@@ -333,7 +333,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -354,7 +354,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  readonly updateById = ( amountsId: string, details: storageInterfaces.routers.amounts.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super> => {
+  readonly updateById = ( amountsId: string, details: storageInterfaces.routers.amounts.UpdateDetails, forceThrow = false ): Promise<dataModel.routers.amounts.Super> => {
 
     let amountsObjectId: mongoose.Types.ObjectId;
 
@@ -387,10 +387,10 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
         return this.convertToAbstract( [ updatedAmounts ] );
 
       } )
-      .then(( convertedAmountss: interfaces.dataModel.routers.amounts.Super[] ) => {
+      .then(( convertedAmountss: dataModel.routers.amounts.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: amountsId,
             documents: convertedAmountss
           } );
@@ -403,7 +403,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: amountsId,
             updates: details,
             reason: reason
@@ -440,7 +440,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -452,7 +452,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -485,7 +485,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: amountsId
           } );
           resolve();
@@ -497,7 +497,7 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: amountsId,
             reason: reason
           } );
@@ -630,18 +630,18 @@ class MongoAmounts extends MongoController implements storageInterfaces.routers.
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( amountss: Model[], forceThrow = false ): Promise<interfaces.dataModel.routers.amounts.Super[]> => {
+  private readonly convertToAbstract = ( amountss: Model[], forceThrow = false ): Promise<dataModel.routers.amounts.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.routers.amounts.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.routers.amounts.Super[]>(( resolve, reject ) => {
 
-          let returnAmountss: interfaces.dataModel.routers.amounts.Super[] = [];
+          let returnAmountss: dataModel.routers.amounts.Super[] = [];
 
           amountss.forEach(( amounts ) => {
 
-            let returnAmounts: interfaces.dataModel.routers.amounts.Super = {
+            let returnAmounts: dataModel.routers.amounts.Super = {
               id: ( <mongoose.Types.ObjectId>amounts._id ).toHexString(),
               type: amounts.type,
               count: amounts.count,
@@ -680,12 +680,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.routers.Amounts => {
   return new MongoAmounts( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: AmountsMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { UserModel, UserMongooseModel } from "../../../../../src/components/storage/mongodb/user/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "User UPDATE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: UserModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageUser: interfaces.components.storage.StorageUser;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageUser: src.components.storage.StorageUser;
 
   /************************************************************/
 
@@ -105,10 +105,10 @@ describe( "User UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.user.Updated;
+        let emittedEvent: src.events.components.storage.user.Updated;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.Updated ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.user.Updated ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -162,10 +162,10 @@ describe( "User UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.user.UpdateFailed;
+        let emittedEvent: src.events.components.storage.user.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.user.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.user.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

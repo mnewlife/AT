@@ -2,14 +2,14 @@
 
 import * as express from "express";
 
-import * as interfaces from "../../../interfaces";
-import * as communicationInterfaces from "../../../interfaces/components/communication";
+import * as src from "../../../src";
+import * as communicationInterfaces from "../../../src/components/communication";
 import socketIoFactory from "./socket-io";
 import nodeMailerFactory from "./node-mailer";
 
 /******************************************************************************/
 
-class BasicCommunication implements interfaces.components.Communication {
+class BasicCommunication implements src.components.Communication {
 
   public readonly webSocket: communicationInterfaces.WebSocket;
   public readonly mailAgent: communicationInterfaces.MailAgent;
@@ -30,7 +30,7 @@ class BasicCommunication implements interfaces.components.Communication {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config, commSettings: communicationInterfaces.CommSettings ): interfaces.components.Communication => {
+export default ( config: src.Config, commSettings: communicationInterfaces.CommSettings ): src.components.Communication => {
   return new BasicCommunication( {
     webSocket: socketIoFactory( {
       emitEvent: config.eventManager.emit,

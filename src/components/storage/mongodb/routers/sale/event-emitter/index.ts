@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as sales from "../../../../../../interfaces/components/storage/routers/sale/events";
-import * as saleInterfaces from "../../../../../../interfaces/components/storage/routers/sale";
-import * as saleManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as sales from "../../../../../../src/components/storage/routers/sale/events";
+import * as saleInterfaces from "../../../../../../src/components/storage/routers/sale";
+import * as saleManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class SaleEmitter implements saleInterfaces.Emitter {
+class SaleEvents implements saleInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class SaleEmitter implements saleInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitSale: saleManagerInterfaces.Emit ): saleInterfaces.Emitter => {
-  return new SaleEmitter( emitSale );
+export default ( emitSale: saleManagerInterfaces.Emit ): saleInterfaces.Events => {
+  return new SaleEvents( emitSale );
 }
 
 /******************************************************************************/

@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageAirtimeTransferFactory from "../../../../../src/components/storage/mongodb/airtime-transfer/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { AirtimeTransferModel, AirtimeTransferMongooseModel } from "../../../../../src/components/storage/mongodb/airtime-transfer/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "AirtimeTransfer UPDATE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: AirtimeTransferModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageAirtimeTransfer: interfaces.components.storage.StorageAirtimeTransfer;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageAirtimeTransfer: src.components.storage.StorageAirtimeTransfer;
 
   /************************************************************/
 
@@ -105,10 +105,10 @@ describe( "AirtimeTransfer UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.Updated;
+        let emittedEvent: src.events.components.storage.airtimeTransfer.Updated;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.Updated ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.airtimeTransfer.Updated ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -162,10 +162,10 @@ describe( "AirtimeTransfer UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.UpdateFailed;
+        let emittedEvent: src.events.components.storage.airtimeTransfer.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.airtimeTransfer.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

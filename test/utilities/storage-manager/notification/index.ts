@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as src from "../../../../src/index";
 
 /******************************************************************************/
 
-export interface Emitter {
+export interface Events {
 
   got : ( params : any ) => any;
   getFailed : ( params : any ) => any;
@@ -29,7 +29,7 @@ export interface Emitter {
 
 export interface Get {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.notification.FiltrationCriteria , sortCriteria : interfaces.dataModel.getParams.notification.SortCriteria , limit : number ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.notification.FiltrationCriteria , sortCriteria : dataModel.getParams.notification.SortCriteria , limit : number ) : Promise<any>;
 
 }
 
@@ -46,8 +46,8 @@ export interface GetById {
 export interface AddBatchParams {
 
   userId : string;
-  app : interfaces.AppName;
-  type : interfaces.dataModel.NotificationType;
+  app : src.AppName;
+  type : dataModel.NotificationType;
   label : string;
 
 }
@@ -60,7 +60,7 @@ export interface AddBatch {
 
 export interface Add {
 
-  ( userId : string , app : interfaces.AppName , type : interfaces.dataModel.NotificationType , label : string ) : Promise<any>;
+  ( userId : string , app : src.AppName , type : dataModel.NotificationType , label : string ) : Promise<any>;
 
 }
 
@@ -68,7 +68,7 @@ export interface Add {
 
 export interface Update {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.notification.FiltrationCriteria , details : any ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.notification.FiltrationCriteria , details : any ) : Promise<any>;
 
 }
 
@@ -82,7 +82,7 @@ export interface UpdateById {
 
 export interface Remove {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.notification.FiltrationCriteria ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.notification.FiltrationCriteria ) : Promise<any>;
 
 }
 

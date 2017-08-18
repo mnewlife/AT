@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCartProductFactory from "../../../../../src/components/storage/mongodb/cart-product/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CartProductModel, CartProductMongooseModel } from "../../../../../src/components/storage/mongodb/cart-product/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "CartProduct REMOVE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CartProductModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageCartProduct: interfaces.components.storage.StorageCartProduct;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageCartProduct: src.components.storage.StorageCartProduct;
 
   /************************************************************/
 
@@ -103,10 +103,10 @@ describe( "CartProduct REMOVE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cartProduct.Removed;
+        let emittedEvent: src.events.components.storage.cartProduct.Removed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.Removed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cartProduct.Removed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -155,10 +155,10 @@ describe( "CartProduct REMOVE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cartProduct.RemoveFailed;
+        let emittedEvent: src.events.components.storage.cartProduct.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cartProduct.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

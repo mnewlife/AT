@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as express from "express";
-import * as interfaces from "../../interfaces";
+import * as src from "../../src";
 
 import developerRoutes from "./developer";
 import adminRoutes from "./admin";
@@ -9,7 +9,7 @@ import consumerRoutes from "./consumer";
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): any => {
+export default ( config: src.Config ): any => {
 
   let router = express.Router();
 

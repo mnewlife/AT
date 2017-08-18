@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, CardMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.powertel.card.Emitter;
+  protected readonly events: storageInterfaces.powertel.card.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.powertel.card.Emitter;
+    events: storageInterfaces.powertel.card.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.powertel.card.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.card.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.powertel.card.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.card.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
         return this.convertToAbstract( foundCards );
 
       } )
-      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
+      .then(( convertedCards: dataModel.powertel.card.Super[] ) => {
 
-        new Promise<interfaces.dataModel.powertel.card.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.powertel.card.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  readonly getById = ( cardId: string, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super> => {
+  readonly getById = ( cardId: string, forceThrow = false ): Promise<dataModel.powertel.card.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
         return this.convertToAbstract( [ foundCard ] );
 
       } )
-      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
+      .then(( convertedCards: dataModel.powertel.card.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: cardId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: cardId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  readonly addBatch = ( cards: storageInterfaces.powertel.card.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
+  readonly addBatch = ( cards: storageInterfaces.powertel.card.AddDetails[], forceThrow = false ): Promise<dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -200,10 +200,10 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
         return this.convertToAbstract( addedCards );
 
       } )
-      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
+      .then(( convertedCards: dataModel.powertel.card.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedCards
           } );
           resolve();
@@ -215,7 +215,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: cards,
             reason: reason
           } );
@@ -235,7 +235,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.powertel.card.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super> => {
+  readonly add = ( details: storageInterfaces.powertel.card.AddDetails, forceThrow = false ): Promise<dataModel.powertel.card.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -267,10 +267,10 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
         return this.convertToAbstract( [ addedCard ] );
 
       } )
-      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
+      .then(( convertedCards: dataModel.powertel.card.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedCards
           } );
           resolve();
@@ -282,7 +282,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -302,7 +302,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.powertel.card.FiltrationCriteria, details: storageInterfaces.powertel.card.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.powertel.card.FiltrationCriteria, details: storageInterfaces.powertel.card.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -341,10 +341,10 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
         return this.convertToAbstract( updatedCards );
 
       } )
-      .then(( updatedCards: interfaces.dataModel.powertel.card.Super[] ) => {
+      .then(( updatedCards: dataModel.powertel.card.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedCards
           } );
@@ -357,7 +357,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -378,7 +378,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  readonly updateById = ( cardId: string, details: storageInterfaces.powertel.card.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super> => {
+  readonly updateById = ( cardId: string, details: storageInterfaces.powertel.card.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.card.Super> => {
 
     let cardObjectId: mongoose.Types.ObjectId;
 
@@ -411,10 +411,10 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
         return this.convertToAbstract( [ updatedCard ] );
 
       } )
-      .then(( convertedCards: interfaces.dataModel.powertel.card.Super[] ) => {
+      .then(( convertedCards: dataModel.powertel.card.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: cardId,
             documents: convertedCards
           } );
@@ -427,7 +427,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: cardId,
             updates: details,
             reason: reason
@@ -464,7 +464,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -476,7 +476,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -509,7 +509,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: cardId
           } );
           resolve();
@@ -521,7 +521,7 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: cardId,
             reason: reason
           } );
@@ -652,18 +652,18 @@ class MongoCard extends MongoController implements storageInterfaces.powertel.Ca
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( cards: Model[], forceThrow = false ): Promise<interfaces.dataModel.powertel.card.Super[]> => {
+  private readonly convertToAbstract = ( cards: Model[], forceThrow = false ): Promise<dataModel.powertel.card.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.powertel.card.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.powertel.card.Super[]>(( resolve, reject ) => {
 
-          let returnCards: interfaces.dataModel.powertel.card.Super[] = [];
+          let returnCards: dataModel.powertel.card.Super[] = [];
 
           cards.forEach(( card ) => {
 
-            let returnCard: interfaces.dataModel.powertel.card.Super = {
+            let returnCard: dataModel.powertel.card.Super = {
               id: ( <mongoose.Types.ObjectId>card._id ).toHexString(),
               pin: card.pin,
               puk: card.puk,
@@ -727,12 +727,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.powertel.Card => {
   return new MongoCard( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: CardMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

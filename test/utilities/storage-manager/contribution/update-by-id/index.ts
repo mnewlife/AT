@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageContributionFactory from "../../../../../src/components/storage/mongodb/contribution/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ContributionModel, ContributionMongooseModel } from "../../../../../src/components/storage/mongodb/contribution/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Contribution UPDATE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ContributionModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageContribution: interfaces.components.storage.StorageContribution;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageContribution: src.components.storage.StorageContribution;
 
   /************************************************************/
 
@@ -103,10 +103,10 @@ describe( "Contribution UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.contribution.Updated;
+        let emittedEvent: src.events.components.storage.contribution.Updated;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.contribution.Updated ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.contribution.Updated ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -160,10 +160,10 @@ describe( "Contribution UPDATE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.contribution.UpdateFailed;
+        let emittedEvent: src.events.components.storage.contribution.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.contribution.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.contribution.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

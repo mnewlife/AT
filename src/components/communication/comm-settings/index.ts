@@ -1,10 +1,10 @@
 /**********************************************************************/
 
-import * as interfaces from "../../../interfaces";
+import * as src from "../../../src";
 
 /**********************************************************************/
 
-let commSettings: interfaces.components.communication.CommSettings = {
+let commSettings: src.components.communication.CommSettings = {
   mailSendingAddress: "allthings263@gmail.com",
   mailSendingAddressPassword: "gmaigrandl"
 };

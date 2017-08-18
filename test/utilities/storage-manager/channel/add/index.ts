@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageChannelFactory from "../../../../../src/components/storage/mongodb/channel/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ChannelModel } from "../../../../../src/components/storage/mongodb/channel/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Channel ADD" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageChannel : interfaces.components.storage.StorageChannel;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageChannel : src.components.storage.StorageChannel;
 
   /************************************************************/
 
@@ -92,14 +92,14 @@ describe( "Channel ADD" , function () : void {
       phoneNumber : "8611386565" ,
       password : "fghj678"
     } )
-      .then( ( channel : interfaces.dataModel.Channel ) => {
+      .then( ( channel : dataModel.Channel ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.channel.Added;
+        let emittedEvent : src.events.components.storage.channel.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.channel.Added ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.channel.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -148,10 +148,10 @@ describe( "Channel ADD" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.channel.AddFailed;
+        let emittedEvent : src.events.components.storage.channel.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.channel.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.channel.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

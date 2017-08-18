@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageContributionFactory from "../../../../../src/components/storage/mongodb/contribution/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ContributionModel } from "../../../../../src/components/storage/mongodb/contribution/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Contribution ADD-BATCH" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageContribution : interfaces.components.storage.StorageContribution;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageContribution : src.components.storage.StorageContribution;
 
   /************************************************************/
 
@@ -148,7 +148,7 @@ describe( "Contribution ADD-BATCH" , function () : void {
 
         expect( emitEventSpy ).to.satisfy( ( emitEventSpy : sinon.SinonSpy ) => {
 
-          let emittedEvent : interfaces.events.components.storage.contribution.Added;
+          let emittedEvent : src.events.components.storage.contribution.Added;
 
           for ( let i = 0; i < 3 ; i++ ) {
 
@@ -203,10 +203,10 @@ describe( "Contribution ADD-BATCH" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.contribution.AddFailed;
+        let emittedEvent : src.events.components.storage.contribution.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.contribution.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.contribution.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

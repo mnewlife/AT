@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as events from "../../../../../../interfaces/components/storage/call-263/airtime-payment/events";
-import * as airtimePaymentInterfaces from "../../../../../../interfaces/components/storage/call-263/airtime-payment";
-import * as eventManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as events from "../../../../../../src/components/storage/call-263/airtime-payment/events";
+import * as airtimePaymentInterfaces from "../../../../../../src/components/storage/call-263/airtime-payment";
+import * as eventManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AirtimePaymentEmitter implements airtimePaymentInterfaces.Emitter {
+class AirtimePaymentEvents implements airtimePaymentInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class AirtimePaymentEmitter implements airtimePaymentInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): airtimePaymentInterfaces.Emitter => {
-  return new AirtimePaymentEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): airtimePaymentInterfaces.Events => {
+  return new AirtimePaymentEvents( emitEvent );
 }
 
 /******************************************************************************/

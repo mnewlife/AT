@@ -3,8 +3,8 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageInterfaces from "../../../../interfaces/components/storage";
+import * as src from "../../../../src";
+import * as storageInterfaces from "../../../../src/components/storage";
 
 import airtimeFactory from "./airtime";
 import airtimeSaleFactory from "./airtime-sale";
@@ -29,7 +29,7 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class Powertel implements interfaces.components.storage.Powertel {
+class Powertel implements src.components.storage.Powertel {
 
   readonly airtime: storageInterfaces.powertel.Airtime;
   readonly airtimeSale: storageInterfaces.powertel.AirtimeSale;
@@ -65,7 +65,7 @@ class Powertel implements interfaces.components.storage.Powertel {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.components.storage.Powertel => {
+export default ( config: src.Config ): src.components.storage.Powertel => {
 
   let commonParams = ( {
     emitEvent: config.eventManager.emit,

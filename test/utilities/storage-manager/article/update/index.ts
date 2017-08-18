@@ -11,7 +11,7 @@ mongoose.Promise = Promise;
 import storageArticleFactory from "../../../../../src/components/storage/mongodb/article/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ArticleModel, ArticleMongooseModel } from "../../../../../src/components/storage/mongodb/article/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Article UPDATE", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ArticleModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageArticle: interfaces.components.storage.StorageArticle;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageArticle: src.components.storage.StorageArticle;
 
   /************************************************************/
 
@@ -114,7 +114,7 @@ describe( "Article UPDATE", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.components.storage.article.Updated;
+          let emittedEvent: src.events.components.storage.article.Updated;
 
           emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
@@ -170,10 +170,10 @@ describe( "Article UPDATE", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.article.UpdateFailed;
+        let emittedEvent: src.events.components.storage.article.UpdateFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.article.UpdateFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.article.UpdateFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

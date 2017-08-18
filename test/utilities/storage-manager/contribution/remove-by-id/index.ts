@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageContributionFactory from "../../../../../src/components/storage/mongodb/contribution/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ContributionModel, ContributionMongooseModel } from "../../../../../src/components/storage/mongodb/contribution/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Contribution REMOVE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ContributionModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageContribution: interfaces.components.storage.StorageContribution;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageContribution: src.components.storage.StorageContribution;
 
   /************************************************************/
 
@@ -102,10 +102,10 @@ describe( "Contribution REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.contribution.Removed;
+        let emittedEvent: src.events.components.storage.contribution.Removed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.contribution.Removed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.contribution.Removed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -154,10 +154,10 @@ describe( "Contribution REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.contribution.RemoveFailed;
+        let emittedEvent: src.events.components.storage.contribution.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.contribution.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.contribution.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

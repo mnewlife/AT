@@ -4,7 +4,7 @@ import { expect , assert } from "chai";
 import * as sinon from "sinon";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
@@ -110,7 +110,7 @@ describe( "Find In Array" , function() : void {
 
     let cull : any = { different : "Hans" , type : "Zimmer" };
 
-    type FindInArrayFailed = interfaces.events.components.sharedLogic.dataStructures.FindInArrayFailed;
+    type FindInArrayFailed = src.events.components.sharedLogic.dataStructures.FindInArrayFailed;
 
     return dataStructures.findInArray( arr , "Bach" , "content" , true )
       .catch( function ( reason : any ) {

@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storagePriceFactory from "../../../../../src/components/storage/mongodb/price/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { PriceModel } from "../../../../../src/components/storage/mongodb/price/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Price GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: PriceModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storagePrice: interfaces.components.storage.StoragePrice;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storagePrice: src.components.storage.StoragePrice;
 
   /************************************************************/
 
@@ -83,9 +83,9 @@ describe( "Price GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.Price[][] ) => {
+      .then(( results: dataModel.Price[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Price[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Price[][] ) => {
 
           /**********************************************/
 
@@ -96,11 +96,11 @@ describe( "Price GET", function (): void {
 
           /**********************************************/
 
-          let controlGroupAscending: interfaces.dataModel.Price[] = results[ 0 ];
-          let controlGroupDescending: interfaces.dataModel.Price[] = results[ 1 ];
+          let controlGroupAscending: dataModel.Price[] = results[ 0 ];
+          let controlGroupDescending: dataModel.Price[] = results[ 1 ];
 
-          let testGroupAscending: interfaces.dataModel.Price[] = results[ 2 ];
-          let testGroupDescending: interfaces.dataModel.Price[] = results[ 3 ];
+          let testGroupAscending: dataModel.Price[] = results[ 2 ];
+          let testGroupDescending: dataModel.Price[] = results[ 3 ];
 
           /**********************************************/
 
@@ -158,11 +158,11 @@ describe( "Price GET", function (): void {
       priceMin : 10 ,
       priceMax : 100
     }, null, null )
-      .then(( foundPrices: interfaces.dataModel.Price[] ) => {
+      .then(( foundPrices: dataModel.Price[] ) => {
 
-        expect( foundPrices ).to.satisfy(( Prices: interfaces.dataModel.Price[] ) => {
+        expect( foundPrices ).to.satisfy(( Prices: dataModel.Price[] ) => {
 
-          let culprits = Prices.filter(( Price: interfaces.dataModel.Price ) => {
+          let culprits = Prices.filter(( Price: dataModel.Price ) => {
             return ( Price.price < 10 || Price.price > 100 );
           } );
 
@@ -193,14 +193,14 @@ describe( "Price GET", function (): void {
   it( "should emit event upon retrieving Price documents", () => {
 
     return storagePrice.get( null, null, null )
-      .then(( foundPrices: interfaces.dataModel.Price[] ) => {
+      .then(( foundPrices: dataModel.Price[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.price.Got;
+        let emittedEvent: src.events.components.storage.price.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.price.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -266,10 +266,10 @@ describe( "Price GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.price.GetFailed;
+        let emittedEvent: src.events.components.storage.price.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.price.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

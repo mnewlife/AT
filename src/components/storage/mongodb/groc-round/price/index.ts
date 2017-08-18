@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, PriceMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.grocRound.price.Emitter;
+  protected readonly events: storageInterfaces.grocRound.price.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.grocRound.price.Emitter;
+    events: storageInterfaces.grocRound.price.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.grocRound.price.FiltrationCriteria, sortCriteria: storageInterfaces.grocRound.price.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.grocRound.price.FiltrationCriteria, sortCriteria: storageInterfaces.grocRound.price.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
         return this.convertToAbstract( foundPrices );
 
       } )
-      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
+      .then(( convertedPrices: dataModel.grocRound.price.Super[] ) => {
 
-        new Promise<interfaces.dataModel.grocRound.price.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.grocRound.price.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  readonly getById = ( priceId: string, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super> => {
+  readonly getById = ( priceId: string, forceThrow = false ): Promise<dataModel.grocRound.price.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
         return this.convertToAbstract( [ foundPrice ] );
 
       } )
-      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
+      .then(( convertedPrices: dataModel.grocRound.price.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: priceId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: priceId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  readonly addBatch = ( prices: storageInterfaces.grocRound.price.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
+  readonly addBatch = ( prices: storageInterfaces.grocRound.price.AddDetails[], forceThrow = false ): Promise<dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -188,10 +188,10 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
         return this.convertToAbstract( addedPrices );
 
       } )
-      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
+      .then(( convertedPrices: dataModel.grocRound.price.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedPrices
           } );
           resolve();
@@ -203,7 +203,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: prices,
             reason: reason
           } );
@@ -223,7 +223,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.grocRound.price.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super> => {
+  readonly add = ( details: storageInterfaces.grocRound.price.AddDetails, forceThrow = false ): Promise<dataModel.grocRound.price.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -243,10 +243,10 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
         return this.convertToAbstract( [ addedPrice ] );
 
       } )
-      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
+      .then(( convertedPrices: dataModel.grocRound.price.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedPrices
           } );
           resolve();
@@ -258,7 +258,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -278,7 +278,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.grocRound.price.FiltrationCriteria, details: storageInterfaces.grocRound.price.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.grocRound.price.FiltrationCriteria, details: storageInterfaces.grocRound.price.UpdateDetails, forceThrow = false ): Promise<dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -317,10 +317,10 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
         return this.convertToAbstract( updatedPrices );
 
       } )
-      .then(( updatedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
+      .then(( updatedPrices: dataModel.grocRound.price.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedPrices
           } );
@@ -333,7 +333,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -354,7 +354,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  readonly updateById = ( priceId: string, details: storageInterfaces.grocRound.price.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super> => {
+  readonly updateById = ( priceId: string, details: storageInterfaces.grocRound.price.UpdateDetails, forceThrow = false ): Promise<dataModel.grocRound.price.Super> => {
 
     let priceObjectId: mongoose.Types.ObjectId;
 
@@ -387,10 +387,10 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
         return this.convertToAbstract( [ updatedPrice ] );
 
       } )
-      .then(( convertedPrices: interfaces.dataModel.grocRound.price.Super[] ) => {
+      .then(( convertedPrices: dataModel.grocRound.price.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: priceId,
             documents: convertedPrices
           } );
@@ -403,7 +403,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: priceId,
             updates: details,
             reason: reason
@@ -440,7 +440,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -452,7 +452,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -485,7 +485,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: priceId
           } );
           resolve();
@@ -497,7 +497,7 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: priceId,
             reason: reason
           } );
@@ -606,18 +606,18 @@ class MongoPrice extends MongoController implements storageInterfaces.grocRound.
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( prices: Model[], forceThrow = false ): Promise<interfaces.dataModel.grocRound.price.Super[]> => {
+  private readonly convertToAbstract = ( prices: Model[], forceThrow = false ): Promise<dataModel.grocRound.price.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.grocRound.price.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.grocRound.price.Super[]>(( resolve, reject ) => {
 
-          let returnPrices: interfaces.dataModel.grocRound.price.Super[] = [];
+          let returnPrices: dataModel.grocRound.price.Super[] = [];
 
           prices.forEach(( price ) => {
 
-            let returnPrice: interfaces.dataModel.grocRound.price.Super = {
+            let returnPrice: dataModel.grocRound.price.Super = {
               id: ( <mongoose.Types.ObjectId>price._id ).toHexString(),
               productId: ( price.productId as mongoose.Types.ObjectId ).toHexString(),
               shopId: ( price.shopId as mongoose.Types.ObjectId ).toHexString(),
@@ -656,12 +656,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.grocRound.Price => {
   return new MongoPrice( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: PriceMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

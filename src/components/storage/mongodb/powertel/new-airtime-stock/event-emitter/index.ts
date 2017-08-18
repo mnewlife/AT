@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as newAirtimeStocks from "../../../../../../interfaces/components/storage/powertel/new-airtime-stock/events";
-import * as newAirtimeStockInterfaces from "../../../../../../interfaces/components/storage/powertel/new-airtime-stock";
-import * as newAirtimeStockManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as newAirtimeStocks from "../../../../../../src/components/storage/powertel/new-airtime-stock/events";
+import * as newAirtimeStockInterfaces from "../../../../../../src/components/storage/powertel/new-airtime-stock";
+import * as newAirtimeStockManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class NewAirtimeStockEmitter implements newAirtimeStockInterfaces.Emitter {
+class NewAirtimeStockEvents implements newAirtimeStockInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class NewAirtimeStockEmitter implements newAirtimeStockInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitNewAirtimeStock: newAirtimeStockManagerInterfaces.Emit ): newAirtimeStockInterfaces.Emitter => {
-  return new NewAirtimeStockEmitter( emitNewAirtimeStock );
+export default ( emitNewAirtimeStock: newAirtimeStockManagerInterfaces.Emit ): newAirtimeStockInterfaces.Events => {
+  return new NewAirtimeStockEvents( emitNewAirtimeStock );
 }
 
 /******************************************************************************/

@@ -3,15 +3,15 @@
 import * as Promise from "bluebird";
 import * as bCrypt from "bcrypt-nodejs";
 
-import * as interfaces from "../../../../../../../src/interfaces/index";
+import * as src from "../../../../../../../src/src/index";
 
 /******************************************************************************/
 
-export default () : interfaces.dataModel.core.user[] => {
+export default () : dataModel.core.user[] => {
 
-  let adminAccessLevel : interfaces.datModel.core.AccessLevel = "admin";
-  let developerAccessLevel : interfaces.datModel.core.AccessLevel = "developer";
-  let consumerAccessLevel : interfaces.datModel.core.AccessLevel = "consumer";
+  let adminAccessLevel : dataModel.core.user.AccessLevel = "admin";
+  let developerAccessLevel : dataModel.core.user.AccessLevel = "developer";
+  let consumerAccessLevel : dataModel.core.user.AccessLevel = "consumer";
 
   return [
 

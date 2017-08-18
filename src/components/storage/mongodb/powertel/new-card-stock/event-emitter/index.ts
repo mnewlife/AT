@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as newCardStocks from "../../../../../../interfaces/components/storage/powertel/new-card-stock/events";
-import * as newCardStockInterfaces from "../../../../../../interfaces/components/storage/powertel/new-card-stock";
-import * as newCardStockManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as newCardStocks from "../../../../../../src/components/storage/powertel/new-card-stock/events";
+import * as newCardStockInterfaces from "../../../../../../src/components/storage/powertel/new-card-stock";
+import * as newCardStockManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class NewCardStockEmitter implements newCardStockInterfaces.Emitter {
+class NewCardStockEvents implements newCardStockInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class NewCardStockEmitter implements newCardStockInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitNewCardStock: newCardStockManagerInterfaces.Emit ): newCardStockInterfaces.Emitter => {
-  return new NewCardStockEmitter( emitNewCardStock );
+export default ( emitNewCardStock: newCardStockManagerInterfaces.Emit ): newCardStockInterfaces.Events => {
+  return new NewCardStockEvents( emitNewCardStock );
 }
 
 /******************************************************************************/

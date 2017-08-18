@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as newRouterStocks from "../../../../../../interfaces/components/storage/routers/new-router-stock/events";
-import * as newRouterStockInterfaces from "../../../../../../interfaces/components/storage/routers/new-router-stock";
-import * as newRouterStockManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as newRouterStocks from "../../../../../../src/components/storage/routers/new-router-stock/events";
+import * as newRouterStockInterfaces from "../../../../../../src/components/storage/routers/new-router-stock";
+import * as newRouterStockManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class NewRouterStockEmitter implements newRouterStockInterfaces.Emitter {
+class NewRouterStockEvents implements newRouterStockInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class NewRouterStockEmitter implements newRouterStockInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitNewRouterStock: newRouterStockManagerInterfaces.Emit ): newRouterStockInterfaces.Emitter => {
-  return new NewRouterStockEmitter( emitNewRouterStock );
+export default ( emitNewRouterStock: newRouterStockManagerInterfaces.Emit ): newRouterStockInterfaces.Events => {
+  return new NewRouterStockEvents( emitNewRouterStock );
 }
 
 /******************************************************************************/

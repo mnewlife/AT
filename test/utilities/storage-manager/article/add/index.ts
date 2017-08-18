@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageArticleFactory from "../../../../../src/components/storage/mongodb/article/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ArticleModel } from "../../../../../src/components/storage/mongodb/article/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Article ADD" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageArticle : interfaces.components.storage.StorageArticle;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageArticle : src.components.storage.StorageArticle;
 
   /************************************************************/
 
@@ -118,14 +118,14 @@ describe( "Article ADD" , function () : void {
     let content = "Content goes here";
 
     return storageArticle.add( userId , title , images , tags , content )
-      .then( ( article : interfaces.dataModel.Article ) => {
+      .then( ( article : dataModel.Article ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.article.Added;
+        let emittedEvent : src.events.components.storage.article.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.article.Added ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.article.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -174,10 +174,10 @@ describe( "Article ADD" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.article.AddFailed;
+        let emittedEvent : src.events.components.storage.article.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.article.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.article.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

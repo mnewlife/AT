@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, SaleMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.routers.sale.Emitter;
+  protected readonly events: storageInterfaces.routers.sale.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.routers.sale.Emitter;
+    events: storageInterfaces.routers.sale.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.routers.sale.FiltrationCriteria, sortCriteria: storageInterfaces.routers.sale.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.routers.sale.FiltrationCriteria, sortCriteria: storageInterfaces.routers.sale.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.routers.sale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
         return this.convertToAbstract( foundSales );
 
       } )
-      .then(( convertedSales: interfaces.dataModel.routers.sale.Super[] ) => {
+      .then(( convertedSales: dataModel.routers.sale.Super[] ) => {
 
-        new Promise<interfaces.dataModel.routers.sale.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.routers.sale.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  readonly getById = ( saleId: string, forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super> => {
+  readonly getById = ( saleId: string, forceThrow = false ): Promise<dataModel.routers.sale.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
         return this.convertToAbstract( [ foundSale ] );
 
       } )
-      .then(( convertedSales: interfaces.dataModel.routers.sale.Super[] ) => {
+      .then(( convertedSales: dataModel.routers.sale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: saleId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: saleId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  readonly addBatch = ( sales: storageInterfaces.routers.sale.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super[]> => {
+  readonly addBatch = ( sales: storageInterfaces.routers.sale.AddDetails[], forceThrow = false ): Promise<dataModel.routers.sale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -200,10 +200,10 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
         return this.convertToAbstract( addedSales );
 
       } )
-      .then(( convertedSales: interfaces.dataModel.routers.sale.Super[] ) => {
+      .then(( convertedSales: dataModel.routers.sale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedSales
           } );
           resolve();
@@ -215,7 +215,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: sales,
             reason: reason
           } );
@@ -235,7 +235,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.routers.sale.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super> => {
+  readonly add = ( details: storageInterfaces.routers.sale.AddDetails, forceThrow = false ): Promise<dataModel.routers.sale.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -267,10 +267,10 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
         return this.convertToAbstract( [ addedSale ] );
 
       } )
-      .then(( convertedSales: interfaces.dataModel.routers.sale.Super[] ) => {
+      .then(( convertedSales: dataModel.routers.sale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedSales
           } );
           resolve();
@@ -282,7 +282,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -302,7 +302,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.routers.sale.FiltrationCriteria, details: storageInterfaces.routers.sale.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.routers.sale.FiltrationCriteria, details: storageInterfaces.routers.sale.UpdateDetails, forceThrow = false ): Promise<dataModel.routers.sale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -341,10 +341,10 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
         return this.convertToAbstract( updatedSales );
 
       } )
-      .then(( updatedSales: interfaces.dataModel.routers.sale.Super[] ) => {
+      .then(( updatedSales: dataModel.routers.sale.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedSales
           } );
@@ -357,7 +357,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -378,7 +378,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  readonly updateById = ( saleId: string, details: storageInterfaces.routers.sale.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super> => {
+  readonly updateById = ( saleId: string, details: storageInterfaces.routers.sale.UpdateDetails, forceThrow = false ): Promise<dataModel.routers.sale.Super> => {
 
     let saleObjectId: mongoose.Types.ObjectId;
 
@@ -411,10 +411,10 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
         return this.convertToAbstract( [ updatedSale ] );
 
       } )
-      .then(( convertedSales: interfaces.dataModel.routers.sale.Super[] ) => {
+      .then(( convertedSales: dataModel.routers.sale.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: saleId,
             documents: convertedSales
           } );
@@ -427,7 +427,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: saleId,
             updates: details,
             reason: reason
@@ -464,7 +464,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -476,7 +476,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -509,7 +509,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: saleId
           } );
           resolve();
@@ -521,7 +521,7 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: saleId,
             reason: reason
           } );
@@ -686,18 +686,18 @@ class MongoSale extends MongoController implements storageInterfaces.routers.Sal
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( sales: Model[], forceThrow = false ): Promise<interfaces.dataModel.routers.sale.Super[]> => {
+  private readonly convertToAbstract = ( sales: Model[], forceThrow = false ): Promise<dataModel.routers.sale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.routers.sale.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.routers.sale.Super[]>(( resolve, reject ) => {
 
-          let returnSales: interfaces.dataModel.routers.sale.Super[] = [];
+          let returnSales: dataModel.routers.sale.Super[] = [];
 
           sales.forEach(( sale ) => {
 
-            let returnSale: interfaces.dataModel.routers.sale.Super = {
+            let returnSale: dataModel.routers.sale.Super = {
               id: ( <mongoose.Types.ObjectId>sale._id ).toHexString(),
               buyer: {
                 id: ( sale.buyer._id as mongoose.Types.ObjectId ).toHexString(),
@@ -763,12 +763,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.routers.Sale => {
   return new MongoSale( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: SaleMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCartProductFactory from "../../../../../src/components/storage/mongodb/cart-product/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CartProductModel } from "../../../../../src/components/storage/mongodb/cart-product/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "CartProduct ADD-BATCH" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageCartProduct : interfaces.components.storage.StorageCartProduct;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageCartProduct : src.components.storage.StorageCartProduct;
 
   /************************************************************/
 
@@ -154,7 +154,7 @@ describe( "CartProduct ADD-BATCH" , function () : void {
 
         expect( emitEventSpy ).to.satisfy( ( emitEventSpy : sinon.SinonSpy ) => {
 
-          let emittedEvent : interfaces.events.components.storage.cartProduct.Added;
+          let emittedEvent : src.events.components.storage.cartProduct.Added;
 
           for ( let i = 0; i < 3 ; i++ ) {
 
@@ -209,10 +209,10 @@ describe( "CartProduct ADD-BATCH" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.cartProduct.AddFailed;
+        let emittedEvent : src.events.components.storage.cartProduct.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.cartProduct.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.cartProduct.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

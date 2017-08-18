@@ -1,12 +1,12 @@
 /******************************************************************************/
 
-import * as responseInterfaces from "../../../../interfaces/components/response";
-import * as eventManagerInterfaces from "../../../../interfaces/setup-config/event-manager";
-import * as events from "../../../../interfaces/components/response/events";
+import * as responseInterfaces from "../../../../src/components/response";
+import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
+import * as events from "../../../../src/components/response/events";
 
 /******************************************************************************/
 
-class ResponseEmitter implements responseInterfaces.Emitter {
+class ResponseEvents implements responseInterfaces.Events {
 
   /*****************************************************************/
 
@@ -70,8 +70,8 @@ class ResponseEmitter implements responseInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): responseInterfaces.Emitter => {
-  return new ResponseEmitter( emitEvent );
+export default ( emitEvent: eventManagerInterfaces.Emit ): responseInterfaces.Events => {
+  return new ResponseEvents( emitEvent );
 }
 
 /******************************************************************************/

@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as src from "../../../../src/index";
 
 /******************************************************************************/
 
-export interface Emitter {
+export interface Events {
 
   got : ( params : any ) => any;
   getFailed : ( params : any ) => any;
@@ -29,7 +29,7 @@ export interface Emitter {
 
 export interface Get {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.product.FiltrationCriteria , sortCriteria : interfaces.dataModel.getParams.product.SortCriteria , limit : number ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.product.FiltrationCriteria , sortCriteria : dataModel.getParams.product.SortCriteria , limit : number ) : Promise<any>;
 
 }
 
@@ -46,8 +46,8 @@ export interface GetById {
 export interface AddBatchParams {
 
   userId : string;
-  subject : interfaces.dataModel.ProgressionSubject;
-  timeMeasure : interfaces.dataModel.ProgressionTimeMeasure;
+  subject : dataModel.ProgressionSubject;
+  timeMeasure : dataModel.ProgressionTimeMeasure;
 
 }
 
@@ -59,7 +59,7 @@ export interface AddBatch {
 
 export interface Add {
 
-  ( userId : string , subject : interfaces.dataModel.ProgressionSubject , timeMeasure : interfaces.dataModel.ProgressionTimeMeasure ) : Promise<any>;
+  ( userId : string , subject : dataModel.ProgressionSubject , timeMeasure : dataModel.ProgressionTimeMeasure ) : Promise<any>;
 
 }
 
@@ -67,7 +67,7 @@ export interface Add {
 
 export interface Update {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.product.FiltrationCriteria , details : any ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.product.FiltrationCriteria , details : any ) : Promise<any>;
 
 }
 
@@ -81,7 +81,7 @@ export interface UpdateById {
 
 export interface Remove {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.product.FiltrationCriteria ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.product.FiltrationCriteria ) : Promise<any>;
 
 }
 

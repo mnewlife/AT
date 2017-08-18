@@ -2,7 +2,7 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../src/interfaces/index";
+import * as src from "../../../../../../src/src/index";
 
 import { ShopMongooseModel } from "../../../../../../src/components/storage/mongodb/shop/model/index";
 

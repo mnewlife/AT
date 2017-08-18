@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as users from "../../../../../../interfaces/components/storage/call-263/airtime-transfer/events";
-import * as userInterfaces from "../../../../../../interfaces/components/storage/call-263/airtime-transfer";
-import * as userManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as users from "../../../../../../src/components/storage/call-263/airtime-transfer/events";
+import * as userInterfaces from "../../../../../../src/components/storage/call-263/airtime-transfer";
+import * as userManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AirtimeTransferEmitter implements userInterfaces.Emitter {
+class AirtimeTransferEvents implements userInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class AirtimeTransferEmitter implements userInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitAirtimeTransfer: userManagerInterfaces.Emit ): userInterfaces.Emitter => {
-  return new AirtimeTransferEmitter( emitAirtimeTransfer );
+export default ( emitAirtimeTransfer: userManagerInterfaces.Emit ): userInterfaces.Events => {
+  return new AirtimeTransferEvents( emitAirtimeTransfer );
 }
 
 /******************************************************************************/

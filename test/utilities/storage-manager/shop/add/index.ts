@@ -11,7 +11,7 @@ mongoose.Promise = Promise;
 import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ShopModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Shop ADD" , function () : void {
   let sandbox : sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy : sinon.SinonSpy;
 
-  let dataStructures : interfaces.components.sharedLogic.DataStructures;
-  let storageShop : interfaces.components.storage.StorageShop;
+  let dataStructures : src.components.sharedLogic.DataStructures;
+  let storageShop : src.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -76,14 +76,14 @@ describe( "Shop ADD" , function () : void {
   it( "should emit event upon adding new shop document" , () => {
 
     return storageShop.add( "Bhadhella" , [] )
-      .then( ( shop : interfaces.dataModel.Shop ) => {
+      .then( ( shop : dataModel.Shop ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.shop.Added;
+        let emittedEvent : src.events.components.storage.shop.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.shop.Added ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.shop.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -132,10 +132,10 @@ describe( "Shop ADD" , function () : void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent : interfaces.events.components.storage.shop.AddFailed;
+        let emittedEvent : src.events.components.storage.shop.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy( ( happening : interfaces.events.components.storage.shop.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy( ( happening : src.events.components.storage.shop.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

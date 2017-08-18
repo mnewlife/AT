@@ -4,7 +4,7 @@ import { expect } from "chai";
 import * as sinon from "sinon";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 

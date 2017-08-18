@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as interfaces from "../../../../../../interfaces";
+import * as src from "../../../../../../src";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";

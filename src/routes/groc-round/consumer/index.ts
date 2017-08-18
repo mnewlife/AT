@@ -1,11 +1,11 @@
 /******************************************************************************/
 
 import * as express from "express";
-import * as interfaces from "../../../interfaces";
+import * as src from "../../../src";
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): express.Router => {
+export default ( config: src.Config ): express.Router => {
 
   let router = express.Router();
   router.use( authCheck );

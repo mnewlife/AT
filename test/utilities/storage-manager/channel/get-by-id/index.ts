@@ -11,7 +11,7 @@ import storageChannelFactory from "../../../../../src/components/storage/mongodb
 
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ChannelModel } from "../../../../../src/components/storage/mongodb/channel/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Channel GET-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ChannelModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageChannel: interfaces.components.storage.StorageChannel;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageChannel: src.components.storage.StorageChannel;
 
   /************************************************************/
 
@@ -107,10 +107,10 @@ describe( "Channel GET-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.channel.GotById;
+        let emittedEvent: src.events.components.storage.channel.GotById;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.GotById ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.channel.GotById ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -159,10 +159,10 @@ describe( "Channel GET-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.channel.GetByIdFailed;
+        let emittedEvent: src.events.components.storage.channel.GetByIdFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.GetByIdFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.channel.GetByIdFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

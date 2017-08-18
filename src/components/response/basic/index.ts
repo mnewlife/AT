@@ -2,25 +2,25 @@
 
 import * as express from "express";
 
-import * as interfaces from "../../../interfaces";
-import * as responseInterfaces from "../../../interfaces/components/response";
-import * as modersInterfaces from "../../../interfaces/components/shared-logic/moders";
-import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
+import * as src from "../../../src";
+import * as responseInterfaces from "../../../src/components/response";
+import * as modersInterfaces from "../../../src/components/shared-logic/moders";
+import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
-class BasicResponse implements interfaces.components.Response {
+class BasicResponse implements src.components.Response {
 
-  private readonly emitter: interfaces.components.response.Emitter;
+  private readonly events: src.components.response.Events;
 
   middleware: express.RequestHandler[] = [];
 
   /*****************************************************************/
 
-  constructor( params: { emitter: interfaces.components.response.Emitter } ) {
-    this.emitter = params.emitter;
+  constructor( params: { events: src.components.response.Events } ) {
+    this.events = params.events;
   }
 
   /*****************************************************************/
@@ -46,7 +46,7 @@ class BasicResponse implements interfaces.components.Response {
             payload: ( payload ) ? payload : ""
           } );
         } catch ( exception ) {
-          this.emitter.stringifyHtmlPacketFailed( {
+          this.events.stringifyHtmlPacketFailed( {
             packet: {
               success: ( success ) ? success : false,
               message: ( message ) ? message : "",
@@ -62,7 +62,7 @@ class BasicResponse implements interfaces.components.Response {
       },
 
       "default": () => {
-        this.emitter.unacceptableResponseType( {
+        this.events.unacceptableResponseType( {
           res: res,
           packet: {
             view: view,
@@ -84,9 +84,9 @@ class BasicResponse implements interfaces.components.Response {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): interfaces.components.Response => {
+export default ( emitEvent: eventManagerInterfaces.Emit ): src.components.Response => {
   return new BasicResponse( {
-    emitter: emitterFactory( emitEvent )
+    events: eventsFactory( emitEvent )
   } );
 }
 

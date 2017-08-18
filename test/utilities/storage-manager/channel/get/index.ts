@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageChannelFactory from "../../../../../src/components/storage/mongodb/channel/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ChannelModel } from "../../../../../src/components/storage/mongodb/channel/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Channel GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ChannelModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageChannel: interfaces.components.storage.StorageChannel;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageChannel: src.components.storage.StorageChannel;
 
   /************************************************************/
 
@@ -74,9 +74,9 @@ describe( "Channel GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+      .then(( results: dataModel.AirtimeTransfer[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.AirtimeTransfer[][] ) => {
 
           /**********************************************/
 
@@ -141,9 +141,9 @@ describe( "Channel GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.Channel[][] ) => {
+      .then(( results: dataModel.Channel[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Channel[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Channel[][] ) => {
 
           /**********************************************/
 
@@ -166,7 +166,7 @@ describe( "Channel GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( channel: interfaces.dataModel.Channel ) => {
+          let culprits = results[ 0 ].filter(( channel: dataModel.Channel ) => {
             return ( channel.allocated );
           } );
 
@@ -177,7 +177,7 @@ describe( "Channel GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( channel: interfaces.dataModel.Channel ) => {
+          culprits = results[ 1 ].filter(( channel: dataModel.Channel ) => {
             return ( !channel.allocated );
           } );
 
@@ -211,14 +211,14 @@ describe( "Channel GET", function (): void {
   it( "should emit event upon retrieving channel documents", () => {
 
     return storageChannel.get( null, null, null )
-      .then(( foundChannels: interfaces.dataModel.Channel[] ) => {
+      .then(( foundChannels: dataModel.Channel[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.channel.Got;
+        let emittedEvent: src.events.components.storage.channel.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.channel.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -284,10 +284,10 @@ describe( "Channel GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.channel.GetFailed;
+        let emittedEvent: src.events.components.storage.channel.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.channel.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.channel.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

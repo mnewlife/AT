@@ -8,11 +8,13 @@ import * as favicon from "serve-favicon";
 import * as compression from "compression";
 import * as bodyParser from "body-parser";
 
-import * as interfaces from "./interfaces";
-import config from "./setup-config";
+import environment from "./environment";
+import eventListener from "./event-listener";
 import componentsFactory from "./components";
-import tasksFactory from "./tasks";
+import proceduresFactory from "./procedures";
 import routes from "./routes";
+
+import * as dataModel from "./data-model";
 
 /******************************************************************************/
 
@@ -21,9 +23,10 @@ const server = http.createServer( app );
 
 /******************************************************************************/
 
-const components: interfaces.Components = componentsFactory( config );
-const tasks: interfaces.Tasks = tasksFactory( config );
-config.registerReferences( tasks, tasks, server );
+let components: src.Components = componentsFactory;
+let procedures: src.Procedures = proceduresFactory( components );
+
+config.registerReferences( procedures, procedures, server );
 
 /******************************************************************************/
 
@@ -35,7 +38,7 @@ app.locals.basedir = __dirname + "/public";
 
 /*************************************************/
 
-let mware: interfaces.components.sharedLogic.AppMiddleware = {
+let mware: src.components.sharedLogic.AppMiddleware = {
 
   helmet: [ helmet() ],
   favicon: [ favicon( path.join( __dirname, "/public/favicon.ico" ) ) ],
@@ -52,9 +55,9 @@ for ( let utility in components ) {
   }
 }
 
-for ( var component in tasks ) {
-  if ( tasks.hasOwnProperty( component ) ) {
-    components.sharedLogic.middleware.retrieveMwareLists( mware, component, tasks[ component ] );
+for ( var component in procedures ) {
+  if ( procedures.hasOwnProperty( component ) ) {
+    components.sharedLogic.middleware.retrieveMwareLists( mware, component, procedures[ component ] );
   }
 }
 

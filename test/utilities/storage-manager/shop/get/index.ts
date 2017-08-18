@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageShopFactory from "../../../../../src/components/storage/mongodb/shop/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ShopModel } from "../../../../../src/components/storage/mongodb/shop/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Shop GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ShopModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageShop: interfaces.components.storage.StorageShop;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageShop: src.components.storage.StorageShop;
 
   /************************************************************/
 
@@ -83,9 +83,9 @@ describe( "Shop GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.Shop[][] ) => {
+      .then(( results: dataModel.Shop[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Shop[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Shop[][] ) => {
 
           /**********************************************/
 
@@ -96,11 +96,11 @@ describe( "Shop GET", function (): void {
 
           /**********************************************/
 
-          let controlGroupAscending: interfaces.dataModel.Shop[] = results[ 0 ];
-          let controlGroupDescending: interfaces.dataModel.Shop[] = results[ 1 ];
+          let controlGroupAscending: dataModel.Shop[] = results[ 0 ];
+          let controlGroupDescending: dataModel.Shop[] = results[ 1 ];
 
-          let testGroupAscending: interfaces.dataModel.Shop[] = results[ 2 ];
-          let testGroupDescending: interfaces.dataModel.Shop[] = results[ 3 ];
+          let testGroupAscending: dataModel.Shop[] = results[ 2 ];
+          let testGroupDescending: dataModel.Shop[] = results[ 3 ];
 
           /**********************************************/
 
@@ -158,11 +158,11 @@ describe( "Shop GET", function (): void {
       numProductsMin: 5,
       numProductsMax: 30
     }, null, null )
-      .then(( foundShops: interfaces.dataModel.Shop[] ) => {
+      .then(( foundShops: dataModel.Shop[] ) => {
 
-        expect( foundShops ).to.satisfy(( Shops: interfaces.dataModel.Shop[] ) => {
+        expect( foundShops ).to.satisfy(( Shops: dataModel.Shop[] ) => {
 
-          let culprits = Shops.filter(( Shop: interfaces.dataModel.Shop ) => {
+          let culprits = Shops.filter(( Shop: dataModel.Shop ) => {
             return ( Shop.numProducts < 5 || Shop.numProducts > 30 );
           } );
 
@@ -193,14 +193,14 @@ describe( "Shop GET", function (): void {
   it( "should emit event upon retrieving Shop documents", () => {
 
     return storageShop.get( null, null, null )
-      .then(( foundShops: interfaces.dataModel.Shop[] ) => {
+      .then(( foundShops: dataModel.Shop[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.shop.Got;
+        let emittedEvent: src.events.components.storage.shop.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.shop.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -266,10 +266,10 @@ describe( "Shop GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.shop.GetFailed;
+        let emittedEvent: src.events.components.storage.shop.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.shop.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.shop.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

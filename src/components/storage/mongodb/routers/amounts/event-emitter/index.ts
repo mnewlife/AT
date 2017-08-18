@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as amountss from "../../../../../../interfaces/components/storage/routers/amounts/events";
-import * as amountsInterfaces from "../../../../../../interfaces/components/storage/routers/amounts";
-import * as amountsManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as amountss from "../../../../../../src/components/storage/routers/amounts/events";
+import * as amountsInterfaces from "../../../../../../src/components/storage/routers/amounts";
+import * as amountsManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class AmountsEmitter implements amountsInterfaces.Emitter {
+class AmountsEvents implements amountsInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class AmountsEmitter implements amountsInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitAmounts: amountsManagerInterfaces.Emit ): amountsInterfaces.Emitter => {
-  return new AmountsEmitter( emitAmounts );
+export default ( emitAmounts: amountsManagerInterfaces.Emit ): amountsInterfaces.Events => {
+  return new AmountsEvents( emitAmounts );
 }
 
 /******************************************************************************/

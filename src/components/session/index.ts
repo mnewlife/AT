@@ -1,15 +1,15 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces";
+import * as src from "../../src";
 import basicSessionFactory from "./basic";
 
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   production: boolean;
-  checkThrow: interfaces.components.sharedLogic.moders.CheckThrow;
-} ): interfaces.components.Session => {
+  checkThrow: src.components.sharedLogic.moders.CheckThrow;
+} ): src.components.Session => {
   return basicSessionFactory( {
     emitEvent: params.emitEvent,
     production: params.production,

@@ -4,11 +4,11 @@ import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 import * as bCrypt from "bcrypt-nodejs";
 
-import * as interfaces from "../../../../../../../src/interfaces/index";
+import * as src from "../../../../../../../src/src/index";
 
 /******************************************************************************/
 
-export default () : interfaces.dataModel.Price[] => {
+export default () : dataModel.Price[] => {
 
   return [
 

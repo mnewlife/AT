@@ -5,7 +5,7 @@ import * as sinon from "sinon";
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 
 import middlewareFactory from "../../../../../src/components/shared-logic/basic/middleware/index";
 
@@ -19,7 +19,7 @@ describe( "Retrieve Middleware Lists" , function() : void {
 
     let middleware = middlewareFactory();
 
-    let mware : interfaces.components.sharedLogic.AppMiddleware = {
+    let mware : src.components.sharedLogic.AppMiddleware = {
       one : [
         function ( req : express.Request , res : express.Response , next : express.NextFunction ) {
           console.log( "Bach" );
@@ -27,7 +27,7 @@ describe( "Retrieve Middleware Lists" , function() : void {
       ]
     };
 
-    let middlewareModule : interfaces.components.MiddlewareBorn = {
+    let middlewareModule : src.components.MiddlewareBorn = {
       middleware : [
         function ( req : express.Request , res : express.Response , next : express.NextFunction ) {
           console.log( "Bach" );
@@ -37,7 +37,7 @@ describe( "Retrieve Middleware Lists" , function() : void {
 
     middleware.retrieveMwareLists( mware , "example" , middlewareModule );
 
-    let expectedResults : interfaces.components.sharedLogic.AppMiddleware = {
+    let expectedResults : src.components.sharedLogic.AppMiddleware = {
       one : [
         function ( req : express.Request , res : express.Response , next : express.NextFunction ) {
           console.log( "Bach" );
@@ -59,11 +59,11 @@ describe( "Retrieve Middleware Lists" , function() : void {
 
     let middleware = middlewareFactory();
 
-    let mware : interfaces.components.sharedLogic.AppMiddleware = {
+    let mware : src.components.sharedLogic.AppMiddleware = {
       one : [ function ( req : express.Request , res : express.Response , next : express.NextFunction ) {} ]
     };
 
-    let middlewareModule : interfaces.components.MiddlewareBorn = {
+    let middlewareModule : src.components.MiddlewareBorn = {
       middleware : []
     };
 

@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as cardSales from "../../../../../../interfaces/components/storage/powertel/card-sale/events";
-import * as cardSaleInterfaces from "../../../../../../interfaces/components/storage/powertel/card-sale";
-import * as cardSaleManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as cardSales from "../../../../../../src/components/storage/powertel/card-sale/events";
+import * as cardSaleInterfaces from "../../../../../../src/components/storage/powertel/card-sale";
+import * as cardSaleManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class CardSaleEmitter implements cardSaleInterfaces.Emitter {
+class CardSaleEvents implements cardSaleInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class CardSaleEmitter implements cardSaleInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitCardSale: cardSaleManagerInterfaces.Emit ): cardSaleInterfaces.Emitter => {
-  return new CardSaleEmitter( emitCardSale );
+export default ( emitCardSale: cardSaleManagerInterfaces.Emit ): cardSaleInterfaces.Events => {
+  return new CardSaleEvents( emitCardSale );
 }
 
 /******************************************************************************/

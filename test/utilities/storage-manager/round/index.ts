@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as src from "../../../../src/index";
 
 /******************************************************************************/
 
-export interface Emitter {
+export interface Events {
 
   got : ( params : any ) => any;
   getFailed : ( params : any ) => any;
@@ -29,7 +29,7 @@ export interface Emitter {
 
 export interface Get {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.round.FiltrationCriteria , sortCriteria : interfaces.dataModel.getParams.round.SortCriteria , limit : number ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.round.FiltrationCriteria , sortCriteria : dataModel.getParams.round.SortCriteria , limit : number ) : Promise<any>;
 
 }
 
@@ -46,7 +46,7 @@ export interface GetById {
 export interface AddBatchParams {
 
   roundName : string;
-  duration : interfaces.dataModel.RoundDuration;
+  duration : dataModel.RoundDuration;
   deliveryFee? : number;
 
 }
@@ -59,7 +59,7 @@ export interface AddBatch {
 
 export interface Add {
 
-  ( roundName : string , duration : interfaces.dataModel.RoundDuration , deliveryFee? : number ) : Promise<any>;
+  ( roundName : string , duration : dataModel.RoundDuration , deliveryFee? : number ) : Promise<any>;
 
 }
 
@@ -67,7 +67,7 @@ export interface Add {
 
 export interface Update {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.round.FiltrationCriteria , details : any ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.round.FiltrationCriteria , details : any ) : Promise<any>;
 
 }
 
@@ -81,7 +81,7 @@ export interface UpdateById {
 
 export interface Remove {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.round.FiltrationCriteria ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.round.FiltrationCriteria ) : Promise<any>;
 
 }
 

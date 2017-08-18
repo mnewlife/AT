@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageProductFactory from "../../../../../src/components/storage/mongodb/product/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ProductModel, ProductMongooseModel } from "../../../../../src/components/storage/mongodb/product/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Product REMOVE-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ProductModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageProduct: interfaces.components.storage.StorageProduct;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageProduct: src.components.storage.StorageProduct;
 
   /************************************************************/
 
@@ -104,10 +104,10 @@ describe( "Product REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.product.Removed;
+        let emittedEvent: src.events.components.storage.product.Removed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.product.Removed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.product.Removed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -156,10 +156,10 @@ describe( "Product REMOVE-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.product.RemoveFailed;
+        let emittedEvent: src.events.components.storage.product.RemoveFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.product.RemoveFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.product.RemoveFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

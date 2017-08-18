@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as channels from "../../../../../../interfaces/components/storage/call-263/channel/events";
-import * as channelInterfaces from "../../../../../../interfaces/components/storage/call-263/channel";
-import * as channelManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as channels from "../../../../../../src/components/storage/call-263/channel/events";
+import * as channelInterfaces from "../../../../../../src/components/storage/call-263/channel";
+import * as channelManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class ChannelEmitter implements channelInterfaces.Emitter {
+class ChannelEvents implements channelInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class ChannelEmitter implements channelInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitChannel: channelManagerInterfaces.Emit ): channelInterfaces.Emitter => {
-  return new ChannelEmitter( emitChannel );
+export default ( emitChannel: channelManagerInterfaces.Emit ): channelInterfaces.Events => {
+  return new ChannelEvents( emitChannel );
 }
 
 /******************************************************************************/

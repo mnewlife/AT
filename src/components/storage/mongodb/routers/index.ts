@@ -3,8 +3,8 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as interfaces from "../../../../interfaces";
-import * as storageInterfaces from "../../../../interfaces/components/storage";
+import * as src from "../../../../src";
+import * as storageInterfaces from "../../../../src/components/storage";
 
 import amountsFactory from "./amounts";
 import newRouterStockFactory from "./new-router-stock";
@@ -26,7 +26,7 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class Routers implements interfaces.components.storage.Routers {
+class Routers implements src.components.storage.Routers {
 
   readonly amounts: storageInterfaces.routers.Amounts;
   readonly newRouterStock: storageInterfaces.routers.NewRouterStock;
@@ -52,7 +52,7 @@ class Routers implements interfaces.components.storage.Routers {
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.components.storage.Routers => {
+export default ( config: src.Config ): src.components.storage.Routers => {
 
   let commonParams = ( {
     emitEvent: config.eventManager.emit,

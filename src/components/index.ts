@@ -1,13 +1,15 @@
 /******************************************************************************/
 
-import * as interfaces from "../interfaces";
+import * as IEventListener from "../event-listener/interfaces";
 
-import sharedLogicFactory from "./shared-logic";
-import sessionFactory from "./session";
-import storageFactory from "./storage";
-import authenticationFactory from "./authentication";
-import communicationFactory from "./communication";
-import responseFactory from "./response";
+import * as interfaces from "./interfaces";
+
+import authentication from "./authentication";
+import communication from "./communication";
+import storage from "./storage";
+import session from "./session";
+import response from "./response";
+import helpers from "./helpers";
 
 /******************************************************************************/
 
@@ -16,39 +18,30 @@ class Components implements interfaces.Components {
   [ index: string ]: Components[ keyof Components ];
 
   constructor(
-    readonly sharedLogic: interfaces.components.SharedLogic,
-    readonly session: interfaces.components.Session,
-    readonly storage: interfaces.components.Storage,
-    readonly authentication: interfaces.components.Authentication,
-    readonly communication: interfaces.components.Communication,
-    readonly response: interfaces.components.Response
+    readonly helpers: interfaces.Helpers,
+    readonly session: interfaces.Session,
+    readonly storage: interfaces.Storage,
+    readonly authentication: interfaces.Authentication,
+    readonly communication: interfaces.Communication,
+    readonly response: interfaces.Response
   ) { }
 
 }
 
 /******************************************************************************/
 
-export default ( config: interfaces.Config ): interfaces.Components => {
+export default ( emitEvent: IEventListener.Emit, production: boolean ): interfaces.Components => {
+
+  let helpersInstance = helpers( emitEvent );
+  let storageInstance = storage( emitEvent );
+  let sessionInstance = session( emitEvent, production, helpersInstance.moders.checkThrow );
+  let authenticationInstance = authentication( emitEvent );
+  let communicationInstance = communication( emitEvent );
+  let responseInstance = response( emitEvent );
 
   return new Components(
-    sharedLogicFactory( config.eventManager.emit ),
-    sessionFactory( {
-      emitEvent: config.eventManager.emit,
-      production: config.environment.production,
-      checkThrow: config.components.sharedLogic.moders.checkThrow
-    } ),
-    storageFactory( config ),
-    authenticationFactory( {
-      emit: config.eventManager.emit,
-      getUserFromStorage: config.components.storage.core.user.get,
-      getUserByIdFromStorage: config.components.storage.core.user.getById,
-      setCurrentUserInSession: config.components.session.setCurrentUser,
-      getCurrentUserFromSession: config.components.session.getCurrentUser,
-      signOutOfSession: config.components.session.signOut,
-      checkThrow: config.components.sharedLogic.moders.checkThrow
-    } ),
-    communicationFactory( config ),
-    responseFactory( config.eventManager.emit )
+    helpersInstance, storageInstance, sessionInstance, 
+    authenticationInstance, communicationInstance, responseInstance
   );
 
 };

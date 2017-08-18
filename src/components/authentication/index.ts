@@ -1,14 +1,13 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces";
-import * as eventManagerInterfaces from "../../interfaces/setup-config/event-manager";
+import * as src from "../../src";
+import * as eventManagerInterfaces from "../../src/setup-config/event-manager";
 
-import * as authenticationInterfaces from "../../interfaces/components/authentication";
-import * as storageInterfaces from "../../interfaces/components/storage";
-import * as sessionInterfaces from "../../interfaces/components/session";
-import * as sharedLogicInterfaces from "../../interfaces/components/shared-logic";
+import * as authenticationInterfaces from "../../src/components/authentication";
+import * as storageInterfaces from "../../src/components/storage";
+import * as sessionInterfaces from "../../src/components/session";
 
-import basicAuthenticationFactory from "./basic";
+import canonAuthenticationFactory from "./canon";
 
 /******************************************************************************/
 
@@ -24,8 +23,8 @@ export default (
   signOutOfSession: sessionInterfaces.SignOut,
   checkThrow: sharedLogicInterfaces.moders.CheckThrow
 
-): interfaces.components.Authentication => {
-  return basicAuthenticationFactory( params );
+): src.components.Authentication => {
+  return canonAuthenticationFactory( params );
 }
 
 /******************************************************************************/

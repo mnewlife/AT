@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCallFactory from "../../../../../src/components/storage/mongodb/call/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CallModel } from "../../../../../src/components/storage/mongodb/call/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Call GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CallModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageCall: interfaces.components.storage.StorageCall;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageCall: src.components.storage.StorageCall;
 
   /************************************************************/
 
@@ -74,9 +74,9 @@ describe( "Call GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.Call[][] ) => {
+      .then(( results: dataModel.Call[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Call[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Call[][] ) => {
 
           /**********************************************/
 
@@ -143,7 +143,7 @@ describe( "Call GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.Call[][] ) => {
+      .then(( results: dataModel.Call[][] ) => {
 
         expect( results ).to.satisfy(( results: CallModel[][] ) => {
 
@@ -168,7 +168,7 @@ describe( "Call GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( call: interfaces.dataModel.Call ) => {
+          let culprits = results[ 0 ].filter(( call: dataModel.Call ) => {
             return ( String( call.channelId ) !== String( testInstances[ 0 ].channelId ) );
           } );
 
@@ -179,7 +179,7 @@ describe( "Call GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( call: interfaces.dataModel.Call ) => {
+          culprits = results[ 1 ].filter(( call: dataModel.Call ) => {
             return ( String( call.channelId ) !== String( testInstances[ 1 ].channelId ) );
           } );
 
@@ -213,14 +213,14 @@ describe( "Call GET", function (): void {
   it( "should emit event upon retrieving call documents", () => {
 
     return storageCall.get( null, null, null )
-      .then(( foundCalls: interfaces.dataModel.Call[] ) => {
+      .then(( foundCalls: dataModel.Call[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.call.Got;
+        let emittedEvent: src.events.components.storage.call.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.call.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.call.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -286,10 +286,10 @@ describe( "Call GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.call.GetFailed;
+        let emittedEvent: src.events.components.storage.call.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.call.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.call.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

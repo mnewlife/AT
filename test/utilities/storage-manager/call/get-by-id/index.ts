@@ -11,7 +11,7 @@ import storageCallFactory from "../../../../../src/components/storage/mongodb/ca
 
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CallModel } from "../../../../../src/components/storage/mongodb/call/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "Call GET-BY-ID", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CallModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageCall: interfaces.components.storage.StorageCall;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageCall: src.components.storage.StorageCall;
 
   /************************************************************/
 
@@ -114,10 +114,10 @@ describe( "Call GET-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.call.GotById;
+        let emittedEvent: src.events.components.storage.call.GotById;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.call.GotById ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.call.GotById ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -166,10 +166,10 @@ describe( "Call GET-BY-ID", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.call.GetByIdFailed;
+        let emittedEvent: src.events.components.storage.call.GetByIdFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.call.GetByIdFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.call.GetByIdFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

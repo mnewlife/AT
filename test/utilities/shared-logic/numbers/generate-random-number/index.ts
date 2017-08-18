@@ -4,7 +4,7 @@ import { expect , assert } from "chai";
 import * as sinon from "sinon";
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 
 import numbersFactory from "../../../../../src/components/shared-logic/basic/numbers/index";
 

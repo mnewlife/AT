@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageAirtimeTransferFactory from "../../../../../src/components/storage/mongodb/airtime-transfer/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { AirtimeTransferModel } from "../../../../../src/components/storage/mongodb/airtime-transfer/model/index";
 
 require( "../../connect-database" );
@@ -29,8 +29,8 @@ describe( "AirtimeTransfer ADD", function (): void {
   let sandbox: sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy: sinon.SinonSpy;
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageAirtimeTransfer: interfaces.components.storage.StorageAirtimeTransfer;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageAirtimeTransfer: src.components.storage.StorageAirtimeTransfer;
 
   /************************************************************/
 
@@ -57,7 +57,7 @@ describe( "AirtimeTransfer ADD", function (): void {
     let userId = mongoose.Types.ObjectId();
     let channelId = mongoose.Types.ObjectId();
     let paymentId = mongoose.Types.ObjectId();
-    let transferDetails: interfaces.dataModel.TransferDetails = {
+    let transferDetails: dataModel.TransferDetails = {
       identifier: "4567gh5",
       amount: 13
     };
@@ -102,20 +102,20 @@ describe( "AirtimeTransfer ADD", function (): void {
     let userId = mongoose.Types.ObjectId();
     let channelId = mongoose.Types.ObjectId();
     let paymentId = mongoose.Types.ObjectId();
-    let transferDetails: interfaces.dataModel.TransferDetails = {
+    let transferDetails: dataModel.TransferDetails = {
       identifier: "4567gh5",
       amount: 13
     };
 
     return storageAirtimeTransfer.add( userId, channelId, paymentId, transferDetails, false )
-      .then(( airtimeTransfer: interfaces.dataModel.AirtimeTransfer ) => {
+      .then(( airtimeTransfer: dataModel.AirtimeTransfer ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.Added;
+        let emittedEvent: src.events.components.storage.airtimeTransfer.Added;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.Added ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.airtimeTransfer.Added ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -164,10 +164,10 @@ describe( "AirtimeTransfer ADD", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.airtimeTransfer.AddFailed;
+        let emittedEvent: src.events.components.storage.airtimeTransfer.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.airtimeTransfer.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.airtimeTransfer.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -213,7 +213,7 @@ describe( "AirtimeTransfer ADD", function (): void {
     let userId = mongoose.Types.ObjectId();
     let channelId = mongoose.Types.ObjectId();
     let paymentId = mongoose.Types.ObjectId();
-    let transferDetails: interfaces.dataModel.TransferDetails = {
+    let transferDetails: dataModel.TransferDetails = {
       identifier: "4567gh5",
       amount: 13
     };

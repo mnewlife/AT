@@ -1,11 +1,11 @@
 /******************************************************************************/
 
-import * as interfaces from "../../interfaces";
+import * as src from "../../src";
 import basicResponseFactory from "./basic";
 
 /******************************************************************************/
 
-export default ( emit: interfaces.setupConfig.eventManager.Emit ): interfaces.components.Response => {
+export default ( emit: src.setupConfig.eventManager.Emit ): src.components.Response => {
   return basicResponseFactory( emit );
 }
 

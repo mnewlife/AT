@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, AirtimeSaleMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.powertel.airtimeSale.Emitter;
+  protected readonly events: storageInterfaces.powertel.airtimeSale.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.powertel.airtimeSale.Emitter;
+    events: storageInterfaces.powertel.airtimeSale.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.powertel.airtimeSale.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.airtimeSale.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.powertel.airtimeSale.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.airtimeSale.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
         return this.convertToAbstract( foundAirtimeSales );
 
       } )
-      .then(( convertedAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] ) => {
+      .then(( convertedAirtimeSales: dataModel.powertel.airtimeSale.Super[] ) => {
 
-        new Promise<interfaces.dataModel.powertel.airtimeSale.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.powertel.airtimeSale.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  readonly getById = ( airtimeSaleId: string, forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super> => {
+  readonly getById = ( airtimeSaleId: string, forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
         return this.convertToAbstract( [ foundAirtimeSale ] );
 
       } )
-      .then(( convertedAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] ) => {
+      .then(( convertedAirtimeSales: dataModel.powertel.airtimeSale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: airtimeSaleId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: airtimeSaleId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  readonly addBatch = ( airtimeSales: storageInterfaces.powertel.airtimeSale.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]> => {
+  readonly addBatch = ( airtimeSales: storageInterfaces.powertel.airtimeSale.AddDetails[], forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -205,10 +205,10 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
         return this.convertToAbstract( addedAirtimeSales );
 
       } )
-      .then(( convertedAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] ) => {
+      .then(( convertedAirtimeSales: dataModel.powertel.airtimeSale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAirtimeSales
           } );
           resolve();
@@ -220,7 +220,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: airtimeSales,
             reason: reason
           } );
@@ -240,7 +240,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.powertel.airtimeSale.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super> => {
+  readonly add = ( details: storageInterfaces.powertel.airtimeSale.AddDetails, forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -277,10 +277,10 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
         return this.convertToAbstract( [ addedAirtimeSale ] );
 
       } )
-      .then(( convertedAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] ) => {
+      .then(( convertedAirtimeSales: dataModel.powertel.airtimeSale.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAirtimeSales
           } );
           resolve();
@@ -292,7 +292,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -312,7 +312,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.powertel.airtimeSale.FiltrationCriteria, details: storageInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.powertel.airtimeSale.FiltrationCriteria, details: storageInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -351,10 +351,10 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
         return this.convertToAbstract( updatedAirtimeSales );
 
       } )
-      .then(( updatedAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] ) => {
+      .then(( updatedAirtimeSales: dataModel.powertel.airtimeSale.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedAirtimeSales
           } );
@@ -367,7 +367,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -388,7 +388,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  readonly updateById = ( airtimeSaleId: string, details: storageInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super> => {
+  readonly updateById = ( airtimeSaleId: string, details: storageInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super> => {
 
     let airtimeSaleObjectId: mongoose.Types.ObjectId;
 
@@ -421,10 +421,10 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
         return this.convertToAbstract( [ updatedAirtimeSale ] );
 
       } )
-      .then(( convertedAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] ) => {
+      .then(( convertedAirtimeSales: dataModel.powertel.airtimeSale.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: airtimeSaleId,
             documents: convertedAirtimeSales
           } );
@@ -437,7 +437,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: airtimeSaleId,
             updates: details,
             reason: reason
@@ -474,7 +474,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -486,7 +486,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -519,7 +519,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: airtimeSaleId
           } );
           resolve();
@@ -531,7 +531,7 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: airtimeSaleId,
             reason: reason
           } );
@@ -695,18 +695,18 @@ class MongoAirtimeSale extends MongoController implements storageInterfaces.powe
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( airtimeSales: Model[], forceThrow = false ): Promise<interfaces.dataModel.powertel.airtimeSale.Super[]> => {
+  private readonly convertToAbstract = ( airtimeSales: Model[], forceThrow = false ): Promise<dataModel.powertel.airtimeSale.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.powertel.airtimeSale.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.powertel.airtimeSale.Super[]>(( resolve, reject ) => {
 
-          let returnAirtimeSales: interfaces.dataModel.powertel.airtimeSale.Super[] = [];
+          let returnAirtimeSales: dataModel.powertel.airtimeSale.Super[] = [];
 
           airtimeSales.forEach(( airtimeSale ) => {
 
-            let returnAirtimeSale: interfaces.dataModel.powertel.airtimeSale.Super = {
+            let returnAirtimeSale: dataModel.powertel.airtimeSale.Super = {
               id: ( <mongoose.Types.ObjectId>airtimeSale._id ).toHexString(),
               buyerName: airtimeSale.buyerName,
               amount: airtimeSale.amount,
@@ -777,12 +777,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.powertel.AirtimeSale => {
   return new MongoAirtimeSale( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: AirtimeSaleMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

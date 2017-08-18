@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageCartProductFactory from "../../../../../src/components/storage/mongodb/cart-product/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { CartProductModel } from "../../../../../src/components/storage/mongodb/cart-product/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "CartProduct GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: CartProductModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageCartProduct: interfaces.components.storage.StorageCartProduct;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageCartProduct: src.components.storage.StorageCartProduct;
 
   /************************************************************/
 
@@ -81,9 +81,9 @@ describe( "CartProduct GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.CartProduct[][] ) => {
+      .then(( results: dataModel.CartProduct[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.CartProduct[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.CartProduct[][] ) => {
 
           /**********************************************/
 
@@ -94,11 +94,11 @@ describe( "CartProduct GET", function (): void {
 
           /**********************************************/
 
-          let controlGroupAscending: interfaces.dataModel.CartProduct[] = results[ 0 ];
-          let controlGroupDescending: interfaces.dataModel.CartProduct[] = results[ 1 ];
+          let controlGroupAscending: dataModel.CartProduct[] = results[ 0 ];
+          let controlGroupDescending: dataModel.CartProduct[] = results[ 1 ];
 
-          let testGroupAscending: interfaces.dataModel.CartProduct[] = results[ 2 ];
-          let testGroupDescending: interfaces.dataModel.CartProduct[] = results[ 3 ];
+          let testGroupAscending: dataModel.CartProduct[] = results[ 2 ];
+          let testGroupDescending: dataModel.CartProduct[] = results[ 3 ];
 
           /**********************************************/
 
@@ -161,9 +161,9 @@ describe( "CartProduct GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.CartProduct[][] ) => {
+      .then(( results: dataModel.CartProduct[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.CartProduct[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.CartProduct[][] ) => {
 
           /**********************************************/
 
@@ -186,7 +186,7 @@ describe( "CartProduct GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( cart: interfaces.dataModel.CartProduct ) => {
+          let culprits = results[ 0 ].filter(( cart: dataModel.CartProduct ) => {
             return ( String( cart.roundId ) !== String( testInstances[ 0 ].roundId ) );
           } );
 
@@ -197,7 +197,7 @@ describe( "CartProduct GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( cart: interfaces.dataModel.CartProduct ) => {
+          culprits = results[ 1 ].filter(( cart: dataModel.CartProduct ) => {
             return ( String( cart.roundId ) !== String( testInstances[ 1 ].roundId ) );
           } );
 
@@ -231,14 +231,14 @@ describe( "CartProduct GET", function (): void {
   it( "should emit event upon retrieving cart documents", () => {
 
     return storageCartProduct.get( null, null, null )
-      .then(( foundCartProducts: interfaces.dataModel.CartProduct[] ) => {
+      .then(( foundCartProducts: dataModel.CartProduct[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cartProduct.Got;
+        let emittedEvent: src.events.components.storage.cartProduct.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cartProduct.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -304,10 +304,10 @@ describe( "CartProduct GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.cartProduct.GetFailed;
+        let emittedEvent: src.events.components.storage.cartProduct.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.cartProduct.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.cartProduct.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

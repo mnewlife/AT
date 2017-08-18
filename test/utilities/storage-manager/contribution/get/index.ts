@@ -10,7 +10,7 @@ mongoose.Promise = Promise;
 import storageContributionFactory from "../../../../../src/components/storage/mongodb/contribution/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { ContributionModel } from "../../../../../src/components/storage/mongodb/contribution/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Contribution GET", function (): void {
   let emitEventSpy: sinon.SinonSpy;
   let testInstances: ContributionModel[] = [];
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storageContribution: interfaces.components.storage.StorageContribution;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storageContribution: src.components.storage.StorageContribution;
 
   /************************************************************/
 
@@ -74,9 +74,9 @@ describe( "Contribution GET", function (): void {
       }, 2 )
 
     ] )
-      .then(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+      .then(( results: dataModel.AirtimeTransfer[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.AirtimeTransfer[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.AirtimeTransfer[][] ) => {
 
           /**********************************************/
 
@@ -141,9 +141,9 @@ describe( "Contribution GET", function (): void {
       }, null, null )
 
     ] )
-      .then(( results: interfaces.dataModel.Contribution[][] ) => {
+      .then(( results: dataModel.Contribution[][] ) => {
 
-        expect( results ).to.satisfy(( results: interfaces.dataModel.Contribution[][] ) => {
+        expect( results ).to.satisfy(( results: dataModel.Contribution[][] ) => {
 
           /**********************************************/
 
@@ -166,7 +166,7 @@ describe( "Contribution GET", function (): void {
 
           /**********************************************/
 
-          let culprits = results[ 0 ].filter(( contribution: interfaces.dataModel.Contribution ) => {
+          let culprits = results[ 0 ].filter(( contribution: dataModel.Contribution ) => {
             return ( contribution.payment.method !== "cash" );
           } );
 
@@ -177,7 +177,7 @@ describe( "Contribution GET", function (): void {
 
           /**********************************************/
 
-          culprits = results[ 1 ].filter(( contribution: interfaces.dataModel.Contribution ) => {
+          culprits = results[ 1 ].filter(( contribution: dataModel.Contribution ) => {
             return ( contribution.payment.method !== "ecocash" );
           } );
 
@@ -211,14 +211,14 @@ describe( "Contribution GET", function (): void {
   it( "should emit event upon retrieving contribution documents", () => {
 
     return storageContribution.get( null, null, null )
-      .then(( foundContributions: interfaces.dataModel.Contribution[] ) => {
+      .then(( foundContributions: dataModel.Contribution[] ) => {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.contribution.Got;
+        let emittedEvent: src.events.components.storage.contribution.Got;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.contribution.Got ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.contribution.Got ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
@@ -284,10 +284,10 @@ describe( "Contribution GET", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.contribution.GetFailed;
+        let emittedEvent: src.events.components.storage.contribution.GetFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.contribution.GetFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.contribution.GetFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );

@@ -2,14 +2,14 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../../../interfaces";
-import * as prices from "../../../../../../interfaces/components/storage/groc-round/price/events";
-import * as priceInterfaces from "../../../../../../interfaces/components/storage/groc-round/price";
-import * as priceManagerInterfaces from "../../../../../../interfaces/setup-config/event-manager";
+import * as src from "../../../../../../src";
+import * as prices from "../../../../../../src/components/storage/groc-round/price/events";
+import * as priceInterfaces from "../../../../../../src/components/storage/groc-round/price";
+import * as priceManagerInterfaces from "../../../../../../src/setup-config/event-manager";
 
 /******************************************************************************/
 
-class PriceEmitter implements priceInterfaces.Emitter {
+class PriceEvents implements priceInterfaces.Events {
 
   /*****************************************************************/
 
@@ -187,8 +187,8 @@ class PriceEmitter implements priceInterfaces.Emitter {
 
 /******************************************************************************/
 
-export default ( emitPrice: priceManagerInterfaces.Emit ): priceInterfaces.Emitter => {
-  return new PriceEmitter( emitPrice );
+export default ( emitPrice: priceManagerInterfaces.Emit ): priceInterfaces.Events => {
+  return new PriceEvents( emitPrice );
 }
 
 /******************************************************************************/

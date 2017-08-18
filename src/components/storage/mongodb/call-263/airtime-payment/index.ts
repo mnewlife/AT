@@ -5,11 +5,11 @@ import * as mongoose from "mongoose";
 import MongoController from "../../mongo-controller";
 import { Model, Model_Partial, AirtimePaymentMongooseModel } from "./model";
 
-import * as interfaces from "../../../../../interfaces";
-import * as storageInterfaces from "../../../../../interfaces/components/storage";
-import * as sharedLogicInterfaces from "../../../../../interfaces/components/shared-logic";
+import * as src from "../../../../../src";
+import * as storageInterfaces from "../../../../../src/components/storage";
+import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
@@ -17,30 +17,30 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  protected readonly emitter: storageInterfaces.call263.airtimePayment.Emitter;
+  protected readonly events: storageInterfaces.call263.airtimePayment.Events;
   protected readonly Model: mongoose.Model<mongoose.Document>;
   protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
 
   /*****************************************************************/
 
   constructor( params: {
-    emitter: storageInterfaces.call263.airtimePayment.Emitter;
+    events: storageInterfaces.call263.airtimePayment.Events;
     Model: mongoose.Model<mongoose.Document>;
     mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
     checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   } ) {
     super( {
-      emitter: params.emitter,
+      events: params.events,
       Model: params.Model,
       mapDetails: params.mapDetails,
       checkThrow: params.checkThrow
     } );
-    this.emitter = params.emitter;
+    this.events = params.events;
   }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: storageInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
+  readonly get = ( filtrationCriteria: storageInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -69,10 +69,10 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
         return this.convertToAbstract( foundAirtimePayments );
 
       } )
-      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
+      .then(( convertedAirtimePayments: dataModel.call263.airtimePayment.Super[] ) => {
 
-        new Promise<interfaces.dataModel.call263.airtimePayment.Super[]>(( resolve, reject ) => {
-          this.emitter.got( {
+        new Promise<dataModel.call263.airtimePayment.Super[]>(( resolve, reject ) => {
+          this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -89,7 +89,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getFailed( {
+          this.events.getFailed( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
@@ -111,7 +111,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  readonly getById = ( airtimePaymentId: string, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+  readonly getById = ( airtimePaymentId: string, forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -124,10 +124,10 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
         return this.convertToAbstract( [ foundAirtimePayment ] );
 
       } )
-      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
+      .then(( convertedAirtimePayments: dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.gotById( {
+          this.events.gotById( {
             id: airtimePaymentId
           } );
         } );
@@ -138,7 +138,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getByIdFailed( {
+          this.events.getByIdFailed( {
             id: airtimePaymentId,
             reason: reason
           } );
@@ -167,7 +167,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  readonly addBatch = ( airtimePayments: storageInterfaces.call263.airtimePayment.AddDetails[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
+  readonly addBatch = ( airtimePayments: storageInterfaces.call263.airtimePayment.AddDetails[], forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -199,10 +199,10 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
         return this.convertToAbstract( addedAirtimePayments );
 
       } )
-      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
+      .then(( convertedAirtimePayments: dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAirtimePayments
           } );
           resolve();
@@ -214,7 +214,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: airtimePayments,
             reason: reason
           } );
@@ -234,7 +234,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  readonly add = ( details: storageInterfaces.call263.airtimePayment.AddDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+  readonly add = ( details: storageInterfaces.call263.airtimePayment.AddDetails, forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -265,10 +265,10 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
         return this.convertToAbstract( [ addedAirtimePayment ] );
 
       } )
-      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
+      .then(( convertedAirtimePayments: dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.added( {
+          this.events.added( {
             documents: convertedAirtimePayments
           } );
           resolve();
@@ -280,7 +280,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.addFailed( {
+          this.events.addFailed( {
             details: [ details ],
             reason: reason
           } );
@@ -300,7 +300,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: storageInterfaces.call263.airtimePayment.FiltrationCriteria, details: storageInterfaces.call263.airtimePayment.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
+  readonly update = ( filtrationCriteria: storageInterfaces.call263.airtimePayment.FiltrationCriteria, details: storageInterfaces.call263.airtimePayment.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -339,10 +339,10 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
         return this.convertToAbstract( updatedAirtimePayments );
 
       } )
-      .then(( updatedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
+      .then(( updatedAirtimePayments: dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             conditions: filtrationCriteria,
             documents: updatedAirtimePayments
           } );
@@ -355,7 +355,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             conditions: filtrationCriteria,
             updates: details,
             reason: reason
@@ -376,7 +376,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  readonly updateById = ( airtimePaymentId: string, details: storageInterfaces.call263.airtimePayment.UpdateDetails, forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super> => {
+  readonly updateById = ( airtimePaymentId: string, details: storageInterfaces.call263.airtimePayment.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super> => {
 
     let airtimePaymentObjectId: mongoose.Types.ObjectId;
 
@@ -409,10 +409,10 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
         return this.convertToAbstract( [ updatedAirtimePayment ] );
 
       } )
-      .then(( convertedAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] ) => {
+      .then(( convertedAirtimePayments: dataModel.call263.airtimePayment.Super[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updated( {
+          this.events.updated( {
             id: airtimePaymentId,
             documents: convertedAirtimePayments
           } );
@@ -425,7 +425,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.updateFailed( {
+          this.events.updateFailed( {
             id: airtimePaymentId,
             updates: details,
             reason: reason
@@ -462,7 +462,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             conditions: filtrationCriteria
           } );
           resolve();
@@ -474,7 +474,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             conditions: filtrationCriteria,
             reason: reason
           } );
@@ -507,7 +507,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .then(( response: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removed( {
+          this.events.removed( {
             id: airtimePaymentId
           } );
           resolve();
@@ -519,7 +519,7 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
       .catch(( reason: any ) => {
 
         new Promise<any>(( resolve, reject ) => {
-          this.emitter.removeFailed( {
+          this.events.removeFailed( {
             id: airtimePaymentId,
             reason: reason
           } );
@@ -647,18 +647,18 @@ class MongoAirtimePayment extends MongoController implements storageInterfaces.c
 
   /*****************************************************************/
 
-  private readonly convertToAbstract = ( airtimePayments: Model[], forceThrow = false ): Promise<interfaces.dataModel.call263.airtimePayment.Super[]> => {
+  private readonly convertToAbstract = ( airtimePayments: Model[], forceThrow = false ): Promise<dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return new Promise<interfaces.dataModel.call263.airtimePayment.Super[]>(( resolve, reject ) => {
+        return new Promise<dataModel.call263.airtimePayment.Super[]>(( resolve, reject ) => {
 
-          let returnAirtimePayments: interfaces.dataModel.call263.airtimePayment.Super[] = [];
+          let returnAirtimePayments: dataModel.call263.airtimePayment.Super[] = [];
 
           airtimePayments.forEach(( airtimePayment ) => {
 
-            let returnAirtimePayment: interfaces.dataModel.call263.airtimePayment.Super = {
+            let returnAirtimePayment: dataModel.call263.airtimePayment.Super = {
               id: ( <mongoose.Types.ObjectId>airtimePayment._id ).toHexString(),
               user: {
                 id: ( airtimePayment.user._id as mongoose.Types.ObjectId ).toHexString(),
@@ -716,12 +716,12 @@ interface QueryConditions {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: interfaces.setupConfig.eventManager.Emit;
+  emitEvent: src.setupConfig.eventManager.Emit;
   mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 } ): storageInterfaces.call263.AirtimePayment => {
   return new MongoAirtimePayment( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     Model: AirtimePaymentMongooseModel,
     mapDetails: params.mapDetails,
     checkThrow: params.checkThrow

@@ -2,11 +2,11 @@
 
 import * as Promise from "bluebird";
 
-import * as interfaces from "../../../../interfaces/index";
+import * as src from "../../../../src/index";
 
 /******************************************************************************/
 
-export interface Emitter {
+export interface Events {
 
   got : ( params : any ) => any;
   getFailed : ( params : any ) => any;
@@ -29,7 +29,7 @@ export interface Emitter {
 
 export interface Get {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.track.FiltrationCriteria , sortCriteria : interfaces.dataModel.getParams.track.SortCriteria , limit : number ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.track.FiltrationCriteria , sortCriteria : dataModel.getParams.track.SortCriteria , limit : number ) : Promise<any>;
 
 }
 
@@ -49,7 +49,7 @@ export interface AddBatchParams {
   trackName : string;
   contributionValue : number;
   adminFeePercentage : number;
-  installmentValues? : interfaces.dataModel.InstallmentValue[];
+  installmentValues? : dataModel.InstallmentValue[];
 
 }
 
@@ -61,7 +61,7 @@ export interface AddBatch {
 
 export interface Add {
 
-  ( roundId : string , trackName : string , contributionValue : number , adminFeePercentage? : number , installmentValues? : interfaces.dataModel.InstallmentValue[] ) : Promise<any>;
+  ( roundId : string , trackName : string , contributionValue : number , adminFeePercentage? : number , installmentValues? : dataModel.InstallmentValue[] ) : Promise<any>;
 
 }
 
@@ -69,7 +69,7 @@ export interface Add {
 
 export interface Update {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.track.FiltrationCriteria , details : any ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.track.FiltrationCriteria , details : any ) : Promise<any>;
 
 }
 
@@ -83,7 +83,7 @@ export interface UpdateById {
 
 export interface Remove {
 
-  ( filtrationCriteria : interfaces.dataModel.getParams.track.FiltrationCriteria ) : Promise<any>;
+  ( filtrationCriteria : dataModel.getParams.track.FiltrationCriteria ) : Promise<any>;
 
 }
 

@@ -4,21 +4,21 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as expressSession from "express-session";
 
-import * as interfaces from "../../../interfaces";
-import * as eventManagerInterfaces from "../../../interfaces/setup-config/event-manager";
-import * as storageInterfaces from "../../../interfaces/components/storage";
-import * as sessionInterfaces from "../../../interfaces/components/session";
-import * as sharedLogicInterfaces from "../../../interfaces/components/shared-logic";
+import * as src from "../../../src";
+import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
+import * as storageInterfaces from "../../../src/components/storage";
+import * as sessionInterfaces from "../../../src/components/session";
+import * as sharedLogicInterfaces from "../../../src/components/shared-logic";
 
-import emitterFactory from "./event-emitter";
+import eventsFactory from "./events";
 
 /******************************************************************************/
 
-class BasicSession implements interfaces.components.Session {
+class BasicSession implements src.components.Session {
 
   middleware: express.RequestHandler[] = [];
 
-  private readonly emitter: sessionInterfaces.Emitter;
+  private readonly events: sessionInterfaces.Events;
   private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
   private readonly getUserById: storageInterfaces.core.user.GetById;
   private readonly production: boolean;
@@ -26,7 +26,7 @@ class BasicSession implements interfaces.components.Session {
   /*****************************************************************/
 
   constructor( params: sessionInterfaces.Params ) {
-    this.emitter = params.emitter;
+    this.events = params.events;
     this.checkThrow = params.checkThrow;
     this.getUserById = params.getUserById;
     let attemptSession = function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
@@ -57,13 +57,13 @@ class BasicSession implements interfaces.components.Session {
 
   /*****************************************************************/
 
-  readonly setCurrentUser = ( user: interfaces.dataModel.core.user.Super, req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly setCurrentUser = ( user: dataModel.core.user.Super, req: express.Request, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
         req.session.userId = user.id;
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.setCurrentUser( {
+          this.events.setCurrentUser( {
             user: user,
             req: req
           } );
@@ -74,7 +74,7 @@ class BasicSession implements interfaces.components.Session {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.setCurrentUserFailed( {
+          this.events.setCurrentUserFailed( {
             user: user,
             req: req,
             reason: reason
@@ -114,7 +114,7 @@ class BasicSession implements interfaces.components.Session {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.signOutFailed( {
+          this.events.signOutFailed( {
             req: req,
             reason: reason
           } );
@@ -132,7 +132,7 @@ class BasicSession implements interfaces.components.Session {
 
   }
 
-  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<interfaces.dataModel.core.user.Super> => {
+  readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -144,7 +144,7 @@ class BasicSession implements interfaces.components.Session {
         } else {
 
           new Promise<void>(( resolve, reject ) => {
-            this.emitter.noCurrentUser( {
+            this.events.noCurrentUser( {
               req: req
             } );
             resolve();
@@ -161,7 +161,7 @@ class BasicSession implements interfaces.components.Session {
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
-          this.emitter.getCurrentUserFailed( {
+          this.events.getCurrentUserFailed( {
             req: req,
             reason: reason
           } );
@@ -199,7 +199,7 @@ export default ( params: {
   production: boolean;
   getUserById: storageInterfaces.core.user.GetById;
   checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): interfaces.components.Session => {
+} ): src.components.Session => {
 
   let middlewareConfiguration: express.RequestHandler = expressSession( {
     name: "AllThings263",
@@ -213,7 +213,7 @@ export default ( params: {
   } );
 
   return new BasicSession( {
-    emitter: emitterFactory( params.emitEvent ),
+    events: eventsFactory( params.emitEvent ),
     production: params.production,
     getUserById: params.getUserById,
     middlewareConfiguration: middlewareConfiguration,

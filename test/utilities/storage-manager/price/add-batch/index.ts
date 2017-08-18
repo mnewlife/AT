@@ -11,7 +11,7 @@ mongoose.Promise = Promise;
 import storagePriceFactory from "../../../../../src/components/storage/mongodb/price/index";
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
-import * as interfaces from "../../../../../src/interfaces/index";
+import * as src from "../../../../../src/src/index";
 import { PriceModel } from "../../../../../src/components/storage/mongodb/price/model/index";
 
 require( "../../connect-database" );
@@ -28,8 +28,8 @@ describe( "Price ADD-BATCH", function (): void {
   let sandbox: sinon.SinonSandbox = sinon.sandbox.create();
   let emitEventSpy: sinon.SinonSpy;
 
-  let dataStructures: interfaces.components.sharedLogic.DataStructures;
-  let storagePrice: interfaces.components.storage.StoragePrice;
+  let dataStructures: src.components.sharedLogic.DataStructures;
+  let storagePrice: src.components.storage.StoragePrice;
 
   /************************************************************/
 
@@ -117,7 +117,7 @@ describe( "Price ADD-BATCH", function (): void {
 
         expect( emitEventSpy ).to.satisfy(( emitEventSpy: sinon.SinonSpy ) => {
 
-          let emittedEvent: interfaces.events.components.storage.price.Added;
+          let emittedEvent: src.events.components.storage.price.Added;
 
           for ( let i = 0; i < 2; i++ ) {
 
@@ -172,10 +172,10 @@ describe( "Price ADD-BATCH", function (): void {
 
         sinon.assert.calledOnce( emitEventSpy );
 
-        let emittedEvent: interfaces.events.components.storage.price.AddFailed;
+        let emittedEvent: src.events.components.storage.price.AddFailed;
         emittedEvent = emitEventSpy.getCall( 0 ).args[ 0 ];
 
-        expect( emittedEvent ).to.satisfy(( happening: interfaces.events.components.storage.price.AddFailed ) => {
+        expect( emittedEvent ).to.satisfy(( happening: src.events.components.storage.price.AddFailed ) => {
 
           if ( !happening ) {
             logger.debug( "<<<<<<<<<<<-- GUILTY!" );
