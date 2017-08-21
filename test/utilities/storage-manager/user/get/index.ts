@@ -8,7 +8,7 @@ let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
 import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
 import aFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
 =======
 import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
@@ -72,7 +72,7 @@ describe( "User GET", function (): void {
 
     let testInstancesCopy = JSON.parse( JSON.stringify( testInstances ) );
 
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -164,7 +164,7 @@ describe( "User GET", function (): void {
 
   it( "should distinguish between verified and unverified users", () => {
 
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -247,7 +247,7 @@ describe( "User GET", function (): void {
 
   it( "should get all users within the specified range of numVerAttempts", () => {
 
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -287,7 +287,7 @@ describe( "User GET", function (): void {
 
   it( "should distinguish users by gender within specified age range", () => {
 
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -337,7 +337,7 @@ describe( "User GET", function (): void {
 
     let testInstancesCopy = JSON.parse( JSON.stringify( testInstances ) );
 
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -417,8 +417,8 @@ describe( "User GET", function (): void {
 
   it( "should emit event upon retrieving user documents", () => {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -492,8 +492,8 @@ describe( "User GET", function (): void {
 
   it( "should emit failed event upon erring", () => {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 
@@ -567,8 +567,8 @@ describe( "User GET", function (): void {
 
   it( "should correctly structure rejection", () => {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+<<<<<<< HEAddDetails
+<<<<<<< HEAddDetails
     let b = aFactory( emitEventSpy );
     let storageUser = storageUserFactory( emitEventSpy , b.mapDetails );
 

@@ -10,19 +10,18 @@ import * as events from "../interfaces/events/generator";
 
 /******************************************************************************/
 
-export default class Events<C extends string, FC,
-  SC extends interfaces.BaseSortCriteria, AD, UD,
-  DMA extends dataModel.ModelArrayRange>
-  implements events.GenerateMethods<C, FC, SC, AD, UD, DMA> {
+export default class Events<Context extends string, FiltrationCriteria,
+  SortCriteria extends interfaces.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel>
+  implements events.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel> {
 
   /*****************************************************************/
 
-  constructor( private readonly emitEvent: eventListener.Emit, private readonly context: C ) { }
+  constructor( private readonly emitEvent: eventListener.Emit, private readonly context: Context ) { }
 
   /*****************************************************************/
 
-  readonly got = ( data: events.GotData<FC, SC> ) => {
-    let event: events.Got<C, FC, SC> = {
+  readonly got = ( data: events.GotData<FiltrationCriteria, SortCriteria> ) => {
+    let event: events.Got<Context, FiltrationCriteria, SortCriteria> = {
       context: this.context,
       tags: [],
       identifier: "Got",
@@ -39,8 +38,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly getFailed = ( data: events.GetFailedData<FC, SC> ) => {
-    let event: events.GetFailed<C, FC, SC> = {
+  readonly getFailed = ( data: events.GetFailedData<FiltrationCriteria, SortCriteria> ) => {
+    let event: events.GetFailed<Context, FiltrationCriteria, SortCriteria> = {
       context: this.context,
       tags: [],
       identifier: "GetFailed",
@@ -58,7 +57,7 @@ export default class Events<C extends string, FC,
   /*****************************************************************/
 
   readonly gotById = ( data: events.GotByIdData ) => {
-    let event: events.GotById<C> = {
+    let event: events.GotById<Context> = {
       context: this.context,
       tags: [],
       identifier: "GotById",
@@ -73,7 +72,7 @@ export default class Events<C extends string, FC,
   /*****************************************************************/
 
   readonly getByIdFailed = ( data: events.GetByIdFailedData ) => {
-    let event: events.GetByIdFailed<C> = {
+    let event: events.GetByIdFailed<Context> = {
       context: this.context,
       tags: [],
       identifier: "GetByIdFailed",
@@ -88,8 +87,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly added = ( data: events.AddedData<DMA> ) => {
-    let event: events.Added<C, DMA> = {
+  readonly added = ( data: events.AddedData<DataModel> ) => {
+    let event: events.Added<Context, DataModel> = {
       context: this.context,
       tags: [],
       identifier: "Added",
@@ -103,8 +102,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly addFailed = ( data: events.AddFailedData<AD> ) => {
-    let event: events.AddFailed<C, AD> = {
+  readonly addFailed = ( data: events.AddFailedData<AddDetails> ) => {
+    let event: events.AddFailed<Context, AddDetails> = {
       context: this.context,
       tags: [],
       identifier: "AddFailed",
@@ -119,8 +118,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly updated = ( data: events.UpdatedData<DMA> ) => {
-    let event: events.Updated<C, DMA> = {
+  readonly updated = ( data: events.UpdatedData<DataModel> ) => {
+    let event: events.Updated<Context, DataModel> = {
       context: this.context,
       tags: [],
       identifier: "Updated",
@@ -136,8 +135,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly updateFailed = ( data: events.UpdateFailedData<FC, UD> ) => {
-    let event: events.UpdateFailed<C, FC, UD> = {
+  readonly updateFailed = ( data: events.UpdateFailedData<FiltrationCriteria, UpdateDetails> ) => {
+    let event: events.UpdateFailed<Context, FiltrationCriteria, UpdateDetails> = {
       context: this.context,
       tags: [],
       identifier: "UpdateFailed",
@@ -154,8 +153,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly removed = ( data: events.RemovedData<FC> ) => {
-    let event: events.Removed<C, FC> = {
+  readonly removed = ( data: events.RemovedData<FiltrationCriteria> ) => {
+    let event: events.Removed<Context, FiltrationCriteria> = {
       context: this.context,
       tags: [],
       identifier: "Removed",
@@ -170,8 +169,8 @@ export default class Events<C extends string, FC,
 
   /*****************************************************************/
 
-  readonly removeFailed = ( data: events.RemoveFailedData<FC> ) => {
-    let event: events.RemoveFailed<C, FC> = {
+  readonly removeFailed = ( data: events.RemoveFailedData<FiltrationCriteria> ) => {
+    let event: events.RemoveFailed<Context, FiltrationCriteria> = {
       context: this.context,
       tags: [],
       identifier: "RemoveFailed",

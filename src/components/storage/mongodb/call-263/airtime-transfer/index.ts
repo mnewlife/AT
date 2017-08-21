@@ -2,675 +2,47 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, AirtimeTransferMongooseModel } from "./model";
 
-import * as src from "../../../../../src";
-import * as storageInterfaces from "../../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
-
-import eventsFactory from "./events";
-
-/******************************************************************************/
-
-class MongoAirtimeTransfer extends MongoController implements storageInterfaces.call263.AirtimeTransfer {
-
-  /*****************************************************************/
-
-  protected readonly events: storageInterfaces.call263.airtimeTransfer.Events;
-  protected readonly Model: mongoose.Model<mongoose.Document>;
-  protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-
-  /*****************************************************************/
-
-  constructor( params: {
-    events: storageInterfaces.call263.airtimeTransfer.Events;
-    Model: mongoose.Model<mongoose.Document>;
-    mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-  } ) {
-    super( {
-      events: params.events,
-      Model: params.Model,
-      mapDetails: params.mapDetails,
-      checkThrow: params.checkThrow
-    } );
-    this.events = params.events;
-  }
-
-  /*****************************************************************/
-
-  readonly get = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } )
-      .then(( conditions: QueryConditions ) => {
-
-        return this.makeSortCriteria( sortCriteria )
-          .then(( sortString: string ) => {
-            return Promise.resolve( {
-              conditions: conditions,
-              sortString: sortString
-            } );
-          } );
-
-      } )
-      .then(( holder: { conditions: QueryConditions, sortString: string } ) => {
-
-        return this.find( holder.conditions, holder.sortString, limit );
-
-      } )
-      .then(( foundAirtimeTransfers: Model[] ) => {
-
-        return this.convertToAbstract( foundAirtimeTransfers );
-
-      } )
-      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
-
-        new Promise<dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
-          this.events.got( {
-            filtrationCriteria: filtrationCriteria,
-            sortCriteria: sortCriteria,
-            limit: limit,
-            ids: convertedAirtimeTransfers.map(( airtimeTransfer ) => {
-              return airtimeTransfer.id;
-            } )
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedAirtimeTransfers );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.getFailed( {
-            filtrationCriteria: filtrationCriteria,
-            sortCriteria: sortCriteria,
-            limit: limit,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "GetFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly getById = ( airtimeTransferId: string, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.findById( mongoose.Types.ObjectId( airtimeTransferId ) );
-
-      } )
-      .then(( foundAirtimeTransfer: Model ) => {
-
-        return this.convertToAbstract( [ foundAirtimeTransfer ] );
-
-      } )
-      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.gotById( {
-            id: airtimeTransferId
-          } );
-        } );
-
-        return Promise.resolve( convertedAirtimeTransfers[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.getByIdFailed( {
-            id: airtimeTransferId,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
-          return Promise.reject( {
-            identifier: "DocumentNotFound",
-            data: {
-              reason: reason
-            }
-          } );
-        } else {
-          return Promise.reject( {
-            identifier: "GetByIdFailed",
-            data: {
-              reason: reason
-            }
-          } );
-        }
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly addBatch = ( airtimeTransfers: storageInterfaces.call263.airtimeTransfer.AddDetails[], forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.saveMultipleDocuments( airtimeTransfers.map(( airtimeTransfer ) => {
-          let airtimeTransferDetails: Model_Partial = {
-            userId: mongoose.Types.ObjectId( airtimeTransfer.userId ),
-            channelId: mongoose.Types.ObjectId( airtimeTransfer.userId ),
-            paymentId: mongoose.Types.ObjectId( airtimeTransfer.userId ),
-            transfer: {
-              identifier: airtimeTransfer.transfer.identifier,
-              amount: airtimeTransfer.transfer.amount,
-              paymentRecorded: airtimeTransfer.transfer.paymentRecorded,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }
-          };
-          return airtimeTransferDetails;
-        } ) );
-
-      } )
-      .then(( addedAirtimeTransfers: Model[] ) => {
-
-        return this.convertToAbstract( addedAirtimeTransfers );
-
-      } )
-      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.added( {
-            documents: convertedAirtimeTransfers
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedAirtimeTransfers );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.addFailed( {
-            details: airtimeTransfers,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "AddBatchFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly add = ( details: storageInterfaces.call263.airtimeTransfer.AddDetails, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        let airtimeTransferDetails: Model_Partial = {
-          userId: mongoose.Types.ObjectId( details.userId ),
-          channelId: mongoose.Types.ObjectId( details.userId ),
-          paymentId: mongoose.Types.ObjectId( details.userId ),
-          transfer: {
-            identifier: details.transfer.identifier,
-            amount: details.transfer.amount,
-            paymentRecorded: details.transfer.paymentRecorded,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        };
-
-        return this.saveDocument( airtimeTransferDetails );
-
-      } )
-      .then(( addedAirtimeTransfer: Model ) => {
-
-        return this.convertToAbstract( [ addedAirtimeTransfer ] );
-
-      } )
-      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.added( {
-            documents: convertedAirtimeTransfers
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedAirtimeTransfers[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.addFailed( {
-            details: [ details ],
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "AddFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly update = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } ).then(( conditions: QueryConditions ) => {
-
-        return this.find( conditions, null, null );
-
-      } )
-      .then(( foundAirtimeTransfers: Model[] ) => {
-
-        return Promise.all( foundAirtimeTransfers.map(( airtimeTransfer ) => {
-
-          return this.generateUpdateDetails( airtimeTransfer, details )
-            .then(( fedAirtimeTransfer: Model ) => {
-
-              return new Promise<Model>(( resolve, reject ) => {
-                fedAirtimeTransfer.save(( err: any ) => {
-                  if ( err ) {
-                    reject( err );
-                  } else {
-                    resolve( fedAirtimeTransfer );
-                  }
-                } );
-              } );
-
-            } );
-
-        } ) );
-
-      } )
-      .then(( updatedAirtimeTransfers: Model[] ) => {
-
-        return this.convertToAbstract( updatedAirtimeTransfers );
-
-      } )
-      .then(( updatedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updated( {
-            conditions: filtrationCriteria,
-            documents: updatedAirtimeTransfers
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( updatedAirtimeTransfers );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updateFailed( {
-            conditions: filtrationCriteria,
-            updates: details,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "UpdateFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly updateById = ( airtimeTransferId: string, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super> => {
-
-    let airtimeTransferObjectId: mongoose.Types.ObjectId;
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.findById( mongoose.Types.ObjectId( airtimeTransferId ) );
-
-      } )
-      .then(( airtimeTransfer: Model ) => {
-
-        return this.generateUpdateDetails( airtimeTransfer, details )
-          .then(( fedAirtimeTransfer: Model ) => {
-
-            return new Promise<Model>(( resolve, reject ) => {
-              fedAirtimeTransfer.save(( err: any ) => {
-                if ( err ) {
-                  reject( err );
-                } else {
-                  resolve( fedAirtimeTransfer );
-                }
-              } );
-            } );
-
-          } );
-
-      } )
-      .then(( updatedAirtimeTransfer: Model ) => {
-
-        return this.convertToAbstract( [ updatedAirtimeTransfer ] );
-
-      } )
-      .then(( convertedAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updated( {
-            id: airtimeTransferId,
-            documents: convertedAirtimeTransfers
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedAirtimeTransfers[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updateFailed( {
-            id: airtimeTransferId,
-            updates: details,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "UpdateFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly remove = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } )
-      .then(( conditions: QueryConditions ) => {
-
-        return this.removeDocuments( conditions );
-
-      } )
-      .then(( response: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removed( {
-            conditions: filtrationCriteria
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removeFailed( {
-            conditions: filtrationCriteria,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "RemoveFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly removeById = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( airtimeTransferId )
-        } );
-
-      } )
-      .then(( response: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removed( {
-            id: airtimeTransferId
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removeFailed( {
-            id: airtimeTransferId,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "RemoveFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly makeConditions = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria ): Promise<QueryConditions> => {
-
-    return new Promise<QueryConditions>(( resolve, reject ) => {
-
-      let conditions: QueryConditions = {};
-
-      if ( filtrationCriteria.userId ) {
-        conditions[ "userId" ] = mongoose.Types.ObjectId( filtrationCriteria.userId );
-      }
-      if ( filtrationCriteria.channelId ) {
-        conditions[ "channelId" ] = mongoose.Types.ObjectId( filtrationCriteria.channelId );
-      }
-      if ( filtrationCriteria.paymentId ) {
-        conditions[ "paymentId" ] = mongoose.Types.ObjectId( filtrationCriteria.paymentId );
-      }
-
-      if ( filtrationCriteria.transfer ) {
-        if ( filtrationCriteria.transfer.identifier ) {
-          conditions[ "transfer.identifier" ] = filtrationCriteria.transfer.identifier;
-        }
-        if ( filtrationCriteria.transfer.amount ) {
-          conditions[ "transfer.amount" ] = {};
-          if ( filtrationCriteria.transfer.amount.min ) {
-            conditions[ "transfer.amount" ].$gte = filtrationCriteria.transfer.amount.min;
-          }
-          if ( filtrationCriteria.transfer.amount.max ) {
-            conditions[ "transfer.amount" ].$lte = filtrationCriteria.transfer.amount.max;
-          }
-        }
-        if ( filtrationCriteria.transfer.paymentRecorded ) {
-          conditions[ "transfer.paymentRecorded" ] = filtrationCriteria.transfer.paymentRecorded;
-        }
-      }
-
-      if ( filtrationCriteria.textSearch ) {
-        conditions.$text = { $search: filtrationCriteria.textSearch };
-      }
-
-      resolve( conditions );
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly makeSortCriteria = ( sortCriteria: storageInterfaces.call263.airtimeTransfer.SortCriteria ): Promise<string> => {
-
-    return new Promise<string>(( resolve, reject ) => {
-      let sortString;
-      if ( sortCriteria.criteria === "amount" ) {
-        sortString = "transfer.amount";
-      } else {
-        sortString = sortCriteria.criteria;
-      }
-      if ( sortCriteria.order === "Descending" ) {
-        sortString = "-" + sortString;
-      }
-      resolve( sortString );
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly generateUpdateDetails = ( document: Model, details: storageInterfaces.call263.airtimeTransfer.UpdateDetails ): Promise<Model> => {
-
-    return new Promise<Model>(( resolve, reject ) => {
-
-      if ( details.userId ) {
-        document.userId = mongoose.Types.ObjectId( details.userId );
-      }
-
-      if ( details.channelId ) {
-        document.channelId = mongoose.Types.ObjectId( details.channelId );
-      }
-
-      if ( details.paymentId ) {
-        document.paymentId = mongoose.Types.ObjectId( details.paymentId );
-      }
-
-      if ( details.transfer ) {
-        if ( details.transfer.identifier ) {
-          document.transfer.identifier = details.transfer.identifier;
-        }
-        if ( details.transfer.amount ) {
-          document.transfer.amount = details.transfer.amount;
-        }
-        if ( details.transfer.paymentRecorded ) {
-          document.transfer.paymentRecorded = details.transfer.paymentRecorded;
-        }
-      }
-
-      resolve( document );
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly convertToAbstract = ( airtimeTransfers: Model[], forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return new Promise<dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
-
-          let returnAirtimeTransfers: dataModel.call263.airtimeTransfer.Super[] = [];
-
-          airtimeTransfers.forEach(( airtimeTransfer ) => {
-
-            let returnAirtimeTransfer: dataModel.call263.airtimeTransfer.Super = {
-              id: ( <mongoose.Types.ObjectId>airtimeTransfer._id ).toHexString(),
-              userId: ( <mongoose.Types.ObjectId>airtimeTransfer.userId ).toHexString(),
-              channelId: ( <mongoose.Types.ObjectId>airtimeTransfer.channelId ).toHexString(),
-              paymentId: ( <mongoose.Types.ObjectId>airtimeTransfer.paymentId ).toHexString(),
-              transfer: {
-                id: ( <mongoose.Types.ObjectId>airtimeTransfer._id ).toHexString(),
-                identifier: airtimeTransfer.transfer.identifier,
-                amount: airtimeTransfer.transfer.amount,
-                paymentRecorded: airtimeTransfer.transfer.paymentRecorded,
-                createdAt: airtimeTransfer.transfer.createdAt,
-                updatedAt: airtimeTransfer.transfer.updatedAt
-              },
-              createdAt: airtimeTransfer.createdAt,
-              updatedAt: airtimeTransfer.updatedAt
-            };
-
-            returnAirtimeTransfers.push( returnAirtimeTransfer );
-
-          } );
-
-          resolve( returnAirtimeTransfers );
-
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
+import * as eventListener from "../../../../../event-listener/interfaces";
+import * as dataModel from "../../../../../data-model";
+import * as dataStructures from "../../../../helpers/data-structures/interfaces";
+import * as moders from "../../../../helpers/moders/interfaces";
+
+import ModelController from "../../generic-model-class";
+import Events from "../../generic-event-class";
+
+import * as storage from "../../../interfaces";
+import * as interfaces from "../../../interfaces/call-263/airtime-transfer";
+
+import { Model, PartialModel, MongooseModel } from "./model";
+
+/*******************************************************************************/
+
+export default (
+  emitEvent: eventListener.Emit,
+  mapDetails: dataStructures.MapDetails,
+  checkThrow: moders.CheckThrow
+): interfaces.ClassInstance => {
+
+  let models = new Events<interfaces.Context, interfaces.FiltrationCriteria,
+    interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
+    dataModel.call263.airtimeTransfer.Super>( emitEvent, "Call263|AirtimeTransfer" );
+
+  return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
+    interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
+    dataModel.call263.airtimeTransfer.Super, interfaces.Events>(
+
+    models,
+    MongooseModel,
+    mapDetails,
+    checkThrow,
+    makeConditions,
+    makeSortCriteria,
+    generateAddDetails,
+    generateUpdateDetails,
+    convertToAbstract
+
+    );
 
 }
 
@@ -690,17 +62,175 @@ interface QueryConditions {
 
 /******************************************************************************/
 
-export default ( params: {
-  emitEvent: src.setupConfig.eventManager.Emit;
-  mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageInterfaces.call263.AirtimeTransfer => {
-  return new MongoAirtimeTransfer( {
-    events: eventsFactory( params.emitEvent ),
-    Model: AirtimeTransferMongooseModel,
-    mapDetails: params.mapDetails,
-    checkThrow: params.checkThrow
+function makeConditions ( filtrationCriteria: storage.call263.airtimeTransfer.FiltrationCriteria ): Promise<QueryConditions> {
+
+  return new Promise<QueryConditions>(( resolve, reject ) => {
+
+    let conditions: QueryConditions = {};
+
+    if ( filtrationCriteria.userId ) {
+      conditions[ "userId" ] = mongoose.Types.ObjectId( filtrationCriteria.userId );
+    }
+    if ( filtrationCriteria.channelId ) {
+      conditions[ "channelId" ] = mongoose.Types.ObjectId( filtrationCriteria.channelId );
+    }
+    if ( filtrationCriteria.paymentId ) {
+      conditions[ "paymentId" ] = mongoose.Types.ObjectId( filtrationCriteria.paymentId );
+    }
+    
+    if ( filtrationCriteria.transfer ) {
+      if ( filtrationCriteria.transfer.identifier ) {
+        conditions[ "transfer.identifier" ] = filtrationCriteria.transfer.identifier;
+      }
+      if ( filtrationCriteria.transfer.amount ) {
+        conditions[ "transfer.amount" ] = {};
+        if ( filtrationCriteria.transfer.amount.min ) {
+          conditions[ "transfer.amount" ].$gte = filtrationCriteria.transfer.amount.min;
+        }
+        if ( filtrationCriteria.transfer.amount.max ) {
+          conditions[ "transfer.amount" ].$lte = filtrationCriteria.transfer.amount.max;
+        }
+      }
+      if ( filtrationCriteria.transfer.paymentRecorded ) {
+        conditions[ "transfer.paymentRecorded" ] = filtrationCriteria.transfer.paymentRecorded;
+      }
+    }
+
+    if ( filtrationCriteria.textSearch ) {
+      conditions.$text = { $search: filtrationCriteria.textSearch };
+    }
+
+    resolve( conditions );
+
   } );
+
+}
+
+/******************************************************************************/
+
+function makeSortCriteria ( sortCriteria: storage.call263.airtimeTransfer.SortCriteria ): Promise<string> {
+
+  return new Promise<string>(( resolve, reject ) => {
+    let sortString;
+    if ( sortCriteria.criteria === "amount" ) {
+      sortString = "transfer.amount";
+    } else {
+      sortString = sortCriteria.criteria;
+    }
+    if ( sortCriteria.order === "Descending" ) {
+      sortString = "-" + sortString;
+    }
+    resolve( sortString );
+  } );
+
+}
+
+/******************************************************************************/
+
+function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+
+  let returnDetails: PartialModel[] = [];
+
+  models.forEach(( model ) => {
+
+    let details: PartialModel = {
+      userId: mongoose.Types.ObjectId( model.userId ),
+      channelId: mongoose.Types.ObjectId( model.userId ),
+      paymentId: mongoose.Types.ObjectId( model.userId ),
+      transfer: {
+        identifier: model.transfer.identifier,
+        amount: model.transfer.amount,
+        paymentRecorded: model.transfer.paymentRecorded,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    };
+    
+    returnDetails.push( details );
+
+  } );
+
+  return returnDetails;
+
+}
+
+/******************************************************************************/
+
+function generateUpdateDetails ( document: Model, details: storage.call263.airtimeTransfer.UpdateDetails ): Promise<Model> {
+
+  return new Promise<Model>(( resolve, reject ) => {
+
+    if ( details.userId ) {
+      document.userId = mongoose.Types.ObjectId( details.userId );
+    }
+    
+    if ( details.channelId ) {
+      document.channelId = mongoose.Types.ObjectId( details.channelId );
+    }
+    
+    if ( details.paymentId ) {
+      document.paymentId = mongoose.Types.ObjectId( details.paymentId );
+    }
+    
+    if ( details.transfer ) {
+      if ( details.transfer.identifier ) {
+        document.transfer.identifier = details.transfer.identifier;
+      }
+      if ( details.transfer.amount ) {
+        document.transfer.amount = details.transfer.amount;
+      }
+      if ( details.transfer.paymentRecorded ) {
+        document.transfer.paymentRecorded = details.transfer.paymentRecorded;
+      }
+    }
+
+    resolve( document );
+
+  } );
+
+}
+
+/******************************************************************************/
+
+function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.call263.airtimeTransfer.Super[]> {
+
+  return this.checkThrow( forceThrow )
+    .then(( response: any ) => {
+
+      return new Promise<dataModel.call263.airtimeTransfer.Super[]>(( resolve, reject ) => {
+
+        let returnModels: dataModel.call263.airtimeTransfer.Super[] = [];
+
+        models.forEach(( model ) => {
+
+          let returnModel: dataModel.call263.airtimeTransfer.Super = {
+            id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
+            userId: ( <mongoose.Types.ObjectId>model.userId ).toHexString(),
+            channelId: ( <mongoose.Types.ObjectId>model.channelId ).toHexString(),
+            paymentId: ( <mongoose.Types.ObjectId>model.paymentId ).toHexString(),
+            transfer: {
+              id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
+              identifier: model.transfer.identifier,
+              amount: model.transfer.amount,
+              paymentRecorded: model.transfer.paymentRecorded,
+              createdAt: model.transfer.createdAt,
+              updatedAt: model.transfer.updatedAt
+            },
+            createdAt: model.createdAt,
+            updatedAt: model.updatedAt
+          };
+
+          
+          returnModels.push( returnModel );
+
+        } );
+
+        resolve( returnModels );
+
+      } );
+
+    } );
+
 }
 
 /******************************************************************************/

@@ -9,8 +9,12 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.airtime.Super, dataModel.powertel.airtime.Super[]>;
-export type Events = eventGenerator.Generate<"Powertel|Airtime", FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.airtime.Super[]>;
+export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.airtime.Super>;
+export type Events = eventGenerator.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.airtime.Super>;
+
+/******************************************************************************/
+
+export type Context = "Powertel|Airtime";
 
 /******************************************************************************/
 

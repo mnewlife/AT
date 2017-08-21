@@ -1,7 +1,6 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -14,7 +13,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   tags: string[];
   data: any;
 }
-export type Model_Partial = Partial<Pick<Model, "context" | "identifier" | "tags" | "data">>;
+export type PartialModel = Partial<Pick<Model, "context" | "identifier" | "tags" | "data">>;
 
 /******************************************************************************/
 
@@ -32,8 +31,8 @@ let eventSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let EventMongooseModel = mongoose.model<Model>( "Event", eventSchema );
+let MongooseModel = mongoose.model<Model>( "Event", eventSchema );
 
-export { EventMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

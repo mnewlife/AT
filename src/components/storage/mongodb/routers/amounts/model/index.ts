@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -15,7 +15,7 @@ export interface Model_Nuance extends mongoDB.Document {
   newStock: number;
   sold: number;
 }
-export type Model_Partial = Partial<Model_Nuance>;
+export type PartialModel = Partial<Model_Nuance>;
 
 /******************************************************************************/
 
@@ -33,8 +33,8 @@ let amountsSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let AmountsMongooseModel = mongoose.model<Model>( "Amounts", amountsSchema );
+let MongooseModel = mongoose.model<Model>( "Amounts", amountsSchema );
 
-export { AmountsMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -18,7 +18,7 @@ export interface Model_Nuance extends mongoDB.Document {
   amount: number;
   totalCost: number;
 }
-export interface Model_Partial extends Partial<Pick<Model_Nuance, "type" | "paymentMethod" | "unitCost" | "amount" | "totalCost">> {
+export interface PartialModel extends Partial<Pick<Model_Nuance, "type" | "paymentMethod" | "unitCost" | "amount" | "totalCost">> {
   buyer?: Partial<Buyer_Nuance>;
   simCard?: Partial<SimCard_Nuance>;
 };
@@ -62,8 +62,8 @@ let saleSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let SaleMongooseModel = mongoose.model<Model>( "Sale", saleSchema );
+let MongooseModel = mongoose.model<Model>( "Sale", saleSchema );
 
-export { SaleMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

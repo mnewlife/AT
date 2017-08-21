@@ -2,694 +2,47 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, NewCardStockMongooseModel } from "./model";
 
-import * as src from "../../../../../src";
-import * as storageInterfaces from "../../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
-
-import eventsFactory from "./events";
-
-/******************************************************************************/
-
-class MongoNewCardStock extends MongoController implements storageInterfaces.powertel.NewCardStock {
-
-  /*****************************************************************/
-
-  protected readonly events: storageInterfaces.powertel.newCardStock.Events;
-  protected readonly Model: mongoose.Model<mongoose.Document>;
-  protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-
-  /*****************************************************************/
-
-  constructor( params: {
-    events: storageInterfaces.powertel.newCardStock.Events;
-    Model: mongoose.Model<mongoose.Document>;
-    mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-  } ) {
-    super( {
-      events: params.events,
-      Model: params.Model,
-      mapDetails: params.mapDetails,
-      checkThrow: params.checkThrow
-    } );
-    this.events = params.events;
-  }
-
-  /*****************************************************************/
-
-  readonly get = ( filtrationCriteria: storageInterfaces.powertel.newCardStock.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.newCardStock.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } )
-      .then(( conditions: QueryConditions ) => {
-
-        return this.makeSortCriteria( sortCriteria )
-          .then(( sortString: string ) => {
-            return Promise.resolve( {
-              conditions: conditions,
-              sortString: sortString
-            } );
-          } );
-
-      } )
-      .then(( holder: { conditions: QueryConditions, sortString: string } ) => {
-
-        return this.find( holder.conditions, holder.sortString, limit );
-
-      } )
-      .then(( foundNewCardStocks: Model[] ) => {
-
-        return this.convertToAbstract( foundNewCardStocks );
-
-      } )
-      .then(( convertedNewCardStocks: dataModel.powertel.newCardStock.Super[] ) => {
-
-        new Promise<dataModel.powertel.newCardStock.Super[]>(( resolve, reject ) => {
-          this.events.got( {
-            filtrationCriteria: filtrationCriteria,
-            sortCriteria: sortCriteria,
-            limit: limit,
-            ids: convertedNewCardStocks.map(( newCardStock ) => {
-              return newCardStock.id;
-            } )
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedNewCardStocks );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.getFailed( {
-            filtrationCriteria: filtrationCriteria,
-            sortCriteria: sortCriteria,
-            limit: limit,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "GetFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly getById = ( newCardStockId: string, forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.findById( mongoose.Types.ObjectId( newCardStockId ) );
-
-      } )
-      .then(( foundNewCardStock: Model ) => {
-
-        return this.convertToAbstract( [ foundNewCardStock ] );
-
-      } )
-      .then(( convertedNewCardStocks: dataModel.powertel.newCardStock.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.gotById( {
-            id: newCardStockId
-          } );
-        } );
-
-        return Promise.resolve( convertedNewCardStocks[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.getByIdFailed( {
-            id: newCardStockId,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
-          return Promise.reject( {
-            identifier: "DocumentNotFound",
-            data: {
-              reason: reason
-            }
-          } );
-        } else {
-          return Promise.reject( {
-            identifier: "GetByIdFailed",
-            data: {
-              reason: reason
-            }
-          } );
-        }
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly addBatch = ( newCardStocks: storageInterfaces.powertel.newCardStock.AddDetails[], forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.saveMultipleDocuments( newCardStocks.map(( newCardStock ) => {
-          let newCardStockDetails: Model_Partial = {
-            initialCount: newCardStock.initialCount,
-            newCount: newCardStock.newCount,
-            amount: newCardStock.amount
-          };
-          if ( newCardStock.mdnRange ) {
-            newCardStockDetails.mdnRange = {};
-            if ( newCardStock.mdnRange.min ) {
-              newCardStockDetails.mdnRange.min = newCardStock.mdnRange.min;
-            }
-            if ( newCardStock.mdnRange.max ) {
-              newCardStockDetails.mdnRange.max = newCardStock.mdnRange.max;
-            }
-          }
-          return newCardStockDetails;
-        } ) );
-
-      } )
-      .then(( addedNewCardStocks: Model[] ) => {
-
-        return this.convertToAbstract( addedNewCardStocks );
-
-      } )
-      .then(( convertedNewCardStocks: dataModel.powertel.newCardStock.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.added( {
-            documents: convertedNewCardStocks
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedNewCardStocks );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.addFailed( {
-            details: newCardStocks,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "AddBatchFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly add = ( details: storageInterfaces.powertel.newCardStock.AddDetails, forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        let newCardStockDetails: Model_Partial = {
-          initialCount: details.initialCount,
-          newCount: details.newCount,
-          amount: details.amount
-        };
-        if ( details.mdnRange ) {
-          newCardStockDetails.mdnRange = {};
-          if ( details.mdnRange.min ) {
-            newCardStockDetails.mdnRange.min = details.mdnRange.min;
-          }
-          if ( details.mdnRange.max ) {
-            newCardStockDetails.mdnRange.max = details.mdnRange.max;
-          }
-        }
-
-        return this.saveDocument( newCardStockDetails );
-
-      } )
-      .then(( addedNewCardStock: Model ) => {
-
-        return this.convertToAbstract( [ addedNewCardStock ] );
-
-      } )
-      .then(( convertedNewCardStocks: dataModel.powertel.newCardStock.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.added( {
-            documents: convertedNewCardStocks
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedNewCardStocks[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.addFailed( {
-            details: [ details ],
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "AddFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly update = ( filtrationCriteria: storageInterfaces.powertel.newCardStock.FiltrationCriteria, details: storageInterfaces.powertel.newCardStock.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } ).then(( conditions: QueryConditions ) => {
-
-        return this.find( conditions, null, null );
-
-      } )
-      .then(( foundNewCardStocks: Model[] ) => {
-
-        return Promise.all( foundNewCardStocks.map(( newCardStock ) => {
-
-          return this.generateUpdateDetails( newCardStock, details )
-            .then(( fedNewCardStock: Model ) => {
-
-              return new Promise<Model>(( resolve, reject ) => {
-                fedNewCardStock.save(( err: any ) => {
-                  if ( err ) {
-                    reject( err );
-                  } else {
-                    resolve( fedNewCardStock );
-                  }
-                } );
-              } );
-
-            } );
-
-        } ) );
-
-      } )
-      .then(( updatedNewCardStocks: Model[] ) => {
-
-        return this.convertToAbstract( updatedNewCardStocks );
-
-      } )
-      .then(( updatedNewCardStocks: dataModel.powertel.newCardStock.Super[] ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updated( {
-            conditions: filtrationCriteria,
-            documents: updatedNewCardStocks
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( updatedNewCardStocks );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updateFailed( {
-            conditions: filtrationCriteria,
-            updates: details,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "UpdateFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly updateById = ( newCardStockId: string, details: storageInterfaces.powertel.newCardStock.UpdateDetails, forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super> => {
-
-    let newCardStockObjectId: mongoose.Types.ObjectId;
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.findById( mongoose.Types.ObjectId( newCardStockId ) );
-
-      } )
-      .then(( newCardStock: Model ) => {
-
-        return this.generateUpdateDetails( newCardStock, details )
-          .then(( fedNewCardStock: Model ) => {
-
-            return new Promise<Model>(( resolve, reject ) => {
-              fedNewCardStock.save(( err: any ) => {
-                if ( err ) {
-                  reject( err );
-                } else {
-                  resolve( fedNewCardStock );
-                }
-              } );
-            } );
-
-          } );
-
-      } )
-      .then(( updatedNewCardStock: Model ) => {
-
-        return this.convertToAbstract( [ updatedNewCardStock ] );
-
-      } )
-      .then(( convertedNewCardStocks: dataModel.powertel.newCardStock.Super[] ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updated( {
-            id: newCardStockId,
-            documents: convertedNewCardStocks
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedNewCardStocks[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updateFailed( {
-            id: newCardStockId,
-            updates: details,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "UpdateFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly remove = ( filtrationCriteria: storageInterfaces.powertel.newCardStock.FiltrationCriteria, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } )
-      .then(( conditions: QueryConditions ) => {
-
-        return this.removeDocuments( conditions );
-
-      } )
-      .then(( response: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removed( {
-            conditions: filtrationCriteria
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removeFailed( {
-            conditions: filtrationCriteria,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "RemoveFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly removeById = ( newCardStockId: string, forceThrow?: boolean ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( newCardStockId )
-        } );
-
-      } )
-      .then(( response: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removed( {
-            id: newCardStockId
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removeFailed( {
-            id: newCardStockId,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "RemoveFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly makeConditions = ( filtrationCriteria: storageInterfaces.powertel.newCardStock.FiltrationCriteria ): Promise<QueryConditions> => {
-
-    return new Promise<QueryConditions>(( resolve, reject ) => {
-
-      let conditions: QueryConditions = {};
-
-      if ( filtrationCriteria.mdnRange ) {
-        if ( filtrationCriteria.mdnRange.min ) {
-          conditions[ "mdnRange.min" ] = {};
-          if ( filtrationCriteria.mdnRange.min.min ) {
-            conditions[ "mdnRange.min" ].$gte = filtrationCriteria.mdnRange.min.min;
-          }
-          if ( filtrationCriteria.mdnRange.min.max ) {
-            conditions[ "mdnRange.min" ].$lte = filtrationCriteria.mdnRange.min.max;
-          }
-        }
-        if ( filtrationCriteria.mdnRange.min ) {
-          conditions[ "mdnRange.min" ] = {};
-          if ( filtrationCriteria.mdnRange.max.min ) {
-            conditions[ "mdnRange.max" ].$gte = filtrationCriteria.mdnRange.max.min;
-          }
-          if ( filtrationCriteria.mdnRange.max.max ) {
-            conditions[ "mdnRange.max" ].$lte = filtrationCriteria.mdnRange.max.max;
-          }
-        }
-      }
-
-      if ( filtrationCriteria.initialCount ) {
-        conditions[ "initialCount" ] = {};
-        if ( filtrationCriteria.initialCount.min ) {
-          conditions[ "initialCount" ].$gte = filtrationCriteria.initialCount.min;
-        }
-        if ( filtrationCriteria.initialCount.max ) {
-          conditions[ "initialCount" ].$lte = filtrationCriteria.initialCount.max;
-        }
-      }
-
-      if ( filtrationCriteria.newCount ) {
-        conditions[ "newCount" ] = {};
-        if ( filtrationCriteria.newCount.min ) {
-          conditions[ "newCount" ].$gte = filtrationCriteria.newCount.min;
-        }
-        if ( filtrationCriteria.newCount.max ) {
-          conditions[ "newCount" ].$lte = filtrationCriteria.newCount.max;
-        }
-      }
-      
-      if ( filtrationCriteria.amount ) {
-        conditions[ "amount" ] = {};
-        if ( filtrationCriteria.amount.min ) {
-          conditions[ "amount" ].$gte = filtrationCriteria.amount.min;
-        }
-        if ( filtrationCriteria.amount.max ) {
-          conditions[ "amount" ].$lte = filtrationCriteria.amount.max;
-        }
-      }
-
-      if ( filtrationCriteria.textSearch ) {
-        conditions.$text = { $search: filtrationCriteria.textSearch };
-      }
-
-      resolve( conditions );
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly makeSortCriteria = ( sortCriteria: storageInterfaces.powertel.newCardStock.SortCriteria ): Promise<string> => {
-
-    return new Promise<string>(( resolve, reject ) => {
-      let sortString;
-      sortString = sortCriteria.criteria;
-      if ( sortCriteria.order === "Descending" ) {
-        sortString = "-" + sortString;
-      }
-      resolve( sortString );
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly generateUpdateDetails = ( document: Model, details: storageInterfaces.powertel.newCardStock.UpdateDetails ): Promise<Model> => {
-
-    return new Promise<Model>(( resolve, reject ) => {
-
-      if ( details.mdnRange ) {
-        if ( details.mdnRange.min ) {
-          document.mdnRange.min = details.mdnRange.min;
-        }
-        if ( details.mdnRange.max ) {
-          document.mdnRange.max = details.mdnRange.max;
-        }
-      }
-
-      if ( details.initialCount ) {
-        document.initialCount = details.initialCount;
-      }
-
-      if ( details.newCount ) {
-        document.newCount = details.newCount;
-      }
-
-      if ( details.amount ) {
-        document.amount = details.amount;
-      }
-
-      resolve( document );
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly convertToAbstract = ( newCardStocks: Model[], forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return new Promise<dataModel.powertel.newCardStock.Super[]>(( resolve, reject ) => {
-
-          let returnNewCardStocks: dataModel.powertel.newCardStock.Super[] = [];
-
-          newCardStocks.forEach(( newCardStock ) => {
-
-            let returnNewCardStock: dataModel.powertel.newCardStock.Super = {
-              id: ( <mongoose.Types.ObjectId>newCardStock._id ).toHexString(),
-              initialCount: newCardStock.initialCount,
-              newCount: newCardStock.newCount,
-              amount: newCardStock.amount,
-              createdAt: newCardStock.createdAt,
-              updatedAt: newCardStock.updatedAt
-            };
-
-            if ( newCardStock.mdnRange ) {
-              returnNewCardStock.mdnRange = {
-                min: newCardStock.mdnRange.min,
-                max: newCardStock.mdnRange.max
-              }
-            }
-
-            returnNewCardStocks.push( returnNewCardStock );
-
-          } );
-
-          resolve( returnNewCardStocks );
-
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
+import * as eventListener from "../../../../../event-listener/interfaces";
+import * as dataModel from "../../../../../data-model";
+import * as dataStructures from "../../../../helpers/data-structures/interfaces";
+import * as moders from "../../../../helpers/moders/interfaces";
+
+import ModelController from "../../generic-model-class";
+import Events from "../../generic-event-class";
+
+import * as storage from "../../../interfaces";
+import * as interfaces from "../../../interfaces/powertel/new-card-stock";
+
+import { Model, PartialModel, MongooseModel } from "./model";
+
+/*******************************************************************************/
+
+export default (
+  emitEvent: eventListener.Emit,
+  mapDetails: dataStructures.MapDetails,
+  checkThrow: moders.CheckThrow
+): interfaces.ClassInstance => {
+
+  let models = new Events<interfaces.Context, interfaces.FiltrationCriteria,
+    interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
+    dataModel.powertel.newCardStock.Super>( emitEvent, "Powertel|NewCardStock" );
+
+  return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
+    interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
+    dataModel.powertel.newCardStock.Super, interfaces.Events>(
+
+    models,
+    MongooseModel,
+    mapDetails,
+    checkThrow,
+    makeConditions,
+    makeSortCriteria,
+    generateAddDetails,
+    generateUpdateDetails,
+    convertToAbstract
+
+    );
 
 }
 
@@ -707,17 +60,189 @@ interface QueryConditions {
 
 /******************************************************************************/
 
-export default ( params: {
-  emitEvent: src.setupConfig.eventManager.Emit;
-  mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageInterfaces.powertel.NewCardStock => {
-  return new MongoNewCardStock( {
-    events: eventsFactory( params.emitEvent ),
-    Model: NewCardStockMongooseModel,
-    mapDetails: params.mapDetails,
-    checkThrow: params.checkThrow
+function makeConditions ( filtrationCriteria: storage.powertel.newCardStock.FiltrationCriteria ): Promise<QueryConditions> {
+
+  return new Promise<QueryConditions>(( resolve, reject ) => {
+
+    let conditions: QueryConditions = {};
+
+    if ( filtrationCriteria.mdnRange ) {
+      if ( filtrationCriteria.mdnRange.min ) {
+        conditions[ "mdnRange.min" ] = {};
+        if ( filtrationCriteria.mdnRange.min.min ) {
+          conditions[ "mdnRange.min" ].$gte = filtrationCriteria.mdnRange.min.min;
+        }
+        if ( filtrationCriteria.mdnRange.min.max ) {
+          conditions[ "mdnRange.min" ].$lte = filtrationCriteria.mdnRange.min.max;
+        }
+      }
+      if ( filtrationCriteria.mdnRange.min ) {
+        conditions[ "mdnRange.min" ] = {};
+        if ( filtrationCriteria.mdnRange.max.min ) {
+          conditions[ "mdnRange.max" ].$gte = filtrationCriteria.mdnRange.max.min;
+        }
+        if ( filtrationCriteria.mdnRange.max.max ) {
+          conditions[ "mdnRange.max" ].$lte = filtrationCriteria.mdnRange.max.max;
+        }
+      }
+    }
+  
+    if ( filtrationCriteria.initialCount ) {
+      conditions[ "initialCount" ] = {};
+      if ( filtrationCriteria.initialCount.min ) {
+        conditions[ "initialCount" ].$gte = filtrationCriteria.initialCount.min;
+      }
+      if ( filtrationCriteria.initialCount.max ) {
+        conditions[ "initialCount" ].$lte = filtrationCriteria.initialCount.max;
+      }
+    }
+  
+    if ( filtrationCriteria.newCount ) {
+      conditions[ "newCount" ] = {};
+      if ( filtrationCriteria.newCount.min ) {
+        conditions[ "newCount" ].$gte = filtrationCriteria.newCount.min;
+      }
+      if ( filtrationCriteria.newCount.max ) {
+        conditions[ "newCount" ].$lte = filtrationCriteria.newCount.max;
+      }
+    }
+    
+    if ( filtrationCriteria.amount ) {
+      conditions[ "amount" ] = {};
+      if ( filtrationCriteria.amount.min ) {
+        conditions[ "amount" ].$gte = filtrationCriteria.amount.min;
+      }
+      if ( filtrationCriteria.amount.max ) {
+        conditions[ "amount" ].$lte = filtrationCriteria.amount.max;
+      }
+    }
+
+    if ( filtrationCriteria.textSearch ) {
+      conditions.$text = { $search: filtrationCriteria.textSearch };
+    }
+
+    resolve( conditions );
+
   } );
+
+}
+
+/******************************************************************************/
+
+function makeSortCriteria ( sortCriteria: storage.powertel.newCardStock.SortCriteria ): Promise<string> {
+
+  return new Promise<string>(( resolve, reject ) => {
+    let sortString;
+    sortString = sortCriteria.criteria;
+    if ( sortCriteria.order === "Descending" ) {
+      sortString = "-" + sortString;
+    }
+    resolve( sortString );
+  } );
+
+}
+
+/******************************************************************************/
+
+function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+
+  let returnDetails: PartialModel[] = [];
+
+  models.forEach(( model ) => {
+
+    let details: PartialModel = {
+      initialCount: model.initialCount,
+      newCount: model.newCount,
+      amount: model.amount
+    };
+
+    if ( model.mdnRange ) {
+      details.mdnRange = {
+        min: model.mdnRange.min,
+        max: model.mdnRange.max
+      };
+    }
+    
+    returnDetails.push( details );
+
+  } );
+
+  return returnDetails;
+
+}
+
+/******************************************************************************/
+
+function generateUpdateDetails ( document: Model, details: storage.powertel.newCardStock.UpdateDetails ): Promise<Model> {
+
+  return new Promise<Model>(( resolve, reject ) => {
+
+    if ( details.mdnRange ) {
+      if ( details.mdnRange.min ) {
+        document.mdnRange.min = details.mdnRange.min;
+      }
+      if ( details.mdnRange.max ) {
+        document.mdnRange.max = details.mdnRange.max;
+      }
+    }
+  
+    if ( details.initialCount ) {
+      document.initialCount = details.initialCount;
+    }
+  
+    if ( details.newCount ) {
+      document.newCount = details.newCount;
+    }
+  
+    if ( details.amount ) {
+      document.amount = details.amount;
+    }
+
+    resolve( document );
+
+  } );
+
+}
+
+/******************************************************************************/
+
+function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.powertel.newCardStock.Super[]> {
+
+  return this.checkThrow( forceThrow )
+    .then(( response: any ) => {
+
+      return new Promise<dataModel.powertel.newCardStock.Super[]>(( resolve, reject ) => {
+
+        let returnModels: dataModel.powertel.newCardStock.Super[] = [];
+
+        models.forEach(( model ) => {
+
+          let returnModel: dataModel.powertel.newCardStock.Super = {
+            id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
+            initialCount: model.initialCount,
+            newCount: model.newCount,
+            amount: model.amount,
+            createdAt: model.createdAt,
+            updatedAt: model.updatedAt
+          };
+        
+          if ( model.mdnRange ) {
+            returnModel.mdnRange = {
+              min: model.mdnRange.min,
+              max: model.mdnRange.max
+            }
+          }
+          
+          returnModels.push( returnModel );
+
+        } );
+
+        resolve( returnModels );
+
+      } );
+
+    } );
+
 }
 
 /******************************************************************************/

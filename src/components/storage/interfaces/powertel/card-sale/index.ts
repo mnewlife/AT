@@ -9,8 +9,12 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.cardSale.Super, dataModel.powertel.cardSale.Super[]>;
-export type Events = eventGenerator.Generate<"Powertel|CardSale", FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.cardSale.Super[]>;
+export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.cardSale.Super>;
+export type Events = eventGenerator.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.powertel.cardSale.Super>;
+
+/******************************************************************************/
+
+export type Context = "Powertel|CardSale";
 
 /******************************************************************************/
 

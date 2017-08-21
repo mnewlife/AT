@@ -2,6 +2,8 @@
 
 import * as dataModel from "../../../../data-model";
 
+import * as storage from "../";
+
 /******************************************************************************/
 
 export interface BaseEvent extends dataModel.Happening {
@@ -12,7 +14,7 @@ export interface BaseEvent extends dataModel.Happening {
 
 export interface GotData {
   filtrationCriteria: any;
-  sortCriteria: any;
+  sortCriteria: storage.BaseSortCriteria;
   limit: number;
   ids: string[];
 };
@@ -25,7 +27,7 @@ export interface Got extends BaseEvent {
 
 export interface GetFailedData {
   filtrationCriteria: any;
-  sortCriteria: any;
+  sortCriteria: storage.BaseSortCriteria;
   limit: number;
   reason: any
 };
@@ -58,7 +60,7 @@ export interface GetByIdFailed extends BaseEvent {
 /******************************************************************************/
 
 export interface AddedData {
-  documents: dataModel.ModelArrayRange;
+  documents: dataModel.DataModel[];
 };
 export interface Added extends BaseEvent {
   identifier: "Added";
@@ -81,7 +83,7 @@ export interface AddFailed extends BaseEvent {
 export interface UpdatedData {
   id?: string;
   conditions?: any;
-  documents: dataModel.ModelArrayRange;
+  documents: dataModel.DataModel[];
 };
 export interface Updated extends BaseEvent {
   identifier: "Updated";

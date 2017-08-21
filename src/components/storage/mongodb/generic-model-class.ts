@@ -15,12 +15,12 @@ import MongoController from "./mongo-controller";
 
 /******************************************************************************/
 
-export default class ModelController<FC extends any, SC extends interfaces.BaseSortCriteria,
-  AD extends any, UD extends any,
-  QC extends any, Document extends mongoose.Document,
-  DM extends dataModel.ModelRange, DMA extends dataModel.ModelArrayRange,
-  E extends events.BaseMethods>
-  extends MongoController<FC, SC, AD, UD, QC, Document, DM, DMA, E> implements interfaces.StorageController {
+export default class ModelController<FiltrationCriteria extends any, SortCriteria extends interfaces.BaseSortCriteria,
+  AddDetails extends any, UpdateDetails extends any,
+  QueryConditions extends any, Document extends mongoose.Document,
+  DataModel extends dataModel.DataModel, E extends events.BaseMethods>
+  extends MongoController<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, QueryConditions, Document, DataModel, E>
+  implements interfaces.StorageController {
 
   /*****************************************************************/
 
@@ -29,17 +29,17 @@ export default class ModelController<FC extends any, SC extends interfaces.BaseS
     protected readonly Model: mongoose.Model<mongoose.Document>,
     protected readonly mapDetails: dataStructures.MapDetails,
     protected readonly checkThrow: moders.CheckThrow,
-    protected readonly makeConditions: internalMethods.MakeConditions<FC, QC>,
-    protected readonly makeSortCriteria: internalMethods.MakeSortCriteria<SC>,
-    protected readonly convertAddDetails: internalMethods.ConvertAddDetails<AD>,
-    protected readonly generateUpdateDetails: internalMethods.GenerateUpdateDetails<UD>,
-    protected readonly convertToAbstract: internalMethods.ConvertToAbstract<DMA>
+    protected readonly makeConditions: internalMethods.MakeConditions<FiltrationCriteria, QueryConditions>,
+    protected readonly makeSortCriteria: internalMethods.MakeSortCriteria<SortCriteria>,
+    protected readonly generateAddDetails: internalMethods.GenerateAddDetails<AddDetails>,
+    protected readonly generateUpdateDetails: internalMethods.GenerateUpdateDetails<UpdateDetails, Document>,
+    protected readonly convertToAbstract: internalMethods.ConvertToAbstract<Document, DataModel>
   ) {
 
     super(
       events, Model, mapDetails, checkThrow,
       makeConditions, makeSortCriteria,
-      convertAddDetails, generateUpdateDetails, convertToAbstract
+      generateAddDetails, generateUpdateDetails, convertToAbstract
     )
 
   }

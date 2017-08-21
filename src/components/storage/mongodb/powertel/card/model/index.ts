@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -15,7 +15,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   buyer?: Buyer;
   user?: mongoDB.UserInfo;
 }
-export interface Model_Partial extends Partial<Pick<Model, "pin" | "puk" | "mdn">> {
+export interface PartialModel extends Partial<Pick<Model, "pin" | "puk" | "mdn">> {
   buyer?: Partial<Buyer_Nuance>;
   user?: Partial<mongoDB.UserInfo_Nuance>;
 };
@@ -54,8 +54,8 @@ let cardSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let CardMongooseModel = mongoose.model<Model>( "Card", cardSchema );
+let MongooseModel = mongoose.model<Model>( "Card", cardSchema );
 
-export { CardMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

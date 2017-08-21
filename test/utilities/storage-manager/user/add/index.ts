@@ -20,7 +20,7 @@ import prep from "./prep";
 
 /******************************************************************************/
 
-describe( "User ADD", function (): void {
+describe( "User AddDetailsD", function (): void {
 
   this.timeout( 2000 );
 

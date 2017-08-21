@@ -1,7 +1,9 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+import * as src from "../../../../../../interfaces";
+
+import * as dataModel from "../../../../../../data-model";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -21,7 +23,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
 
   activeApps: src.AppName[];
 }
-export interface Model_Partial extends Partial<Pick<Model, ModelPartial_Details_Flat>> {
+export interface PartialModel extends Partial<Pick<Model, ModelPartial_Details_Flat>> {
   verification?: Partial<Verification>;
   personalDetails?: Partial<PersonalDetails>;
   contactDetails?: Partial<ContactDetails>;
@@ -108,8 +110,8 @@ let userSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let UserMongooseModel = mongoose.model<Model>( "User", userSchema );
+let MongooseModel = mongoose.model<Model>( "User", userSchema );
 
-export { UserMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

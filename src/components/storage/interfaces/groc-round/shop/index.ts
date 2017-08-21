@@ -9,8 +9,12 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.grocRound.shop.Super, dataModel.grocRound.shop.Super[]>;
-export type Events = eventGenerator.Generate<"GrocRound|Shop", FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.grocRound.shop.Super[]>;
+export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.grocRound.shop.Super>;
+export type Events = eventGenerator.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.grocRound.shop.Super>;
+
+/******************************************************************************/
+
+export type Context = "GrocRound|Shop";
 
 /******************************************************************************/
 

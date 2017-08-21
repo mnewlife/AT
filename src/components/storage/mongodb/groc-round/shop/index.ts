@@ -2,650 +2,47 @@
 
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
-import MongoController from "../../mongo-controller";
-import { Model, Model_Partial, ShopMongooseModel } from "./model";
 
-import * as src from "../../../../../src";
-import * as storageInterfaces from "../../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../../src/components/shared-logic";
-
-import eventsFactory from "./events";
-
-/******************************************************************************/
-
-class MongoShop extends MongoController implements storageInterfaces.grocRound.Shop {
-
-  /*****************************************************************/
-
-  protected readonly events: storageInterfaces.grocRound.shop.Events;
-  protected readonly Model: mongoose.Model<mongoose.Document>;
-  protected readonly mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-
-  /*****************************************************************/
-
-  constructor( params: {
-    events: storageInterfaces.grocRound.shop.Events;
-    Model: mongoose.Model<mongoose.Document>;
-    mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-    checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-  } ) {
-    super( {
-      events: params.events,
-      Model: params.Model,
-      mapDetails: params.mapDetails,
-      checkThrow: params.checkThrow
-    } );
-    this.events = params.events;
-  }
-
-  /*****************************************************************/
-
-  readonly get = ( filtrationCriteria: storageInterfaces.grocRound.shop.FiltrationCriteria, sortCriteria: storageInterfaces.grocRound.shop.SortCriteria, limit: number, forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } )
-      .then(( conditions: QueryConditions ) => {
-
-        return this.makeSortCriteria( sortCriteria )
-          .then(( sortString: string ) => {
-            return Promise.resolve( {
-              conditions: conditions,
-              sortString: sortString
-            } );
-          } );
-
-      } )
-      .then(( holder: { conditions: QueryConditions, sortString: string } ) => {
-
-        return this.find( holder.conditions, holder.sortString, limit );
-
-      } )
-      .then(( foundShops: Model[] ) => {
-
-        return this.convertToAbstract( foundShops );
-
-      } )
-      .then(( convertedShops: dataModel.grocRound.shop.Super[] ) => {
-
-        new Promise<dataModel.grocRound.shop.Super[]>(( resolve, reject ) => {
-          this.events.got( {
-            filtrationCriteria: filtrationCriteria,
-            sortCriteria: sortCriteria,
-            limit: limit,
-            ids: convertedShops.map(( shop ) => {
-              return shop.id;
-            } )
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedShops );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.getFailed( {
-            filtrationCriteria: filtrationCriteria,
-            sortCriteria: sortCriteria,
-            limit: limit,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "GetFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly getById = ( shopId: string, forceThrow = false ): Promise<dataModel.grocRound.shop.Super> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.findById( mongoose.Types.ObjectId( shopId ) );
-
-      } )
-      .then(( foundShop: Model ) => {
-
-        return this.convertToAbstract( [ foundShop ] );
-
-      } )
-      .then(( convertedShops: dataModel.grocRound.shop.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.gotById( {
-            id: shopId
-          } );
-        } );
-
-        return Promise.resolve( convertedShops[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.getByIdFailed( {
-            id: shopId,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
-          return Promise.reject( {
-            identifier: "DocumentNotFound",
-            data: {
-              reason: reason
-            }
-          } );
-        } else {
-          return Promise.reject( {
-            identifier: "GetByIdFailed",
-            data: {
-              reason: reason
-            }
-          } );
-        }
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly addBatch = ( shops: storageInterfaces.grocRound.shop.AddDetails[], forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.saveMultipleDocuments( shops.map(( shop ) => {
-          let shopDetails: Model_Partial = {
-            shopName: shop.shopName,
-            numProducts: shop.numProducts
-          };
-          if ( shop.images ) {
-            shopDetails.images = shop.images;
-          }
-          return shopDetails;
-        } ) );
-
-      } )
-      .then(( addedShops: Model[] ) => {
-
-        return this.convertToAbstract( addedShops );
-
-      } )
-      .then(( convertedShops: dataModel.grocRound.shop.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.added( {
-            documents: convertedShops
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedShops );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.addFailed( {
-            details: shops,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "AddBatchFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly add = ( details: storageInterfaces.grocRound.shop.AddDetails, forceThrow = false ): Promise<dataModel.grocRound.shop.Super> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        let shopDetails: Model_Partial = {
-          shopName: details.shopName,
-          numProducts: details.numProducts
-        };
-        if ( details.images ) {
-          shopDetails.images = details.images;
-        }
-
-        return this.saveDocument( shopDetails );
-
-      } )
-      .then(( addedShop: Model ) => {
-
-        return this.convertToAbstract( [ addedShop ] );
-
-      } )
-      .then(( convertedShops: dataModel.grocRound.shop.Super[] ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.added( {
-            documents: convertedShops
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedShops[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.addFailed( {
-            details: [ details ],
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "AddFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly update = ( filtrationCriteria: storageInterfaces.grocRound.shop.FiltrationCriteria, details: storageInterfaces.grocRound.shop.UpdateDetails, forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } ).then(( conditions: QueryConditions ) => {
-
-        return this.find( conditions, null, null );
-
-      } )
-      .then(( foundShops: Model[] ) => {
-
-        return Promise.all( foundShops.map(( shop ) => {
-
-          return this.generateUpdateDetails( shop, details )
-            .then(( fedShop: Model ) => {
-
-              return new Promise<Model>(( resolve, reject ) => {
-                fedShop.save(( err: any ) => {
-                  if ( err ) {
-                    reject( err );
-                  } else {
-                    resolve( fedShop );
-                  }
-                } );
-              } );
-
-            } );
-
-        } ) );
-
-      } )
-      .then(( updatedShops: Model[] ) => {
-
-        return this.convertToAbstract( updatedShops );
-
-      } )
-      .then(( updatedShops: dataModel.grocRound.shop.Super[] ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updated( {
-            conditions: filtrationCriteria,
-            documents: updatedShops
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( updatedShops );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updateFailed( {
-            conditions: filtrationCriteria,
-            updates: details,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "UpdateFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly updateById = ( shopId: string, details: storageInterfaces.grocRound.shop.UpdateDetails, forceThrow = false ): Promise<dataModel.grocRound.shop.Super> => {
-
-    let shopObjectId: mongoose.Types.ObjectId;
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.findById( mongoose.Types.ObjectId( shopId ) );
-
-      } )
-      .then(( shop: Model ) => {
-
-        return this.generateUpdateDetails( shop, details )
-          .then(( fedShop: Model ) => {
-
-            return new Promise<Model>(( resolve, reject ) => {
-              fedShop.save(( err: any ) => {
-                if ( err ) {
-                  reject( err );
-                } else {
-                  resolve( fedShop );
-                }
-              } );
-            } );
-
-          } );
-
-      } )
-      .then(( updatedShop: Model ) => {
-
-        return this.convertToAbstract( [ updatedShop ] );
-
-      } )
-      .then(( convertedShops: dataModel.grocRound.shop.Super[] ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updated( {
-            id: shopId,
-            documents: convertedShops
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( convertedShops[ 0 ] );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.updateFailed( {
-            id: shopId,
-            updates: details,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "UpdateFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly remove = ( filtrationCriteria: storageInterfaces.grocRound.shop.FiltrationCriteria, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.makeConditions( filtrationCriteria );
-
-      } )
-      .then(( conditions: QueryConditions ) => {
-
-        return this.removeDocuments( conditions );
-
-      } )
-      .then(( response: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removed( {
-            conditions: filtrationCriteria
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removeFailed( {
-            conditions: filtrationCriteria,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "RemoveFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  readonly removeById = ( shopId: string, forceThrow?: boolean ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return this.removeDocuments( {
-          "_id": mongoose.Types.ObjectId( shopId )
-        } );
-
-      } )
-      .then(( response: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removed( {
-            id: shopId
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve();
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<any>(( resolve, reject ) => {
-          this.events.removeFailed( {
-            id: shopId,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "RemoveFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly makeConditions = ( filtrationCriteria: storageInterfaces.grocRound.shop.FiltrationCriteria ): Promise<QueryConditions> => {
-
-    return new Promise<QueryConditions>(( resolve, reject ) => {
-
-      let conditions: QueryConditions = {};
-
-      if ( filtrationCriteria.shopName ) {
-        conditions[ "shopName" ] = filtrationCriteria.shopName;
-      }
-
-      if ( filtrationCriteria.images ) {
-        conditions[ "images" ] = { $all: filtrationCriteria.images };
-      }
-
-      if ( filtrationCriteria.numProducts ) {
-        conditions[ "numProducts" ] = {};
-        if ( filtrationCriteria.numProducts.min ) {
-          conditions[ "numProducts" ].$gte = filtrationCriteria.numProducts.min;
-        }
-        if ( filtrationCriteria.numProducts.max ) {
-          conditions[ "numProducts" ].$lte = filtrationCriteria.numProducts.max;
-        }
-      }
-
-      if ( filtrationCriteria.textSearch ) {
-        conditions.$text = { $search: filtrationCriteria.textSearch };
-      }
-
-      resolve( conditions );
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly makeSortCriteria = ( sortCriteria: storageInterfaces.grocRound.shop.SortCriteria ): Promise<string> => {
-
-    return new Promise<string>(( resolve, reject ) => {
-      let sortString;
-      sortString = sortCriteria.criteria;
-      if ( sortCriteria.order === "Descending" ) {
-        sortString = "-" + sortString;
-      }
-      resolve( sortString );
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly generateUpdateDetails = ( document: Model, details: storageInterfaces.grocRound.shop.UpdateDetails ): Promise<Model> => {
-
-    return new Promise<Model>(( resolve, reject ) => {
-
-      if ( details.shopName ) {
-        document.shopName = details.shopName;
-      }
-
-      if ( details.imagesToAdd ) {
-        details.imagesToAdd.forEach(( image ) => {
-          document.images.push( image );
-        } );
-      }
-
-      if ( details.imagesToRemove ) {
-        details.imagesToRemove.forEach(( image ) => {
-          let index = document.images.indexOf( image );
-          if ( index && index != -1 ) {
-            document.images.splice( index, 1 );
-          }
-        } );
-      }
-
-      if ( details.numProductsPlus ) {
-        document.numProducts += details.numProductsPlus;
-      }
-      if ( details.numProductsMinus ) {
-        document.numProducts -= details.numProductsMinus;
-      }
-      if ( details.numProducts ) {
-        document.numProducts = details.numProducts;
-      }
-
-      resolve( document );
-
-    } );
-
-  }
-
-  /*****************************************************************/
-
-  private readonly convertToAbstract = ( shops: Model[], forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return new Promise<dataModel.grocRound.shop.Super[]>(( resolve, reject ) => {
-
-          let returnShops: dataModel.grocRound.shop.Super[] = [];
-
-          shops.forEach(( shop ) => {
-
-            let returnShop: dataModel.grocRound.shop.Super = {
-              id: ( <mongoose.Types.ObjectId>shop._id ).toHexString(),
-              shopName: shop.shopName,
-              numProducts: shop.numProducts,
-              createdAt: shop.createdAt,
-              updatedAt: shop.updatedAt
-            };
-            if ( shop.images ) {
-              returnShop.images = shop.images;
-            }
-
-            returnShops.push( returnShop );
-
-          } );
-
-          resolve( returnShops );
-
-        } );
-
-      } );
-
-  }
-
-  /*****************************************************************/
+import * as eventListener from "../../../../../event-listener/interfaces";
+import * as dataModel from "../../../../../data-model";
+import * as dataStructures from "../../../../helpers/data-structures/interfaces";
+import * as moders from "../../../../helpers/moders/interfaces";
+
+import ModelController from "../../generic-model-class";
+import Events from "../../generic-event-class";
+
+import * as storage from "../../../interfaces";
+import * as interfaces from "../../../interfaces/groc-round/shop";
+
+import { Model, PartialModel, MongooseModel } from "./model";
+
+/*******************************************************************************/
+
+export default (
+  emitEvent: eventListener.Emit,
+  mapDetails: dataStructures.MapDetails,
+  checkThrow: moders.CheckThrow
+): interfaces.ClassInstance => {
+
+  let models = new Events<interfaces.Context, interfaces.FiltrationCriteria,
+    interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
+    dataModel.grocRound.shop.Super>( emitEvent, "GrocRound|Shop" );
+
+  return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
+    interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
+    dataModel.grocRound.shop.Super, interfaces.Events>(
+
+    models,
+    MongooseModel,
+    mapDetails,
+    checkThrow,
+    makeConditions,
+    makeSortCriteria,
+    generateAddDetails,
+    generateUpdateDetails,
+    convertToAbstract
+
+    );
 
 }
 
@@ -660,17 +57,149 @@ interface QueryConditions {
 
 /******************************************************************************/
 
-export default ( params: {
-  emitEvent: src.setupConfig.eventManager.Emit;
-  mapDetails: sharedLogicInterfaces.dataStructures.MapDetails;
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): storageInterfaces.grocRound.Shop => {
-  return new MongoShop( {
-    events: eventsFactory( params.emitEvent ),
-    Model: ShopMongooseModel,
-    mapDetails: params.mapDetails,
-    checkThrow: params.checkThrow
+function makeConditions ( filtrationCriteria: storage.grocRound.shop.FiltrationCriteria ): Promise<QueryConditions> {
+
+  return new Promise<QueryConditions>(( resolve, reject ) => {
+
+    let conditions: QueryConditions = {};
+
+    if ( filtrationCriteria.shopName ) {
+      conditions[ "shopName" ] = filtrationCriteria.shopName;
+    }
+    
+    if ( filtrationCriteria.images ) {
+      conditions[ "images" ] = { $all: filtrationCriteria.images };
+    }
+    
+    if ( filtrationCriteria.numProducts ) {
+      conditions[ "numProducts" ] = {};
+      if ( filtrationCriteria.numProducts.min ) {
+        conditions[ "numProducts" ].$gte = filtrationCriteria.numProducts.min;
+      }
+      if ( filtrationCriteria.numProducts.max ) {
+        conditions[ "numProducts" ].$lte = filtrationCriteria.numProducts.max;
+      }
+    }
+
+    if ( filtrationCriteria.textSearch ) {
+      conditions.$text = { $search: filtrationCriteria.textSearch };
+    }
+
+    resolve( conditions );
+
   } );
+
+}
+
+/******************************************************************************/
+
+function makeSortCriteria ( sortCriteria: storage.grocRound.shop.SortCriteria ): Promise<string> {
+
+  return new Promise<string>(( resolve, reject ) => {
+    let sortString;
+    sortString = sortCriteria.criteria;
+    if ( sortCriteria.order === "Descending" ) {
+      sortString = "-" + sortString;
+    }
+    resolve( sortString );
+  } );
+
+}
+
+/******************************************************************************/
+
+function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+
+  let returnDetails: PartialModel[] = [];
+
+  models.forEach(( model ) => {
+
+    let details: PartialModel = {
+      shopName: model.shopName,
+      numProducts: model.numProducts
+    };
+    
+    returnDetails.push( details );
+
+  } );
+
+  return returnDetails;
+
+}
+
+/******************************************************************************/
+
+function generateUpdateDetails ( document: Model, details: storage.grocRound.shop.UpdateDetails ): Promise<Model> {
+
+  return new Promise<Model>(( resolve, reject ) => {
+
+    if ( details.shopName ) {
+      document.shopName = details.shopName;
+    }
+    
+    if ( details.imagesToAdd ) {
+      details.imagesToAdd.forEach(( image ) => {
+        document.images.push( image );
+      } );
+    }
+    
+    if ( details.imagesToRemove ) {
+      details.imagesToRemove.forEach(( image ) => {
+        let index = document.images.indexOf( image );
+        if ( index && index != -1 ) {
+          document.images.splice( index, 1 );
+        }
+      } );
+    }
+    
+    if ( details.numProductsPlus ) {
+      document.numProducts += details.numProductsPlus;
+    }
+    if ( details.numProductsMinus ) {
+      document.numProducts -= details.numProductsMinus;
+    }
+    if ( details.numProducts ) {
+      document.numProducts = details.numProducts;
+    }
+
+    resolve( document );
+
+  } );
+
+}
+
+/******************************************************************************/
+
+function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> {
+
+  return this.checkThrow( forceThrow )
+    .then(( response: any ) => {
+
+      return new Promise<dataModel.grocRound.shop.Super[]>(( resolve, reject ) => {
+
+        let returnModels: dataModel.grocRound.shop.Super[] = [];
+
+        models.forEach(( model ) => {
+
+          let returnModel: dataModel.grocRound.shop.Super = {
+            id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
+            shopName: model.shopName,
+            numProducts: model.numProducts,
+            createdAt: model.createdAt,
+            updatedAt: model.updatedAt
+          };
+
+          
+          returnModels.push( returnModel );
+
+        } );
+
+        resolve( returnModels );
+
+      } );
+
+    } );
+
 }
 
 /******************************************************************************/

@@ -20,7 +20,7 @@ let logger = require( "tracer" ).colorConsole();
 
 /******************************************************************************/
 
-describe( "AirtimeTransfer ADD", function (): void {
+describe( "AirtimeTransfer AddDetailsD", function (): void {
 
   this.timeout( 2000 );
 

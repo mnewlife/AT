@@ -11,35 +11,34 @@ import * as moders from "../../../../helpers/moders/interfaces";
 import ModelController from "../../generic-model-class";
 import Events from "../../generic-event-class";
 
-import { Model, Model_Partial, EventMongooseModel } from "./model";
-
 import * as storage from "../../../interfaces";
 import * as interfaces from "../../../interfaces/core/event";
+
+import { Model, PartialModel, MongooseModel } from "./model";
 
 /*******************************************************************************/
 
 export default (
   emitEvent: eventListener.Emit,
   mapDetails: dataStructures.MapDetails,
-  checkThrow: moders.CheckThrow,
-  context: interfaces.Context
+  checkThrow: moders.CheckThrow
 ): interfaces.ClassInstance => {
 
   let events = new Events<interfaces.Context, interfaces.FiltrationCriteria,
     interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
-    dataModel.core.event.Super[]>( emitEvent, "Core|Event" );
+    dataModel.core.event.Super>( emitEvent, "Core|Event" );
 
   return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
     interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
-    dataModel.core.event.Super, dataModel.core.event.Super[], interfaces.Events>(
+    dataModel.core.event.Super, interfaces.Events>(
 
     events,
-    EventMongooseModel,
+    MongooseModel,
     mapDetails,
     checkThrow,
     makeConditions,
     makeSortCriteria,
-    convertAddDetails,
+    generateAddDetails,
     generateUpdateDetails,
     convertToAbstract
 
@@ -103,20 +102,18 @@ function makeSortCriteria ( sortCriteria: storage.core.event.SortCriteria ): Pro
 
 /******************************************************************************/
 
-function convertAddDetails ( events: interfaces.AddDetails[] ): any[] {
+function generateAddDetails ( events: interfaces.AddDetails[] ): PartialModel[] {
 
-  let returnDetails: any[] = [];
+  let returnDetails: PartialModel[] = [];
 
   events.forEach(( event ) => {
 
-    let eventDetails: Model_Partial = {
+    returnDetails.push( {
       context: event.context,
       identifier: event.identifier,
       tags: event.tags,
       data: event.data
-    };
-
-    returnDetails.push( eventDetails );
+    } as PartialModel );
 
   } );
 

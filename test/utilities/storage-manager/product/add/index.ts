@@ -19,7 +19,7 @@ import prep from "./prep/index";
 
 /******************************************************************************/
 
-describe( "Product ADD" , function () : void {
+describe( "Product AddDetailsD" , function () : void {
 
   this.timeout( 2000 );
 

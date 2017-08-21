@@ -1,7 +1,6 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -13,7 +12,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   channelId: mongoose.Types.ObjectId;
   transaction: Transaction;
 }
-export interface Model_Partial {
+export interface PartialModel {
   user?: Partial<mongoDB.UserInfo_Nuance>;
   channelId?: mongoose.Types.ObjectId;
   transaction?: Partial<Transaction_Nuance>;
@@ -53,8 +52,8 @@ let airtimePaymentSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let AirtimePaymentMongooseModel = mongoose.model<Model>( "AirtimePayment", airtimePaymentSchema );
+let MongooseModel = mongoose.model<Model>( "AirtimePayment", airtimePaymentSchema );
 
-export { AirtimePaymentMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

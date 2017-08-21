@@ -13,12 +13,10 @@ import * as events from "../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export default abstract class MongoController<FC extends any, SC extends interfaces.BaseSortCriteria,
-  AD extends any, UD extends any,
-  QC extends any, Document extends mongoose.Document,
-  DM extends dataModel.ModelRange, DMA extends dataModel.ModelArrayRange,
-  E extends events.BaseMethods>
-  implements interfaces.StorageController {
+export default abstract class MongoController<FiltrationCriteria extends any, SortCriteria extends interfaces.BaseSortCriteria,
+  AddDetails extends any, UpdateDetails extends any,
+  QueryConditions extends any, Document extends mongoose.Document,
+  DataModel extends dataModel.DataModel, E extends events.BaseMethods> implements interfaces.StorageController {
 
   /*****************************************************************/
 
@@ -27,16 +25,16 @@ export default abstract class MongoController<FC extends any, SC extends interfa
     protected readonly Model: mongoose.Model<mongoose.Document>,
     protected readonly mapDetails: dataStructures.MapDetails,
     protected readonly checkThrow: moders.CheckThrow,
-    protected readonly makeConditions: internalMethods.MakeConditions<FC, QC>,
-    protected readonly makeSortCriteria: internalMethods.MakeSortCriteria<SC>,
-    protected readonly convertAddDetails: internalMethods.ConvertAddDetails<AD>,
-    protected readonly generateUpdateDetails: internalMethods.GenerateUpdateDetails<UD>,
-    protected readonly convertToAbstract: internalMethods.ConvertToAbstract<DMA>
+    protected readonly makeConditions: internalMethods.MakeConditions<FiltrationCriteria, QueryConditions>,
+    protected readonly makeSortCriteria: internalMethods.MakeSortCriteria<SortCriteria>,
+    protected readonly generateAddDetails: internalMethods.GenerateAddDetails<AddDetails>,
+    protected readonly generateUpdateDetails: internalMethods.GenerateUpdateDetails<UpdateDetails, Document>,
+    protected readonly convertToAbstract: internalMethods.ConvertToAbstract<Document, DataModel>
   ) { }
 
   /*****************************************************************/
 
-  readonly get = ( filtrationCriteria: FC, sortCriteria: SC, limit: number, forceThrow = false ): Promise<DMA> => {
+  readonly get = ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow = false ): Promise<DataModel[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -44,7 +42,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.makeConditions( filtrationCriteria );
 
       } )
-      .then(( conditions: QC ) => {
+      .then(( conditions: QueryConditions ) => {
 
         return this.makeSortCriteria( sortCriteria )
           .then(( sortString: string ) => {
@@ -57,7 +55,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
           } );
 
       } )
-      .then(( holder: { conditions: QC, sortString: string } ) => {
+      .then(( holder: { conditions: QueryConditions, sortString: string } ) => {
 
         return this.find( holder.conditions, holder.sortString, limit );
 
@@ -67,14 +65,14 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.convertToAbstract( foundDocuments );
 
       } )
-      .then(( convertedDocuments: DMA ) => {
+      .then(( convertedDocuments: DataModel[] ) => {
 
-        new Promise<DMA>(( resolve, reject ) => {
+        new Promise<DataModel[]>(( resolve, reject ) => {
           this.events.got( {
             filtrationCriteria: filtrationCriteria,
             sortCriteria: sortCriteria,
             limit: limit,
-            ids: ( convertedDocuments as dataModel.DataModel[] ).map(( document ) => {
+            ids: convertedDocuments.map(( document ) => {
               return document.id;
             } )
           } );
@@ -109,7 +107,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
 
   /*****************************************************************/
 
-  readonly getById = ( documentId: string, forceThrow = false ): Promise<DM> => {
+  readonly getById = ( documentId: string, forceThrow = false ): Promise<DataModel> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -122,7 +120,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.convertToAbstract( [ foundDocument ] );
 
       } )
-      .then(( convertedDocuments: DMA ) => {
+      .then(( convertedDocuments: DataModel[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.events.gotById( {
@@ -130,7 +128,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
           } );
         } );
 
-        return Promise.resolve( convertedDocuments[ 0 ] as DM );
+        return Promise.resolve( convertedDocuments[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -165,12 +163,12 @@ export default abstract class MongoController<FC extends any, SC extends interfa
 
   /*****************************************************************/
 
-  readonly addBatch = ( documents: AD[], forceThrow = false ): Promise<DMA> => {
+  readonly addBatch = ( documents: AddDetails[], forceThrow = false ): Promise<DataModel[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveMultipleDocuments( this.convertAddDetails( documents ) );
+        return this.saveMultipleDocuments( this.generateAddDetails( documents ) );
 
       } )
       .then(( addedDocuments: Document[] ) => {
@@ -178,7 +176,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.convertToAbstract( addedDocuments );
 
       } )
-      .then(( convertedDocuments: DMA ) => {
+      .then(( convertedDocuments: DataModel[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.events.added( {
@@ -213,12 +211,12 @@ export default abstract class MongoController<FC extends any, SC extends interfa
 
   /*****************************************************************/
 
-  readonly add = ( details: AD, forceThrow = false ): Promise<DM> => {
+  readonly add = ( details: AddDetails, forceThrow = false ): Promise<DataModel> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.saveDocument( this.convertAddDetails( [ details ] )[ 0 ] );
+        return this.saveDocument( this.generateAddDetails( [ details ] )[ 0 ] );
 
       } )
       .then(( addedDocument: Document ) => {
@@ -226,7 +224,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.convertToAbstract( [ addedDocument ] );
 
       } )
-      .then(( convertedDocuments: DMA ) => {
+      .then(( convertedDocuments: DataModel[] ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.events.added( {
@@ -235,7 +233,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
           resolve();
         } );
 
-        return Promise.resolve( convertedDocuments[ 0 ] as DM );
+        return Promise.resolve( convertedDocuments[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -261,7 +259,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
 
   /*****************************************************************/
 
-  readonly update = ( filtrationCriteria: FC, details: UD, forceThrow = false ): Promise<DMA> => {
+  readonly update = ( filtrationCriteria: FiltrationCriteria, details: UpdateDetails, forceThrow = false ): Promise<DataModel[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -300,7 +298,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.convertToAbstract( updatedDocuments );
 
       } )
-      .then(( updatedDocuments: DMA ) => {
+      .then(( updatedDocuments: DataModel[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.events.updated( {
@@ -337,7 +335,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
 
   /*****************************************************************/
 
-  readonly updateById = ( documentId: string, details: UD, forceThrow = false ): Promise<DM> => {
+  readonly updateById = ( documentId: string, details: UpdateDetails, forceThrow = false ): Promise<DataModel> => {
 
     let documentObjectId: mongoose.Types.ObjectId;
 
@@ -370,7 +368,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
         return this.convertToAbstract( [ updatedDocument ] );
 
       } )
-      .then(( convertedDocuments: DMA ) => {
+      .then(( convertedDocuments: DataModel[] ) => {
 
         new Promise<any>(( resolve, reject ) => {
           this.events.updated( {
@@ -380,7 +378,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
           resolve();
         } );
 
-        return Promise.resolve( convertedDocuments[ 0 ] as DM );
+        return Promise.resolve( convertedDocuments[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -407,7 +405,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
 
   /*****************************************************************/
 
-  readonly remove = ( filtrationCriteria: FC, forceThrow = false ): Promise<void> => {
+  readonly remove = ( filtrationCriteria: FiltrationCriteria, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -604,7 +602,7 @@ export default abstract class MongoController<FC extends any, SC extends interfa
           return reject( err );
         }
 
-        Promise.all( ( foundDocuments as Document[] ).map(( document ) => {
+        Promise.all(( foundDocuments as Document[] ).map(( document ) => {
 
           return new Promise<Document>(( resolve, reject ) => {
 

@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -18,7 +18,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
     days: number;
   };
 }
-export type Model_Partial = Partial<{
+export type PartialModel = Partial<{
   buyerName: string;
   card: Partial<CardInfo_Nuance>;
   user: Partial<mongoDB.UserInfo_Nuance>;
@@ -66,8 +66,8 @@ let airtimeSaleSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let AirtimeSaleMongooseModel = mongoose.model<Model>( "AirtimeSale", airtimeSaleSchema );
+let MongooseModel = mongoose.model<Model>( "AirtimeSale", airtimeSaleSchema );
 
-export { AirtimeSaleMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

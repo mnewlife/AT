@@ -1,7 +1,6 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -15,7 +14,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
   phoneNumber: string;
   password: string;
 }
-export type Model_Partial = Partial<Model>;
+export type PartialModel = Partial<Model>;
 
 /******************************************************************************/
 
@@ -34,8 +33,8 @@ let channelSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let ChannelMongooseModel = mongoose.model<Model>( "Channel", channelSchema );
+let MongooseModel = mongoose.model<Model>( "Channel", channelSchema );
 
-export { ChannelMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

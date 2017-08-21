@@ -26,11 +26,11 @@ export interface ClassInstance {
 }
 
 export interface StorageController {
-  get: publicMethods.Get<any, BaseSortCriteria, dataModel.DataModel[]>;
+  get: publicMethods.Get<any, BaseSortCriteria, dataModel.DataModel>;
   getById: publicMethods.GetById<dataModel.DataModel>;
-  addBatch: publicMethods.AddBatch<any, dataModel.DataModel[]>;
+  addBatch: publicMethods.AddBatch<any, dataModel.DataModel>;
   add: publicMethods.Add<any, dataModel.DataModel>;
-  update: publicMethods.Update<any, any, dataModel.DataModel[]>;
+  update: publicMethods.Update<any, any, dataModel.DataModel>;
   updateById: publicMethods.UpdateById<any, dataModel.DataModel>;
   remove: publicMethods.Remove<any>;
   removeById: publicMethods.RemoveById;
@@ -38,14 +38,14 @@ export interface StorageController {
 
 /******************************************************************************/
 
-export interface Generate<FC, SC extends BaseSortCriteria, AD, UD, DM extends dataModel.ModelRange, DMA extends dataModel.ModelArrayRange> extends StorageController {
-  get: publicMethods.Get<FC, SC, DMA>;
-  getById: publicMethods.GetById<DM>;
-  addBatch: publicMethods.AddBatch<AD, DMA>;
-  add: publicMethods.Add<AD, DM>;
-  update: publicMethods.Update<FC, UD, DMA>;
-  updateById: publicMethods.UpdateById<UD, DM>;
-  remove: publicMethods.Remove<FC>;
+export interface Generate<FiltrationCriteria, SortCriteria extends BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends StorageController {
+  get: publicMethods.Get<FiltrationCriteria, SortCriteria, DataModel>;
+  getById: publicMethods.GetById<DataModel>;
+  addBatch: publicMethods.AddBatch<AddDetails, DataModel>;
+  add: publicMethods.Add<AddDetails, DataModel>;
+  update: publicMethods.Update<FiltrationCriteria, UpdateDetails, DataModel>;
+  updateById: publicMethods.UpdateById<UpdateDetails, DataModel>;
+  remove: publicMethods.Remove<FiltrationCriteria>;
   removeById: publicMethods.RemoveById;
 }
 

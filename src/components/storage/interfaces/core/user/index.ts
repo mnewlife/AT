@@ -9,8 +9,12 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.user.Super, dataModel.core.user.Super[]>;
-export type Events = eventGenerator.Generate<"Core|User", FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.user.Super[]>;
+export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.user.Super>;
+export type Events = eventGenerator.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.user.Super>;
+
+/******************************************************************************/
+
+export type Context = "Core|User";
 
 /******************************************************************************/
 

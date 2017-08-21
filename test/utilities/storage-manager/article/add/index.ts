@@ -20,7 +20,7 @@ let logger = require( "tracer" ).colorConsole();
 
 /******************************************************************************/
 
-describe( "Article ADD" , function () : void {
+describe( "Article AddDetailsD" , function () : void {
 
   this.timeout( 2000 );
 

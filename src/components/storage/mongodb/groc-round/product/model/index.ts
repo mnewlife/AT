@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -16,7 +16,7 @@ export interface Model_Nuance extends mongoDB.Document {
   effectivePrice: PriceValue
 }
 
-export type Model_Partial = Partial<{
+export type PartialModel = Partial<{
   label: string;
   images: string[];
   priceValues: PriceValues_Partial;
@@ -88,8 +88,8 @@ let productSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let ProductMongooseModel = mongoose.model<Model>( "Product", productSchema );
+let MongooseModel = mongoose.model<Model>( "Product", productSchema );
 
-export { ProductMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

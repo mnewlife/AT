@@ -9,8 +9,12 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.call263.airtimeTransfer.Super, dataModel.call263.airtimeTransfer.Super[]>;
-export type Events = eventGenerator.Generate<"Call263|AirtimeTransfer", FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.call263.airtimeTransfer.Super[]>;
+export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.call263.airtimeTransfer.Super>;
+export type Events = eventGenerator.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.call263.airtimeTransfer.Super>;
+
+/******************************************************************************/
+
+export type Context = "Call263|AirtimeTransfer";
 
 /******************************************************************************/
 

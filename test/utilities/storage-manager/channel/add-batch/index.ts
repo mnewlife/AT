@@ -20,7 +20,7 @@ let logger = require( "tracer" ).colorConsole();
 
 /******************************************************************************/
 
-describe( "Channel ADD-BATCH" , function () : void {
+describe( "Channel AddDetailsD-BATCH" , function () : void {
 
   this.timeout( 2000 );
 

@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -18,7 +18,7 @@ export interface Model_Nuance extends mongoDB.Document {
   newCount: number;
   amount: number;
 }
-export interface Model_Partial extends Partial<Pick<Model, "initialCount" | "newCount" | "amount">> {
+export interface PartialModel extends Partial<Pick<Model, "initialCount" | "newCount" | "amount">> {
   mdnRange?: Partial<Model[ "mdnRange" ]>;
 };
 
@@ -41,8 +41,8 @@ let newCardStockSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let NewCardStockMongooseModel = mongoose.model<Model>( "NewCardStock", newCardStockSchema );
+let MongooseModel = mongoose.model<Model>( "NewCardStock", newCardStockSchema );
 
-export { NewCardStockMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

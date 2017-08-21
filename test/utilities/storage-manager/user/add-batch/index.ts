@@ -19,7 +19,7 @@ import prep from "./prep/index";
 
 /******************************************************************************/
 
-describe( "User ADD-BATCH" , function () : void {
+describe( "User AddDetailsD-BATCH" , function () : void {
 
   this.timeout( 2000 );
 

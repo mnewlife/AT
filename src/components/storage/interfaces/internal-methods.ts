@@ -7,32 +7,32 @@ import * as storage from "./index";
 
 /******************************************************************************/
 
-export interface MakeConditions<FC, QC> {
-  ( filtrationCriteria: FC ): Promise<QC>;
+export interface MakeConditions<FiltrationCriteria, QueryConditions> {
+  ( filtrationCriteria: FiltrationCriteria ): Promise<QueryConditions>;
 }
 
 /*****************************************************************/
 
-export interface MakeSortCriteria<SC extends storage.BaseSortCriteria> {
-  ( sortCriteria: SC ): Promise<string>;
+export interface MakeSortCriteria<SortCriteria extends storage.BaseSortCriteria> {
+  ( sortCriteria: SortCriteria ): Promise<string>;
 }
 
 /*****************************************************************/
 
-export interface ConvertAddDetails<AD> {
-  ( documents: AD[] ): any[];
+export interface GenerateAddDetails<AddDetails> {
+  ( documents: AddDetails[] ): any[];
 }
 
 /*****************************************************************/
 
-export interface GenerateUpdateDetails<UD> {
-  ( document: any, details: UD ): Promise<any>;
+export interface GenerateUpdateDetails<UpdateDetails, ImplementationDocument> {
+  ( document: ImplementationDocument, details: UpdateDetails ): Promise<ImplementationDocument>;
 }
 
 /*****************************************************************/
 
-export interface ConvertToAbstract<DMA> {
-  ( documents: any[] ): Promise<DMA>;
+export interface ConvertToAbstract<ImplementationDocument, AbstractDocument extends dataModel.DataModel> {
+  ( documents: ImplementationDocument[] ): Promise<AbstractDocument[]>;
 }
 
 /*****************************************************************/

@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -14,7 +14,7 @@ export interface Model_Nuance extends mongoDB.Document {
   newBalance: number;
   amount: number;
 }
-export type Model_Partial = Partial<Model_Nuance>;
+export type PartialModel = Partial<Model_Nuance>;
 
 /******************************************************************************/
 
@@ -31,8 +31,8 @@ let newAirtimeStockSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let NewAirtimeStockMongooseModel = mongoose.model<Model>( "NewAirtimeStock", newAirtimeStockSchema );
+let MongooseModel = mongoose.model<Model>( "NewAirtimeStock", newAirtimeStockSchema );
 
-export { NewAirtimeStockMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/

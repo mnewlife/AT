@@ -27,8 +27,8 @@ type IStorage = {
   }
 }
 
-type Maker<FC, SC, DM, AD, UD> = {
-  get: ( filtrationCriteria: FC, sortCriteria: SC, limit: number, forceThrow?: boolean ) => Promise<DM[]>
+type Maker<FiltrationCriteria, SortCriteria, DataModelRange, AddDetails, UpdateDetails> = {
+  get: ( filtrationCriteria: FiltrationCriteria, sortCriteria: SortCriteria, limit: number, forceThrow?: boolean ) => Promise<DataModelRange[]>
 }
 
 /******************************************************************************/

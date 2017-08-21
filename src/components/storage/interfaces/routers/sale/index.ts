@@ -9,8 +9,12 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.routers.sale.Super, dataModel.routers.sale.Super[]>;
-export type Events = eventGenerator.Generate<"Routers|Sale", FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.routers.sale.Super[]>;
+export type ClassInstance = storage.Generate<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.routers.sale.Super>;
+export type Events = eventGenerator.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.routers.sale.Super>;
+
+/******************************************************************************/
+
+export type Context = "Routers|Sale";
 
 /******************************************************************************/
 

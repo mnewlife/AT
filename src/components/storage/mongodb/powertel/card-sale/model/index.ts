@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 import * as mongoose from "mongoose";
-import * as src from "../../../../../../src";
+
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import { ignoreEmpty } from "../../../preparation";
@@ -18,7 +18,7 @@ export interface Model_Nuance extends mongoDB.Document {
     routerType?: string;
   };
 }
-export type Model_Partial = Partial<Model_Nuance>;
+export type PartialModel = Partial<Model_Nuance>;
 
 /******************************************************************************/
 
@@ -39,8 +39,8 @@ let cardSaleSchema = new mongoose.Schema( {
 
 /******************************************************************************/
 
-let CardSaleMongooseModel = mongoose.model<Model>( "CardSale", cardSaleSchema );
+let MongooseModel = mongoose.model<Model>( "CardSale", cardSaleSchema );
 
-export { CardSaleMongooseModel };
+export { MongooseModel };
 
 /******************************************************************************/
