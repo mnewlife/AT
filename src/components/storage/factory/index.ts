@@ -1,28 +1,22 @@
 /******************************************************************************/
 
-import * as eventListener from "../../../event-listener/interfaces";
+import * as EventListener from "../../../event-listener/interfaces";
+import * as DataStructures from "../../helpers/data-structures/interfaces";
+import * as Moders from "../../helpers/moders/interfaces";
 
-import * as authentication from "../../../components/authentication/interfaces";
-import * as storage from "../../../components/storage/interfaces";
-
-import mongodb from "../mongodb";
+import * as interfaces from "../interfaces";
 
 /******************************************************************************/
 
 export default (
+  Storage: interfaces.Constructor,
+  emitEvent: EventListener.Emit,
+  mapDetails: DataStructures.MapDetails,
+  checkThrow: Moders.CheckThrow
+): interfaces.ClassInstance => {
 
-  authenticationClass: string,
+  return new Storage( emitEvent, mapDetails, checkThrow );
 
-  emit: eventListener.Emit,
-  getUserFromStorage: storage.core.user.Get,
-  getUserByIdFromStorage: storage.core.user.GetById,
-  setCurrentUserInSession: session.SetCurrentUser,
-  getCurrentUserFromSession: session.GetCurrentUser,
-  signOutOfSession: session.SignOut,
-  checkThrow: helpers.moders.CheckThrow
-
-): src.components.Authentication => {
-  return canonAuthenticationFactory( params );
 }
 
 /******************************************************************************/

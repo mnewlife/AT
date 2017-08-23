@@ -3,12 +3,15 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as src from "../../../../src";
-import * as storageInterfaces from "../../../../src/components/storage";
+import * as EventListener from "../../../../event-listener/interfaces";
+import * as DataStructures from "../../../helpers/data-structures/interfaces";
+import * as Moders from "../../../helpers/moders/interfaces";
 
-import priceFactory from "./price";
-import productFactory from "./product";
-import shopFactory from "./shop";
+import * as interfaces from "../../interfaces/groc-round";
+
+import price from "./price";
+import product from "./product";
+import shop from "./shop";
 
 /******************************************************************************/
 
@@ -26,25 +29,15 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class GrocRound implements src.components.storage.GrocRound {
-
-  readonly price: storageInterfaces.grocRound.Price;
-  readonly product: storageInterfaces.grocRound.Product;
-  readonly shop: storageInterfaces.grocRound.Shop;
+class GrocRound implements interfaces.ClassInstance {
 
   /*****************************************************************/
 
-  constructor( params: {
-    price: storageInterfaces.grocRound.Price;
-    product: storageInterfaces.grocRound.Product;
-    shop: storageInterfaces.grocRound.Shop;
-  } ) {
-
-    this.price = params.price;
-    this.product = params.product;
-    this.shop = params.shop;
-
-  }
+  constructor(
+    readonly price: interfaces.price.ClassInstance,
+    readonly product: interfaces.product.ClassInstance,
+    readonly shop: interfaces.shop.ClassInstance
+  ) { }
 
   /*****************************************************************/
 
@@ -52,19 +45,17 @@ class GrocRound implements src.components.storage.GrocRound {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): src.components.storage.GrocRound => {
+export default (
+  emitEvent: EventListener.Emit,
+  mapDetails: DataStructures.MapDetails,
+  checkThrow: Moders.CheckThrow
+): interfaces.ClassInstance => {
 
-  let commonParams = ( {
-    emitEvent: config.eventManager.emit,
-    mapDetails: config.components.sharedLogic.dataStructures.mapDetails,
-    checkThrow: config.components.sharedLogic.moders.checkThrow
-  } );
-
-  return new GrocRound( {
-    price: priceFactory( commonParams ),
-    product: productFactory( commonParams ),
-    shop: shopFactory( commonParams )
-  } );
+  return new GrocRound(
+    price( emitEvent, mapDetails, checkThrow ),
+    product( emitEvent, mapDetails, checkThrow ),
+    shop( emitEvent, mapDetails, checkThrow )
+  );
 
 };
 

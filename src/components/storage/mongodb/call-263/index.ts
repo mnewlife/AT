@@ -3,12 +3,15 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as src from "../../../../src";
-import * as storageInterfaces from "../../../../src/components/storage";
+import * as EventListener from "../../../../event-listener/interfaces";
+import * as DataStructures from "../../../helpers/data-structures/interfaces";
+import * as Moders from "../../../helpers/moders/interfaces";
 
-import airtimePaymentFactory from "./airtime-payment";
-import airtimeTransferFactory from "./airtime-transfer";
-import channelFactory from "./channel";
+import * as interfaces from "../../interfaces/call-263";
+
+import airtimePayment from "./airtime-payment";
+import airtimeTransfer from "./airtime-transfer";
+import channel from "./channel";
 
 /******************************************************************************/
 
@@ -26,25 +29,15 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class Call263 implements src.components.storage.Call263 {
-
-  readonly airtimePayment: storageInterfaces.call263.AirtimePayment;
-  readonly airtimeTransfer: storageInterfaces.call263.AirtimeTransfer;
-  readonly channel: storageInterfaces.call263.Channel;
+class Call263 implements interfaces.ClassInstance {
 
   /*****************************************************************/
 
-  constructor( params: {
-    airtimePayment: storageInterfaces.call263.AirtimePayment;
-    airtimeTransfer: storageInterfaces.call263.AirtimeTransfer;
-    channel: storageInterfaces.call263.Channel;
-  } ) {
-
-    this.airtimePayment = params.airtimePayment;
-    this.airtimeTransfer = params.airtimeTransfer;
-    this.channel = params.channel;
-
-  }
+  constructor(
+    readonly airtimePayment: interfaces.airtimePayment.ClassInstance,
+    readonly airtimeTransfer: interfaces.airtimeTransfer.ClassInstance,
+    readonly channel: interfaces.channel.ClassInstance
+  ) { }
 
   /*****************************************************************/
 
@@ -52,19 +45,17 @@ class Call263 implements src.components.storage.Call263 {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): src.components.storage.Call263 => {
+export default (
+  emitEvent: EventListener.Emit,
+  mapDetails: DataStructures.MapDetails,
+  checkThrow: Moders.CheckThrow
+): interfaces.ClassInstance => {
 
-  let commonParams = ( {
-    emitEvent: config.eventManager.emit,
-    mapDetails: config.components.sharedLogic.dataStructures.mapDetails,
-    checkThrow: config.components.sharedLogic.moders.checkThrow
-  } );
-
-  return new Call263( {
-    airtimePayment: airtimePaymentFactory( commonParams ),
-    airtimeTransfer: airtimeTransferFactory( commonParams ),
-    channel: channelFactory( commonParams )
-  } );
+  return new Call263(
+    airtimePayment( emitEvent, mapDetails, checkThrow ),
+    airtimeTransfer( emitEvent, mapDetails, checkThrow ),
+    channel( emitEvent, mapDetails, checkThrow )
+  );
 
 };
 

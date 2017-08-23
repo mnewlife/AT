@@ -3,11 +3,14 @@
 import * as Promise from "bluebird";
 import * as mongoose from "mongoose";
 
-import * as src from "../../../../src";
-import * as storageInterfaces from "../../../../src/components/storage";
+import * as EventListener from "../../../../event-listener/interfaces";
+import * as DataStructures from "../../../helpers/data-structures/interfaces";
+import * as Moders from "../../../helpers/moders/interfaces";
 
-import eventFactory from "./event";
-import userFactory from "./user";
+import * as interfaces from "../../interfaces/core";
+
+import event from "./event";
+import user from "./user";
 
 /******************************************************************************/
 
@@ -25,22 +28,14 @@ export type UserInfo_Partial = Partial<UserInfo>;
 
 /******************************************************************************/
 
-class Core implements src.components.storage.Core {
-
-  readonly event: storageInterfaces.core.Event;
-  readonly user: storageInterfaces.core.User;
+class Core implements interfaces.ClassInstance {
 
   /*****************************************************************/
 
-  constructor( params: {
-    event: storageInterfaces.core.Event;
-    user: storageInterfaces.core.User;
-  } ) {
-
-    this.event = params.event;
-    this.user = params.user;
-
-  }
+  constructor(
+    readonly event: interfaces.event.ClassInstance,
+    readonly user: interfaces.user.ClassInstance
+  ) { }
 
   /*****************************************************************/
 
@@ -48,18 +43,16 @@ class Core implements src.components.storage.Core {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): src.components.storage.Core => {
+export default (
+  emitEvent: EventListener.Emit,
+  mapDetails: DataStructures.MapDetails,
+  checkThrow: Moders.CheckThrow
+): interfaces.ClassInstance => {
 
-  let commonParams = ( {
-    emitEvent: config.eventManager.emit,
-    mapDetails: config.components.sharedLogic.dataStructures.mapDetails,
-    checkThrow: config.components.sharedLogic.moders.checkThrow
-  } );
-
-  return new Core( {
-    event: eventFactory( commonParams ),
-    user: userFactory( commonParams )
-  } );
+  return new Core(
+    event( emitEvent, mapDetails, checkThrow ),
+    user( emitEvent, mapDetails, checkThrow )
+  );
 
 };
 

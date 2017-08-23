@@ -15,22 +15,9 @@ import eventsFactory from "./events";
 
 /******************************************************************************/
 
-class BasicAuthentication implements src.components.Authentication {
+class Canon implements interfaces.Authentication {
 
   middleware: express.RequestHandler[] = [];
-
-  /*****************************************************************/
-
-  private readonly events: authenticationInterfaces.Events;
-
-  private readonly getUserFromStorage: storageInterfaces.core.user.Get;
-  private readonly getUserByIdFromStorage: storageInterfaces.core.user.GetById;
-
-  private readonly setCurrentUserInSession: sessionInterfaces.SetCurrentUser;
-  private readonly getCurrentUserFromSession: sessionInterfaces.GetCurrentUser;
-  private readonly signOutOfSession: sessionInterfaces.SignOut;
-
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
 
   /*****************************************************************/
 
@@ -44,14 +31,19 @@ class BasicAuthentication implements src.components.Authentication {
 
   /*****************************************************************/
 
-  constructor( params: authenticationInterfaces.Params ) {
-    this.events = params.events;
-    this.getUserFromStorage = params.getUserFromStorage;
-    this.getUserByIdFromStorage = params.getUserByIdFromStorage;
-    this.setCurrentUserInSession = params.setCurrentUserInSession;
-    this.getCurrentUserFromSession = params.getCurrentUserFromSession;
-    this.signOutOfSession = params.signOutOfSession;
-    this.checkThrow = params.checkThrow;
+  constructor(
+    private readonly events: authenticationInterfaces.Events,
+    
+    private readonly getUserFromStorage: storageInterfaces.core.user.Get,
+    private readonly getUserByIdFromStorage: storageInterfaces.core.user.GetById,
+    
+    private readonly setCurrentUserInSession: sessionInterfaces.SetCurrentUser,
+    private readonly getCurrentUserFromSession: sessionInterfaces.GetCurrentUser,
+    private readonly signOutOfSession: sessionInterfaces.SignOut,
+    
+    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow
+  ) {
+
   }
 
   /*****************************************************************/
@@ -342,7 +334,7 @@ export default ( params: {
     signOutOfSession: params.signOutOfSession,
     checkThrow: params.checkThrow
   } );
-  
+
 }
 
 /******************************************************************************/

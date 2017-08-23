@@ -4,32 +4,43 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as expressSession from "express-session";
 
-import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as storageInterfaces from "../../../src/components/storage";
-import * as sessionInterfaces from "../../../src/components/session";
-import * as sharedLogicInterfaces from "../../../src/components/shared-logic";
+import * as dataModel from "../../../data-model";
+import * as EventListener from "../../../event-listener";
+import * as Storage from "../../storage/interfaces";
+import * as Moders from "../../helpers/moders/interfaces";
 
-import eventsFactory from "./events";
+import * as interfaces from "../interfaces";
+import * as Events from "../events/interfaces";
 
 /******************************************************************************/
 
-class BasicSession implements src.components.Session {
+export default class Canon implements interfaces.ClassInstance {
 
   middleware: express.RequestHandler[] = [];
 
-  private readonly events: sessionInterfaces.Events;
-  private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-  private readonly getUserById: storageInterfaces.core.user.GetById;
-  private readonly production: boolean;
+  middlewareConfiguration: express.RequestHandler;
 
   /*****************************************************************/
 
-  constructor( params: sessionInterfaces.Params ) {
-    this.events = params.events;
-    this.checkThrow = params.checkThrow;
-    this.getUserById = params.getUserById;
-    let attemptSession = function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
+  constructor(
+    private readonly events: Events.ClassInstance,
+    private readonly checkThrow: Moders.CheckThrow,
+    private readonly getUserById: Storage.core.user.ClassInstance[ "getById" ],
+    private readonly production: boolean
+  ) {
+
+    this.middlewareConfiguration = expressSession( {
+      name: "Athena",
+      secret: "secregrandt",
+      resave: true,
+      saveUninitialized: true,
+      cookie: {
+        secure: ( this.production ) ? true : false,
+        httpOnly: true
+      }
+    } );
+
+    this.middleware.push(( req: express.Request, res: express.Response, next: express.NextFunction ) => {
       if ( req.session ) {
         return next();
       }
@@ -47,12 +58,11 @@ class BasicSession implements src.components.Session {
         if ( tryCount > maxTries ) {
           throw new Error( "Session: Couldn't retain session" );
         }
-        params.middlewareConfiguration( req, res, lookupSession );
+        this.middlewareConfiguration( req, res, lookupSession );
       }
 
       lookupSession( "" );
-    }
-    this.middleware.push( attemptSession );
+    } );
   }
 
   /*****************************************************************/
@@ -138,9 +148,9 @@ class BasicSession implements src.components.Session {
       .then(( response: any ) => {
 
         if ( req.session.userId ) {
-          
+
           return this.getUserById( req.session.userId );
-          
+
         } else {
 
           new Promise<void>(( resolve, reject ) => {
@@ -189,36 +199,6 @@ class BasicSession implements src.components.Session {
   }
 
   /*****************************************************************/
-
-}
-
-/******************************************************************************/
-
-export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit;
-  production: boolean;
-  getUserById: storageInterfaces.core.user.GetById;
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow;
-} ): src.components.Session => {
-
-  let middlewareConfiguration: express.RequestHandler = expressSession( {
-    name: "AllThings263",
-    secret: "secregrandt",
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      secure: ( params.production ) ? true : false,
-      httpOnly: true
-    }
-  } );
-
-  return new BasicSession( {
-    events: eventsFactory( params.emitEvent ),
-    production: params.production,
-    getUserById: params.getUserById,
-    middlewareConfiguration: middlewareConfiguration,
-    checkThrow: params.checkThrow
-  } );
 
 }
 

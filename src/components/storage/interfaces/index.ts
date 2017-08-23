@@ -2,6 +2,10 @@
 
 import * as Promise from "bluebird";
 
+import * as eventListener from "../../../event-listener/interfaces";
+import * as dataStructures from "../../helpers/data-structures/interfaces";
+import * as moders from "../../helpers/moders/interfaces";
+
 import * as dataModel from "../../../data-model";
 import * as publicMethods from "./public-methods";
 
@@ -23,6 +27,10 @@ export interface ClassInstance {
   readonly grocRound: grocRound.ClassInstance;
   readonly powertel: powertel.ClassInstance;
   readonly routers: routers.ClassInstance;
+}
+
+export interface Constructor {
+  new( emitEvent: eventListener.Emit, mapDetails: dataStructures.MapDetails, checkThrow: moders.CheckThrow ): ClassInstance;
 }
 
 export interface StorageController {

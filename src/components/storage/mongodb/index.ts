@@ -4,60 +4,46 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as mongoose from "mongoose";
 
-import * as Components from "../../interfaces";
+import * as EventListener from "../../../event-listener/interfaces";
+import * as DataStructures from "../../helpers/data-structures/interfaces";
+import * as Moders from "../../helpers/moders/interfaces";
 
-import * as Storage from "../interfaces";
+import * as interfaces from "../interfaces";
 
-import call263Factory from "./call-263";
-import coreFactory from "./core";
-import grocRoundFactory from "./groc-round";
-import powertelFactory from "./powertel";
-import routersFactory from "./routers";
-
-/******************************************************************************/
-
-export interface Document {
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserInfo_Nuance extends Document {
-  userId: mongoose.Types.ObjectId;
-  emailAddress: string;
-  fullName: string;
-}
-export interface UserInfo extends UserInfo_Nuance, mongoose.Document { }
+import call263 from "./call-263";
+import core from "./core";
+import grocRound from "./groc-round";
+import powertel from "./powertel";
+import routers from "./routers";
 
 /******************************************************************************/
 
-class MongodbStorage implements Components.Storage {
+export default class MongoDB implements interfaces.ClassInstance {
 
-  readonly call263: Storage.Call263;
-  readonly core: Storage.Core;
-  readonly grocRound: Storage.GrocRound;
-  readonly powertel: Storage.Powertel;
-  readonly routers: Storage.Routers;
+  readonly core: interfaces.core.ClassInstance;
+  readonly call263: interfaces.call263.ClassInstance;
+  readonly grocRound: interfaces.grocRound.ClassInstance;
+  readonly powertel: interfaces.powertel.ClassInstance;
+  readonly routers: interfaces.routers.ClassInstance;
 
   readonly middleware: express.RequestHandler[] = [];
+  private linkToDB = "";
 
   /*****************************************************************/
 
-  constructor( params: {
-    linkToDB: string;
-    call263: Storage.Call263;
-    core: Storage.Core;
-    grocRound: Storage.GrocRound;
-    powertel: Storage.Powertel;
-    routers: Storage.Routers;
-  } ) {
+  constructor(
+    emitEvent: EventListener.Emit,
+    mapDetails: DataStructures.MapDetails,
+    checkThrow: Moders.CheckThrow
+  ) {
 
-    this.connectToDatabase( params.linkToDB );
+    this.connectToDatabase( this.linkToDB );
 
-    this.call263 = params.call263;
-    this.core = params.core;
-    this.grocRound = params.grocRound;
-    this.powertel = params.powertel;
-    this.routers = params.routers;
+    this.core = core( emitEvent, mapDetails, checkThrow );
+    this.call263 = call263( emitEvent, mapDetails, checkThrow );
+    this.grocRound = grocRound( emitEvent, mapDetails, checkThrow );
+    this.powertel = powertel( emitEvent, mapDetails, checkThrow );
+    this.routers = routers( emitEvent, mapDetails, checkThrow );
 
   }
 
@@ -77,25 +63,5 @@ class MongodbStorage implements Components.Storage {
   /*****************************************************************/
 
 }
-
-/******************************************************************************/
-
-export default ( config: src.Config ): Components.Storage => {
-
-  let productionLink = "mongodb://AllanSimoyi:tatenda#1@ds157499.mlab.com:57499/ximex";
-  let developmentLink = "mongodb://127.0.0.1:27017/Ximex";
-
-  return new MongodbStorage( {
-    linkToDB: ( config.environment.production ? productionLink : developmentLink ),
-
-    call263: call263Factory( config ),
-    core: coreFactory( config ),
-    grocRound: grocRoundFactory( config ),
-    powertel: powertelFactory( config ),
-    routers: routersFactory( config )
-
-  } );
-
-};
 
 /******************************************************************************/
