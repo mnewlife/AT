@@ -1,30 +1,43 @@
 /******************************************************************************/
 
-import * as src from "../../src";
-import * as eventManagerInterfaces from "../../src/setup-config/event-manager";
+import * as eventListener from "../../event-listener/interfaces";
+import * as moders from "../helpers/moders/interfaces";
+import * as session from "../session/interfaces";
+import * as storageUser from "../storage/interfaces/core/user";
 
-import * as authenticationInterfaces from "../../src/components/authentication";
-import * as storageInterfaces from "../../src/components/storage";
-import * as sessionInterfaces from "../../src/components/session";
+import * as interfaces from "./interfaces";
 
-import canonAuthenticationFactory from "./canon";
+import Canon from "./canon";
+import Events from "./events";
+
+import factory from "./factory";
 
 /******************************************************************************/
 
 export default (
+  emitEvent: eventListener.Emit,
+  checkThrow: moders.CheckThrow,
+  getUsers: storageUser.ClassInstance[ "get" ],
+  getUserById: storageUser.ClassInstance[ "getById" ],
+  setUserInSession: session.SetCurrentUser,
+  getUserFromSession: session.GetCurrentUser,
+  signOutOfSession: session.SignOut
+): interfaces.ClassInstance => {
 
-  authenticationClass: string,
+  return factory(
+    Canon,
+    new Events( emitEvent ),
+    checkThrow,
+    getUsers,
+    getUserById,
+    setUserInSession,
+    getUserFromSession,
+    signOutOfSession
+  );
 
-  emit: eventManagerInterfaces.Emit,
-  getUserFromStorage: storageInterfaces.core.user.Get,
-  getUserByIdFromStorage: storageInterfaces.core.user.GetById,
-  setCurrentUserInSession: sessionInterfaces.SetCurrentUser,
-  getCurrentUserFromSession: sessionInterfaces.GetCurrentUser,
-  signOutOfSession: sessionInterfaces.SignOut,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-
-): src.components.Authentication => {
-  return canonAuthenticationFactory( params );
 }
+
+/******************************************************************************/
+
 
 /******************************************************************************/

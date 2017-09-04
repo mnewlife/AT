@@ -1,20 +1,27 @@
 /******************************************************************************/
 
-import * as src from "../../src";
-import basicSessionFactory from "./basic";
+import * as eventListener from "../../event-listener/interfaces";
+import * as moders from "../helpers/moders/interfaces";
+import * as storageUser from "../storage/interfaces/core/user";
+
+import * as interfaces from "./interfaces";
+
+import Canon from "./canon";
+import Events from "./events";
+
+import factory from "./factory";
 
 /******************************************************************************/
 
-export default ( params: {
-  emitEvent: src.setupConfig.eventManager.Emit;
-  production: boolean;
-  checkThrow: src.components.sharedLogic.moders.CheckThrow;
-} ): src.components.Session => {
-  return basicSessionFactory( {
-    emitEvent: params.emitEvent,
-    production: params.production,
-    checkThrow: params.checkThrow
-  } );
+export default (
+  emitEvent: eventListener.Emit,
+  checkThrow: moders.CheckThrow,
+  getUserById: storageUser.ClassInstance[ "getById" ],
+  production: boolean
+): interfaces.ClassInstance => {
+  
+  return factory( Canon, new Events( emitEvent ), checkThrow, getUserById, production );
+  
 }
 
 /******************************************************************************/

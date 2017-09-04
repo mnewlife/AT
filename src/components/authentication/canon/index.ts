@@ -4,18 +4,19 @@ import * as Promise from "bluebird";
 import * as express from "express";
 import * as bCrypt from "bcrypt-nodejs";
 
-import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as authenticationInterfaces from "../../../src/components/authentication";
-import * as sharedLogicInterfaces from "../../../src/components/shared-logic";
-import * as sessionInterfaces from "../../../src/components/session";
-import * as storageInterfaces from "../../../src/components/storage";
+import * as dataModel from "../../../data-model";
+import * as eventListener from "../../../event-listener";
+import * as moders from "../../helpers/moders/interfaces";
+import * as session from "../../session/interfaces";
+import * as storageUser from "../../storage/interfaces/core/user";
 
-import eventsFactory from "./events";
+import * as interfaces from "../interfaces";
+
+import * as Events from "../events/interfaces";
 
 /******************************************************************************/
 
-class Canon implements interfaces.Authentication {
+export default class Canon implements interfaces.ClassInstance {
 
   middleware: express.RequestHandler[] = [];
 
@@ -32,19 +33,17 @@ class Canon implements interfaces.Authentication {
   /*****************************************************************/
 
   constructor(
-    private readonly events: authenticationInterfaces.Events,
-    
-    private readonly getUserFromStorage: storageInterfaces.core.user.Get,
-    private readonly getUserByIdFromStorage: storageInterfaces.core.user.GetById,
-    
-    private readonly setCurrentUserInSession: sessionInterfaces.SetCurrentUser,
-    private readonly getCurrentUserFromSession: sessionInterfaces.GetCurrentUser,
-    private readonly signOutOfSession: sessionInterfaces.SignOut,
-    
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow
-  ) {
+    private readonly events: Events.ClassInstance,
+    private readonly checkThrow: moders.CheckThrow,
 
-  }
+    private readonly getUsers: storageUser.ClassInstance[ "get" ],
+    private readonly getUserById: storageUser.ClassInstance[ "getById" ],
+
+    private readonly setUserInSession: session.SetCurrentUser,
+    private readonly getUserFromSession: session.GetCurrentUser,
+    private readonly signOutOfSession: session.SignOut
+
+  ) { }
 
   /*****************************************************************/
 
@@ -53,7 +52,7 @@ class Canon implements interfaces.Authentication {
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.getUserFromStorage( {
+        return this.getUsers( {
           emailAddress: emailAddress
         }, null, null );
 
@@ -87,22 +86,19 @@ class Canon implements interfaces.Authentication {
       } )
       .then(( authenticUser: dataModel.core.user.Super ) => {
 
-        return this.setCurrentUserInSession( authenticUser, req )
-          .then(( sessionedUser: dataModel.core.user.Super ) => {
-            return Promise.resolve( sessionedUser );
+        return this.setUserInSession( authenticUser.id, req )
+          .then(( response: any ) => {
+
+            new Promise<void>(( resolve, reject ) => {
+              this.events.signedIn( {
+                user: authenticUser
+              } );
+              resolve();
+            } );
+
+            return Promise.resolve( authenticUser );
+
           } );
-
-      } )
-      .then(( signedInUser: dataModel.core.user.Super ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.signedIn( {
-            user: signedInUser
-          } );
-          resolve();
-        } );
-
-        return Promise.resolve( signedInUser );
 
       } )
       .catch(( reason: any ) => {
@@ -179,10 +175,9 @@ class Canon implements interfaces.Authentication {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        return this.getCurrentUserFromSession( req );
-      } )
-      .then(( currentUser: dataModel.core.user.Super ) => {
-        return Promise.resolve( currentUser );
+
+        return this.getUserFromSession( req );
+
       } )
       .catch(( reason: any ) => {
 
@@ -217,7 +212,9 @@ class Canon implements interfaces.Authentication {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        return this.getUserByIdFromStorage( userId );
+
+        return this.getUserById( userId );
+
       } )
       .then(( foundUser: dataModel.core.user.Super ) => {
 
@@ -282,8 +279,7 @@ class Canon implements interfaces.Authentication {
 
         return new Promise<any>(( resolve, reject ) => {
           try {
-            let hashedPassword: string = this.createHash( password );
-            resolve( hashedPassword );
+            resolve( this.createHash( password ) );
           } catch ( err ) {
             reject( err );
           }
@@ -310,30 +306,6 @@ class Canon implements interfaces.Authentication {
   }
 
   /*****************************************************************/
-
-}
-
-/******************************************************************************/
-
-export default ( params: {
-  emit: eventManagerInterfaces.Emit;
-  getUserFromStorage: storageInterfaces.core.user.Get;
-  getUserByIdFromStorage: storageInterfaces.core.user.GetById,
-  setCurrentUserInSession: sessionInterfaces.SetCurrentUser;
-  getCurrentUserFromSession: sessionInterfaces.GetCurrentUser;
-  signOutOfSession: sessionInterfaces.SignOut;
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow
-} ): src.components.Authentication => {
-
-  return new BasicAuthentication( {
-    events: eventsFactory( params.emit ),
-    getUserFromStorage: params.getUserFromStorage,
-    getUserByIdFromStorage: params.getUserByIdFromStorage,
-    setCurrentUserInSession: params.setCurrentUserInSession,
-    getCurrentUserFromSession: params.getCurrentUserFromSession,
-    signOutOfSession: params.signOutOfSession,
-    checkThrow: params.checkThrow
-  } );
 
 }
 

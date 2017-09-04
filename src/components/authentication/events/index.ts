@@ -1,17 +1,21 @@
 /******************************************************************************/
 
-import * as events from "../../../../src/components/authentication/events";
-import * as authentication from "../../../../src/components/authentication";
-import * as eventManager from "../../../../src/setup-config/event-manager";
+import * as eventListener from "../../../event-listener/interfaces";
+
+import * as interfaces from "./interfaces";
 
 /******************************************************************************/
 
-class AuthenticationEvents implements authentication.Events {
+export default class Events implements interfaces.ClassInstance {
 
   /*****************************************************************/
 
-  readonly signedIn = ( data: events.SignedInData ) => {
-    let event: events.SignedIn = {
+  constructor( readonly emitEvent: eventListener.Emit ) { }
+
+  /*****************************************************************/
+
+  readonly signedIn = ( data: interfaces.SignedInData ) => {
+    let event: interfaces.SignedIn = {
       context: "Authentication",
       tags: [],
       identifier: "SignedIn",
@@ -25,8 +29,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly signInFailed = ( data: events.SignInFailedData ) => {
-    let event: events.SignInFailed = {
+  readonly signInFailed = ( data: interfaces.SignInFailedData ) => {
+    let event: interfaces.SignInFailed = {
       context: "Authentication",
       tags: [],
       identifier: "SignInFailed",
@@ -41,8 +45,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly invalidPassword = ( data: events.InvalidPasswordData ) => {
-    let event: events.InvalidPassword = {
+  readonly invalidPassword = ( data: interfaces.InvalidPasswordData ) => {
+    let event: interfaces.InvalidPassword = {
       context: "Authentication",
       tags: [],
       identifier: "InvalidPassword",
@@ -58,8 +62,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly signedOut = ( data: events.SignedOutData ) => {
-    let event: events.SignedOut = {
+  readonly signedOut = ( data: interfaces.SignedOutData ) => {
+    let event: interfaces.SignedOut = {
       context: "Authentication",
       tags: [],
       identifier: "SignedOut",
@@ -73,8 +77,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly signOutFailed = ( data: events.SignOutFailedData ) => {
-    let event: events.SignOutFailed = {
+  readonly signOutFailed = ( data: interfaces.SignOutFailedData ) => {
+    let event: interfaces.SignOutFailed = {
       context: "Authentication",
       tags: [],
       identifier: "SignOutFailed",
@@ -89,8 +93,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly getCurrentUserFailed = ( data: events.GetCurrentUserFailedData ) => {
-    let event: events.GetCurrentUserFailed = {
+  readonly getCurrentUserFailed = ( data: interfaces.GetCurrentUserFailedData ) => {
+    let event: interfaces.GetCurrentUserFailed = {
       context: "Authentication",
       tags: [],
       identifier: "GetCurrentUserFailed",
@@ -105,8 +109,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly createHashedPasswordFailed = ( data: events.CreateHashedPasswordFailedData ) => {
-    let event: events.CreateHashedPasswordFailed = {
+  readonly createHashedPasswordFailed = ( data: interfaces.CreateHashedPasswordFailedData ) => {
+    let event: interfaces.CreateHashedPasswordFailed = {
       context: "Authentication",
       tags: [],
       identifier: "CreateHashedPasswordFailed",
@@ -121,8 +125,8 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  readonly authPasswordFailed = ( data: events.AuthPasswordFailedData ) => {
-    let event: events.AuthPasswordFailed = {
+  readonly authPasswordFailed = ( data: interfaces.AuthPasswordFailedData ) => {
+    let event: interfaces.AuthPasswordFailed = {
       context: "Authentication",
       tags: [],
       identifier: "AuthPasswordFailed",
@@ -138,16 +142,6 @@ class AuthenticationEvents implements authentication.Events {
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: eventManager.Emit ) { }
-
-  /*****************************************************************/
-
-}
-
-/******************************************************************************/
-
-export default ( emitEvent: eventManager.Emit ): authentication.Events => {
-  return new AuthenticationEvents( emitEvent );
 }
 
 /******************************************************************************/

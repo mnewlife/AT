@@ -22,7 +22,7 @@ export default class Events implements interfaces.ClassInstance {
       tags: [],
       identifier: "SetCurrentUser",
       data: {
-        user: data.user,
+        userId: data.userId,
         req: data.req
       }
     };
@@ -38,7 +38,7 @@ export default class Events implements interfaces.ClassInstance {
       tags: [],
       identifier: "SetCurrentUserFailed",
       data: {
-        user: data.user,
+        userId: data.userId,
         req: data.req,
         reason: data.reason
       }

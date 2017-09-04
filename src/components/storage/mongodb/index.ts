@@ -18,6 +18,21 @@ import routers from "./routers";
 
 /******************************************************************************/
 
+export interface Document {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserInfo extends UserInfo_Nuance, Document, mongoose.Document { }
+export interface UserInfo_Nuance {
+  userId: mongoose.Types.ObjectId;
+  emailAddress: string;
+  fullName: string;
+}
+export type UserInfo_Partial = Partial<UserInfo_Nuance>;
+
+/******************************************************************************/
+
 export default class MongoDB implements interfaces.ClassInstance {
 
   readonly core: interfaces.core.ClassInstance;

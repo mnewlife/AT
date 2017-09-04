@@ -2,12 +2,16 @@
 
 import * as express from "express";
 
-import authentication from "./authentication";
-import communication from "./communication";
-import storage from "./storage";
-import session from "./session";
-import response from "./response";
-import helpers from "./helpers";
+import * as authentication from "./authentication/interfaces";
+import * as communication from "./communication/interfaces";
+import * as storage from "./storage/interfaces";
+import * as session from "./session/interfaces";
+import * as response from "./response/interfaces";
+import * as helpers from "./helpers/interfaces";
+
+/******************************************************************************/
+
+export { authentication, communication, storage, session, response, helpers };
 
 /******************************************************************************/
 
@@ -15,14 +19,13 @@ export interface MiddlewareBorn {
   middleware: express.RequestHandler[];
 }
 
-export interface Components {
-  authentication: authentication.Authentication;
-  communication: communication.Communication;
-  storage: storage.Storage;
-  session: session.Session;
-  response: response.Response;
-  helpers: helpers.Helpers;
-  [ index: string ]: Components[ typeof Components ];
+export interface Instance {
+  authentication: authentication.ClassInstance;
+  communication: communication.Instance;
+  storage: storage.ClassInstance;
+  session: session.ClassInstance;
+  response: response.ClassInstance;
+  helpers: helpers.Instance;
 }
 
 /******************************************************************************/

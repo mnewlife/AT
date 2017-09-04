@@ -32,18 +32,18 @@ export interface SetCurrentUser extends BaseEvent {
   data: SetCurrentUserData;
 }
 export interface SetCurrentUserData {
-  user: dataModel.core.user.Super,
-  req: express.Request
+  userId: string;
+  req: express.Request;
 };
 
 /******************************************************************************/
 
 export interface SetCurrentUserFailed extends BaseEvent {
-  identifier: "SetCurrentUserFailed",
+  identifier: "SetCurrentUserFailed";
   data: SetCurrentUserFailedData;
 }
 export interface SetCurrentUserFailedData {
-  user: dataModel.core.user.Super,
+  userId: string,
   req: express.Request,
   reason: any
 };

@@ -47,6 +47,8 @@ export default class Canon implements interfaces.ClassInstance {
       let tryCount = 1;
       let maxTries = 3;
 
+      lookupSession( "" );
+
       function lookupSession ( error: any ) {
         if ( error ) {
           throw error;
@@ -61,31 +63,34 @@ export default class Canon implements interfaces.ClassInstance {
         this.middlewareConfiguration( req, res, lookupSession );
       }
 
-      lookupSession( "" );
     } );
   }
 
   /*****************************************************************/
 
-  readonly setCurrentUser = ( user: dataModel.core.user.Super, req: express.Request, forceThrow = false ): Promise<dataModel.core.user.Super> => {
+  readonly setCurrentUser = ( userId: string, req: express.Request, forceThrow = false ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
-        req.session.userId = user.id;
+
+        req.session.userId = userId;
+
         new Promise<void>(( resolve, reject ) => {
           this.events.setCurrentUser( {
-            user: user,
+            userId: userId,
             req: req
           } );
           resolve();
         } );
-        return Promise.resolve( user );
+
+        return Promise.resolve();
+
       } )
       .catch(( reason: any ) => {
 
         new Promise<void>(( resolve, reject ) => {
           this.events.setCurrentUserFailed( {
-            user: user,
+            userId: userId,
             req: req,
             reason: reason
           } );
@@ -104,43 +109,6 @@ export default class Canon implements interfaces.ClassInstance {
   }
 
   /*****************************************************************/
-
-  readonly signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
-
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
-
-        return new Promise<any>(( resolve, reject ) => {
-          req.session.destroy(( err: any ) => {
-            if ( err ) {
-              reject( err );
-            } else {
-              resolve();
-            }
-          } );
-        } );
-
-      } )
-      .catch(( reason: any ) => {
-
-        new Promise<void>(( resolve, reject ) => {
-          this.events.signOutFailed( {
-            req: req,
-            reason: reason
-          } );
-          resolve();
-        } );
-
-        return Promise.reject( {
-          identifier: "SignOutFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
-
-  }
 
   readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
@@ -189,6 +157,45 @@ export default class Canon implements interfaces.ClassInstance {
 
         return Promise.reject( {
           identifier: "GetCurrentUserFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
+
+  }
+
+  /*****************************************************************/
+
+  readonly signOut = ( req: express.Request, forceThrow = false ): Promise<void> => {
+
+    return this.checkThrow( forceThrow )
+      .then(( response: any ) => {
+
+        return new Promise<any>(( resolve, reject ) => {
+          req.session.destroy(( err: any ) => {
+            if ( err ) {
+              reject( err );
+            } else {
+              resolve();
+            }
+          } );
+        } );
+
+      } )
+      .catch(( reason: any ) => {
+
+        new Promise<void>(( resolve, reject ) => {
+          this.events.signOutFailed( {
+            req: req,
+            reason: reason
+          } );
+          resolve();
+        } );
+
+        return Promise.reject( {
+          identifier: "SignOutFailed",
           data: {
             reason: reason
           }

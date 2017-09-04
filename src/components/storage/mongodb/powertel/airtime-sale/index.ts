@@ -73,62 +73,57 @@ function makeConditions ( filtrationCriteria: storage.powertel.airtimeSale.Filtr
 
     let conditions: QueryConditions = {};
 
-    
-if ( filtrationCriteria.buyerName ) {
-  conditions[ "buyerName" ] = filtrationCriteria.buyerName;
-}
+    if ( filtrationCriteria.buyerName ) {
+      conditions[ "buyerName" ] = filtrationCriteria.buyerName;
+    }
 
-if ( filtrationCriteria.buyerName ) {
-  conditions[ "buyerName" ] = filtrationCriteria.buyerName;
-}
+    if ( filtrationCriteria.card ) {
+      if ( filtrationCriteria.card.cardId ) {
+        conditions[ "card.cardId" ] = mongoose.Types.ObjectId( filtrationCriteria.card.cardId );
+      }
+      if ( filtrationCriteria.card.mdn ) {
+        conditions[ "card.mdn" ] = {};
+        if ( filtrationCriteria.card.mdn.min ) {
+          conditions[ "card.mdn" ].$gte = filtrationCriteria.card.mdn.min;
+        }
+        if ( filtrationCriteria.card.mdn.max ) {
+          conditions[ "card.mdn" ].$lte = filtrationCriteria.card.mdn.max;
+        }
+      }
+    }
 
-if ( filtrationCriteria.card ) {
-  if ( filtrationCriteria.card.cardId ) {
-    conditions[ "card.cardId" ] = mongoose.Types.ObjectId( filtrationCriteria.card.cardId );
-  }
-  if ( filtrationCriteria.card.mdn ) {
-    conditions[ "card.mdn" ] = {};
-    if ( filtrationCriteria.card.mdn.min ) {
-      conditions[ "card.mdn" ].$gte = filtrationCriteria.card.mdn.min;
+    if ( filtrationCriteria.user ) {
+      if ( filtrationCriteria.user.userId ) {
+        conditions[ "user.userId" ] = mongoose.Types.ObjectId( filtrationCriteria.user.userId );
+      }
+      if ( filtrationCriteria.user.emailAddress ) {
+        conditions[ "user.emailAddress" ] = filtrationCriteria.user.emailAddress;
+      }
+      if ( filtrationCriteria.user.fullName ) {
+        conditions[ "user.fullName" ] = filtrationCriteria.user.fullName;
+      }
     }
-    if ( filtrationCriteria.card.mdn.max ) {
-      conditions[ "card.mdn" ].$lte = filtrationCriteria.card.mdn.max;
-    }
-  }
-}
 
-if ( filtrationCriteria.user ) {
-  if ( filtrationCriteria.user.userId ) {
-    conditions[ "user.userId" ] = mongoose.Types.ObjectId( filtrationCriteria.user.userId );
-  }
-  if ( filtrationCriteria.user.emailAddress ) {
-    conditions[ "user.emailAddress" ] = filtrationCriteria.user.emailAddress;
-  }
-  if ( filtrationCriteria.user.fullName ) {
-    conditions[ "user.fullName" ] = filtrationCriteria.user.fullName;
-  }
-}
-
-if ( filtrationCriteria.bundles ) {
-  if ( filtrationCriteria.bundles.gb ) {
-    conditions[ "bundles.gb" ] = {};
-    if ( filtrationCriteria.bundles.gb.min ) {
-      conditions[ "bundles.gb" ].$gte = filtrationCriteria.bundles.gb.min;
+    if ( filtrationCriteria.bundles ) {
+      if ( filtrationCriteria.bundles.gb ) {
+        conditions[ "bundles.gb" ] = {};
+        if ( filtrationCriteria.bundles.gb.min ) {
+          conditions[ "bundles.gb" ].$gte = filtrationCriteria.bundles.gb.min;
+        }
+        if ( filtrationCriteria.bundles.gb.max ) {
+          conditions[ "bundles.gb" ].$lte = filtrationCriteria.bundles.gb.max;
+        }
+      }
+      if ( filtrationCriteria.bundles.days ) {
+        conditions[ "bundles.days" ] = {};
+        if ( filtrationCriteria.bundles.days.min ) {
+          conditions[ "bundles.days" ].$gte = filtrationCriteria.bundles.days.min;
+        }
+        if ( filtrationCriteria.bundles.days.max ) {
+          conditions[ "bundles.days" ].$lte = filtrationCriteria.bundles.days.max;
+        }
+      }
     }
-    if ( filtrationCriteria.bundles.gb.max ) {
-      conditions[ "bundles.gb" ].$lte = filtrationCriteria.bundles.gb.max;
-    }
-  }
-  if ( filtrationCriteria.bundles.days ) {
-    conditions[ "bundles.days" ] = {};
-    if ( filtrationCriteria.bundles.days.min ) {
-      conditions[ "bundles.days" ].$gte = filtrationCriteria.bundles.days.min;
-    }
-    if ( filtrationCriteria.bundles.days.max ) {
-      conditions[ "bundles.days" ].$lte = filtrationCriteria.bundles.days.max;
-    }
-  }
-}
 
     if ( filtrationCriteria.textSearch ) {
       conditions.$text = { $search: filtrationCriteria.textSearch };
@@ -212,7 +207,7 @@ function generateUpdateDetails ( document: Model, details: storage.powertel.airt
     if ( details.buyerName ) {
       document.buyerName = details.buyerName;
     }
-    
+
     if ( details.card ) {
       if ( details.card.cardId ) {
         document.card.cardId = mongoose.Types.ObjectId( details.card.cardId );
@@ -221,7 +216,7 @@ function generateUpdateDetails ( document: Model, details: storage.powertel.airt
         document.card.mdn = details.card.mdn;
       }
     }
-    
+
     if ( details.user ) {
       if ( details.user.userId ) {
         document.user.userId = mongoose.Types.ObjectId( details.user.userId );
@@ -233,7 +228,7 @@ function generateUpdateDetails ( document: Model, details: storage.powertel.airt
         document.user.fullName = details.user.fullName;
       }
     }
-    
+
     if ( details.bundles ) {
       if ( details.bundles.gb ) {
         document.bundles.gb = details.bundles.gb;

@@ -12,10 +12,11 @@ export default (
   Session: interfaces.Constructor,
   events: events.ClassInstance,
   checkThrow: moders.CheckThrow,
-  getUserById: storageUser.ClassInstance[ "getById" ]
+  getUserById: storageUser.ClassInstance[ "getById" ],
+  production: boolean
 ): interfaces.ClassInstance => {
 
-  return new Session( events, checkThrow, getUserById );
+  return new Session( events, checkThrow, getUserById, production );
 
 }
 

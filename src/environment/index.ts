@@ -20,7 +20,7 @@ let environment: interfaces.Environment = {
     emailAddress: "athenaresources@gmail.com",
     phoneNumber: "+263779528194"
   },
-  copyrightMessage: "Copyright © 2017 Parrogate.",
+  copyrightMessage: "Copyright © 2017 Athena Resources.",
   production: temp.production,
   host: temp.host
 };

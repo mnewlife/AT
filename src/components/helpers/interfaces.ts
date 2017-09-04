@@ -7,7 +7,7 @@ import * as numbers from "./numbers/interfaces";
 
 /******************************************************************************/
 
-export interface Helpers {
+export interface Instance {
   readonly dataStructures: dataStructures.ClassInstance;
   readonly moders: moders.ClassInstance;
   readonly mware: mware.ClassInstance;

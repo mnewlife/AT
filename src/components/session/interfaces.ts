@@ -3,7 +3,7 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as dataModel from "../../ data-model";
+import * as dataModel from "../../data-model";
 import * as storage from "../storage/interfaces";
 import * as moders from "../helpers/moders/interfaces";
 
@@ -25,13 +25,14 @@ export interface Constructor {
     events: events.ClassInstance,
     checkThrow: moders.CheckThrow,
     getUserById: storage.core.user.ClassInstance[ "getById" ],
+    production: boolean
   ): ClassInstance;
 }
 
 /******************************************************************************/
 
 export interface SetCurrentUser {
-  ( signedInUser: dataModel.core.user.Super, req: express.Request, forceThrow?: boolean ): Promise<dataModel.core.user.Super>;
+  ( userId: string, req: express.Request, forceThrow?: boolean ): Promise<void>;
 }
 
 export interface GetCurrentUser {

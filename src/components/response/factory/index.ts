@@ -1,29 +1,15 @@
 /******************************************************************************/
 
-import * as eventListener from "../../../event-listener/interfaces";
+import * as moders from "../../helpers/moders/interfaces";
+import * as storageUser from "../../storage/interfaces/core/user";
 
-import * as authentication from "../../../components/authentication/interfaces";
-import * as storage from "../../../components/storage/interfaces";
-import * as session from "../../../components/session/interfaces";
-
-import canon from "../canon";
+import * as interfaces from "../interfaces";
+import * as events from "../events/interfaces";
 
 /******************************************************************************/
 
-export default (
-
-  authenticationClass: string,
-
-  emit: eventListener.Emit,
-  getUserFromStorage: storage.core.user.Get,
-  getUserByIdFromStorage: storage.core.user.GetById,
-  setCurrentUserInSession: session.SetCurrentUser,
-  getCurrentUserFromSession: session.GetCurrentUser,
-  signOutOfSession: session.SignOut,
-  checkThrow: helpers.moders.CheckThrow
-
-): src.components.Authentication => {
-  return canonAuthenticationFactory( params );
+export default ( Response: interfaces.Constructor, events: events.ClassInstance ): interfaces.ClassInstance => {
+  return new Response( events );
 }
 
 /******************************************************************************/

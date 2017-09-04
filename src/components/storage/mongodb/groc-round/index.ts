@@ -15,20 +15,6 @@ import shop from "./shop";
 
 /******************************************************************************/
 
-export interface Document {
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserInfo extends Document, mongoose.Document {
-  userId: mongoose.Types.ObjectId;
-  emailAddress: string;
-  fullName: string;
-}
-export type UserInfo_Partial = Partial<UserInfo>;
-
-/******************************************************************************/
-
 class GrocRound implements interfaces.ClassInstance {
 
   /*****************************************************************/

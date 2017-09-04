@@ -13,12 +13,12 @@ export interface Constructor {
 
 export interface ClassInstance {
   readonly signedIn: ( data: SignedInData ) => SignedIn;
-  readonly signInFailedData: ( data: SignInFailedData ) => SignInFailed;
+  readonly signInFailed: ( data: SignInFailedData ) => SignInFailed;
   readonly invalidPassword: ( data: InvalidPasswordData ) => InvalidPassword;
   readonly signedOut: ( data: SignedOutData ) => SignedOut;
   readonly signOutFailed: ( data: SignOutFailedData ) => SignOutFailed;
   readonly getCurrentUserFailed: ( data: GetCurrentUserFailedData ) => GetCurrentUserFailed;
-  readonly createHashedPassword: ( data: CreateHashedPasswordFailedData ) => CreateHashedPasswordFailed;
+  readonly createHashedPasswordFailed: ( data: CreateHashedPasswordFailedData ) => CreateHashedPasswordFailed;
   readonly authPasswordFailed: ( data: AuthPasswordFailedData ) => AuthPasswordFailed;
 }
 

@@ -16,7 +16,7 @@ import numbers from "./numbers";
 
 /******************************************************************************/
 
-class Helpers implements interfaces.Helpers {
+class Helpers implements interfaces.Instance {
 
   constructor(
     readonly dataStructures: DataStructures.ClassInstance,
@@ -29,7 +29,7 @@ class Helpers implements interfaces.Helpers {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventListener.Emit ): interfaces.Helpers => {
+export default ( emitEvent: eventListener.Emit ): interfaces.Instance => {
 
   let modersInstance = moders();
 
