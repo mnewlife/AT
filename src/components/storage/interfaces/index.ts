@@ -46,7 +46,7 @@ export interface StorageController {
 
 /******************************************************************************/
 
-export interface Generate<FiltrationCriteria, SortCriteria extends BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends StorageController {
+export interface ModelController<FiltrationCriteria, SortCriteria extends BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends StorageController {
   get: publicMethods.Get<FiltrationCriteria, SortCriteria, DataModel>;
   getById: publicMethods.GetById<DataModel>;
   addBatch: publicMethods.AddBatch<AddDetails, DataModel>;

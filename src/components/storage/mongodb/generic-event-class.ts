@@ -12,7 +12,7 @@ import * as events from "../interfaces/events/generator";
 
 export default class Events<Context extends string, FiltrationCriteria,
   SortCriteria extends interfaces.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel>
-  implements events.GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel> {
+  implements events.Methods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel> {
 
   /*****************************************************************/
 

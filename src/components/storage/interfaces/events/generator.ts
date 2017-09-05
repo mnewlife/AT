@@ -7,14 +7,14 @@ import * as baseEvent from "./";
 
 /******************************************************************************/
 
-export interface Generate <Context extends string, FiltrationCriteria, SortCriteria extends storage.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> {
-  Methods: GenerateMethods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel>;
-  Structure: GenerateStructure<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel>;
+export interface Events<Context extends string, FiltrationCriteria, SortCriteria extends storage.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> {
+  Methods: Methods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel>;
+  Data: Data<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, DataModel>;
 }
 
 /******************************************************************************/
 
-export interface GenerateMethods<Context extends string, FiltrationCriteria, SortCriteria extends storage.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends BaseMethods {
+export interface Methods<Context extends string, FiltrationCriteria, SortCriteria extends storage.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends BaseMethods {
   got: ( data: GotData<FiltrationCriteria, SortCriteria> ) => Got<Context, FiltrationCriteria, SortCriteria>;
   getFailed: ( data: GetFailedData<FiltrationCriteria, SortCriteria> ) => GetFailed<Context, FiltrationCriteria, SortCriteria>;
 
@@ -33,7 +33,7 @@ export interface GenerateMethods<Context extends string, FiltrationCriteria, Sor
 
 /******************************************************************************/
 
-export interface GenerateStructure<Context extends string, FiltrationCriteria, SortCriteria extends storage.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends BaseEvents {
+export interface Data<Context extends string, FiltrationCriteria, SortCriteria extends storage.BaseSortCriteria, AddDetails, UpdateDetails, DataModel extends dataModel.DataModel> extends BaseEvents {
   gotData: GotData<FiltrationCriteria, SortCriteria>;
   got: Got<Context, FiltrationCriteria, SortCriteria>;
   getFailedData: GetFailedData<FiltrationCriteria, SortCriteria>;
