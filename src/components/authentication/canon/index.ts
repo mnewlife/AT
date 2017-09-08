@@ -16,7 +16,7 @@ import * as Events from "../events/interfaces";
 
 /******************************************************************************/
 
-export default class Canon implements interfaces.ClassInstance {
+export default class Canon implements interfaces.Instance {
 
   middleware: express.RequestHandler[] = [];
 
@@ -33,11 +33,11 @@ export default class Canon implements interfaces.ClassInstance {
   /*****************************************************************/
 
   constructor(
-    private readonly events: Events.ClassInstance,
+    private readonly events: Events.Instance,
     private readonly checkThrow: moders.CheckThrow,
 
-    private readonly getUsers: storageUser.ClassInstance[ "get" ],
-    private readonly getUserById: storageUser.ClassInstance[ "getById" ],
+    private readonly getUsers: storageUser.Instance[ "get" ],
+    private readonly getUserById: storageUser.Instance[ "getById" ],
 
     private readonly setUserInSession: session.SetCurrentUser,
     private readonly getUserFromSession: session.GetCurrentUser,

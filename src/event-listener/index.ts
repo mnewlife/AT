@@ -1,45 +1,50 @@
 /******************************************************************************/
 
-import * as src from "../../src";
-import * as eventManagerInterfaces from "../../src/setup-config/event-manager";
+import * as dataModel from "../data-model";
+import * as components from "../components/interfaces";
+import * as procedures from "../procedures/interfaces";
 
-import hooksFactory from "./hook-structure";
+import * as interfaces from "./interfaces";
+
+import * as Hooks from "./hooks/interfaces";
+import hooks from "./hooks";
 
 /******************************************************************************/
 
-class EventManager implements src.setupConfig.EventManager {
+class EventListener implements interfaces.Instance {
 
   /*****************************************************************/
 
-  constructor( private hooks: eventManagerInterfaces.Hooks ) { }
+  constructor( private hooks: Hooks.Instance ) { }
 
   /*****************************************************************/
 
-  readonly updateReferences = ( components: src.components, procedures: src.procedures ): void => {
-
-    this.hooks.updateReferences( components, procedures );
-
+  readonly updateReferences = ( components: components.Instance, procedures: procedures.Instance ): void => {
+    //this.hooks.updateReferences( components, procedures );
   }
 
   /*****************************************************************/
 
   readonly emit = ( happening: dataModel.Happening ): void => {
 
+    /*
     if ( this.hooks.hookStructure[ happening.context ] ) {
       this.findAndExecuteAfterware( this.hooks.hookStructure[ happening.context ], happening );
     } else {
       this.findAndExecuteAfterware( this.hooks.hookStructure.other, happening );
     }
+    */
 
   }
 
   /*****************************************************************/
 
-  private readonly findAndExecuteAfterware = ( hooks: eventManagerInterfaces.ContextHooks, happening: dataModel.Happening ): void => {
+  /*
+  private readonly findAndExecuteAfterware = ( hooks: eventListener.ContextHooks, happening: dataModel.Happening ): void => {
 
     if ( hooks[ happening.identifier ] ) {
 
-      let hook: eventManagerInterfaces.Hook = hooks[ happening.identifier ];
+      let hook: eventListener.Hook = hooks[ happening.identifier ];
 
       this.populateTags( hook, happening );
 
@@ -52,26 +57,31 @@ class EventManager implements src.setupConfig.EventManager {
     }
 
   }
+  */
 
   /*****************************************************************/
 
-  private readonly populateTags = ( hook: eventManagerInterfaces.Hook, happening: dataModel.Happening ): void => {
+  /*
+  private readonly populateTags = ( hook: eventListener.Hook, happening: dataModel.Happening ): void => {
 
     hook.tags.forEach( function ( tag: string ) {
       happening.tags.push( tag );
     } );
 
   }
+  */
 
   /*****************************************************************/
 
-  private readonly executeAfterware = ( hook: eventManagerInterfaces.Hook, happening: dataModel.Happening ): void => {
+  /*
+  private readonly executeAfterware = ( hook: eventListener.Hook, happening: dataModel.Happening ): void => {
 
-    hook.afterware.forEach( function ( afterware: eventManagerInterfaces.Afterware ) {
+    hook.afterware.forEach( function ( afterware: eventListener.Afterware ) {
       afterware( happening );
     } );
 
   }
+  */
 
   /*****************************************************************/
 
@@ -79,14 +89,12 @@ class EventManager implements src.setupConfig.EventManager {
 
 /******************************************************************************/
 
-let eventManagerFactory = function (): src.setupConfig.EventManager {
+export default (): interfaces.Instance => {
 
-  let hooks: eventManagerInterfaces.Hooks = hooksFactory();
+  let hooksInstance: Hooks.Instance = hooks();
 
-  return new EventManager( hooks );
+  return new EventListener( hooksInstance );
 
 }
-
-export default eventManagerFactory;
 
 /******************************************************************************/

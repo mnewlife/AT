@@ -12,4 +12,10 @@ export interface Environment {
   readonly host: string;
 }
 
+export interface SupportDetails {
+  phoneNumber: string;
+  emailAddress: string;
+  sendingAddress: string;
+}
+
 /******************************************************************************/

@@ -1,34 +1,23 @@
 /******************************************************************************/
 
-import * as src from "../src";
+import * as eventListener from "../event-listener/interfaces";
+import * as components from "../components/interfaces";
 
-import call263Factory from "./call-263";
-import coreFactory from "./core";
-import grocRoundFactory from "./groc-round";
-import powertelFactory from "./powertel";
-import routersFactory from "./routers";
+import * as Core from "./core/interfaces";
+import core from "./core";
+
+import * as interfaces from "./interfaces";
 
 /******************************************************************************/
 
-class procedures implements src.procedures {
-  constructor(
-    readonly call263: src.procedures.Call263,
-    readonly core: src.procedures.Core,
-    readonly grocRound: src.procedures.GrocRound,
-    readonly powertel: src.procedures.Powertel,
-    readonly routers: src.procedures.Routers ) { }
+class Procedures implements interfaces.Instance {
+  constructor( readonly core: Core.Instance ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: src.Config ): src.procedures => {
-  return new procedures(
-    call263Factory( config ),
-    coreFactory( config ),
-    grocRoundFactory( config ),
-    powertelFactory( config ),
-    routersFactory( config ),
-  );
+export default ( emitEvent: eventListener.Emit, components: components.Instance ): interfaces.Instance => {
+  return new Procedures( core( emitEvent, components ) );
 }
 
 /******************************************************************************/

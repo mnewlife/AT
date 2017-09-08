@@ -5,10 +5,10 @@ import * as Promise from "bluebird";
 /******************************************************************************/
 
 export interface Constructor {
-  new(): ClassInstance;
+  new(): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly checkThrow: CheckThrow;
 }
 

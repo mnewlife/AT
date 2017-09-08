@@ -6,7 +6,7 @@ import * as src from "../../../../../../src/src/index";
 
 import { ChannelModel , ChannelMongooseModel } from "../../../../../../src/components/storage/mongodb/channel/model/index";
 
-import fixturesFactory from "./data/index";
+import fixtures from "./data/index";
 
 let logger = require( "tracer" ).colorConsole();
 

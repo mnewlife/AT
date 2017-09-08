@@ -3,28 +3,39 @@
 import * as express from "express";
 import * as Promise from "bluebird";
 
-import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/core/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as communicationInterfaces from "../../../../src/components/communication";
-import * as authenticationInterfaces from "../../../../src/components/authentication";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as dataModel from "../../../../data-model";
+import * as eventListener from "../../../../event-listener";
+import * as environment from "../../../../environment";
+import * as supportDetails from "../../../../environment/support-details";
 
-import eventsFactory from "./events";
+import * as authentication from "../../../../components/authentication/interfaces";
+import * as storageUser from "../../../../components/storage/interfaces/core/user";
+import * as session from "../../../../components/session/interfaces";
+import * as mailAgent from "../../../../components/communication/mail-agent/interfaces";
+import * as mailTemplates from "../mail-templates/interfaces";
+import * as moders from "../../../../components/helpers/moders/interfaces";
+import * as numbers from "../../../../components/helpers/numbers/interfaces";
+
+import * as helpers from "../helpers/interfaces";
+import * as interfaces from "./interfaces";
+import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-class Registration implements adminInterfaces.Registration {
+export default class Registration implements interfaces.Instance {
+
+  /****************************************************************/
 
   constructor(
-    private readonly events: adminInterfaces.auth.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
-    private readonly getUserById: storageInterfaces.core.user.GetById,
-    private readonly updateUserById: storageInterfaces.core.user.UpdateById
+    private readonly events: events.Instance,
+    private readonly checkThrow: moders.CheckThrow,
+    private readonly getUserById: storageUser.Instance[ "getById" ],
+    private readonly updateUserById: storageUser.Instance[ "updateById" ]
   ) { }
 
-  verifyAccount = ( userId: string, code: string, forceThrow?: boolean ): Promise<void> => {
+  /****************************************************************/
+
+  readonly verifyAccount = ( userId: string, code: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -48,7 +59,7 @@ class Registration implements adminInterfaces.Registration {
         return this.updateUserById( userId, {
           verification: {
             verified: true,
-            verificationCode: code
+            verificationCode: ""
           }
         } );
 
@@ -71,23 +82,8 @@ class Registration implements adminInterfaces.Registration {
 
   }
 
+  /****************************************************************/
+
 }
 
 /******************************************************************************/
-
-export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
-  getUserById: storageInterfaces.core.user.GetById,
-  updateUserById: storageInterfaces.core.user.UpdateById
-} ): adminInterfaces.Registration => {
-  return new Registration(
-    eventsFactory( params.emitEvent ),
-    params.checkThrow,
-    params.getUserById,
-    params.updateUserById
-  )
-}
-
-/******************************************************************************/
-

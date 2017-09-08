@@ -4,29 +4,29 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/call-263/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/call-263/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class AirtimePayments implements adminInterfaces.AirtimePayments {
+class AirtimePayments implements admin.AirtimePayments {
 
   constructor(
-    private readonly events: adminInterfaces.airtimePayments.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.airtimePayments.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getAirtimePayments: storageInterfaces.call263.airtimePayment.Get,
-    private readonly getAirtimePaymentById: storageInterfaces.call263.airtimePayment.GetById,
-    private readonly addNewAirtimePayment: storageInterfaces.call263.airtimePayment.Add,
-    private readonly updateAirtimePaymentById: storageInterfaces.call263.airtimePayment.UpdateById,
-    private readonly removeAirtimePaymentById: storageInterfaces.call263.airtimePayment.RemoveById
+    private readonly getAirtimePayments: storage.call263.airtimePayment.Get,
+    private readonly getAirtimePaymentById: storage.call263.airtimePayment.GetById,
+    private readonly addNewAirtimePayment: storage.call263.airtimePayment.Add,
+    private readonly updateAirtimePaymentById: storage.call263.airtimePayment.UpdateById,
+    private readonly removeAirtimePaymentById: storage.call263.airtimePayment.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.call263.airtimePayment.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimePayment.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.airtimePayment.Super[]> => {
+  get = ( filtrationCriteria: storage.call263.airtimePayment.FiltrationCriteria, sortCriteria: storage.call263.airtimePayment.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.airtimePayment.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -68,7 +68,7 @@ class AirtimePayments implements adminInterfaces.AirtimePayments {
 
   };
 
-  add = ( airtimePayment: storageInterfaces.call263.airtimePayment.AddDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimePayment.Super> => {
+  add = ( airtimePayment: storage.call263.airtimePayment.AddDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimePayment.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -89,7 +89,7 @@ class AirtimePayments implements adminInterfaces.AirtimePayments {
 
   }
 
-  update = ( airtimePaymentId: string, updates: storageInterfaces.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimePayment.Super> => {
+  update = ( airtimePaymentId: string, updates: storage.call263.airtimePayment.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimePayment.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -136,16 +136,16 @@ class AirtimePayments implements adminInterfaces.AirtimePayments {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getAirtimePayments: storageInterfaces.call263.airtimePayment.Get,
-  getAirtimePaymentById: storageInterfaces.call263.airtimePayment.GetById,
-  addNewAirtimePayments: storageInterfaces.call263.airtimePayment.AddBatch,
-  addNewAirtimePayment: storageInterfaces.call263.airtimePayment.Add,
-  updateAirtimePaymentById: storageInterfaces.call263.airtimePayment.UpdateById,
-  removeAirtimePaymentById: storageInterfaces.call263.airtimePayment.RemoveById
-} ): adminInterfaces.AirtimePayments => {
+  getAirtimePayments: storage.call263.airtimePayment.Get,
+  getAirtimePaymentById: storage.call263.airtimePayment.GetById,
+  addNewAirtimePayments: storage.call263.airtimePayment.AddBatch,
+  addNewAirtimePayment: storage.call263.airtimePayment.Add,
+  updateAirtimePaymentById: storage.call263.airtimePayment.UpdateById,
+  removeAirtimePaymentById: storage.call263.airtimePayment.RemoveById
+} ): admin.AirtimePayments => {
   return new AirtimePayments(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

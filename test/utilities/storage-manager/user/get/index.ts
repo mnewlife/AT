@@ -7,11 +7,11 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageUserFactory from "../../../../../src/components/storage/mongodb/user/index";
+import storageUser from "../../../../../src/components/storage/mongodb/user/index";
 <<<<<<< HEAddDetails
-import aFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import a from "../../../../../src/components/shared-logic/basic/data-structures/index";
 =======
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures/index";
 >>>>>>> workarea
 
 import * as src from "../../../../../src/src/index";

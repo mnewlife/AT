@@ -6,7 +6,7 @@ import * as src from "../../../../../../src/src/index";
 
 import { ContributionModel , ContributionMongooseModel } from "../../../../../../src/components/storage/mongodb/contribution/model/index";
 
-import fixturesFactory from "./data/index";
+import fixtures from "./data/index";
 
 let logger = require( "tracer" ).colorConsole();
 

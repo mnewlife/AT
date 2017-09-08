@@ -8,8 +8,8 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageChannelFactory from "../../../../../src/components/storage/mongodb/channel/index";
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import storageChannel from "../../../../../src/components/storage/mongodb/channel/index";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as src from "../../../../../src/src/index";
 import { ChannelModel, ChannelMongooseModel } from "../../../../../src/components/storage/mongodb/channel/model/index";

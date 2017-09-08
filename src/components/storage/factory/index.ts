@@ -13,7 +13,7 @@ export default (
   emitEvent: EventListener.Emit,
   mapDetails: DataStructures.MapDetails,
   checkThrow: Moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Storage( emitEvent, mapDetails, checkThrow );
 

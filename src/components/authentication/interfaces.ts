@@ -13,7 +13,7 @@ import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export interface ClassInstance {
+export interface Instance {
   readonly signIn: SignIn;
   readonly signOut: SignOut;
   readonly getCurrentUser: GetCurrentUser;
@@ -25,14 +25,14 @@ export interface ClassInstance {
 
 export interface Constructor {
   new(
-    events: events.ClassInstance,
+    events: events.Instance,
     checkThrow: moders.CheckThrow,
-    getUsers: storage.core.user.ClassInstance[ "get" ],
-    getUserById: storage.core.user.ClassInstance[ "getById" ],
+    getUsers: storage.core.user.Instance[ "get" ],
+    getUserById: storage.core.user.Instance[ "getById" ],
     setUserInSession: session.SetCurrentUser,
     getUserFromSession: session.GetCurrentUser,
     signOutFromSession: session.SignOut
-  ): ClassInstance;
+  ): Instance;
 }
 
 /******************************************************************************/

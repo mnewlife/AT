@@ -12,14 +12,14 @@ import * as events from "../events/interfaces";
 
 export default (
   Authentication: interfaces.Constructor,
-  events: events.ClassInstance,
+  events: events.Instance,
   checkThrow: moders.CheckThrow,
-  getUsers: storageUser.ClassInstance[ "get" ],
-  getUserById: storageUser.ClassInstance[ "getById" ],
+  getUsers: storageUser.Instance[ "get" ],
+  getUserById: storageUser.Instance[ "getById" ],
   setUserInSession: session.SetCurrentUser,
   getUserFromSession: session.GetCurrentUser,
   signOutOfSession: session.SignOut
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Authentication(
     events,

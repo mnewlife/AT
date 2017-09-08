@@ -15,14 +15,14 @@ import shop from "./shop";
 
 /******************************************************************************/
 
-class GrocRound implements interfaces.ClassInstance {
+class GrocRound implements interfaces.Instance {
 
   /*****************************************************************/
 
   constructor(
-    readonly price: interfaces.price.ClassInstance,
-    readonly product: interfaces.product.ClassInstance,
-    readonly shop: interfaces.shop.ClassInstance
+    readonly price: interfaces.price.Instance,
+    readonly product: interfaces.product.Instance,
+    readonly shop: interfaces.shop.Instance
   ) { }
 
   /*****************************************************************/
@@ -35,7 +35,7 @@ export default (
   emitEvent: EventListener.Emit,
   mapDetails: DataStructures.MapDetails,
   checkThrow: Moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new GrocRound(
     price( emitEvent, mapDetails, checkThrow ),

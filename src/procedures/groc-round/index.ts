@@ -4,9 +4,9 @@ import * as express from "express";
 
 import * as src from "../../src";
 
-import developerFactory from "./developer";
-import adminFactory from "./admin";
-import consumerFactory from "./consumer";
+import developer from "./developer";
+import admin from "./admin";
+import consumer from "./consumer";
 
 /******************************************************************************/
 

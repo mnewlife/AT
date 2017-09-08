@@ -4,35 +4,35 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/routers/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/routers/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class NewRouterStock implements adminInterfaces.NewRouterStock {
+class NewRouterStock implements admin.NewRouterStock {
 
   constructor(
-    private readonly events: adminInterfaces.newRouterStock.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.newRouterStock.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getNewRouterStock: storageInterfaces.routers.newRouterStock.Get,
-    private readonly getNewRouterStockById: storageInterfaces.routers.newRouterStock.GetById,
-    private readonly addNewNewRouterStock: storageInterfaces.routers.newRouterStock.Add,
-    private readonly updateNewRouterStockById: storageInterfaces.routers.newRouterStock.UpdateById,
-    private readonly removeNewRouterStockById: storageInterfaces.routers.newRouterStock.RemoveById
+    private readonly getNewRouterStock: storage.routers.newRouterStock.Get,
+    private readonly getNewRouterStockById: storage.routers.newRouterStock.GetById,
+    private readonly addNewNewRouterStock: storage.routers.newRouterStock.Add,
+    private readonly updateNewRouterStockById: storage.routers.newRouterStock.UpdateById,
+    private readonly removeNewRouterStockById: storage.routers.newRouterStock.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.routers.newRouterStock.FiltrationCriteria, sortCriteria: storageInterfaces.routers.newRouterStock.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super[]> => { }
+  get = ( filtrationCriteria: storage.routers.newRouterStock.FiltrationCriteria, sortCriteria: storage.routers.newRouterStock.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super[]> => { }
 
   getOne = ( newRouterStockId: string, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super> => { };
 
-  add = ( newRouterStock: storageInterfaces.routers.newRouterStock.AddDetails, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super> => { }
+  add = ( newRouterStock: storage.routers.newRouterStock.AddDetails, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super> => { }
 
-  update = ( newRouterStockId: string, updates: storageInterfaces.routers.newRouterStock.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super[]> => { }
+  update = ( newRouterStockId: string, updates: storage.routers.newRouterStock.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.routers.newRouterStock.Super[]> => { }
 
   remove = ( newRouterStockId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -41,15 +41,15 @@ class NewRouterStock implements adminInterfaces.NewRouterStock {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getNewRouterStock: storageInterfaces.routers.newRouterStock.Get,
-  getNewRouterStockById: storageInterfaces.routers.newRouterStock.GetById,
-  addNewNewRouterStock: storageInterfaces.routers.newRouterStock.Add,
-  updateNewRouterStockById: storageInterfaces.routers.newRouterStock.UpdateById,
-  removeNewRouterStockById: storageInterfaces.routers.newRouterStock.RemoveById
-} ): adminInterfaces.NewRouterStock => {
+  getNewRouterStock: storage.routers.newRouterStock.Get,
+  getNewRouterStockById: storage.routers.newRouterStock.GetById,
+  addNewNewRouterStock: storage.routers.newRouterStock.Add,
+  updateNewRouterStockById: storage.routers.newRouterStock.UpdateById,
+  removeNewRouterStockById: storage.routers.newRouterStock.RemoveById
+} ): admin.NewRouterStock => {
   return new NewRouterStock(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

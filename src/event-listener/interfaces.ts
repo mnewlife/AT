@@ -9,7 +9,7 @@ export { hooks };
 
 /******************************************************************************/
 
-export interface EventListener {
+export interface Instance {
   readonly emit: Emit;
 };
 

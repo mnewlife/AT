@@ -4,35 +4,35 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/powertel/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/powertel/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class Airtime implements adminInterfaces.Airtime {
+class Airtime implements admin.Airtime {
 
   constructor(
-    private readonly events: adminInterfaces.airtime.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.airtime.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getAirtime: storageInterfaces.powertel.airtime.Get,
-    private readonly getAirtimeById: storageInterfaces.powertel.airtime.GetById,
-    private readonly addNewAirtime: storageInterfaces.powertel.airtime.Add,
-    private readonly updateAirtimeById: storageInterfaces.powertel.airtime.UpdateById,
-    private readonly removeAirtimeById: storageInterfaces.powertel.airtime.RemoveById
+    private readonly getAirtime: storage.powertel.airtime.Get,
+    private readonly getAirtimeById: storage.powertel.airtime.GetById,
+    private readonly addNewAirtime: storage.powertel.airtime.Add,
+    private readonly updateAirtimeById: storage.powertel.airtime.UpdateById,
+    private readonly removeAirtimeById: storage.powertel.airtime.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.powertel.airtime.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.airtime.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super[]> => { }
+  get = ( filtrationCriteria: storage.powertel.airtime.FiltrationCriteria, sortCriteria: storage.powertel.airtime.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super[]> => { }
 
   getOne = ( airtimeId: string, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super> => { };
 
-  add = ( airtime: storageInterfaces.powertel.airtime.AddDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super[]> => { };
+  add = ( airtime: storage.powertel.airtime.AddDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super[]> => { };
 
-  update = ( airtimeId: string, updates: storageInterfaces.powertel.airtime.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super[]> => { }
+  update = ( airtimeId: string, updates: storage.powertel.airtime.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtime.Super[]> => { }
 
   remove = ( airtimeId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -41,15 +41,15 @@ class Airtime implements adminInterfaces.Airtime {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getAirtime: storageInterfaces.powertel.airtime.Get,
-  getAirtimeById: storageInterfaces.powertel.airtime.GetById,
-  addNewAirtime: storageInterfaces.powertel.airtime.Add,
-  updateAirtimeById: storageInterfaces.powertel.airtime.UpdateById,
-  removeAirtimeById: storageInterfaces.powertel.airtime.RemoveById
-} ): adminInterfaces.Airtime => {
+  getAirtime: storage.powertel.airtime.Get,
+  getAirtimeById: storage.powertel.airtime.GetById,
+  addNewAirtime: storage.powertel.airtime.Add,
+  updateAirtimeById: storage.powertel.airtime.UpdateById,
+  removeAirtimeById: storage.powertel.airtime.RemoveById
+} ): admin.Airtime => {
   return new Airtime(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

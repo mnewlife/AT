@@ -19,10 +19,10 @@ import numbers from "./numbers";
 class Helpers implements interfaces.Instance {
 
   constructor(
-    readonly dataStructures: DataStructures.ClassInstance,
-    readonly moders: Moders.ClassInstance,
-    readonly mware: Mware.ClassInstance,
-    readonly numbers: Numbers.ClassInstance
+    readonly dataStructures: DataStructures.Instance,
+    readonly moders: Moders.Instance,
+    readonly mware: Mware.Instance,
+    readonly numbers: Numbers.Instance
   ) { }
 
 }

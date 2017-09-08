@@ -4,7 +4,7 @@ import * as interfaces from "../interfaces";
 
 /******************************************************************************/
 
-export default ( Mware: interfaces.Constructor ): interfaces.ClassInstance => {
+export default ( Mware: interfaces.Constructor ): interfaces.Instance => {
   return new Mware();
 }
 

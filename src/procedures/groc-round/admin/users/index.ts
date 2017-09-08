@@ -4,27 +4,27 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/groc-round/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/groc-round/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class Users implements adminInterfaces.Users {
+class Users implements admin.Users {
 
   constructor(
-    private readonly events: adminInterfaces.users.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.users.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getUsers: storageInterfaces.core.user.Get,
-    private readonly getUserById: storageInterfaces.core.user.GetById,
-    private readonly removeUserById: storageInterfaces.core.user.RemoveById
+    private readonly getUsers: storage.core.user.Get,
+    private readonly getUserById: storage.core.user.GetById,
+    private readonly removeUserById: storage.core.user.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.core.user.FiltrationCriteria, sortCriteria: storageInterfaces.core.user.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.core.user.Super[]> => { }
+  get = ( filtrationCriteria: storage.core.user.FiltrationCriteria, sortCriteria: storage.core.user.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.core.user.Super[]> => { }
 
   getOne = ( userId: string, forceThrow?: boolean ): Promise<dataModel.core.user.Super> => { };
 
@@ -35,13 +35,13 @@ class Users implements adminInterfaces.Users {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getUsers: storageInterfaces.core.user.Get,
-  getUserById: storageInterfaces.core.user.GetById,
-  removeUserById: storageInterfaces.core.user.RemoveById
-} ): adminInterfaces.Users => {
+  getUsers: storage.core.user.Get,
+  getUserById: storage.core.user.GetById,
+  removeUserById: storage.core.user.RemoveById
+} ): admin.Users => {
   return new Users(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

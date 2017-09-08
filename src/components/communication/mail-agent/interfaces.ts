@@ -8,14 +8,14 @@ import * as events from "./events/interfaces";
 
 export interface Constructor {
   new(
-    events: events.ClassInstance,
+    events: events.Instance,
     checkThrow: moders.CheckThrow,
     sendingAddress: string,
     password: string
-  ): ClassInstance;
+  ): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly sendEmail: SendEmail;
 }
 

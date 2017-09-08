@@ -15,14 +15,14 @@ import sale from "./sale";
 
 /******************************************************************************/
 
-class Routers implements interfaces.ClassInstance {
+class Routers implements interfaces.Instance {
 
   /*****************************************************************/
 
   constructor(
-    readonly amounts: interfaces.amounts.ClassInstance,
-    readonly newRouterStock: interfaces.newRouterStock.ClassInstance,
-    readonly sale: interfaces.sale.ClassInstance
+    readonly amounts: interfaces.amounts.Instance,
+    readonly newRouterStock: interfaces.newRouterStock.Instance,
+    readonly sale: interfaces.sale.Instance
   ) { }
 
   /*****************************************************************/
@@ -35,7 +35,7 @@ export default (
   emitEvent: EventListener.Emit,
   mapDetails: DataStructures.MapDetails,
   checkThrow: Moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Routers(
     amounts( emitEvent, mapDetails, checkThrow ),

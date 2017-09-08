@@ -8,7 +8,7 @@ import * as events from "../events/interfaces";
 
 /******************************************************************************/
 
-export default ( Response: interfaces.Constructor, events: events.ClassInstance ): interfaces.ClassInstance => {
+export default ( Response: interfaces.Constructor, events: events.Instance ): interfaces.Instance => {
   return new Response( events );
 }
 

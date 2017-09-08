@@ -4,35 +4,35 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/powertel/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/powertel/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class NewAirtimeStock implements adminInterfaces.NewAirtimeStock {
+class NewAirtimeStock implements admin.NewAirtimeStock {
 
   constructor(
-    private readonly events: adminInterfaces.newAirtimeStock.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.newAirtimeStock.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getNewAirtimeStock: storageInterfaces.powertel.newAirtimeStock.Get,
-    private readonly getNewAirtimeStockById: storageInterfaces.powertel.newAirtimeStock.GetById,
-    private readonly addNewNewAirtimeStock: storageInterfaces.powertel.newAirtimeStock.Add,
-    private readonly updateNewAirtimeStockById: storageInterfaces.powertel.newAirtimeStock.UpdateById,
-    private readonly removeNewAirtimeStockById: storageInterfaces.powertel.newAirtimeStock.RemoveById
+    private readonly getNewAirtimeStock: storage.powertel.newAirtimeStock.Get,
+    private readonly getNewAirtimeStockById: storage.powertel.newAirtimeStock.GetById,
+    private readonly addNewNewAirtimeStock: storage.powertel.newAirtimeStock.Add,
+    private readonly updateNewAirtimeStockById: storage.powertel.newAirtimeStock.UpdateById,
+    private readonly removeNewAirtimeStockById: storage.powertel.newAirtimeStock.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.powertel.newAirtimeStock.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.newAirtimeStock.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super[]> => { }
+  get = ( filtrationCriteria: storage.powertel.newAirtimeStock.FiltrationCriteria, sortCriteria: storage.powertel.newAirtimeStock.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super[]> => { }
 
   getOne = ( newAirtimeStockId: string, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super> => { };
 
-  add = ( newAirtimeStock: storageInterfaces.powertel.newAirtimeStock.AddDetails, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super[]> => { };
+  add = ( newAirtimeStock: storage.powertel.newAirtimeStock.AddDetails, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super[]> => { };
 
-  update = ( newAirtimeStockId: string, updates: storageInterfaces.powertel.newAirtimeStock.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super[]> => { }
+  update = ( newAirtimeStockId: string, updates: storage.powertel.newAirtimeStock.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.powertel.newAirtimeStock.Super[]> => { }
 
   remove = ( newAirtimeStockId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -41,15 +41,15 @@ class NewAirtimeStock implements adminInterfaces.NewAirtimeStock {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getNewAirtimeStock: storageInterfaces.powertel.newAirtimeStock.Get,
-  getNewAirtimeStockById: storageInterfaces.powertel.newAirtimeStock.GetById,
-  addNewNewAirtimeStock: storageInterfaces.powertel.newAirtimeStock.Add,
-  updateNewAirtimeStockById: storageInterfaces.powertel.newAirtimeStock.UpdateById,
-  removeNewAirtimeStockById: storageInterfaces.powertel.newAirtimeStock.RemoveById
-} ): adminInterfaces.NewAirtimeStock => {
+  getNewAirtimeStock: storage.powertel.newAirtimeStock.Get,
+  getNewAirtimeStockById: storage.powertel.newAirtimeStock.GetById,
+  addNewNewAirtimeStock: storage.powertel.newAirtimeStock.Add,
+  updateNewAirtimeStockById: storage.powertel.newAirtimeStock.UpdateById,
+  removeNewAirtimeStockById: storage.powertel.newAirtimeStock.RemoveById
+} ): admin.NewAirtimeStock => {
   return new NewAirtimeStock(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

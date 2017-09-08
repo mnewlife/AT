@@ -8,7 +8,7 @@ import * as interfaces from "./interfaces";
 
 /******************************************************************************/
 
-export default class Events implements interfaces.ClassInstance {
+export default class Events implements interfaces.Instance {
 
   /*****************************************************************/
 

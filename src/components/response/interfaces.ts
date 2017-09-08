@@ -12,14 +12,14 @@ import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export interface ClassInstance {
+export interface Instance {
   readonly send: Send;
 }
 
 /******************************************************************************/
 
 export interface Constructor {
-  new( events: events.ClassInstance ): ClassInstance;
+  new( events: events.Instance ): Instance;
 }
 
 /******************************************************************************/

@@ -10,11 +10,11 @@ import * as events from "../events/interfaces";
 
 export default (
   Session: interfaces.Constructor,
-  events: events.ClassInstance,
+  events: events.Instance,
   checkThrow: moders.CheckThrow,
-  getUserById: storageUser.ClassInstance[ "getById" ],
+  getUserById: storageUser.Instance[ "getById" ],
   production: boolean
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Session( events, checkThrow, getUserById, production );
 

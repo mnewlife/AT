@@ -15,14 +15,14 @@ import user from "./user";
 
 /******************************************************************************/
 
-class Core implements interfaces.ClassInstance {
+class Core implements interfaces.Instance {
 
   /*****************************************************************/
 
   constructor(
-    readonly event: interfaces.event.ClassInstance,
-    readonly subscription: interfaces.subscription.ClassInstance,
-    readonly user: interfaces.user.ClassInstance
+    readonly event: interfaces.event.Instance,
+    readonly subscription: interfaces.subscription.Instance,
+    readonly user: interfaces.user.Instance
   ) { }
 
   /*****************************************************************/
@@ -35,7 +35,7 @@ export default (
   emitEvent: EventListener.Emit,
   mapDetails: DataStructures.MapDetails,
   checkThrow: Moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Core(
     event( emitEvent, mapDetails, checkThrow ),

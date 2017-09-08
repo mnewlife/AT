@@ -19,8 +19,8 @@ import webSocket from "./web-socket";
 class Communication implements interfaces.Instance {
 
   constructor(
-    readonly mailAgent: MailAgent.ClassInstance,
-    readonly webSocket: WebSocket.ClassInstance
+    readonly mailAgent: MailAgent.Instance,
+    readonly webSocket: WebSocket.Instance
   ) { }
 
 }

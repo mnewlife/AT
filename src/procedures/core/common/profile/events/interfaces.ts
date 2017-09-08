@@ -8,41 +8,17 @@ import * as eventListener from "../../../../../event-listener/interfaces";
 /******************************************************************************/
 
 export interface Constructor {
-  new( emitEvent: eventListener.Emit ): ClassInstance;
+  new( emitEvent: eventListener.Emit ): Instance;
 }
 
-export interface ClassInstance {
-  readonly signedIn: ( data: SignedInData ) => SignedIn;
-  readonly signInFailed: ( data: SignInFailedData ) => SignInFailed;
+export interface Instance {
+  
 }
 
 /******************************************************************************/
 
 interface BaseEvent extends dataModel.Happening {
-  context: "Procedures|Core|Common|Auth";
+  context: "Procedures|Core|Common|Profile";
 }
-
-/******************************************************************************/
-
-export interface SignedIn extends BaseEvent {
-  identifier: "SignedIn",
-  data: SignedInData;
-}
-export interface SignedInData {
-  emailAddress: string;
-  req: express.Request;
-};
-
-/******************************************************************************/
-
-export interface SignInFailed extends BaseEvent {
-  identifier: "SignInFailed";
-  data: SignInFailedData;
-}
-export interface SignInFailedData {
-  emailAddress: string;
-  req: express.Request;
-  reason: any;
-};
 
 /******************************************************************************/

@@ -4,29 +4,29 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/call-263/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/call-263/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class AirtimeTransfers implements adminInterfaces.AirtimeTransfers {
+class AirtimeTransfers implements admin.AirtimeTransfers {
 
   constructor(
-    private readonly events: adminInterfaces.airtimeTransfers.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.airtimeTransfers.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getAirtimeTransfers: storageInterfaces.call263.airtimeTransfer.Get,
-    private readonly getAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.GetById,
-    private readonly addNewAirtimeTransfer: storageInterfaces.call263.airtimeTransfer.Add,
-    private readonly updateAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.UpdateById,
-    private readonly removeAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.RemoveById
+    private readonly getAirtimeTransfers: storage.call263.airtimeTransfer.Get,
+    private readonly getAirtimeTransferById: storage.call263.airtimeTransfer.GetById,
+    private readonly addNewAirtimeTransfer: storage.call263.airtimeTransfer.Add,
+    private readonly updateAirtimeTransferById: storage.call263.airtimeTransfer.UpdateById,
+    private readonly removeAirtimeTransferById: storage.call263.airtimeTransfer.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
+  get = ( filtrationCriteria: storage.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storage.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -89,7 +89,7 @@ class AirtimeTransfers implements adminInterfaces.AirtimeTransfers {
 
   }
 
-  recordTransfer = ( airtimeTransfer: storageInterfaces.call263.airtimeTransfer.AddDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super> => {
+  recordTransfer = ( airtimeTransfer: storage.call263.airtimeTransfer.AddDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -110,7 +110,7 @@ class AirtimeTransfers implements adminInterfaces.AirtimeTransfers {
 
   }
 
-  update = ( airtimeTransferId: string, updates: storageInterfaces.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super> => {
+  update = ( airtimeTransferId: string, updates: storage.call263.airtimeTransfer.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -157,15 +157,15 @@ class AirtimeTransfers implements adminInterfaces.AirtimeTransfers {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getAirtimeTransfers: storageInterfaces.call263.airtimeTransfer.Get,
-  getAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.GetById,
-  addNewAirtimeTransfer: storageInterfaces.call263.airtimeTransfer.Add,
-  updateAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.UpdateById,
-  removeAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.RemoveById
-} ): adminInterfaces.AirtimeTransfers => {
+  getAirtimeTransfers: storage.call263.airtimeTransfer.Get,
+  getAirtimeTransferById: storage.call263.airtimeTransfer.GetById,
+  addNewAirtimeTransfer: storage.call263.airtimeTransfer.Add,
+  updateAirtimeTransferById: storage.call263.airtimeTransfer.UpdateById,
+  removeAirtimeTransferById: storage.call263.airtimeTransfer.RemoveById
+} ): admin.AirtimeTransfers => {
   return new AirtimeTransfers(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

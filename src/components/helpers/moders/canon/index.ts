@@ -6,7 +6,7 @@ import * as interfaces from "../interfaces";
 
 /******************************************************************************/
 
-export default class Moders implements interfaces.ClassInstance {
+export default class Moders implements interfaces.Instance {
 
   /*****************************************************************/
 

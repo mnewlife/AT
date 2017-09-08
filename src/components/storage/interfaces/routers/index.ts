@@ -10,10 +10,10 @@ export { amounts, newRouterStock, sale };
 
 /******************************************************************************/
 
-export interface ClassInstance {
-  readonly amounts: amounts.ClassInstance;
-  readonly newRouterStock: newRouterStock.ClassInstance;
-  readonly sale: sale.ClassInstance;
+export interface Instance {
+  readonly amounts: amounts.Instance;
+  readonly newRouterStock: newRouterStock.Instance;
+  readonly sale: sale.Instance;
 }
 
 /******************************************************************************/

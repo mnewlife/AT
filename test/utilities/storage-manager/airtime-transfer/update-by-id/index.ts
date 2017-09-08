@@ -7,8 +7,8 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageAirtimeTransferFactory from "../../../../../src/components/storage/mongodb/airtime-transfer/index";
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import storageAirtimeTransfer from "../../../../../src/components/storage/mongodb/airtime-transfer/index";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as src from "../../../../../src/src/index";
 import { AirtimeTransferModel, AirtimeTransferMongooseModel } from "../../../../../src/components/storage/mongodb/airtime-transfer/model/index";

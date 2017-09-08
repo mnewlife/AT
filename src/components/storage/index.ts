@@ -12,7 +12,7 @@ import factory from "./factory";
 
 /******************************************************************************/
 
-export default ( emitEvent: EventListener.Emit, mapDetails: DataStructures.MapDetails, checkThrow: Moders.CheckThrow ): interfaces.ClassInstance => {
+export default ( emitEvent: EventListener.Emit, mapDetails: DataStructures.MapDetails, checkThrow: Moders.CheckThrow ): interfaces.Instance => {
   return factory( MongoDB, emitEvent, mapDetails, checkThrow );
 }
 

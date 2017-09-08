@@ -18,17 +18,17 @@ import newCardStock from "./new-card-stock";
 
 /******************************************************************************/
 
-class Powertel implements interfaces.ClassInstance {
+class Powertel implements interfaces.Instance {
 
   /*****************************************************************/
 
   constructor(
-    readonly airtime: interfaces.airtime.ClassInstance,
-    readonly airtimeSale: interfaces.airtimeSale.ClassInstance,
-    readonly card: interfaces.card.ClassInstance,
-    readonly cardSale: interfaces.cardSale.ClassInstance,
-    readonly newAirtimeStock: interfaces.newAirtimeStock.ClassInstance,
-    readonly newCardStock: interfaces.newCardStock.ClassInstance
+    readonly airtime: interfaces.airtime.Instance,
+    readonly airtimeSale: interfaces.airtimeSale.Instance,
+    readonly card: interfaces.card.Instance,
+    readonly cardSale: interfaces.cardSale.Instance,
+    readonly newAirtimeStock: interfaces.newAirtimeStock.Instance,
+    readonly newCardStock: interfaces.newCardStock.Instance
   ) { }
 
   /*****************************************************************/
@@ -41,7 +41,7 @@ export default (
   emitEvent: EventListener.Emit,
   mapDetails: DataStructures.MapDetails,
   checkThrow: Moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Powertel(
     airtime( emitEvent, mapDetails, checkThrow ),

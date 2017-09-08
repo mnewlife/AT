@@ -8,7 +8,7 @@ import * as components from "../../../../components/interfaces";
 
 /******************************************************************************/
 
-export default class Mware implements interfaces.ClassInstance {
+export default class Mware implements interfaces.Instance {
 
   /*****************************************************************/
 

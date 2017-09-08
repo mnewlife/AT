@@ -6,10 +6,10 @@ import * as components from "../../../components/interfaces";
 /******************************************************************************/
 
 export interface Constructor {
-  new(): ClassInstance;
+  new(): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly retrieveMwareLists: RetrieveMwareLists;
 }
 

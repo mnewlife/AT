@@ -7,7 +7,7 @@ import canon from "./canon";
 
 /******************************************************************************/
 
-export default (): interfaces.ClassInstance => {
+export default (): interfaces.Instance => {
   return factory( canon );
 }
 

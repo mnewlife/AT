@@ -7,8 +7,8 @@ import * as Promise from "bluebird";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageArticleFactory from "../../../../../src/components/storage/mongodb/article/index";
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import storageArticle from "../../../../../src/components/storage/mongodb/article/index";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as src from "../../../../../src/src/index";
 import { ArticleModel, ArticleMongooseModel } from "../../../../../src/components/storage/mongodb/article/model/index";

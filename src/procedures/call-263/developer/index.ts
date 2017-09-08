@@ -1,12 +1,12 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as call263Interfaces from "../../../src/procedures/call-263";
+import * as eventListener from "../../../src/event-listener";
+import * as call263 from "../../../src/procedures/call-263";
 
 /******************************************************************************/
 
-class Developer implements call263Interfaces.Developer {
+class Developer implements call263.Developer {
 
   constructor( ) { }
 
@@ -14,7 +14,7 @@ class Developer implements call263Interfaces.Developer {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): call263Interfaces.Developer => {
+export default ( config: src.Config ): call263.Developer => {
   return new Developer();
 }
 

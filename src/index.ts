@@ -10,8 +10,8 @@ import * as bodyParser from "body-parser";
 
 import environment from "./environment";
 import eventListener from "./event-listener";
-import componentsFactory from "./components";
-import proceduresFactory from "./procedures";
+import components from "./components";
+import procedures from "./procedures";
 import routes from "./routes";
 
 import * as dataModel from "./data-model";

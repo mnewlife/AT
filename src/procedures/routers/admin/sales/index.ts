@@ -4,35 +4,35 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/routers/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/routers/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class Sales implements adminInterfaces.Sales {
+class Sales implements admin.Sales {
 
   constructor(
-    private readonly events: adminInterfaces.sales.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.sales.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getSales: storageInterfaces.routers.sale.Get,
-    private readonly getSaleById: storageInterfaces.routers.sale.GetById,
-    private readonly addNewSale: storageInterfaces.routers.sale.Add,
-    private readonly updateSaleById: storageInterfaces.routers.sale.UpdateById,
-    private readonly removeSaleById: storageInterfaces.routers.sale.RemoveById
+    private readonly getSales: storage.routers.sale.Get,
+    private readonly getSaleById: storage.routers.sale.GetById,
+    private readonly addNewSale: storage.routers.sale.Add,
+    private readonly updateSaleById: storage.routers.sale.UpdateById,
+    private readonly removeSaleById: storage.routers.sale.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.routers.sale.FiltrationCriteria, sortCriteria: storageInterfaces.routers.sale.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super[]> => { }
+  get = ( filtrationCriteria: storage.routers.sale.FiltrationCriteria, sortCriteria: storage.routers.sale.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super[]> => { }
 
   getOne = ( saleId: string, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super> => { };
 
-  add = ( sale: storageInterfaces.routers.sale.AddDetails, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super> => { }
+  add = ( sale: storage.routers.sale.AddDetails, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super> => { }
 
-  update = ( saleId: string, updates: storageInterfaces.routers.sale.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super[]> => { }
+  update = ( saleId: string, updates: storage.routers.sale.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.routers.sale.Super[]> => { }
 
   remove = ( saleId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -41,15 +41,15 @@ class Sales implements adminInterfaces.Sales {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getSales: storageInterfaces.routers.sale.Get,
-  getSaleById: storageInterfaces.routers.sale.GetById,
-  addNewSale: storageInterfaces.routers.sale.Add,
-  updateSaleById: storageInterfaces.routers.sale.UpdateById,
-  removeSaleById: storageInterfaces.routers.sale.RemoveById
-} ): adminInterfaces.Sales => {
+  getSales: storage.routers.sale.Get,
+  getSaleById: storage.routers.sale.GetById,
+  addNewSale: storage.routers.sale.Add,
+  updateSaleById: storage.routers.sale.UpdateById,
+  removeSaleById: storage.routers.sale.RemoveById
+} ): admin.Sales => {
   return new Sales(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

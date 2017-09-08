@@ -33,13 +33,13 @@ export type UserInfo_Partial = Partial<UserInfo_Nuance>;
 
 /******************************************************************************/
 
-export default class MongoDB implements interfaces.ClassInstance {
+export default class MongoDB implements interfaces.Instance {
 
-  readonly core: interfaces.core.ClassInstance;
-  readonly call263: interfaces.call263.ClassInstance;
-  readonly grocRound: interfaces.grocRound.ClassInstance;
-  readonly powertel: interfaces.powertel.ClassInstance;
-  readonly routers: interfaces.routers.ClassInstance;
+  readonly core: interfaces.core.Instance;
+  readonly call263: interfaces.call263.Instance;
+  readonly grocRound: interfaces.grocRound.Instance;
+  readonly powertel: interfaces.powertel.Instance;
+  readonly routers: interfaces.routers.Instance;
 
   readonly middleware: express.RequestHandler[] = [];
   private linkToDB = "";

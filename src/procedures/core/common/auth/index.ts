@@ -7,19 +7,21 @@ import * as dataModel from "../../../../data-model";
 import * as eventListener from "../../../../event-listener";
 import * as authentication from "../../../../components/authentication/interfaces";
 import * as moders from "../../../../components/helpers/moders/interfaces";
+import * as helpers from "../helpers/interfaces";
 
 import * as interfaces from "./interfaces";
 import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export default class Auth implements interfaces.ClassInstance {
+export default class Auth implements interfaces.Instance {
 
   /****************************************************************/
 
   constructor(
-    private readonly events: events.ClassInstance,
+    private readonly events: events.Instance,
     private readonly checkThrow: moders.CheckThrow,
+    private readonly cleanUsers: helpers.CleanUsers,
     private readonly authSignIn: authentication.SignIn
   ) { }
 
@@ -35,8 +37,12 @@ export default class Auth implements interfaces.ClassInstance {
       } )
       .then(( signedInUser: dataModel.core.user.Super ) => {
 
-        signedInUser.password = "";
-        return Promise.resolve( signedInUser );
+        return this.cleanUsers( [ signedInUser ] );
+
+      } )
+      .then(( cleanedUsers: dataModel.core.user.Super[] ) => {
+
+        return Promise.resolve( cleanedUsers[ 0 ] );
 
       } )
       .catch(( reason: any ) => {

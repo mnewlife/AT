@@ -12,7 +12,7 @@ import factory from "./factory";
 
 /******************************************************************************/
 
-export default ( emitEvent: eventListener.Emit, checkThrow: moders.CheckThrow ): interfaces.ClassInstance => {
+export default ( emitEvent: eventListener.Emit, checkThrow: moders.CheckThrow ): interfaces.Instance => {
   return factory( Canon, new Events( emitEvent ), checkThrow );
 }
 

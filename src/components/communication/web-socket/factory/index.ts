@@ -12,12 +12,12 @@ import * as events from "../events/interfaces";
 
 export default (
   WebSocket: interfaces.Constructor,
-  events: events.ClassInstance,
+  events: events.Instance,
   checkThrow: moders.CheckThrow,
-  getSubs: storageSub.ClassInstance[ "get" ],
+  getSubs: storageSub.Instance[ "get" ],
   production: boolean,
   httpServer: http.Server
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new WebSocket( events, checkThrow, getSubs, production, httpServer );
 

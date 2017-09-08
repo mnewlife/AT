@@ -6,10 +6,10 @@ import * as eventListener from "../../../../event-listener/interfaces";
 /******************************************************************************/
 
 export interface Constructor {
-  new( emitEvent: eventListener.Emit ): ClassInstance;
+  new( emitEvent: eventListener.Emit ): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly mapDetailsFailed: ( data: MapDetailsFailedData ) => MapDetailsFailed;
   readonly sortObjectArrayFailed: ( data: SortObjectArrayFailedData ) => SortObjectArrayFailed;
 }

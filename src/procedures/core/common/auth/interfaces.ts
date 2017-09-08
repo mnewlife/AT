@@ -7,13 +7,14 @@ import * as dataModel from "../../../../data-model";
 import * as eventListener from "../../../../event-listener";
 import * as authentication from "../../../../components/authentication/interfaces";
 import * as moders from "../../../../components/helpers/moders/interfaces";
+import * as helpers from "../helpers/interfaces";
 
 import * as interfaces from "./interfaces";
 import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export interface ClassInstance {
+export interface Instance {
   readonly signIn: SignIn;
 }
 
@@ -21,11 +22,11 @@ export interface ClassInstance {
 
 export interface Constructor {
   new(
-    events: events.ClassInstance,
+    events: events.Instance,
     checkThrow: moders.CheckThrow,
-    cleanUsers: any,
+    cleanUsers: helpers.CleanUsers,
     authSignIn: authentication.SignIn
-  ): ClassInstance;
+  ): Instance;
 }
 
 /******************************************************************************/

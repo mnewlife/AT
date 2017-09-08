@@ -9,9 +9,9 @@ import * as events from "../events/interfaces";
 
 export default (
   DataStructures: interfaces.Constructor,
-  events: events.ClassInstance,
+  events: events.Instance,
   checkThrow: moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new DataStructures( events, checkThrow );
 

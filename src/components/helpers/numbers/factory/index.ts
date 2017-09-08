@@ -9,9 +9,9 @@ import * as events from "../events/interfaces";
 
 export default (
   Numbers: interfaces.Constructor,
-  events: events.ClassInstance,
+  events: events.Instance,
   checkThrow: moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Numbers( events, checkThrow );
 

@@ -22,7 +22,7 @@ export default (
   emitEvent: eventListener.Emit,
   mapDetails: dataStructures.MapDetails,
   checkThrow: moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   let models = new Events<interfaces.Context, interfaces.FiltrationCriteria,
     interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,

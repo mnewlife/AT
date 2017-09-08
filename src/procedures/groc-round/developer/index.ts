@@ -1,12 +1,12 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as grocRoundInterfaces from "../../../src/procedures/groc-round";
+import * as eventListener from "../../../src/event-listener";
+import * as grocRound from "../../../src/procedures/groc-round";
 
 /******************************************************************************/
 
-class Developer implements grocRoundInterfaces.Developer {
+class Developer implements grocRound.Developer {
 
   constructor( ) { }
 
@@ -14,7 +14,7 @@ class Developer implements grocRoundInterfaces.Developer {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): grocRoundInterfaces.Developer => {
+export default ( config: src.Config ): grocRound.Developer => {
   return new Developer();
 }
 

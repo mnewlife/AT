@@ -14,7 +14,7 @@ import * as Events from "../events/interfaces";
 
 /******************************************************************************/
 
-export default class Canon implements interfaces.ClassInstance {
+export default class Canon implements interfaces.Instance {
 
   middleware: express.RequestHandler[] = [];
 
@@ -23,9 +23,9 @@ export default class Canon implements interfaces.ClassInstance {
   /*****************************************************************/
 
   constructor(
-    private readonly events: Events.ClassInstance,
+    private readonly events: Events.Instance,
     private readonly checkThrow: Moders.CheckThrow,
-    private readonly getUserById: Storage.core.user.ClassInstance[ "getById" ],
+    private readonly getUserById: Storage.core.user.Instance[ "getById" ],
     private readonly production: boolean
   ) {
 
@@ -64,6 +64,18 @@ export default class Canon implements interfaces.ClassInstance {
       }
 
     } );
+  }
+
+  /*****************************************************************/
+
+  readonly signedIn = ( req: express.Request ): boolean => {
+
+    if ( req.session.userId ) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   /*****************************************************************/

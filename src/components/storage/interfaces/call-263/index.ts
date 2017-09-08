@@ -10,10 +10,10 @@ export { airtimePayment, airtimeTransfer, channel };
 
 /******************************************************************************/
 
-export interface ClassInstance {
-  readonly airtimePayment: airtimePayment.ClassInstance;
-  readonly airtimeTransfer: airtimeTransfer.ClassInstance;
-  readonly channel: channel.ClassInstance;
+export interface Instance {
+  readonly airtimePayment: airtimePayment.Instance;
+  readonly airtimeTransfer: airtimeTransfer.Instance;
+  readonly channel: channel.Instance;
 }
 
 /******************************************************************************/

@@ -6,7 +6,7 @@ import * as Promise from "bluebird";
 
 import * as src from "../../../../../src/src/index";
 
-import numbersFactory from "../../../../../src/components/shared-logic/basic/numbers/index";
+import numbers from "../../../../../src/components/shared-logic/basic/numbers/index";
 
 /******************************************************************************/
 

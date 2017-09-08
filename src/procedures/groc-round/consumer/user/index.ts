@@ -4,22 +4,22 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as consumerInterfaces from "../../../../src/procedures/groc-round/consumer";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as consumer from "../../../../src/procedures/groc-round/consumer";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class User implements consumerInterfaces.User {
+class User implements consumer.User {
 
   constructor(
-    private readonly events: consumerInterfaces.user.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: consumer.user.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly updateUserById: storageInterfaces.core.user.UpdateById
+    private readonly updateUserById: storage.core.user.UpdateById
   ) { }
 
   join = ( userId: string, forceThrow?: boolean ): Promise<void> => { }
@@ -29,10 +29,10 @@ class User implements consumerInterfaces.User {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
-  updateUserById: storageInterfaces.core.user.UpdateById
-} ): consumerInterfaces.User => {
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
+  updateUserById: storage.core.user.UpdateById
+} ): consumer.User => {
   return new User(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

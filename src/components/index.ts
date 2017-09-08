@@ -18,11 +18,11 @@ class Components implements interfaces.Instance {
 
   constructor(
     public readonly helpers: interfaces.helpers.Instance,
-    readonly storage: interfaces.storage.ClassInstance,
-    readonly session: interfaces.session.ClassInstance,
-    readonly authentication: interfaces.authentication.ClassInstance,
+    readonly storage: interfaces.storage.Instance,
+    readonly session: interfaces.session.Instance,
+    readonly authentication: interfaces.authentication.Instance,
     readonly communication: interfaces.communication.Instance,
-    readonly response: interfaces.response.ClassInstance
+    readonly response: interfaces.response.Instance
   ) { }
 
 }

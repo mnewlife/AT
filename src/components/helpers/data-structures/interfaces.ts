@@ -7,10 +7,10 @@ import * as events from "./events/interfaces";
 /******************************************************************************/
 
 export interface Constructor {
-  new( events: events.ClassInstance, checkThrow: moders.CheckThrow ): ClassInstance;
+  new( events: events.Instance, checkThrow: moders.CheckThrow ): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly mapDetails: MapDetails;
   readonly sortObjectArray: SortObjectArray;
 }

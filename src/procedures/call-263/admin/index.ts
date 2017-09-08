@@ -1,28 +1,28 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as call263Interfaces from "../../../src/procedures/call-263";
+import * as eventListener from "../../../src/event-listener";
+import * as call263 from "../../../src/procedures/call-263";
 
-import airtimePaymentsFactory from "./airtime-payments";
-import airtimeTransfersFactory from "./airtime-transfers";
-import channelsFactory from "./channels";
+import airtimePayments from "./airtime-payments";
+import airtimeTransfers from "./airtime-transfers";
+import channels from "./channels";
 
 /******************************************************************************/
 
-class Admin implements call263Interfaces.Admin {
+class Admin implements call263.Admin {
   constructor(
-    readonly airtimePayments: call263Interfaces.admin.AirtimePayments,
-    readonly airtimeTransfers: call263Interfaces.admin.AirtimeTransfers,
-    readonly channels: call263Interfaces.admin.Channels
+    readonly airtimePayments: call263.admin.AirtimePayments,
+    readonly airtimeTransfers: call263.admin.AirtimeTransfers,
+    readonly channels: call263.admin.Channels
   ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: src.Config ): call263Interfaces.Admin => {
+export default ( config: src.Config ): call263.Admin => {
   return new Admin( airtimePaymentsFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getAirtimePayments: config.components.storage.call263.airtimePayment.get,
     getAirtimePaymentById: config.components.storage.call263.airtimePayment.getById,
@@ -32,7 +32,7 @@ export default ( config: src.Config ): call263Interfaces.Admin => {
     removeAirtimePaymentById: config.components.storage.call263.airtimePayment.removeById,
   } ),
   airtimeTransfersFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getAirtimeTransfers: config.components.storage.call263.airtimeTransfer.get,
     getAirtimeTransferById: config.components.storage.call263.airtimeTransfer.getById,
@@ -41,7 +41,7 @@ export default ( config: src.Config ): call263Interfaces.Admin => {
     removeAirtimeTransferById: config.components.storage.call263.airtimeTransfer.removeById,
   } ),
   channelsFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getChannels: config.components.storage.call263.channel.get,
     getChannelById: config.components.storage.call263.channel.getById,

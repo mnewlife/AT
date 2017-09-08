@@ -9,11 +9,11 @@ import * as events from "../events/interfaces";
 
 export default (
   MailAgent: interfaces.Constructor,
-  events: events.ClassInstance,
+  events: events.Instance,
   checkThrow: moders.CheckThrow,
   sendingAddress: string,
   password: string
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new MailAgent( events, checkThrow, sendingAddress, password );
 

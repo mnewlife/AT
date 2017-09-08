@@ -20,11 +20,11 @@ export interface MiddlewareBorn {
 }
 
 export interface Instance {
-  authentication: authentication.ClassInstance;
+  authentication: authentication.Instance;
   communication: communication.Instance;
-  storage: storage.ClassInstance;
-  session: session.ClassInstance;
-  response: response.ClassInstance;
+  storage: storage.Instance;
+  session: session.Instance;
+  response: response.Instance;
   helpers: helpers.Instance;
 }
 

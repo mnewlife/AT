@@ -1,30 +1,30 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as grocRoundInterfaces from "../../../src/procedures/groc-round";
+import * as eventListener from "../../../src/event-listener";
+import * as grocRound from "../../../src/procedures/groc-round";
 
-import pricesFactory from "./prices";
-import productsFactory from "./products";
-import shopsFactory from "./shops";
-import usersFactory from "./users";
+import prices from "./prices";
+import products from "./products";
+import shops from "./shops";
+import users from "./users";
 
 /******************************************************************************/
 
-class Admin implements grocRoundInterfaces.Admin {
+class Admin implements grocRound.Admin {
   constructor(
-    readonly prices: grocRoundInterfaces.admin.Prices,
-    readonly products: grocRoundInterfaces.admin.Products,
-    readonly shops: grocRoundInterfaces.admin.Shops,
-    readonly users: grocRoundInterfaces.admin.Users,
+    readonly prices: grocRound.admin.Prices,
+    readonly products: grocRound.admin.Products,
+    readonly shops: grocRound.admin.Shops,
+    readonly users: grocRound.admin.Users,
   ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: src.Config ): grocRoundInterfaces.Admin => {
+export default ( config: src.Config ): grocRound.Admin => {
   return new Admin( pricesFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getPrices: config.components.storage.grocRound.price.get,
     getPriceById: config.components.storage.grocRound.price.getById,
@@ -33,7 +33,7 @@ export default ( config: src.Config ): grocRoundInterfaces.Admin => {
     removePriceById: config.components.storage.grocRound.price.removeById,
   } ),
   productsFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getProducts: config.components.storage.grocRound.product.get,
     getProductById: config.components.storage.grocRound.product.getById,
@@ -42,7 +42,7 @@ export default ( config: src.Config ): grocRoundInterfaces.Admin => {
     removeProductById: config.components.storage.grocRound.product.removeById,
   } ),
   shopsFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getShops: config.components.storage.grocRound.shop.get,
     getShopById: config.components.storage.grocRound.shop.getById,
@@ -51,7 +51,7 @@ export default ( config: src.Config ): grocRoundInterfaces.Admin => {
     removeShopById: config.components.storage.grocRound.shop.removeById,
   } ),
   usersFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getUsers: config.components.storage.core.user.get,
     getUserById: config.components.storage.core.user.getById,

@@ -6,8 +6,8 @@ import * as webSocket from "./web-socket/interfaces";
 /******************************************************************************/
 
 export interface Instance {
-  readonly mailAgent: mailAgent.ClassInstance;
-  readonly webSocket: webSocket.ClassInstance;
+  readonly mailAgent: mailAgent.Instance;
+  readonly webSocket: webSocket.Instance;
 }
 
 /******************************************************************************/

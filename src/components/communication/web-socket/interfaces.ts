@@ -11,15 +11,15 @@ import * as events from "./events/interfaces";
 
 export interface Constructor {
   new(
-    events: events.ClassInstance,
+    events: events.Instance,
     checkThrow: moders.CheckThrow,
-    getSubs: storageSub.ClassInstance[ "get" ],
+    getSubs: storageSub.Instance[ "get" ],
     production: boolean,
     httpServer: http.Server
-  ): ClassInstance;
+  ): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly pushToOtherUsers: PushToOtherUsers;
   readonly pushToCurrentUser: PushToCurrentUser;
   readonly pushToChannels: PushToChannels;

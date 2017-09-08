@@ -5,37 +5,42 @@ import * as Promise from "bluebird";
 
 import * as dataModel from "../../../../data-model";
 import * as eventListener from "../../../../event-listener";
+import * as environment from "../../../../environment";
+import * as supportDetails from "../../../../environment/support-details";
 
 import * as authentication from "../../../../components/authentication/interfaces";
 import * as storageUser from "../../../../components/storage/interfaces/core/user";
 import * as session from "../../../../components/session/interfaces";
 import * as mailAgent from "../../../../components/communication/mail-agent/interfaces";
+import * as mailTemplates from "../mail-templates/interfaces";
 import * as moders from "../../../../components/helpers/moders/interfaces";
 import * as numbers from "../../../../components/helpers/numbers/interfaces";
 
+import * as helpers from "../helpers/interfaces";
 import * as interfaces from "./interfaces";
 import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export default class Profile implements interfaces.ClassInstance {
+export default class Profile implements interfaces.Instance {
 
   /****************************************************************/
 
   constructor(
-    private readonly events: events.ClassInstance,
+    private readonly events: events.Instance,
     private readonly checkThrow: moders.CheckThrow,
-    private readonly getUserById: storageUser.ClassInstance[ "getById" ],
-    private readonly updateUserById: storageUser.ClassInstance[ "updateById" ],
-    private readonly removeUserById: storageUser.ClassInstance[ "removeById" ],
+    private readonly cleanUsers: helpers.CleanUsers,
+    private readonly newEmailAddressTemplate: mailTemplates.NewEmailAddress,
+    private readonly passwordResetTemplate: mailTemplates.PasswordReset,
     private readonly sendEmail: mailAgent.SendEmail,
     private readonly authPassword: authentication.AuthPassword,
     private readonly createHash: authentication.CreateHashedPassword,
+    private readonly signedIn: session.SignedIn,
     private readonly signOutSession: session.SignOut,
     private readonly generateRandomNumber: numbers.GenerateRandomNumber,
-    private readonly appName: string,
-    private readonly host: string,
-    private readonly sendingAddress: string
+    private readonly getUserById: storageUser.Instance[ "getById" ],
+    private readonly updateUserById: storageUser.Instance[ "updateById" ],
+    private readonly removeUserById: storageUser.Instance[ "removeById" ],
   ) { }
 
   /****************************************************************/
@@ -50,16 +55,12 @@ export default class Profile implements interfaces.ClassInstance {
       } )
       .then(( foundUser: dataModel.core.user.Super ) => {
 
-        return new Promise<dataModel.core.user.Super>(( resolve, reject ) => {
-          foundUser.password = "";
-          if ( foundUser.resetCode ) {
-            foundUser.resetCode = "";
-          }
-          if ( foundUser.verification.verificationCode ) {
-            foundUser.verification.verificationCode = "";
-          }
-          resolve( foundUser );
-        } );
+        return this.cleanUsers( [ foundUser ] );
+
+      } )
+      .then(( cleanedUsers: dataModel.core.user.Super[] ) => {
+
+        return Promise.resolve( cleanedUsers[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
@@ -87,22 +88,18 @@ export default class Profile implements interfaces.ClassInstance {
       } )
       .then(( updatedUser: dataModel.core.user.Super ) => {
 
-        return new Promise<dataModel.core.user.Super>(( resolve, reject ) => {
-          updatedUser.password = "";
-          if ( updatedUser.resetCode ) {
-            updatedUser.resetCode = "";
-          }
-          if ( updatedUser.verification.verificationCode ) {
-            updatedUser.verification.verificationCode = "";
-          }
-          resolve( updatedUser );
-        } );
+        return this.cleanUsers( [ updatedUser ] );
+
+      } )
+      .then(( cleanedUsers: dataModel.core.user.Super[] ) => {
+
+        return Promise.resolve( cleanedUsers[ 0 ] );
 
       } )
       .catch(( reason: any ) => {
 
         return Promise.reject( {
-          identifier: "GetUserDetailsFailed",
+          identifier: "UpdateUserDetailsFailed",
           data: {
             reason: reason
           }
@@ -127,12 +124,12 @@ export default class Profile implements interfaces.ClassInstance {
         return Promise.all( [
           this.generateRandomNumber( 1543, 9812 ),
           this.generateRandomNumber( 5123, 7623 )
-        ] )
-          .then(( randomNumbers: number[] ) => {
+        ] );
 
-            return Promise.resolve( String( randomNumbers[ 0 ] ) + String( randomNumbers[ 1 ] ) );
+      } )
+      .then(( randomNumbers: number[] ) => {
 
-          } );
+        return Promise.resolve( String( randomNumbers[ 0 ] ) + String( randomNumbers[ 1 ] ) );
 
       } )
       .then(( verificationCode: string ) => {
@@ -153,32 +150,22 @@ export default class Profile implements interfaces.ClassInstance {
       } )
       .then(( verificationCode: string ) => {
 
-        let html = [
-          "<h3>Hey, " + newEmailAddress + "</h3>",
-          "<br>",
-          "<span>",
-          "Thank you for joining the platform. Click the link below to verify your email address.",
-          "</span>",
-          "<br>",
-          "<a href='" + this.host + "/core/admin/registration/verifyAccount/" + verificationCode + "'>",
-          "Click here to activate your account",
-          "</a>",
-          "<br>",
-          "<br>",
-          "<span>",
-          "Have questions? Get in touch with email our support team ( " + this.sendingAddress + " ).",
-          "</span>",
-          "<br>",
-          "Cheers,",
-          this.appName
-        ].join();
+        return this.newEmailAddressTemplate(
+          newEmailAddress,
+          verificationCode,
+          supportDetails.default.phoneNumber,
+          supportDetails.default.emailAddress
+        );
 
-        return this.sendEmail( this.sendingAddress, [ newEmailAddress ], this.appName + " | Account Verification", html );
+      } )
+      .then(( html: string ) => {
+
+        return this.sendEmail( supportDetails.default.sendingAddress, [ newEmailAddress ], environment.default.applicationName + " | Account Verification", html );
 
       } )
       .then(( response: any ) => {
 
-        if ( userId == req.session.currentUser.id ) {
+        if ( this.signedIn( req ) ) {
           return this.signOutSession( req );
         } else {
           return Promise.resolve();
@@ -263,12 +250,12 @@ export default class Profile implements interfaces.ClassInstance {
         return Promise.all( [
           this.generateRandomNumber( 1543, 9812 ),
           this.generateRandomNumber( 5123, 7623 )
-        ] )
-          .then(( randomNumbers: number[] ) => {
+        ] );
 
-            return Promise.resolve( String( randomNumbers[ 0 ] ) + String( randomNumbers[ 1 ] ) );
+      } )
+      .then(( randomNumbers: number[] ) => {
 
-          } );
+        return Promise.resolve( String( randomNumbers[ 0 ] ) + String( randomNumbers[ 1 ] ) );
 
       } )
       .then(( resetCode: string ) => {
@@ -288,27 +275,30 @@ export default class Profile implements interfaces.ClassInstance {
       } )
       .then(( response: { resetCode: string, emailAddress: string } ) => {
 
-        let html = [
-          "<h3>Hey, " + response.emailAddress + "</h3>",
-          "<br>",
-          "<span>",
-          "Thank you for joining the platform. Click the link below to verify your email address.",
-          "</span>",
-          "<br>",
-          "<a href='" + this.host + "/core/admin/profile/resetPassword/" + response.resetCode + "'>",
-          "Click here to activate your account",
-          "</a>",
-          "<br>",
-          "<br>",
-          "<span>",
-          "Have questions? Get in touch with email our support team ( " + this.sendingAddress + " ).",
-          "</span>",
-          "<br>",
-          "Cheers,",
-          this.appName
-        ].join();
+        return this.passwordResetTemplate(
+          response.emailAddress,
+          response.resetCode,
+          supportDetails.default.phoneNumber,
+          supportDetails.default.emailAddress
+        )
+          .then(( html: string ) => {
 
-        return this.sendEmail( this.sendingAddress, [ response.emailAddress ], this.appName + " | Account Verification", html );
+            return Promise.resolve( {
+              html: html,
+              emailAddress: response.emailAddress
+            } );
+
+          } );
+
+      } )
+      .then(( response: { html: string, emailAddress: string } ) => {
+
+        return this.sendEmail(
+          supportDetails.default.sendingAddress,
+          [ response.emailAddress ],
+          environment.default.applicationName + " | Account Verification",
+          response.html
+        );
 
       } )
       .catch(( reason: any ) => {
@@ -333,7 +323,7 @@ export default class Profile implements interfaces.ClassInstance {
 
   /****************************************************************/
 
-  resetPassword = ( userId: string, resetCode: string, newPassword: string, forceThrow?: boolean ): Promise<boolean> => {
+  resetPassword = ( userId: string, resetCode: string, newPassword: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -354,47 +344,32 @@ export default class Profile implements interfaces.ClassInstance {
       } )
       .then(( response: any ) => {
 
-        return new Promise<boolean>(( resolve, reject ) => {
-          if ( newPassword ) {
+        return this.createHash( newPassword );
 
-            return this.createHash( newPassword )
-              .then(( hashedPassword: string ) => {
+      } )
+      .then(( hashedPassword: string ) => {
 
-                return this.updateUserById( userId, {
-                  resetCode: "",
-                  password: hashedPassword
-                } );
-
-              } )
-              .then(( updatedUser: dataModel.core.user.Super ) => {
-
-                return Promise.resolve( true );
-
-              } );
-
-          } else {
-
-            return Promise.resolve( false );
-
-          }
+        return this.updateUserById( userId, {
+          resetCode: "",
+          password: hashedPassword
         } );
 
       } )
-      .then(( response: boolean ) => {
+      .then(( updatedUser: dataModel.core.user.Super ) => {
 
-        return Promise.resolve( response );
+        return Promise.resolve();
 
       } )
       .catch(( reason: any ) => {
 
-        return Promise.reject( {
-          identifier: "ResetPasswordFailed",
-          data: {
-            reason: reason
-          }
-        } );
-
+      return Promise.reject( {
+        identifier: "ResetPasswordFailed",
+        data: {
+          reason: reason
+        }
       } );
+
+    } );
 
   }
 

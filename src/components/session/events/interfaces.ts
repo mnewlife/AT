@@ -8,10 +8,10 @@ import * as eventListener from "../../../event-listener/interfaces";
 /******************************************************************************/
 
 export interface Constructor {
-  new( emitEvent: eventListener.Emit ): ClassInstance;
+  new( emitEvent: eventListener.Emit ): Instance;
 }
 
-export interface ClassInstance {
+export interface Instance {
   readonly setCurrentUser: ( data: SetCurrentUserData ) => SetCurrentUser;
   readonly setCurrentUserFailed: ( data: SetCurrentUserFailedData ) => SetCurrentUserFailed;
   readonly noCurrentUser: ( data: NoCurrentUserData ) => NoCurrentUser;

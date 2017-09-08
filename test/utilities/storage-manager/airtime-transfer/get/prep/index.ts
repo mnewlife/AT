@@ -6,7 +6,7 @@ import * as src from "../../../../../../src/src/index";
 
 import { AirtimeTransferModel, AirtimeTransferMongooseModel } from "../../../../../../src/components/storage/mongodb/airtime-transfer/model/index";
 
-import fixturesFactory from "./data/index";
+import fixtures from "./data/index";
 
 let logger = require( "tracer" ).colorConsole();
 

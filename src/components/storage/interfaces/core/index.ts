@@ -10,10 +10,10 @@ export { event, subscription, user };
 
 /******************************************************************************/
 
-export interface ClassInstance {
-  readonly event: event.ClassInstance;
-  readonly subscription: subscription.ClassInstance;
-  readonly user: user.ClassInstance;
+export interface Instance {
+  readonly event: event.Instance;
+  readonly subscription: subscription.Instance;
+  readonly user: user.Instance;
 }
 
 /******************************************************************************/

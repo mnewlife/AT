@@ -8,12 +8,12 @@ import * as Events from "../events/interfaces";
 
 /******************************************************************************/
 
-export default class DataStructures implements interfaces.ClassInstance {
+export default class DataStructures implements interfaces.Instance {
 
   /*****************************************************************/
 
   constructor(
-    private readonly events: Events.ClassInstance,
+    private readonly events: Events.Instance,
     private readonly checkThrow: moders.CheckThrow
   ) { }
 

@@ -15,14 +15,14 @@ import channel from "./channel";
 
 /******************************************************************************/
 
-class Call263 implements interfaces.ClassInstance {
+class Call263 implements interfaces.Instance {
 
   /*****************************************************************/
 
   constructor(
-    readonly airtimePayment: interfaces.airtimePayment.ClassInstance,
-    readonly airtimeTransfer: interfaces.airtimeTransfer.ClassInstance,
-    readonly channel: interfaces.channel.ClassInstance
+    readonly airtimePayment: interfaces.airtimePayment.Instance,
+    readonly airtimeTransfer: interfaces.airtimeTransfer.Instance,
+    readonly channel: interfaces.channel.Instance
   ) { }
 
   /*****************************************************************/
@@ -35,7 +35,7 @@ export default (
   emitEvent: EventListener.Emit,
   mapDetails: DataStructures.MapDetails,
   checkThrow: Moders.CheckThrow
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return new Call263(
     airtimePayment( emitEvent, mapDetails, checkThrow ),

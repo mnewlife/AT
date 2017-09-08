@@ -6,12 +6,12 @@ import * as express from "express";
 import * as src from "../../../../../src";
 
 import * as events from "../../../../../src/procedures/call-263/admin/channels/events";
-import * as channelsInterfaces from "../../../../../src/procedures/call-263/admin/channels";
-import * as eventManagerInterfaces from "../../../../../src/setup-config/event-manager";
+import * as channels from "../../../../../src/procedures/call-263/admin/channels";
+import * as eventListener from "../../../../../src/event-listener";
 
 /******************************************************************************/
 
-class ChannelsEvents implements channelsInterfaces.Events {
+class ChannelsEvents implements channels.Events {
 
   /*****************************************************************/
 
@@ -28,7 +28,7 @@ class ChannelsEvents implements channelsInterfaces.Events {
 
   /*****************************************************************/
 
-  constructor( readonly emitEvent: eventManagerInterfaces.Emit ) { }
+  constructor( readonly emitEvent: eventListener.Emit ) { }
 
   /*****************************************************************/
 
@@ -36,7 +36,7 @@ class ChannelsEvents implements channelsInterfaces.Events {
 
 /******************************************************************************/
 
-export default ( emitEvent: eventManagerInterfaces.Emit ): channelsInterfaces.Events => {
+export default ( emitEvent: eventListener.Emit ): channels.Events => {
   return new ChannelsEvents( emitEvent );
 }
 

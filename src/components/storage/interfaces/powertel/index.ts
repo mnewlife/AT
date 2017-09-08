@@ -13,13 +13,13 @@ export { airtime, airtimeSale, card, cardSale, newAirtimeStock, newCardStock };
 
 /******************************************************************************/
 
-export interface ClassInstance {
-  readonly airtime: airtime.ClassInstance;
-  readonly airtimeSale: airtimeSale.ClassInstance;
-  readonly card: card.ClassInstance;
-  readonly cardSale: cardSale.ClassInstance;
-  readonly newAirtimeStock: newAirtimeStock.ClassInstance;
-  readonly newCardStock: newCardStock.ClassInstance;
+export interface Instance {
+  readonly airtime: airtime.Instance;
+  readonly airtimeSale: airtimeSale.Instance;
+  readonly card: card.Instance;
+  readonly cardSale: cardSale.Instance;
+  readonly newAirtimeStock: newAirtimeStock.Instance;
+  readonly newCardStock: newCardStock.Instance;
 }
 
 /******************************************************************************/

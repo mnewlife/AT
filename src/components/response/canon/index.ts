@@ -14,13 +14,13 @@ import * as Events from "../events/interfaces";
 
 /******************************************************************************/
 
-export default class Canon implements interfaces.ClassInstance {
+export default class Canon implements interfaces.Instance {
 
   middleware: express.RequestHandler[] = [];
 
   /*****************************************************************/
 
-  constructor( private readonly events: Events.ClassInstance ) { }
+  constructor( private readonly events: Events.Instance ) { }
 
   /*****************************************************************/
 

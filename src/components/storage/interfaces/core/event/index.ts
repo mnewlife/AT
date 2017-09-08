@@ -9,7 +9,7 @@ import * as eventGenerator from "../../../interfaces/events/generator";
 
 /******************************************************************************/
 
-export type ClassInstance = storage.ModelController<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.event.Super>;
+export type Instance = storage.ModelController<FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.event.Super>;
 export type Events = eventGenerator.Methods<Context, FiltrationCriteria, SortCriteria, AddDetails, UpdateDetails, dataModel.core.event.Super>;
 
 /******************************************************************************/

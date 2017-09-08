@@ -4,7 +4,7 @@ import * as interfaces from "../interfaces";
 
 /******************************************************************************/
 
-export default ( Moders: interfaces.Constructor ): interfaces.ClassInstance => {
+export default ( Moders: interfaces.Constructor ): interfaces.Instance => {
   return new Moders();
 }
 

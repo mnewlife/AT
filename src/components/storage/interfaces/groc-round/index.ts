@@ -10,10 +10,10 @@ export { price, product, shop };
 
 /******************************************************************************/
 
-export interface ClassInstance {
-  readonly price: price.ClassInstance;
-  readonly product: product.ClassInstance;
-  readonly shop: shop.ClassInstance;
+export interface Instance {
+  readonly price: price.Instance;
+  readonly product: product.Instance;
+  readonly shop: shop.Instance;
 }
 
 /******************************************************************************/

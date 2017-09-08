@@ -12,7 +12,8 @@ import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export interface ClassInstance {
+export interface Instance {
+  readonly signedIn: SignedIn;
   readonly setCurrentUser: SetCurrentUser;
   readonly getCurrentUser: GetCurrentUser;
   readonly signOut: SignOut;
@@ -22,14 +23,18 @@ export interface ClassInstance {
 
 export interface Constructor {
   new(
-    events: events.ClassInstance,
+    events: events.Instance,
     checkThrow: moders.CheckThrow,
-    getUserById: storage.core.user.ClassInstance[ "getById" ],
+    getUserById: storage.core.user.Instance[ "getById" ],
     production: boolean
-  ): ClassInstance;
+  ): Instance;
 }
 
 /******************************************************************************/
+
+export interface SignedIn {
+  ( req: express.Request ): boolean;
+}
 
 export interface SetCurrentUser {
   ( userId: string, req: express.Request, forceThrow?: boolean ): Promise<void>;

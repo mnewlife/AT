@@ -4,7 +4,7 @@ import * as dataModel from "../../data-model";
 
 /******************************************************************************/
 
-export interface Hooks {
+export interface Instance {
   hooks: any;
 }
 

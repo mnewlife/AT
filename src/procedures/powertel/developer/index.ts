@@ -1,12 +1,12 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as powertelInterfaces from "../../../src/procedures/powertel";
+import * as eventListener from "../../../src/event-listener";
+import * as powertel from "../../../src/procedures/powertel";
 
 /******************************************************************************/
 
-class Developer implements powertelInterfaces.Developer {
+class Developer implements powertel.Developer {
 
   constructor( ) { }
 
@@ -14,7 +14,7 @@ class Developer implements powertelInterfaces.Developer {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): powertelInterfaces.Developer => {
+export default ( config: src.Config ): powertel.Developer => {
   return new Developer();
 }
 

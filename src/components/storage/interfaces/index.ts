@@ -21,16 +21,16 @@ export { call263, core, grocRound, powertel, routers };
 
 /******************************************************************************/
 
-export interface ClassInstance {
-  readonly call263: call263.ClassInstance;
-  readonly core: core.ClassInstance;
-  readonly grocRound: grocRound.ClassInstance;
-  readonly powertel: powertel.ClassInstance;
-  readonly routers: routers.ClassInstance;
+export interface Instance {
+  readonly call263: call263.Instance;
+  readonly core: core.Instance;
+  readonly grocRound: grocRound.Instance;
+  readonly powertel: powertel.Instance;
+  readonly routers: routers.Instance;
 }
 
 export interface Constructor {
-  new( emitEvent: eventListener.Emit, mapDetails: dataStructures.MapDetails, checkThrow: moders.CheckThrow ): ClassInstance;
+  new( emitEvent: eventListener.Emit, mapDetails: dataStructures.MapDetails, checkThrow: moders.CheckThrow ): Instance;
 }
 
 export interface StorageController {

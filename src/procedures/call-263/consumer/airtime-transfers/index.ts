@@ -4,26 +4,26 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as consumerInterfaces from "../../../../src/procedures/call-263/consumer";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as consumer from "../../../../src/procedures/call-263/consumer";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class AirtimeTransfers implements consumerInterfaces.AirtimeTransfers {
+class AirtimeTransfers implements consumer.AirtimeTransfers {
 
   constructor(
-    private readonly events: consumerInterfaces.airtimeTransfers.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: consumer.airtimeTransfers.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getAirtimeTransfers: storageInterfaces.call263.airtimeTransfer.Get,
-    private readonly getAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.GetById
+    private readonly getAirtimeTransfers: storage.call263.airtimeTransfer.Get,
+    private readonly getAirtimeTransferById: storage.call263.airtimeTransfer.GetById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storageInterfaces.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super[]> => { }
+  get = ( filtrationCriteria: storage.call263.airtimeTransfer.FiltrationCriteria, sortCriteria: storage.call263.airtimeTransfer.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super[]> => { }
 
   getOne = ( airtimeTransferId: string, forceThrow?: boolean ): Promise<dataModel.call263.airtimeTransfer.Super> => { };
 
@@ -32,11 +32,11 @@ class AirtimeTransfers implements consumerInterfaces.AirtimeTransfers {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
-  readonly getAirtimeTransfers: storageInterfaces.call263.airtimeTransfer.Get,
-  readonly getAirtimeTransferById: storageInterfaces.call263.airtimeTransfer.GetById
-} ): consumerInterfaces.AirtimeTransfers => {
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
+  readonly getAirtimeTransfers: storage.call263.airtimeTransfer.Get,
+  readonly getAirtimeTransferById: storage.call263.airtimeTransfer.GetById
+} ): consumer.AirtimeTransfers => {
   return new AirtimeTransfers(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

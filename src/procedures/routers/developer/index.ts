@@ -1,12 +1,12 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as routersInterfaces from "../../../src/procedures/routers";
+import * as eventListener from "../../../src/event-listener";
+import * as routers from "../../../src/procedures/routers";
 
 /******************************************************************************/
 
-class Developer implements routersInterfaces.Developer {
+class Developer implements routers.Developer {
 
   constructor( ) { }
 
@@ -14,7 +14,7 @@ class Developer implements routersInterfaces.Developer {
 
 /******************************************************************************/
 
-export default ( config: src.Config ): routersInterfaces.Developer => {
+export default ( config: src.Config ): routers.Developer => {
   return new Developer();
 }
 

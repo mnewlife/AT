@@ -1,28 +1,28 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as routersInterfaces from "../../../src/procedures/routers";
+import * as eventListener from "../../../src/event-listener";
+import * as routers from "../../../src/procedures/routers";
 
-import amountsFactory from "./amounts";
-import newRoutersFactory from "./new-routers";
-import salesFactory from "./sales";
+import amounts from "./amounts";
+import newRouters from "./new-routers";
+import sales from "./sales";
 
 /******************************************************************************/
 
-class Admin implements routersInterfaces.Admin {
+class Admin implements routers.Admin {
   constructor(
-    readonly amounts: routersInterfaces.admin.Amounts,
-    readonly newRouterStock: routersInterfaces.admin.NewRouterStock,
-    readonly sales: routersInterfaces.admin.Sales
+    readonly amounts: routers.admin.Amounts,
+    readonly newRouterStock: routers.admin.NewRouterStock,
+    readonly sales: routers.admin.Sales
   ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: src.Config ): routersInterfaces.Admin => {
+export default ( config: src.Config ): routers.Admin => {
   return new Admin( amountsFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getAmounts: config.components.storage.routers.amounts.get,
     getAmountsById: config.components.storage.routers.amounts.getById,
@@ -31,7 +31,7 @@ export default ( config: src.Config ): routersInterfaces.Admin => {
     removeAmountsById: config.components.storage.routers.amounts.removeById,
   } ),
   newRoutersFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getNewRouterStock: config.components.storage.routers.newRouterStock.get,
     getNewRouterStockById: config.components.storage.routers.newRouterStock.getById,
@@ -40,7 +40,7 @@ export default ( config: src.Config ): routersInterfaces.Admin => {
     removeNewRouterStockById: config.components.storage.routers.newRouterStock.removeById,
   } ),
   salesFactory( {
-    emitEvent: config.eventManager.emit,
+    emitEvent: config.eventListener.emit,
     checkThrow: config.components.sharedLogic.moders.checkThrow,
     getSales: config.components.storage.routers.sale.get,
     getSaleById: config.components.storage.routers.sale.getById,

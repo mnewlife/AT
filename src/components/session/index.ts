@@ -16,9 +16,9 @@ import factory from "./factory";
 export default (
   emitEvent: eventListener.Emit,
   checkThrow: moders.CheckThrow,
-  getUserById: storageUser.ClassInstance[ "getById" ],
+  getUserById: storageUser.Instance[ "getById" ],
   production: boolean
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
   
   return factory( Canon, new Events( emitEvent ), checkThrow, getUserById, production );
   

@@ -4,30 +4,30 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/call-263/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/call-263/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class Channels implements adminInterfaces.Channels {
+class Channels implements admin.Channels {
 
   constructor(
-    private readonly events: adminInterfaces.channels.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.channels.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getChannels: storageInterfaces.call263.channel.Get,
-    private readonly getChannelById: storageInterfaces.call263.channel.GetById,
-    private readonly addNewChannels: storageInterfaces.call263.channel.AddBatch,
-    private readonly addNewChannel: storageInterfaces.call263.channel.Add,
-    private readonly updateChannelById: storageInterfaces.call263.channel.UpdateById,
-    private readonly removeChannelById: storageInterfaces.call263.channel.RemoveById
+    private readonly getChannels: storage.call263.channel.Get,
+    private readonly getChannelById: storage.call263.channel.GetById,
+    private readonly addNewChannels: storage.call263.channel.AddBatch,
+    private readonly addNewChannel: storage.call263.channel.Add,
+    private readonly updateChannelById: storage.call263.channel.UpdateById,
+    private readonly removeChannelById: storage.call263.channel.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.call263.channel.FiltrationCriteria, sortCriteria: storageInterfaces.call263.channel.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.channel.Super[]> => {
+  get = ( filtrationCriteria: storage.call263.channel.FiltrationCriteria, sortCriteria: storage.call263.channel.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.call263.channel.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -70,7 +70,7 @@ class Channels implements adminInterfaces.Channels {
 
   };
 
-  add = ( channels: storageInterfaces.call263.channel.AddDetails[], forceThrow?: boolean ): Promise<dataModel.call263.channel.Super[]> => {
+  add = ( channels: storage.call263.channel.AddDetails[], forceThrow?: boolean ): Promise<dataModel.call263.channel.Super[]> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -91,11 +91,11 @@ class Channels implements adminInterfaces.Channels {
 
   };
 
-  addOne = ( channel: storageInterfaces.call263.channel.AddDetails, forceThrow?: boolean ): Promise<dataModel.call263.channel.Super> => {
+  addOne = ( channel: storage.call263.channel.AddDetails, forceThrow?: boolean ): Promise<dataModel.call263.channel.Super> => {
 
   }
 
-  update = ( channelId: string, updates: storageInterfaces.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.call263.channel.Super[]> => { }
+  update = ( channelId: string, updates: storage.call263.channel.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.call263.channel.Super[]> => { }
 
   remove = ( channelId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -104,16 +104,16 @@ class Channels implements adminInterfaces.Channels {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getChannels: storageInterfaces.call263.channel.Get,
-  getChannelById: storageInterfaces.call263.channel.GetById,
-  addNewChannels: storageInterfaces.call263.channel.AddBatch,
-  addNewChannel: storageInterfaces.call263.channel.Add,
-  updateChannelById: storageInterfaces.call263.channel.UpdateById,
-  removeChannelById: storageInterfaces.call263.channel.RemoveById
-} ): adminInterfaces.Channels => {
+  getChannels: storage.call263.channel.Get,
+  getChannelById: storage.call263.channel.GetById,
+  addNewChannels: storage.call263.channel.AddBatch,
+  addNewChannel: storage.call263.channel.Add,
+  updateChannelById: storage.call263.channel.UpdateById,
+  removeChannelById: storage.call263.channel.RemoveById
+} ): admin.Channels => {
   return new Channels(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

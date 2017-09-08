@@ -4,35 +4,35 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/groc-round/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/groc-round/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class Products implements adminInterfaces.Products {
+class Products implements admin.Products {
 
   constructor(
-    private readonly events: adminInterfaces.products.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.products.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getProducts: storageInterfaces.grocRound.product.Get,
-    private readonly getProductById: storageInterfaces.grocRound.product.GetById,
-    private readonly addNewProduct: storageInterfaces.grocRound.product.Add,
-    private readonly updateProductById: storageInterfaces.grocRound.product.UpdateById,
-    private readonly removeProductById: storageInterfaces.grocRound.product.RemoveById
+    private readonly getProducts: storage.grocRound.product.Get,
+    private readonly getProductById: storage.grocRound.product.GetById,
+    private readonly addNewProduct: storage.grocRound.product.Add,
+    private readonly updateProductById: storage.grocRound.product.UpdateById,
+    private readonly removeProductById: storage.grocRound.product.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.grocRound.product.FiltrationCriteria, sortCriteria: storageInterfaces.grocRound.product.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super[]> => { }
+  get = ( filtrationCriteria: storage.grocRound.product.FiltrationCriteria, sortCriteria: storage.grocRound.product.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super[]> => { }
 
   getOne = ( productId: string, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super> => { };
 
-  add = ( product: storageInterfaces.grocRound.product.AddDetails, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super> => { }
+  add = ( product: storage.grocRound.product.AddDetails, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super> => { }
 
-  update = ( productId: string, updates: storageInterfaces.grocRound.product.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super[]> => { }
+  update = ( productId: string, updates: storage.grocRound.product.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.grocRound.product.Super[]> => { }
 
   remove = ( productId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -41,15 +41,15 @@ class Products implements adminInterfaces.Products {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getProducts: storageInterfaces.grocRound.product.Get,
-  getProductById: storageInterfaces.grocRound.product.GetById,
-  addNewProduct: storageInterfaces.grocRound.product.Add,
-  updateProductById: storageInterfaces.grocRound.product.UpdateById,
-  removeProductById: storageInterfaces.grocRound.product.RemoveById
-} ): adminInterfaces.Products => {
+  getProducts: storage.grocRound.product.Get,
+  getProductById: storage.grocRound.product.GetById,
+  addNewProduct: storage.grocRound.product.Add,
+  updateProductById: storage.grocRound.product.UpdateById,
+  removeProductById: storage.grocRound.product.RemoveById
+} ): admin.Products => {
   return new Products(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

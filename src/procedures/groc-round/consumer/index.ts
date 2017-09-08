@@ -1,25 +1,25 @@
 /******************************************************************************/
 
 import * as src from "../../../src";
-import * as eventManagerInterfaces from "../../../src/setup-config/event-manager";
-import * as grocRoundInterfaces from "../../../src/procedures/groc-round";
+import * as eventListener from "../../../src/event-listener";
+import * as grocRound from "../../../src/procedures/groc-round";
 
-import userFactory from "./user";
+import user from "./user";
 
 /******************************************************************************/
 
-class Consumer implements grocRoundInterfaces.Consumer {
+class Consumer implements grocRound.Consumer {
   constructor(
-    readonly user: grocRoundInterfaces.consumer.User,
+    readonly user: grocRound.consumer.User,
   ) { }
 }
 
 /******************************************************************************/
 
-export default ( config: src.Config ): grocRoundInterfaces.Consumer => {
+export default ( config: src.Config ): grocRound.Consumer => {
   return new Consumer(
     userFactory( {
-      emitEvent: config.eventManager.emit,
+      emitEvent: config.eventListener.emit,
       checkThrow: config.components.sharedLogic.moders.checkThrow,
       updateUserById: config.components.storage.core.user.updateById
     } )

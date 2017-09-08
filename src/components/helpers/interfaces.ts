@@ -8,10 +8,10 @@ import * as numbers from "./numbers/interfaces";
 /******************************************************************************/
 
 export interface Instance {
-  readonly dataStructures: dataStructures.ClassInstance;
-  readonly moders: moders.ClassInstance;
-  readonly mware: mware.ClassInstance;
-  readonly numbers: numbers.ClassInstance;
+  readonly dataStructures: dataStructures.Instance;
+  readonly moders: moders.Instance;
+  readonly mware: mware.Instance;
+  readonly numbers: numbers.Instance;
 }
 
 /******************************************************************************/

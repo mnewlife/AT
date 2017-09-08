@@ -7,8 +7,8 @@ import * as bCrypt from "bcrypt-nodejs";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageCallFactory from "../../../../../src/components/storage/mongodb/call/index";
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import storageCall from "../../../../../src/components/storage/mongodb/call/index";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 import * as src from "../../../../../src/src/index";
 import { CallModel } from "../../../../../src/components/storage/mongodb/call/model/index";

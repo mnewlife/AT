@@ -7,7 +7,7 @@ import * as express from "express";
 
 import * as src from "../../../../../src/src/index";
 
-import middlewareFactory from "../../../../../src/components/shared-logic/basic/middleware/index";
+import middleware from "../../../../../src/components/shared-logic/basic/middleware/index";
 
 /******************************************************************************/
 

@@ -1,11 +1,19 @@
 /******************************************************************************/
 
 import * as express from "express";
-import * as src from "../../../src";
+
+import * as dataModel from "../../../data-model";
+import * as EventListener from "../../../event-listener/interfaces";
+import * as Components from "../../../components/interfaces";
+import * as Procedures from "../../../procedures/interfaces";
 
 /******************************************************************************/
 
-export default ( config: src.Config ): express.Router => {
+export default (
+  eventListener: EventListener.Instance,
+  components: Components.Instance,
+  procedures: Procedures.Instance
+): express.Router => {
 
   let router = express.Router();
   router.use( authCheck );

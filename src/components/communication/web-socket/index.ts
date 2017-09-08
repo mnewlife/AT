@@ -18,10 +18,10 @@ import factory from "./factory";
 export default (
   emitEvent: eventListener.Emit,
   checkThrow: moders.CheckThrow,
-  getSubs: storageSub.ClassInstance[ "get" ],
+  getSubs: storageSub.Instance[ "get" ],
   production: boolean,
   httpServer: http.Server
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return factory( SocketIO, new Events( emitEvent ), checkThrow, getSubs, production, httpServer );
 

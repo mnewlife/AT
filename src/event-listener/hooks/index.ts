@@ -7,20 +7,14 @@ import * as procedures from "../../procedures";
 
 /******************************************************************************/
 
-/******************************************************************************/
-
-class Hooks implements interfaces.Hooks {
-
+class Hooks implements interfaces.Instance {
   constructor( public hooks: any ) { }
-
 }
 
 /******************************************************************************/
 
-export default (): interfaces.Hooks => {
-
+export default (): interfaces.Instance => {
   return new Hooks( {} );
-
 }
 
 /******************************************************************************/

@@ -4,35 +4,35 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as src from "../../../../src";
-import * as eventManagerInterfaces from "../../../../src/setup-config/event-manager";
-import * as adminInterfaces from "../../../../src/procedures/powertel/admin";
-import * as storageInterfaces from "../../../../src/components/storage";
-import * as sharedLogicInterfaces from "../../../../src/components/shared-logic";
+import * as eventListener from "../../../../src/event-listener";
+import * as admin from "../../../../src/procedures/powertel/admin";
+import * as storage from "../../../../src/components/storage";
+import * as sharedLogic from "../../../../src/components/shared-logic";
 
-import eventsFactory from "./events";
+import events from "./events";
 
 /******************************************************************************/
 
-class AirtimeSales implements adminInterfaces.AirtimeSales {
+class AirtimeSales implements admin.AirtimeSales {
 
   constructor(
-    private readonly events: adminInterfaces.airtimeSales.Events,
-    private readonly checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+    private readonly events: admin.airtimeSales.Events,
+    private readonly checkThrow: sharedLogic.moders.CheckThrow,
 
-    private readonly getAirtimeSale: storageInterfaces.powertel.airtimeSale.Get,
-    private readonly getAirtimeSaleById: storageInterfaces.powertel.airtimeSale.GetById,
-    private readonly addNewAirtimeSale: storageInterfaces.powertel.airtimeSale.Add,
-    private readonly updateAirtimeSaleById: storageInterfaces.powertel.airtimeSale.UpdateById,
-    private readonly removeAirtimeSaleById: storageInterfaces.powertel.airtimeSale.RemoveById
+    private readonly getAirtimeSale: storage.powertel.airtimeSale.Get,
+    private readonly getAirtimeSaleById: storage.powertel.airtimeSale.GetById,
+    private readonly addNewAirtimeSale: storage.powertel.airtimeSale.Add,
+    private readonly updateAirtimeSaleById: storage.powertel.airtimeSale.UpdateById,
+    private readonly removeAirtimeSaleById: storage.powertel.airtimeSale.RemoveById
   ) { }
 
-  get = ( filtrationCriteria: storageInterfaces.powertel.airtimeSale.FiltrationCriteria, sortCriteria: storageInterfaces.powertel.airtimeSale.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super[]> => { }
+  get = ( filtrationCriteria: storage.powertel.airtimeSale.FiltrationCriteria, sortCriteria: storage.powertel.airtimeSale.SortCriteria, limit: number, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super[]> => { }
 
   getOne = ( airtimeSaleId: string, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super> => { };
 
-  add = ( airtimeSale: storageInterfaces.powertel.airtimeSale.AddDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super[]> => { };
+  add = ( airtimeSale: storage.powertel.airtimeSale.AddDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super[]> => { };
 
-  update = ( airtimeSaleId: string, updates: storageInterfaces.powertel.airtimeSale.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super[]> => { }
+  update = ( airtimeSaleId: string, updates: storage.powertel.airtimeSale.UpdateDetails, forceThrow?: boolean ): Promise<dataModel.powertel.airtimeSale.Super[]> => { }
 
   remove = ( airtimeSaleId: string, forceThrow?: boolean ): Promise<void> => { }
 
@@ -41,15 +41,15 @@ class AirtimeSales implements adminInterfaces.AirtimeSales {
 /******************************************************************************/
 
 export default ( params: {
-  emitEvent: eventManagerInterfaces.Emit,
-  checkThrow: sharedLogicInterfaces.moders.CheckThrow,
+  emitEvent: eventListener.Emit,
+  checkThrow: sharedLogic.moders.CheckThrow,
 
-  getAirtimeSale: storageInterfaces.powertel.airtimeSale.Get,
-  getAirtimeSaleById: storageInterfaces.powertel.airtimeSale.GetById,
-  addNewAirtimeSale: storageInterfaces.powertel.airtimeSale.Add,
-  updateAirtimeSaleById: storageInterfaces.powertel.airtimeSale.UpdateById,
-  removeAirtimeSaleById: storageInterfaces.powertel.airtimeSale.RemoveById
-} ): adminInterfaces.AirtimeSales => {
+  getAirtimeSale: storage.powertel.airtimeSale.Get,
+  getAirtimeSaleById: storage.powertel.airtimeSale.GetById,
+  addNewAirtimeSale: storage.powertel.airtimeSale.Add,
+  updateAirtimeSaleById: storage.powertel.airtimeSale.UpdateById,
+  removeAirtimeSaleById: storage.powertel.airtimeSale.RemoveById
+} ): admin.AirtimeSales => {
   return new AirtimeSales(
     eventsFactory( params.emitEvent ),
     params.checkThrow,

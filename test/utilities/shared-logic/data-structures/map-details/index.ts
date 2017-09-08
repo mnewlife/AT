@@ -6,7 +6,7 @@ import * as Promise from "bluebird";
 
 import * as src from "../../../../../src/src/index";
 
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures/index";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures/index";
 
 /******************************************************************************/
 

@@ -17,7 +17,7 @@ export default (
   checkThrow: moders.CheckThrow,
   sendingAddress: string,
   password: string
-): interfaces.ClassInstance => {
+): interfaces.Instance => {
 
   return factory( NodeMailer, new Events( emitEvent ), checkThrow, sendingAddress, password );
 

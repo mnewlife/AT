@@ -8,9 +8,9 @@ import * as bCrypt from "bcrypt-nodejs";
 let mongoose = require( "mongoose" );
 mongoose.Promise = Promise;
 
-import storageUserFactory from "../../../../../src/components/storage/mongodb/user";
-import dataStructuresFactory from "../../../../../src/components/shared-logic/basic/data-structures";
-import modersFactory from "../../../../../src/components/shared-logic/basic/moders";
+import storageUser from "../../../../../src/components/storage/mongodb/user";
+import dataStructures from "../../../../../src/components/shared-logic/basic/data-structures";
+import moders from "../../../../../src/components/shared-logic/basic/moders";
 
 import * as src from "../../../../../src/src";
 import { Model } from "../../../../../src/components/storage/mongodb/user/model";
