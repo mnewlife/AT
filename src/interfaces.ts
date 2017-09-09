@@ -4,7 +4,7 @@ import * as express from "express";
 
 /******************************************************************************/
 
-export type AppName = "Core" | "Call263" | "GrocRound" | "Powertel" | "Routers";
+export type AppName = "core" | "call263" | "grocRound" | "powertel" | "routers";
 
 /******************************************************************************/
 

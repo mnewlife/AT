@@ -17,6 +17,11 @@ export default function routes ( config: src.Config, app: express.Application ):
 
   /**********************************************************/
 
+  appContext
+  accessLevel
+  appContext+accessLevel( not core && consumer )
+  innerContext
+
   let response = config.components.response;
   let session = config.components.session;
 
