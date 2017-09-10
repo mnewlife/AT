@@ -42,7 +42,7 @@ export default class MongoDB implements interfaces.Instance {
 
   middleware: express.RequestHandler[] = [];
 
-  private linkToDB = "";
+  private linkToDB = "mongodb://127.0.0.1:27017/AthenaTest";
 
   /*****************************************************************/
 
