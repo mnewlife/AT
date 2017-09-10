@@ -23,13 +23,12 @@ export interface Document {
   updatedAt: Date;
 }
 
-export interface UserInfo extends UserInfo_Nuance, Document, mongoose.Document { }
-export interface UserInfo_Nuance {
+export interface UserInfo extends UserInfo_Nuance, mongoose.Document { }
+export interface UserInfo_Nuance extends Document {
   userId: mongoose.Types.ObjectId;
   emailAddress: string;
   fullName: string;
 }
-export type UserInfo_Partial = Partial<UserInfo_Nuance>;
 
 /******************************************************************************/
 
@@ -41,7 +40,8 @@ export default class MongoDB implements interfaces.Instance {
   readonly powertel: interfaces.powertel.Instance;
   readonly routers: interfaces.routers.Instance;
 
-  readonly middleware: express.RequestHandler[] = [];
+  middleware: express.RequestHandler[] = [];
+
   private linkToDB = "";
 
   /*****************************************************************/

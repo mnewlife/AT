@@ -53,7 +53,7 @@ export default class DataStructures implements interfaces.Instance {
         } );
 
         return Promise.reject( {
-          identifier: "mapDetailsFailed",
+          identifier: "MapDetailsFailed",
           data: {
             reason: reason
           }
@@ -112,7 +112,7 @@ export default class DataStructures implements interfaces.Instance {
         } );
 
         return Promise.reject( {
-          identifier: "sortObjectArrayFailed",
+          identifier: "SortObjectArrayFailed",
           data: {
             reason: reason
           }

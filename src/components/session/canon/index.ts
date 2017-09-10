@@ -158,13 +158,12 @@ export default class Canon implements interfaces.Instance {
           resolve();
         } );
 
-        if ( reason && reason.identifier === "NoCurrentUser" ) {
-          return Promise.reject( {
-            identifier: "NoCurrentUser",
-            data: {
-              reason: reason
-            }
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "NoCurrentUser" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {

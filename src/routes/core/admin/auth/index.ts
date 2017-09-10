@@ -1,5 +1,6 @@
 /******************************************************************************/
 
+import * as Promise from "bluebird";
 import * as express from "express";
 
 import * as dataModel from "../../../../data-model";
@@ -36,18 +37,18 @@ export default (
     let currentUser: dataModel.core.user.Super;
 
     if ( !req.body.emailAddress ) {
-      return sendResponse( res, "passpointAdmin", false, "Email address is missing", null );
+      return sendResponse( res, "passpoint-admin", false, "Email address is missing", null );
     }
 
     if ( !req.body.password ) {
-      return sendResponse( res, "passpointAdmin", false, "Password is missing", null );
+      return sendResponse( res, "passpoint-admin", false, "Password is missing", null );
     }
 
     signInProcedure( req.body.emailAddress, req.body.password, req )
       .then(( signedInUser: dataModel.core.user.Super ) => {
 
         currentUser = signedInUser;
-        return setViewContexts( req, signedInUser );
+        return setViewContexts( req, currentUser );
 
       } )
       .then(( output: helpers.ContextsOutput ) => {
@@ -58,7 +59,15 @@ export default (
       } )
       .catch(( reason: any ) => {
 
-        
+        if ( reason.identifier && reason.identifier === "UserNotFound" ) {
+          return sendResponse( res, "passpoint-admin", false, "User not found", null );          
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+          return sendResponse( res, "passpoint-admin", false, "Incorrect password", null );
+        }
+
+        return sendResponse( res, "passpoint-admin", false, null, null );
 
       } );
 

@@ -123,7 +123,7 @@ export default class Helpers implements interfaces.Instance {
               output.payload = {};
 
               if ( results[ 0 ] ) {
-                output.payload.noob = true;
+                output.view += "-join";
               }
 
               if ( results[ 1 ] ) {

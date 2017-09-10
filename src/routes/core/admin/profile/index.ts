@@ -2,14 +2,9 @@
 
 import * as express from "express";
 
-import * as dataModel from "../../../data-model";
-import * as EventListener from "../../../event-listener/interfaces";
-import * as Components from "../../../components/interfaces";
-import * as Procedures from "../../../procedures/interfaces";
-
 /******************************************************************************/
 
-export default ( components: Components.Instance ): express.Router => {
+export default (): express.Router => {
 
   let router = express.Router();
   router.use( authCheck );

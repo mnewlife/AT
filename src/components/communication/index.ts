@@ -1,5 +1,6 @@
 /******************************************************************************/
 
+import * as express from "express";
 import * as http from "http";
 
 import * as eventListener from "../../event-listener/interfaces";
@@ -17,6 +18,8 @@ import webSocket from "./web-socket";
 /******************************************************************************/
 
 class Communication implements interfaces.Instance {
+
+  middleware: express.RequestHandler[] = [];
 
   constructor(
     readonly mailAgent: MailAgent.Instance,

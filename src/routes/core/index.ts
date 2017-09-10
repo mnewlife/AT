@@ -1,21 +1,33 @@
 /******************************************************************************/
 
 import * as express from "express";
-import * as src from "../../src";
 
-import developerRoutes from "./developer";
-import adminRoutes from "./admin";
-import consumerRoutes from "./consumer";
+import * as EventListener from "../../event-listener/interfaces";
+import * as Components from "../../components/interfaces";
+import * as Procedures from "../../procedures/interfaces";
+
+import * as Helpers from "../helpers/interfaces";
+
+import developer from "./developer";
+import admin from "./admin";
+import consumer from "./consumer";
 
 /******************************************************************************/
 
-export default ( config: src.Config ): any => {
+export default (
+  eventListener: EventListener.Instance,
+  components: Components.Instance,
+  procedures: Procedures.Instance,
+  helpers: Helpers.Instance
+): express.Router => {
 
   let router = express.Router();
 
-  router.use( "/developer", developerRoutes( config ) );
-  router.use( "/admin", adminRoutes( config ) );
-  router.use( "/consumer", consumerRoutes( config ) );
+  //router.use( "/developer", developer( config ) );
+  router.use( "/admin", admin( eventListener, components, procedures, helpers ) );
+  //router.use( "/consumer", consumer( config ) );
+
+  return router;
 
 }
 

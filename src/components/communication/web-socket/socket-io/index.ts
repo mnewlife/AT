@@ -51,9 +51,7 @@ export default class SocketIO implements interfaces.Instance {
 
       return reject( {
         identifier: "SocketNotFound",
-        data: {
-          userId: userId
-        }
+        data: {}
       } );
 
     } )
@@ -67,13 +65,8 @@ export default class SocketIO implements interfaces.Instance {
           resolve();
         } );
 
-        if ( reason && reason.identifier === "SocketNotFound" ) {
-          return Promise.reject( {
-            identifier: "SocketNotFound",
-            data: {
-              reason: reason
-            }
-          } );
+        if ( reason.identifier && reason.identifier === "SocketNotFound" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {
@@ -130,6 +123,10 @@ export default class SocketIO implements interfaces.Instance {
           resolve();
         } );
 
+        if ( reason.identifier && reason.identifier === "SocketNotFound" ) {
+          return Promise.reject( reason );
+        }
+
         return Promise.reject( {
           identifier: "PushToOtherUsersFailed",
           data: {
@@ -183,6 +180,10 @@ export default class SocketIO implements interfaces.Instance {
           } );
           resolve();
         } );
+
+        if ( reason.identifier && reason.identifier === "SocketNotFound" ) {
+          return Promise.reject( reason );
+        }
 
         return Promise.reject( {
           identifier: "PushToCurrentUserFailed",
@@ -279,6 +280,10 @@ export default class SocketIO implements interfaces.Instance {
           resolve();
         } );
 
+        if ( reason.identifier && reason.identifier === "SocketNotFound" ) {
+          return Promise.reject( reason );
+        }
+
         return Promise.reject( {
           identifier: "JoinChannelsFailed",
           data: {
@@ -327,6 +332,10 @@ export default class SocketIO implements interfaces.Instance {
           resolve();
         } );
 
+        if ( reason.identifier && reason.identifier === "SocketNotFound" ) {
+          return Promise.reject( reason );
+        }
+
         return Promise.reject( {
           identifier: "LeaveChannelsFailed",
           data: {
@@ -359,7 +368,7 @@ export default class SocketIO implements interfaces.Instance {
 
         this.getSubs( { userId: user.id }, null, null )
           .then(( subscriptions: dataModel.core.subscription.Super[] ) => {
-            
+
             return new Promise<string[]>(( resolve, reject ) => {
 
               let channels: string[] = subscriptions.map(( subscription: dataModel.core.subscription.Super ) => {
@@ -376,7 +385,7 @@ export default class SocketIO implements interfaces.Instance {
             channels.forEach(( channel: string ) => {
 
               socket.join( channel );
-              
+
               new Promise<void>(( resolve, reject ) => {
                 this.events.joinedChannel( {
                   channel: channel,

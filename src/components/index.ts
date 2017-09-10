@@ -17,7 +17,7 @@ import helpers from "./helpers";
 class Components implements interfaces.Instance {
 
   constructor(
-    public readonly helpers: interfaces.helpers.Instance,
+    readonly helpers: interfaces.helpers.Instance,
     readonly storage: interfaces.storage.Instance,
     readonly session: interfaces.session.Instance,
     readonly authentication: interfaces.authentication.Instance,

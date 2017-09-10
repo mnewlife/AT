@@ -47,9 +47,13 @@ export default class Auth implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
-        if ( reason.identifier && reason.identifier === "UserNotFound" ) {}
+        if ( reason && reason.identifier === "UserNotFound" ) {
+          return Promise.reject( reason );
+        }
 
-        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {}
+        if ( reason && reason.identifier === "InvalidPassword" ) {
+          return Promise.reject( reason );
+        }
 
         return Promise.reject( {
           identifier: "SignInFailed",

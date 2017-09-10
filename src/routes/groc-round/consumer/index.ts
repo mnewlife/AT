@@ -1,11 +1,10 @@
 /******************************************************************************/
 
 import * as express from "express";
-import * as src from "../../../src";
 
 /******************************************************************************/
 
-export default ( config: src.Config ): express.Router => {
+export default (): express.Router => {
 
   let router = express.Router();
   router.use( authCheck );

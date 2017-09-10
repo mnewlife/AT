@@ -142,20 +142,15 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
         } );
 
         if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
-          return Promise.reject( {
-            identifier: "DocumentNotFound",
-            data: {
-              reason: reason
-            }
-          } );
-        } else {
-          return Promise.reject( {
-            identifier: "GetByIdFailed",
-            data: {
-              reason: reason
-            }
-          } );
+          return Promise.reject( reason );
         }
+
+        return Promise.reject( {
+          identifier: "GetByIdFailed",
+          data: {
+            reason: reason
+          }
+        } );
 
       } );
 
@@ -392,6 +387,10 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
           resolve();
         } );
 
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
         return Promise.reject( {
           identifier: "UpdateFailed",
           data: {
@@ -501,7 +500,7 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
 
   private readonly find = ( conditions: any, sortCriteria?: string, limit?: number ): Promise<Document[]> => {
 
-    conditions = ( conditions ) ? conditions : "dfd";
+    conditions = ( conditions ) ? conditions : "";
     sortCriteria = ( sortCriteria ) ? sortCriteria : "-updatedAt";
     limit = ( limit ) ? limit : 50;
 
@@ -537,7 +536,8 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
           resolve( foundDocument as Document );
         } else {
           reject( {
-            identifier: "DocumentNotFound"
+            identifier: "DocumentNotFound",
+            data: {}
           } );
         }
 

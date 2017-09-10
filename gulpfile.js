@@ -6,7 +6,7 @@ var tsProject = ts.createProject( "tsconfig.json" );
 
 /***********************************************************/
 
-gulp.procedure( "compileTs" , function () {
+gulp.task( "compileTs" , function () {
 
   return tsProject.src()
     .pipe( tsProject() )
@@ -16,7 +16,7 @@ gulp.procedure( "compileTs" , function () {
 
 /***********************************************************/
 
-gulp.procedure( "compileTests" , function () {
+gulp.task( "compileTests" , function () {
 
   return gulp.src( "test/**/*.ts" )
     .pipe( ts( {
@@ -29,6 +29,7 @@ gulp.procedure( "compileTests" , function () {
 
 /***********************************************************/
 
-gulp.procedure( "default" , [ "compileTs" , "compileTests" ] );
+gulp.task( "default" , [ "compileTs" ] );
+//gulp.task( "default" , [ "compileTs" , "compileTests" ] );
 
 /***********************************************************/

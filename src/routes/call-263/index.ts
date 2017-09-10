@@ -1,21 +1,20 @@
 /******************************************************************************/
 
 import * as express from "express";
-import * as src from "../../src";
 
-import developerRoutes from "./developer";
-import adminRoutes from "./admin";
-import consumerRoutes from "./consumer";
+// import developer from "./developer";
+// import admin from "./admin";
+// import consumer from "./consumer";
 
 /******************************************************************************/
 
-export default ( config: src.Config ): any => {
+export default (): any => {
 
   let router = express.Router();
 
-  router.use( "/developer", developerRoutes( config ) );
-  router.use( "/admin", adminRoutes( config ) );
-  router.use( "/consumer", consumerRoutes( config ) );
+  // router.use( "/developer", developer() );
+  // router.use( "/admin", admin() );
+  // router.use( "/consumer", consumer() );
 
 }
 

@@ -65,6 +65,10 @@ export default class Profile implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
+        if ( reason && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
         return Promise.reject( {
           identifier: "GetUserDetailsFailed",
           data: {
@@ -97,6 +101,10 @@ export default class Profile implements interfaces.Instance {
 
       } )
       .catch(( reason: any ) => {
+
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
 
         return Promise.reject( {
           identifier: "UpdateUserDetailsFailed",
@@ -174,11 +182,12 @@ export default class Profile implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
-        if ( reason && reason.identifier === "InvalidPassword" ) {
-          return Promise.reject( {
-            identifier: "InvalidPassword",
-            data: {}
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {
@@ -222,11 +231,12 @@ export default class Profile implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
-        if ( reason && reason.identifier === "InvalidPassword" ) {
-          return Promise.reject( {
-            identifier: "InvalidPassword",
-            data: {}
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {
@@ -303,11 +313,8 @@ export default class Profile implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
-        if ( reason && reason.identifier === "InvalidPassword" ) {
-          return Promise.reject( {
-            identifier: "InvalidPassword",
-            data: {}
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {
@@ -362,14 +369,18 @@ export default class Profile implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
-      return Promise.reject( {
-        identifier: "ResetPasswordFailed",
-        data: {
-          reason: reason
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
         }
-      } );
 
-    } );
+        return Promise.reject( {
+          identifier: "ResetPasswordFailed",
+          data: {
+            reason: reason
+          }
+        } );
+
+      } );
 
   }
 
@@ -390,11 +401,12 @@ export default class Profile implements interfaces.Instance {
       } )
       .catch(( reason: any ) => {
 
-        if ( reason && reason.identifier === "InvalidPassword" ) {
-          return Promise.reject( {
-            identifier: "InvalidPassword",
-            data: {}
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {

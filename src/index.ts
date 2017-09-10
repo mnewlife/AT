@@ -8,6 +8,11 @@ import * as favicon from "serve-favicon";
 import * as compression from "compression";
 import * as bodyParser from "body-parser";
 
+import * as Environment from "./environment/interfaces";
+import * as EventListener from "./event-listener/interfaces";
+import * as Components from "./components/interfaces";
+import * as Procedures from "./procedures/interfaces";
+
 import environment from "./environment";
 import eventListener from "./event-listener";
 import components from "./components";
@@ -15,18 +20,31 @@ import procedures from "./procedures";
 import routes from "./routes";
 
 import * as dataModel from "./data-model";
+import * as interfaces from "./interfaces";
 
 /******************************************************************************/
 
 let app = express();
-const server = http.createServer( app );
+const server: http.Server = http.createServer( app );
 
 /******************************************************************************/
 
-let components: src.Components = componentsFactory;
-let procedures: src.Procedures = proceduresFactory( components );
+// emitEvent: eventListener.Emit, production: boolean, httpServer: http.Server
 
-config.registerReferences( procedures, procedures, server );
+let eventListenerInstance: EventListener.Instance = eventListener();
+
+let componentsInstance: Components.Instance = components(
+  eventListenerInstance.emit,
+  environment.production,
+  server
+);
+
+let proceduresInstance: Procedures.Instance = procedures(
+  eventListenerInstance.emit,
+  componentsInstance
+);
+
+eventListenerInstance.updateReferences( componentsInstance, proceduresInstance );
 
 /******************************************************************************/
 
@@ -38,32 +56,37 @@ app.locals.basedir = __dirname + "/public";
 
 /*************************************************/
 
-let mware: src.components.sharedLogic.AppMiddleware = {
-
+let mware: interfaces.AppMiddleware = {
   helmet: [ helmet() ],
   favicon: [ favicon( path.join( __dirname, "/public/favicon.ico" ) ) ],
   compression: [ compression() ],
   express_static: [ express.static( __dirname + "/public" ) ],
   bodyParser_urlEncoded: [ bodyParser.urlencoded( { extended: false } ) ],
   bodyParser_json: [ bodyParser.json() ]
-
 };
 
-for ( let utility in components ) {
-  if ( components.hasOwnProperty( utility ) ) {
-    components.sharedLogic.middleware.retrieveMwareLists( mware, utility, components[ utility ] );
-  }
+interface IndexableComponents extends Components.Instance {
+  [ index: string ]: Components.Instance[ keyof Components.Instance ];
 }
 
-for ( var component in procedures ) {
-  if ( procedures.hasOwnProperty( component ) ) {
-    components.sharedLogic.middleware.retrieveMwareLists( mware, component, procedures[ component ] );
+let indexableComponents: IndexableComponents = {
+  helpers: componentsInstance.helpers,
+  storage: componentsInstance.storage,
+  session: componentsInstance.session,
+  authentication: componentsInstance.authentication,
+  communication: componentsInstance.communication,
+  response: componentsInstance.response
+};
+
+for ( let utility in indexableComponents ) {
+  if ( indexableComponents.hasOwnProperty( utility ) ) {
+    componentsInstance.helpers.mware.retrieveMwareLists( mware, utility, indexableComponents[ utility ] );
   }
 }
 
 /*************************************************/
 
-var mware_order: string[] = [
+let mware_order: string[] = [
   "helmet",
   "favicon",
   "compression",
@@ -84,15 +107,15 @@ mware_order.forEach( function ( subject ) {
 
 /******************************************************************************/
 
-routes( config, app );
+routes( eventListenerInstance, componentsInstance, proceduresInstance, app );
 
 /******************************************************************************/
 
-app.use( function ( err: any, req: express.Request, res: express.Response, next: express.NextFunction ) {
+app.use( ( err: any, req: express.Request, res: express.Response, next: express.NextFunction ) => {
   if ( res.headersSent ) {
     return next( err );
   }
-  var message = ( err.stack ) ? err.stack : err;
+  let message = ( err.stack ) ? err.stack : err;
   if ( message ) {
     console.log( "Last Error Handler: " + message );
   } else {
@@ -107,8 +130,8 @@ app.use( function ( err: any, req: express.Request, res: express.Response, next:
 /*******************************************************************************/
 
 server.listen( process.env.PORT || 1111, function () {
-  var port = server.address().port;
-  console.log( config.environment.applicationName + " now running on port : " + port );
+  let port = server.address().port;
+  console.log( environment.applicationName + " now running on port : " + port );
 } );
 
 /*******************************************************************************/

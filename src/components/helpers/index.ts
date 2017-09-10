@@ -1,5 +1,7 @@
 /******************************************************************************/
 
+import * as express from "express";
+
 import * as eventListener from "../../event-listener/interfaces";
 
 import * as interfaces from "./interfaces";
@@ -17,6 +19,8 @@ import numbers from "./numbers";
 /******************************************************************************/
 
 class Helpers implements interfaces.Instance {
+
+  middleware: express.RequestHandler[] = [];
 
   constructor(
     readonly dataStructures: DataStructures.Instance,

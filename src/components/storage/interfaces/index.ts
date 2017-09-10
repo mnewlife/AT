@@ -7,6 +7,7 @@ import * as dataStructures from "../../helpers/data-structures/interfaces";
 import * as moders from "../../helpers/moders/interfaces";
 
 import * as dataModel from "../../../data-model";
+import * as components from "../../../components/interfaces";
 import * as publicMethods from "./public-methods";
 
 import * as call263 from './call-263';
@@ -21,7 +22,7 @@ export { call263, core, grocRound, powertel, routers };
 
 /******************************************************************************/
 
-export interface Instance {
+export interface Instance extends components.MiddlewareBorn {
   readonly call263: call263.Instance;
   readonly core: core.Instance;
   readonly grocRound: grocRound.Instance;

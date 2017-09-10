@@ -61,6 +61,13 @@ export default class Canon implements interfaces.Instance {
 
         return new Promise<any>(( resolve, reject ) => {
 
+          if ( !foundUsers.length ) {
+            return reject( {
+              identifier: "UserNotFound",
+              data: {}
+            } );
+          }
+
           if ( this.isValidPassword( password, foundUsers[ 0 ].password ) ) {
             return resolve( foundUsers[ 0 ] );
           }
@@ -74,11 +81,8 @@ export default class Canon implements interfaces.Instance {
           } );
 
           reject( {
-            identifier: "invalidPassword",
-            data: {
-              emailAddress: emailAddress,
-              password: password
-            }
+            identifier: "InvalidPassword",
+            data: {}
           } );
 
         } );
@@ -111,22 +115,12 @@ export default class Canon implements interfaces.Instance {
           resolve();
         } );
 
-        if ( reason && reason.identifier === "UserNotFound" ) {
-          return Promise.reject( {
-            identifier: "UserNotFound",
-            data: {
-              reason: reason
-            }
-          } );
+        if ( reason.identifier && reason.identifier === "UserNotFound" ) {
+          return Promise.reject( reason );
         }
 
-        if ( reason && reason.identifier === "InvalidPassword" ) {
-          return Promise.reject( {
-            identifier: "InvalidPassword",
-            data: {
-              reason: reason
-            }
-          } );
+        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {
@@ -188,11 +182,12 @@ export default class Canon implements interfaces.Instance {
           } );
         } );
 
-        if ( reason && reason.identifier === "NoCurrentUser" ) {
-          return Promise.reject( {
-            identifier: "NoCurrentUser",
-            data: {}
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "NoCurrentUser" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {
@@ -254,11 +249,12 @@ export default class Canon implements interfaces.Instance {
           resolve();
         } );
 
-        if ( reason && reason.identifier === "InvalidPassword" ) {
-          return Promise.reject( {
-            identifier: "InvalidPassword",
-            data: {}
-          } );
+        if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+          return Promise.reject( reason );
         }
 
         return Promise.reject( {

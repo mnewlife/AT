@@ -4,6 +4,7 @@ import * as express from "express";
 import * as Promise from "bluebird";
 
 import * as dataModel from "../../data-model";
+import * as components from "../../components/interfaces";
 import * as storage from "../storage/interfaces";
 import * as moders from "../helpers/moders/interfaces";
 
@@ -12,7 +13,7 @@ import * as events from "./events/interfaces";
 
 /******************************************************************************/
 
-export interface Instance {
+export interface Instance extends components.MiddlewareBorn {
   readonly signedIn: SignedIn;
   readonly setCurrentUser: SetCurrentUser;
   readonly getCurrentUser: GetCurrentUser;
