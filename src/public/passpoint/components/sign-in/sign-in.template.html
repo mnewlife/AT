@@ -1,0 +1,76 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar title="Sign In"></tool-bar>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav context="signIn" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav>
+    </div>
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="90" layout-padding>
+
+      <section layout="column" layout-align="start center">
+
+        <md-card class="animated fadeIn">
+          <md-progress-linear md-mode="indeterminate" class="md-accent" ng-show="$ctrl.authenticating"></md-progress-linear>
+
+          <form name="form_admin" ng-submit="$ctrl.authenticate()">
+
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline" ng-hide="$ctrl.editMode">Sign in to your Athena Account</span>
+                <span class="md-subhead">Provide the following details</span>
+              </md-card-title-text>
+            </md-card-title>
+
+            <md-card-content layout="column" layout-align="start stretch">
+
+              <div layout="row" layout-align="center center">
+                <md-input-container flex="100">
+                  <label>Email Address</label>
+                  <input class="md-body-1" ng-model="$ctrl.details.emailAddress" type="text" name="emailAddress" placeholder="Email Address"
+                    ng-disabled="$ctrl.authenticating" required>
+                  <div ng-messages="form_admin.emailAddress.$error" role="alert">
+                    <div ng-message="required" class="my-message">Enter email address</div>
+                  </div>
+                </md-input-container>
+              </div>
+
+              <div layout="row" layout-align="start center">
+                <md-input-container flex="100">
+                  <label>Create a password</label>
+                  <input class="md-body-1" ng-model="$ctrl.details.password" type="password" name="passwordmozart" placeholder="Password" ng-disabled="$ctrl.authenticating"
+                    required>
+                  <div ng-messages="form_admin.passwordmozart.$error" role="alert">
+                    <div ng-message="required" class="my-message">Enter your password</div>
+                  </div>
+                </md-input-container>
+              </div>
+
+            </md-card-content>
+
+            <md-card-actions layout="column" layout-align="center stretch">
+              <md-button type="submit" class="md-raised md-accent nocase" ng-disabled="$ctrl.authenticating" aria-label="Sign In">
+                Sign In
+              </md-button>
+            </md-card-actions>
+
+          </form>
+
+        </md-card>
+
+        <md-button class="md-accent nocase animated fadeIn" ng-href="#/sign-up" aria-label="Create An Account" ng-disabled="$ctrl.authenticating">
+          <span>Don't have an account?</span>
+          <span class="underlined">Create An Account</span>
+        </md-button>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+
+    </md-content>
+
+  </md-content>
+
+</div>

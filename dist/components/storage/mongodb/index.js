@@ -12,7 +12,7 @@ var MongoDB = (function () {
     /*****************************************************************/
     function MongoDB(emitEvent, mapDetails, checkThrow) {
         this.middleware = [];
-        this.linkToDB = "";
+        this.linkToDB = "mongodb://127.0.0.1:27017/AthenaTest";
         /*****************************************************************/
         this.connectToDatabase = function (linkToDB) {
             mongoose.connect(linkToDB, function (err, res) {

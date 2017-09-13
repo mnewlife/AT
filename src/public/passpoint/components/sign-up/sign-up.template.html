@@ -1,0 +1,100 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar title="Create An Account"></tool-bar>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav context="signUp" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav>
+    </div>
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="90">
+
+      <section layout="column" layout-gt-xs="row" layout-align-gt-xs="space-around start" layout-align="start center" layout-padding>
+
+        <div flex-gt-xs="50" hide-xs hide-sm>
+          <md-grid-list md-cols="1" md-cols-sm="1" md-cols-gt-sm="1" md-cols-md="1" md-cols-gt-md="2" md-row-height-gt-md="1:1" md-row-height="4:3"
+            md-gutter="8px" md-gutter-gt-sm="8px">
+
+            <md-grid-tile ng-repeat="tile in $ctrl.tiles" md-rowspan="{{tile.span.row}}" md-colspan="{{tile.span.col}}" md-colspan-sm="1"
+              md-colspan-xs="1">
+              <img flex="100" ng-src="{{ tile.src }}" alt="{{ tile.alt }}" />
+              <md-grid-tile-footer>
+                <h3>{{ tile.service }}</h3>
+              </md-grid-tile-footer>
+            </md-grid-tile>
+
+          </md-grid-list>
+        </div>
+
+        <div flex-gt-xm="50" layout="column" layout-align="start center">
+
+          <md-card class="animated fadeIn">
+
+            <form name="form_signUp" ng-submit="$ctrl.authenticate()">
+
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Create an Athena account</span>
+                  <span class="md-subhead">Please provide the following details</span>
+                </md-card-title-text>
+              </md-card-title>
+
+              <md-card-content layout="column" layout-align="start stretch">
+
+                <div layout="row" layout-align="center center">
+                  <md-input-container flex="100">
+                    <label>Email Address</label>
+                    <input class="md-body-1" ng-model="$ctrl.details.emailAddress" type="text" name="email" placeholder="Email Address" ng-disabled="$ctrl.signingUp"
+                      required>
+                    <div ng-messages="form_signup.emailAddress.$error" role="alert">
+                      <div ng-message="required" class="my-message">Provide your email address</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container flex="50">
+                    <label>Create a password</label>
+                    <input class="md-body-1" ng-model="$ctrl.details.password" type="password" name="passwordx" placeholder="Password" ng-disabled="$ctrl.signingUp"
+                      ng-change="$ctrl.checkPasswords()" required>
+                    <div ng-messages="form_signup.passwordx.$error" role="alert">
+                      <div ng-message="required" class="my-message">You need a password</div>
+                    </div>
+                  </md-input-container>
+                  <md-input-container flex="50">
+                    <label>Confirm your password</label>
+                    <input class="md-body-1" ng-model="$ctrl.details.confirm" type="password" name="confirm" ng-disabled="$ctrl.signingUp" placeholder="Confirm your password"
+                      ng-change="$ctrl.checkPasswords()" required>
+                    <div ng-messages="form_signup.confirm.$error" role="alert">
+                      <div ng-message="required" class="my-message">Confirm your password</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+              </md-card-content>
+
+              <md-card-actions layout="row" layout-align="end end">
+                <md-button type="submit" class="md-accent" aria-label="Create Account">
+                  <span>Create Account</span>
+                </md-button>
+              </md-card-actions>
+
+            </form>
+
+          </md-card>
+
+          <md-button class="md-accent nocase" ng-href="#/sign-in" aria-label="Create An Account" ng-disabled="$ctrl.activity.signUp">
+            <span>Already have an account?</span>
+            <span class="underlined">Sign In</span>
+          </md-button>
+
+          <div layout="row" layout-align="center end" layout-padding>
+            <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+          </div>
+
+        </div>
+
+      </section>
+
+    </md-content>
+
+  </md-content>
+</div>

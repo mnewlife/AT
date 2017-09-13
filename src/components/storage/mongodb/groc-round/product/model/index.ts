@@ -60,24 +60,24 @@ let productSchema = new mongoose.Schema( {
   images: [ String ],
   priceValues: {
     min: {
-      shopId: mongoose.Types.ObjectId,
+      shopId: mongoose.Schema.Types.ObjectId,
       price: { type: Number, min: 0, default: 0 }
     },
     max: {
-      shopId: mongoose.Types.ObjectId,
+      shopId: mongoose.Schema.Types.ObjectId,
       price: { type: Number, min: 0, default: 0 }
     },
     median: {
-      shopId: mongoose.Types.ObjectId,
+      shopId: mongoose.Schema.Types.ObjectId,
       price: { type: Number, min: 0, default: 0 }
     },
     mean: {
-      shopId: mongoose.Types.ObjectId,
+      shopId: mongoose.Schema.Types.ObjectId,
       price: { type: Number, min: 0, default: 0 }
     }
   },
   effectivePrice: {
-    shopId: mongoose.Types.ObjectId,
+    shopId: mongoose.Schema.Types.ObjectId,
     price: { type: Number, min: 0, default: 0 }
   },
 

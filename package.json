@@ -1,7 +1,7 @@
 {
   "name": "athena",
   "version": "1.0.0",
-  "description": "Empowering the lives of our community members through technology",
+  "description": "Empowering lives through technology",
   "engines": {
     "node": "6.x",
     "npm": "4.x"
@@ -29,6 +29,7 @@
     "@types/socket.io": "^1.4.29",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.0",
+    "gulp": "^3.9.1",
     "body-parser": "1.16.0",
     "chai": "^3.5.0",
     "compression": "1.6.2",
