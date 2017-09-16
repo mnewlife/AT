@@ -3,14 +3,14 @@
 import * as Promise from "bluebird";
 import * as express from "express";
 
-import * as dataModel from "../../../../data-model";
-import * as EventListener from "../../../../event-listener/interfaces";
-import * as Components from "../../../../components/interfaces";
-import * as Procedures from "../../../../procedures/interfaces";
+import * as dataModel from "../../../data-model";
+import * as EventListener from "../../../event-listener/interfaces";
+import * as Components from "../../../components/interfaces";
+import * as Procedures from "../../../procedures/interfaces";
 
-import * as response from "../../../../components/response/interfaces";
-import * as helpers from "../../../helpers/interfaces";
-import * as authProcedures from "../../../../procedures/core/common/auth/interfaces";
+import * as response from "../../../components/response/interfaces";
+import * as helpers from "../../helpers/interfaces";
+import * as authProcedures from "../../../procedures/core/common/auth/interfaces";
 
 /******************************************************************************/
 

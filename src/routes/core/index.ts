@@ -8,6 +8,7 @@ import * as Procedures from "../../procedures/interfaces";
 
 import * as Helpers from "../helpers/interfaces";
 
+import auth from "./auth";
 import developer from "./developer";
 import admin from "./admin";
 import consumer from "./consumer";
@@ -23,8 +24,14 @@ export default (
 
   let router = express.Router();
 
+  router.use( "/auth", auth(
+    procedures.core.common.auth.signIn,
+    helpers.setViewContexts,
+    components.response.send
+  ) );
+
   //router.use( "/developer", developer( config ) );
-  router.use( "/admin", admin( eventListener, components, procedures, helpers ) );
+  //router.use( "/admin", admin( eventListener, components, procedures, helpers ) );
   //router.use( "/consumer", consumer( config ) );
 
   return router;

@@ -4,19 +4,27 @@ import * as express from "express";
 
 import * as Components from "../../components/interfaces";
 
-import developer from "./developer";
-import admin from "./admin";
-import consumer from "./consumer";
-
 /******************************************************************************/
 
 export default ( components: Components.Instance ): express.Router => {
 
   let router = express.Router();
 
-  router.use( "/developer", developer( components.response.send ) );
-  router.use( "/admin", admin( components.response.send ) );
-  router.use( "/consumer", consumer( components.response.send ) );
+  router.get( "/", ( req: express.Request, res: express.Response, next: express.NextFunction ) => {
+
+    let payload: any = {};
+
+    if ( req.query.appContext ) {
+      payload.appContext = req.query.appContext;
+    }
+
+    if ( req.query.innerContext ) {
+      payload.innerContext = req.query.innerContext;
+    }
+
+    return components.response.send( res, "passpoint", true, null, payload );
+
+  } );
 
   return router;
 

@@ -30,12 +30,6 @@ export default (
 
   /**********************************************************/
 
-  router.use( "/auth", auth(
-    procedures.core.common.auth.signIn,
-    helpers.setViewContexts,
-    components.response.send
-  ) );
-
   // router.use( "/profile", authCheck, profile() ) -- use authCheck, not for registration
 
   /**********************************************************/
@@ -69,7 +63,7 @@ export default (
       } );
 
     function signInFirst () {
-      return components.response.send( res, "passpoint-admin", false, "You need to sign in first", null );
+      return components.response.send( res, "passpoint", false, "You need to sign in first", null );
     }
 
   }

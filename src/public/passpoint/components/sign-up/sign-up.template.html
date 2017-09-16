@@ -27,8 +27,9 @@
         <div flex-gt-xm="50" layout="column" layout-align="start center">
 
           <md-card class="animated fadeIn">
+            <md-progress-linear md-mode="indeterminate" class="md-accent" ng-show="$ctrl.registering"></md-progress-linear>
 
-            <form name="form_signUp" ng-submit="$ctrl.authenticate()">
+            <form name="form_sign_up" ng-submit="$ctrl.signUp()">
 
               <md-card-title>
                 <md-card-title-text>
@@ -42,9 +43,9 @@
                 <div layout="row" layout-align="center center">
                   <md-input-container flex="100">
                     <label>Email Address</label>
-                    <input class="md-body-1" ng-model="$ctrl.details.emailAddress" type="text" name="email" placeholder="Email Address" ng-disabled="$ctrl.signingUp"
+                    <input class="md-body-1" ng-model="$ctrl.emailAddress" type="text" name="email" placeholder="Email Address" ng-disabled="$ctrl.signingUp"
                       required>
-                    <div ng-messages="form_signup.emailAddress.$error" role="alert">
+                    <div ng-messages="form_sign_up.emailAddress.$error" role="alert">
                       <div ng-message="required" class="my-message">Provide your email address</div>
                     </div>
                   </md-input-container>
@@ -53,17 +54,17 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container flex="50">
                     <label>Create a password</label>
-                    <input class="md-body-1" ng-model="$ctrl.details.password" type="password" name="passwordx" placeholder="Password" ng-disabled="$ctrl.signingUp"
+                    <input class="md-body-1" ng-model="$ctrl.password" type="password" name="passwordx" placeholder="Password" ng-disabled="$ctrl.signingUp"
                       ng-change="$ctrl.checkPasswords()" required>
-                    <div ng-messages="form_signup.passwordx.$error" role="alert">
+                    <div ng-messages="form_sign_up.passwordx.$error" role="alert">
                       <div ng-message="required" class="my-message">You need a password</div>
                     </div>
                   </md-input-container>
                   <md-input-container flex="50">
                     <label>Confirm your password</label>
-                    <input class="md-body-1" ng-model="$ctrl.details.confirm" type="password" name="confirm" ng-disabled="$ctrl.signingUp" placeholder="Confirm your password"
+                    <input class="md-body-1" ng-model="$ctrl.confirm" type="password" name="confirm" ng-disabled="$ctrl.signingUp" placeholder="Confirm your password"
                       ng-change="$ctrl.checkPasswords()" required>
-                    <div ng-messages="form_signup.confirm.$error" role="alert">
+                    <div ng-messages="form_sign_up.confirm.$error" role="alert">
                       <div ng-message="required" class="my-message">Confirm your password</div>
                     </div>
                   </md-input-container>

@@ -43,7 +43,7 @@
 
     function showConfirm ( settings ) {
 
-      var confirm = $mdDialog.confirm();
+      var confirm = this.$mdDialog.confirm();
       confirm.ariaLabel( "Confirm Dialog" );
 
       if ( settings.title ) {

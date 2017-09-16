@@ -1,52 +1,46 @@
-"use strict";
-/*******************************************************************/
-exports.__esModule = true;
-/// <reference path="..\..\..\..\node_modules\@types\angular-route\index.d.ts"/>
-/*******************************************************************/
-var Promise = require("bluebird");
-var angular = require("angular");
-/*******************************************************************/
-(function () {
-    "use strict";
-    angular.module("toast", []);
-    angular.module("toast").factory("Toast", ToastService);
-    ToastService.$inject = ["$mdToast"];
-    function ToastService($mdToast) {
-        /***************************************************/
-        return {
-            showSimple: showSimple,
-            showWithAction: showWithAction
-        };
-        /***************************************************/
-        function showSimple(message) {
-            return new Promise(function (resolve, reject) {
-                var simpleToast = $mdToast.simple()
-                    .textContent((message) ? message : "")
-                    .hideDelay(3000);
-                $mdToast.show(simpleToast)
-                    .then(function (response) {
-                    resolve();
-                });
-            });
-        }
-        /***************************************************/
-        function showWithAction(message, action) {
-            return new Promise(function (resolve, reject) {
-                var toast = $mdToast.simple()
-                    .textContent(message)
-                    .action(action)
-                    .highlightAction(false);
-                $mdToast.show(toast)
-                    .then(function (response) {
-                    if (response == "ok") {
-                        return resolve(true);
-                    }
-                    else {
-                        return resolve(false);
-                    }
-                });
-            });
-        }
-        /***************************************************/
+var ToastService;
+( function ( ToastService ) {
+  function factory ( $q, $mdToast ) {
+    return new Service( $q, $mdToast );
+  }
+  var Service = /** @class */ ( function () {
+    /***************************************************/
+    function Service ( $q, $mdToast ) {
+      var _this = this;
+      this.$q = $q;
+      this.$mdToast = $mdToast;
+      /***************************************************/
+      this.showSimple = function ( message ) {
+        return _this.$q( function ( resolve, reject ) {
+          var simpleToast = _this.$mdToast.simple()
+            .textContent(( message ) ? message : "" )
+            .hideDelay( 3000 );
+          _this.$mdToast.show( simpleToast )
+            .then( function ( response ) {
+              resolve();
+            } );
+        } );
+      };
+      /***************************************************/
+      this.showWithAction = function ( message, action ) {
+        return _this.$q( function ( resolve, reject ) {
+          var toast = _this.$mdToast.simple()
+            .textContent( message )
+            .action( action )
+            .highlightAction( false );
+          _this.$mdToast.show( toast )
+            .then( function ( response ) {
+              if ( response == "ok" ) {
+                return resolve( true );
+              }
+              else {
+                return resolve( false );
+              }
+            } );
+        } );
+      };
     }
-})();
+    return Service;
+  }() );
+} )( ToastService || ( ToastService = {} ) );
+/*******************************************************************/

@@ -23,7 +23,7 @@
     "Contexts"
   ];
 
-  function controller ( $routeParams, $location, $timeout, Toast, SignIn, Contexts ) {
+  function controller ( $routeParams, Toast, SignIn, Contexts ) {
 
     /* jshint validthis: true */
     var vm = this;

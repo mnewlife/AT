@@ -1,46 +1,28 @@
-/*******************************************************************/
 
-/// <reference path="..\..\..\..\node_modules\@types\angular\index.d.ts"/>
-/// <reference path="..\..\..\..\node_modules\@types\angular-route\index.d.ts"/>
+module ToastService {
 
-/*******************************************************************/
+  import interfaces = ToastServiceInterfaces;
 
-import * as Promise from "bluebird";
-
-import * as interfaces from "./interfaces";
-
-/*******************************************************************/
-
-( () => {
-
-  "use strict";
-
-  angular.module( "toast", [] );
-
-  angular.module( "toast" ).factory( "Toast", ToastService );
-
-  ToastService.$inject = [ "$mdToast" ];
-
-  function ToastService ( $mdToast: ng.material.IToastService ): interfaces.Instance {
+  export class Service implements interfaces.Instance {
 
     /***************************************************/
 
-    return {
-      showSimple: showSimple,
-      showWithAction: showWithAction
-    };
+    constructor(
+      private readonly $q: ng.IQService,
+      private readonly $mdToast: ng.material.IToastService
+    ) { }
 
     /***************************************************/
 
-    function showSimple ( message: string ): Promise<void> {
+    public showSimple = ( message: string ): ng.IPromise<void> => {
 
-      return new Promise<void>(( resolve, reject ) => {
+      return this.$q<void>(( resolve, reject ) => {
 
-        let simpleToast = $mdToast.simple()
+        let simpleToast = this.$mdToast.simple()
           .textContent(( message ) ? message : "" )
           .hideDelay( 3000 );
 
-        $mdToast.show( simpleToast )
+        this.$mdToast.show( simpleToast )
           .then(( response: any ) => {
 
             resolve();
@@ -53,16 +35,16 @@ import * as interfaces from "./interfaces";
 
     /***************************************************/
 
-    function showWithAction ( message: string, action: string ): Promise<boolean> {
+    public showWithAction = ( message: string, action: string ): ng.IPromise<boolean> => {
 
-      return new Promise<boolean>(( resolve, reject ) => {
+      return this.$q(( resolve, reject ) => {
 
-        let toast = $mdToast.simple()
+        let toast = this.$mdToast.simple()
           .textContent( message )
           .action( action )
           .highlightAction( false );
 
-        $mdToast.show( toast )
+        this.$mdToast.show( toast )
           .then(( response: any ) => {
 
             if ( response == "ok" ) {
@@ -81,4 +63,6 @@ import * as interfaces from "./interfaces";
 
   }
 
-} )();
+}
+
+/*******************************************************************/

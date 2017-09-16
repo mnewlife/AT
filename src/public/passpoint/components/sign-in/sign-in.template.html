@@ -12,7 +12,7 @@
         <md-card class="animated fadeIn">
           <md-progress-linear md-mode="indeterminate" class="md-accent" ng-show="$ctrl.authenticating"></md-progress-linear>
 
-          <form name="form_admin" ng-submit="$ctrl.authenticate()">
+          <form name="form_sign_in" ng-submit="$ctrl.signIn()">
 
             <md-card-title>
               <md-card-title-text>
@@ -26,9 +26,9 @@
               <div layout="row" layout-align="center center">
                 <md-input-container flex="100">
                   <label>Email Address</label>
-                  <input class="md-body-1" ng-model="$ctrl.details.emailAddress" type="text" name="emailAddress" placeholder="Email Address"
-                    ng-disabled="$ctrl.authenticating" required>
-                  <div ng-messages="form_admin.emailAddress.$error" role="alert">
+                  <input class="md-body-1" ng-model="$ctrl.emailAddress" type="text" name="emailAddress" placeholder="Email Address" ng-disabled="$ctrl.authenticating"
+                    required>
+                  <div ng-messages="form_sign_in.emailAddress.$error" role="alert">
                     <div ng-message="required" class="my-message">Enter email address</div>
                   </div>
                 </md-input-container>
@@ -37,9 +37,9 @@
               <div layout="row" layout-align="start center">
                 <md-input-container flex="100">
                   <label>Create a password</label>
-                  <input class="md-body-1" ng-model="$ctrl.details.password" type="password" name="passwordmozart" placeholder="Password" ng-disabled="$ctrl.authenticating"
+                  <input class="md-body-1" ng-model="$ctrl.password" type="password" name="passwordmozart" placeholder="Password" ng-disabled="$ctrl.authenticating"
                     required>
-                  <div ng-messages="form_admin.passwordmozart.$error" role="alert">
+                  <div ng-messages="form_sign_in.passwordmozart.$error" role="alert">
                     <div ng-message="required" class="my-message">Enter your password</div>
                   </div>
                 </md-input-container>
