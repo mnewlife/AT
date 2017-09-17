@@ -10,16 +10,6 @@ module SignUpComponentInterfaces {
     signUp: SignUp;
   }
 
-  export interface Tile {
-    service: string;
-    src: string;
-    alt: string;
-    span: {
-      row: number;
-      col: number;
-    };
-  }
-  
   /*******************************************/
 
   export interface SignUp {

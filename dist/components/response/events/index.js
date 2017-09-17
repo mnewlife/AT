@@ -14,7 +14,7 @@ var Events = (function () {
                 tags: [],
                 identifier: "StringifyHtmlPacketFailed",
                 data: {
-                    packet: params.packet,
+                    payload: params.payload,
                     reason: params.reason
                 }
             };

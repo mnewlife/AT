@@ -5,7 +5,9 @@ var ContextsService;
         function Service() {
             var payload = null;
             try {
-                payload = JSON.parse(window.payloadString);
+                if (window.jsonString) {
+                    payload = JSON.parse(window.jsonString);
+                }
             }
             catch (ex) {
                 console.log("Something went wrong, " + ex);

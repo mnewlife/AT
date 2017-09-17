@@ -39,20 +39,35 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
 
-        return this.makeConditions( filtrationCriteria );
+        if ( filtrationCriteria ) {
+          return this.makeConditions( filtrationCriteria );
+        } else {
+          return Promise.resolve( {} );
+        }
 
       } )
       .then(( conditions: QueryConditions ) => {
 
-        return this.makeSortCriteria( sortCriteria )
-          .then(( sortString: string ) => {
+        if ( sortCriteria ) {
 
-            return Promise.resolve( {
-              conditions: conditions,
-              sortString: sortString
+          return this.makeSortCriteria( sortCriteria )
+            .then(( sortString: string ) => {
+
+              return Promise.resolve( {
+                conditions: conditions,
+                sortString: sortString
+              } );
+
             } );
 
+        } else {
+
+          return Promise.resolve( {
+            conditions: conditions,
+            sortString: ""
           } );
+
+        }
 
       } )
       .then(( holder: { conditions: QueryConditions, sortString: string } ) => {
@@ -83,6 +98,8 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
 
       } )
       .catch(( reason: any ) => {
+
+        console.log( ">" + reason );
 
         new Promise<void>(( resolve, reject ) => {
           this.events.getFailed( {

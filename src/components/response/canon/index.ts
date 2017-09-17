@@ -39,18 +39,10 @@ export default class Canon implements interfaces.Instance {
       html: () => {
         let str;
         try {
-          str = JSON.stringify( {
-            success: ( success ) ? success : false,
-            message: ( message ) ? message : "",
-            payload: ( payload ) ? payload : ""
-          } );
+          str = JSON.stringify(( payload ) ? payload : "" );
         } catch ( exception ) {
           this.events.stringifyHtmlPacketFailed( {
-            packet: {
-              success: ( success ) ? success : false,
-              message: ( message ) ? message : "",
-              payload: ( payload ) ? payload : ""
-            },
+            payload: ( payload ) ? payload : "",
             reason: exception
           } );
           str = "";

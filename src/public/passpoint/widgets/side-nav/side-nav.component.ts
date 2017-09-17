@@ -12,16 +12,18 @@ module SideNavWidget {
 
     constructor() {
 
+      this.items = [];
+
       this.items.push( {
-        href: "#/profile",
-        icon: "person",
-        caption: "My Profile"
+        href: "#/sign-in",
+        icon: "input",
+        caption: "Sign In"
       } );
 
       this.items.push( {
-        href: "#/add-admin",
-        icon: "plus",
-        caption: "Add Admin"
+        href: "#/sign-up",
+        icon: "mode_edit",
+        caption: "Sign Up"
       } );
 
     }

@@ -16,33 +16,6 @@ module SignUpComponent {
 
     public registering: boolean;
 
-    public tiles: interfaces.Tile[] = [
-      {
-        service: "Grocery Rounds",
-        src: "resources/drawable/groceryRound.png",
-        alt: "Athena Resources",
-        span: { row: 1, col: 1 }
-      },
-      {
-        service: "Call 263",
-        src: "resources/drawable/call263.jpg",
-        alt: "Affordable calling rates internationally",
-        span: { row: 1, col: 1 }
-      },
-      {
-        service: "Wifi Routers",
-        src: "resources/drawable/router.png",
-        alt: "Sentar and Huawei wifi routers",
-        span: { row: 1, col: 1 }
-      },
-      {
-        service: "CDMA Smartphones",
-        src: "resources/drawable/smartphone.png",
-        alt: "Cheap CDMA smartphones",
-        span: { row: 1, col: 1 }
-      }
-    ];
-
     /***************************************************/
 
     constructor(

@@ -17,7 +17,9 @@ module ContextsService {
       let payload = null;
 
       try {
-        payload = JSON.parse(( window as any ).payloadString );
+        if ( ( window as any ).jsonString ) {
+          payload = JSON.parse(( window as any ).jsonString );
+        }
       } catch ( ex ) {
         console.log( "Something went wrong, " + ex );
       }

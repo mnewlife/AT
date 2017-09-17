@@ -61,10 +61,6 @@ module SignInComponent {
 
           this.authenticating = false;
 
-          if ( reason.message ) {
-            this.ToastService.showSimple( reason.message as string );
-          }
-
         } );
 
     }

@@ -145,8 +145,7 @@ var Canon = (function () {
             }
             var tryCount = 1;
             var maxTries = 3;
-            lookupSession("");
-            function lookupSession(error) {
+            var lookupSession = function (error) {
                 if (error) {
                     throw error;
                 }
@@ -157,8 +156,9 @@ var Canon = (function () {
                 if (tryCount > maxTries) {
                     throw new Error("Session: Couldn't retain session");
                 }
-                this.middlewareConfiguration(req, res, lookupSession);
-            }
+                _this.middlewareConfiguration(req, res, lookupSession);
+            };
+            lookupSession("");
         });
     }
     return Canon;

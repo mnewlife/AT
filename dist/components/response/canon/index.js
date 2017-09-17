@@ -21,19 +21,11 @@ var Canon = (function () {
                 html: function () {
                     var str;
                     try {
-                        str = JSON.stringify({
-                            success: (success) ? success : false,
-                            message: (message) ? message : "",
-                            payload: (payload) ? payload : ""
-                        });
+                        str = JSON.stringify((payload) ? payload : "");
                     }
                     catch (exception) {
                         _this.events.stringifyHtmlPacketFailed({
-                            packet: {
-                                success: (success) ? success : false,
-                                message: (message) ? message : "",
-                                payload: (payload) ? payload : ""
-                            },
+                            payload: (payload) ? payload : "",
                             reason: exception
                         });
                         str = "";

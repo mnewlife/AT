@@ -41,6 +41,8 @@ module UserService {
         } )
         .catch(( reason: any ) => {
 
+          console.log( reason );
+
           let message = "Something went wrong";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
@@ -67,21 +69,30 @@ module UserService {
           if ( responseData.success ) {
             return this.$q.resolve();
           } else {
-            let message = ( responseData.message ) ? responseData.message : "Couldn't sign you in";
-            this.ToastService.showSimple( message );
             return this.$q.reject( {
-              message: message
+              message: ( responseData.message ) ? responseData.message : ""
             } );
           }
 
         } )
         .catch(( reason: any ) => {
 
-          let message = "Something went wrong";
-          this.ToastService.showSimple( message );
-          return this.$q.reject( {
-            message: message
-          } );
+          if ( reason.message ) {
+
+            this.ToastService.showSimple( reason.message );
+            return this.$q.reject( {
+              message: reason.message
+            } );
+
+          } else {
+
+            let message = "Something went wrong";
+            this.ToastService.showSimple( message );
+            return this.$q.reject( {
+              message: message
+            } );
+
+          }
 
         } );
 

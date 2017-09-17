@@ -49,7 +49,9 @@ export default class Registration implements interfaces.Instance {
           if ( foundUser.verification.verificationCode == code ) {
             resolve();
           } else {
-            reject();
+            reject( {
+              identifier: "InvalidCode"
+            } );
           }
         } );
 
@@ -72,6 +74,10 @@ export default class Registration implements interfaces.Instance {
       .catch(( reason: any ) => {
 
         if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidCode" ) {
           return Promise.reject( reason );
         }
 

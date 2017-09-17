@@ -59,11 +59,13 @@ export default (
       } )
       .catch(( reason: any ) => {
 
-        if ( reason.identifier && reason.identifier === "UserNotFound" ) {
-          return sendResponse( res, "passpoint", false, "User not found", null );          
+        console.log( "<><>" + JSON.stringify( reason ) );
+
+        if ( reason.identifier && reason.identifier == "UserNotFound" ) {
+          return sendResponse( res, "passpoint", false, "User not found", null );
         }
 
-        if ( reason.identifier && reason.identifier === "InvalidPassword" ) {
+        if ( reason.identifier && reason.identifier == "InvalidPassword" ) {
           return sendResponse( res, "passpoint", false, "Incorrect password", null );
         }
 

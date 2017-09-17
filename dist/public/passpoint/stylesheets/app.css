@@ -1,4 +1,4 @@
 /******************************************************************************/
-sign-in, sign-up, about { width : 100%; }
-sign-in .screen, sign-up .screen , about .screen { height : 100%; }
+sign-in-component, sign-up-component { width : 100%; }
+sign-in-component .screen, sign-up-component .screen { height : 100%; }
 /******************************************************************************/

@@ -47,9 +47,7 @@ export default class Canon implements interfaces.Instance {
       let tryCount = 1;
       let maxTries = 3;
 
-      lookupSession( "" );
-
-      function lookupSession ( error: any ) {
+      let lookupSession = ( error: any ) => {
         if ( error ) {
           throw error;
         }
@@ -62,6 +60,8 @@ export default class Canon implements interfaces.Instance {
         }
         this.middlewareConfiguration( req, res, lookupSession );
       }
+
+      lookupSession( "" );
 
     } );
   }

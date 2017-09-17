@@ -30,9 +30,6 @@ var SignInComponent;
                 })
                     .catch(function (reason) {
                     _this.authenticating = false;
-                    if (reason.message) {
-                        _this.ToastService.showSimple(reason.message);
-                    }
                 });
             };
             this.authenticating = false;
@@ -43,4 +40,4 @@ var SignInComponent;
     }());
     SignInComponent.Component = Component;
 })(SignInComponent || (SignInComponent = {}));
-/*******************************************************************/ 
+/*******************************************************************/

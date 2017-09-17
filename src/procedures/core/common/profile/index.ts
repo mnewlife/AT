@@ -344,7 +344,9 @@ export default class Profile implements interfaces.Instance {
           if ( foundUser.resetCode && foundUser.resetCode == resetCode ) {
             resolve();
           } else {
-            reject();
+            reject( {
+              identifier: "InvalidResetCode"
+            } );
           }
         } );
 
@@ -370,6 +372,10 @@ export default class Profile implements interfaces.Instance {
       .catch(( reason: any ) => {
 
         if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "InvalidResetCode" ) {
           return Promise.reject( reason );
         }
 

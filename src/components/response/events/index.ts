@@ -22,7 +22,7 @@ export default class Events implements interfaces.Instance {
       tags: [],
       identifier: "StringifyHtmlPacketFailed",
       data: {
-        packet: params.packet,
+        payload: params.payload,
         reason: params.reason
       }
     };

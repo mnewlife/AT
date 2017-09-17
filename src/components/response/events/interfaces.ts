@@ -30,11 +30,7 @@ export interface StringifyHtmlPacketFailed extends BaseEvent {
   data: StringifyHtmlPacketFailedData;
 }
 export interface StringifyHtmlPacketFailedData {
-  packet: {
-    success: boolean;
-    message: string;
-    payload: any;
-  };
+  payload: any;
   reason: any;
 };
 

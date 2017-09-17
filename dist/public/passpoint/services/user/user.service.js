@@ -28,6 +28,7 @@ var UserService;
                     }
                 })
                     .catch(function (reason) {
+                    console.log(reason);
                     var message = "Something went wrong";
                     _this.ToastService.showSimple(message);
                     return _this.$q.reject({
@@ -48,19 +49,25 @@ var UserService;
                         return _this.$q.resolve();
                     }
                     else {
-                        var message = (responseData.message) ? responseData.message : "Couldn't sign you in";
+                        return _this.$q.reject({
+                            message: (responseData.message) ? responseData.message : ""
+                        });
+                    }
+                })
+                    .catch(function (reason) {
+                    if (reason.message) {
+                        _this.ToastService.showSimple(reason.message);
+                        return _this.$q.reject({
+                            message: reason.message
+                        });
+                    }
+                    else {
+                        var message = "Something went wrong";
                         _this.ToastService.showSimple(message);
                         return _this.$q.reject({
                             message: message
                         });
                     }
-                })
-                    .catch(function (reason) {
-                    var message = "Something went wrong";
-                    _this.ToastService.showSimple(message);
-                    return _this.$q.reject({
-                        message: message
-                    });
                 });
             };
         }

@@ -25,8 +25,8 @@ export interface AddDetails {
   resetCode?: string;
   verification: {
     verified: boolean;
-    verificationCode: string;
-    numVerAttempts: number;
+    verificationCode?: string;
+    numVerAttempts?: number;
   };
   personalDetails?: {
     firstName: string;

@@ -1,5 +1,8 @@
 module App {
 
+  import components = ComponentsIntegration;
+  import services = ServicesIntegration;
+
   angular.module( "Passpoint", [
     "ngMaterial",
     "ngAnimate",
@@ -25,12 +28,12 @@ module App {
 
     $mdThemingProvider.theme( "default" )
       .primaryPalette( "indigo", {
-        'default': '500',
+        'default': '400',
         'hue-1': '700',
         'hue-2': '800'
       } )
-      .accentPalette( "red", {
-        'default': 'A200',
+      .accentPalette( "deep-orange", {
+        'default': '500',
         'hue-1': 'A700',
         'hue-2': '900'
       } )
@@ -38,23 +41,20 @@ module App {
 
     $routeProvider.
       when( "/sign-in", {
-        template: "<sign-in></sign-in>"
-      } ).
-      when( "/sign-up", {
-        template: "<sign-up></sign-up>"
-      } ).
-      when( "/about/", {
-        template: "<about></about>"
+        template: "<sign-in-component></sign-in-component>"
+      } )
+      .when( "/sign-up", {
+        template: "<sign-up-component></sign-up-component>"
       } )
       .otherwise( {
-        template: "<sign-in></sign-in>"
+        template: "<sign-in-component></sign-in-component>"
       } );
-
-    angular.module( "Passpoint" ).controller( "MainController", () => { } );
 
   }
 
-  ComponentsIntegration.integrate();
-  ServicesIntegration.integrate();
+  angular.module( "Passpoint" ).controller( "MainController", () => { } );
+
+  components.integrate();
+  services.integrate();
 
 }

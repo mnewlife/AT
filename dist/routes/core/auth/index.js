@@ -29,10 +29,11 @@ exports.default = function (signInProcedure, setViewContexts, sendResponse) {
             return sendResponse(res, output.view, true, null, output.payload);
         })
             .catch(function (reason) {
-            if (reason.identifier && reason.identifier === "UserNotFound") {
+            console.log("<><>" + JSON.stringify(reason));
+            if (reason.identifier && reason.identifier == "UserNotFound") {
                 return sendResponse(res, "passpoint", false, "User not found", null);
             }
-            if (reason.identifier && reason.identifier === "InvalidPassword") {
+            if (reason.identifier && reason.identifier == "InvalidPassword") {
                 return sendResponse(res, "passpoint", false, "Incorrect password", null);
             }
             return sendResponse(res, "passpoint", false, null, null);

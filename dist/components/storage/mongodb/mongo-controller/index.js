@@ -22,16 +22,29 @@ var MongoController = (function () {
             if (forceThrow === void 0) { forceThrow = false; }
             return _this.checkThrow(forceThrow)
                 .then(function (response) {
-                return _this.makeConditions(filtrationCriteria);
+                if (filtrationCriteria) {
+                    return _this.makeConditions(filtrationCriteria);
+                }
+                else {
+                    return Promise.resolve({});
+                }
             })
                 .then(function (conditions) {
-                return _this.makeSortCriteria(sortCriteria)
-                    .then(function (sortString) {
+                if (sortCriteria) {
+                    return _this.makeSortCriteria(sortCriteria)
+                        .then(function (sortString) {
+                        return Promise.resolve({
+                            conditions: conditions,
+                            sortString: sortString
+                        });
+                    });
+                }
+                else {
                     return Promise.resolve({
                         conditions: conditions,
-                        sortString: sortString
+                        sortString: ""
                     });
-                });
+                }
             })
                 .then(function (holder) {
                 return _this.find(holder.conditions, holder.sortString, limit);
@@ -54,6 +67,7 @@ var MongoController = (function () {
                 return Promise.resolve(convertedDocuments);
             })
                 .catch(function (reason) {
+                console.log(">" + reason);
                 new Promise(function (resolve, reject) {
                     _this.events.getFailed({
                         filtrationCriteria: filtrationCriteria,
