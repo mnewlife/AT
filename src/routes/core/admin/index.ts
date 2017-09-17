@@ -11,7 +11,6 @@ import * as response from "../../../components/response/interfaces";
 import * as helpers from "../../helpers/interfaces";
 import * as authProcedures from "../../../procedures/core/common/auth/interfaces";
 
-import auth from "./auth";
 //import profile from "./profile";
 //import registration from "./registration";
 
