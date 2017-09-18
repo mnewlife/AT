@@ -9,6 +9,9 @@ import * as Procedures from "../../procedures/interfaces";
 import * as Helpers from "../helpers/interfaces";
 
 import auth from "./auth";
+import profile from "./profile";
+import registration from "./registration";
+
 import developer from "./developer";
 import admin from "./admin";
 import consumer from "./consumer";
@@ -27,6 +30,22 @@ export default (
   router.use( "/auth", auth(
     procedures.core.common.auth.signIn,
     helpers.setViewContexts,
+    components.response.send
+  ) );
+
+  router.use( "/profile", profile(
+    procedures.core.common.profile.getUserDetails,
+    procedures.core.common.profile.updateUserDetails,
+    procedures.core.common.profile.changeEmailAddress,
+    procedures.core.common.profile.changePassword,
+    procedures.core.common.profile.requestPasswordResetCode,
+    procedures.core.common.profile.resetPassword,
+    helpers.setViewContexts,
+    components.response.send
+  ) );
+
+  router.use( "/registration", registration(
+    procedures.core.common.registration.verifyAccount,
     components.response.send
   ) );
 
