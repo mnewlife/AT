@@ -1,0 +1,37 @@
+<md-dialog aria-label="Change Email Address" flex-gt-sm="40" flex-sm="50" flex-xs="70">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Change Email Address</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="vm.cancel()">
+          <md-icon class="material-icons step" aria-label="clear">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-progress-linear class="md-accent" ng-if="vm.sending" md-mode="indeterminate"></md-progress-linear>
+
+    <md-dialog-content>
+      <div class="md-dialog-content" layout="column" layout-align="start stretch" layout-padding>
+        <md-input-container md-no-float>
+          <label>Password</label>
+          <input type="password" ng-model="vm.password" ng-disabled="vm.sending" class="md-body-1" placeholder="Enter your password">
+        </md-input-container>
+        <md-input-container md-no-float>
+          <label>New Email Address</label>
+          <input type="text" ng-model="vm.emailAddress" ng-disabled="vm.sending" class="md-body-1" placeholder="Enter the new email address">
+        </md-input-container>
+        <div ng-if="vm.message && !vm.sending" md-colors="{color: 'red-A100'}" layout-align="center center" layout="row">
+          <span class="md-caption">{{ vm.message }}</span>
+        </div>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-xs="column">
+      <span flex></span>
+      <md-button class="md-accent" ng-click="vm.change()" ng-disabled="vm.sending">Change Address</md-button>
+      <md-button class="md-accent" ng-click="vm.cancel()" ng-disabled="vm.sending">Cancel</md-button>
+      <md-button class="md-accent" ng-click="vm.reset()" ng-disabled="vm.sending">Reset</md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

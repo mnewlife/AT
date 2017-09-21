@@ -2,13 +2,30 @@ var SignUpComponent;
 (function (SignUpComponent) {
     var Component = (function () {
         /***************************************************/
-        function Component($q, $routeParams, ToastService, UserService, ContextsService) {
+        function Component($q, $routeParams, ToastService, DialogService, UserService, ContextsService) {
             var _this = this;
             this.$q = $q;
             this.$routeParams = $routeParams;
             this.ToastService = ToastService;
+            this.DialogService = DialogService;
             this.UserService = UserService;
             this.ContextsService = ContextsService;
+            /***************************************************/
+            this.checkInnerContext = function () {
+                if (!_this.ContextsService.innerContext) {
+                    return;
+                }
+                if (_this.ContextsService.innerContext === "sign-up") {
+                    if (_this.ContextsService.decoded.success) {
+                        var message = (_this.ContextsService.decoded.message) ? _this.ContextsService.decoded.message : "Sign up done. A verification email has been sent to your email address";
+                        return _this.DialogService.showAlert("", message);
+                    }
+                    else {
+                        var message = (_this.ContextsService.decoded.message) ? _this.ContextsService.decoded.message : "Something went wrong";
+                        return _this.DialogService.showAlert("Sign Up", message);
+                    }
+                }
+            };
             /***************************************************/
             this.signUp = function () {
                 if (!_this.emailAddress) {
@@ -17,7 +34,7 @@ var SignUpComponent;
                 if (!_this.password) {
                     return _this.ToastService.showSimple("Enter your password");
                 }
-                if (_this.password === _this.confirm) {
+                if (_this.password !== _this.confirm) {
                     return _this.ToastService.showSimple("Passwords don't match");
                 }
                 _this.registering = true;
@@ -42,6 +59,10 @@ var SignUpComponent;
             this.emailAddress = "";
             this.password = "";
             this.confirm = "";
+            this.checkInnerContext();
+            if (!this.ContextsService.checked) {
+                this.ContextsService.checked = true;
+            }
         }
         return Component;
     }());

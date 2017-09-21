@@ -8,16 +8,12 @@ var airtimeSaleSchema = new mongoose.Schema({
     buyerName: { type: String, set: preparation_1.ignoreEmpty },
     card: {
         cardId: { type: String, set: preparation_1.ignoreEmpty },
-        mdn: { type: Number, min: 0, default: 0 },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        mdn: { type: Number, min: 0, default: 0 }
     },
     user: {
         userId: mongoose.Schema.Types.ObjectId,
         emailAddress: { type: String, set: preparation_1.ignoreEmpty },
-        fullName: { type: String, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        fullName: { type: String, set: preparation_1.ignoreEmpty }
     },
     amount: { type: Number, min: 0, default: 0 },
     bundles: {

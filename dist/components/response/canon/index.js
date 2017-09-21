@@ -21,7 +21,14 @@ var Canon = (function () {
                 html: function () {
                     var str;
                     try {
-                        str = JSON.stringify((payload) ? payload : "");
+                        var input = {};
+                        if (success)
+                            input.success = success;
+                        if (message)
+                            input.message = message;
+                        if (payload)
+                            input.payload = payload;
+                        str = JSON.stringify(input);
                     }
                     catch (exception) {
                         _this.events.stringifyHtmlPacketFailed({

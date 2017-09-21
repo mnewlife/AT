@@ -8,14 +8,15 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends Model_Nuance, mongoose.Document { }
-export interface Model_Nuance extends mongoDB.Document {
+export interface Model extends ModelNuance, mongoose.Document { }
+export interface ModelNuance extends mongoDB.Document {
   productId: mongoose.Types.ObjectId;
   shopId: mongoose.Types.ObjectId;
   quantity: number;
   price: number;
 }
-export type PartialModel = Partial<Model_Nuance>;
+
+export type PartialModel = Partial<ModelNuance>;
 
 /******************************************************************************/
 

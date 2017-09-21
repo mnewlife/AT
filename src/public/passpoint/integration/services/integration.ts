@@ -25,7 +25,7 @@ module ServicesIntegration {
 
     Dialog.$inject = [
       "$q",
-      "$mdToast"
+      "$mdDialog"
     ];
 
     function Dialog ( $q: ng.IQService, $mdDialog: ng.material.IDialogService ) {
@@ -38,8 +38,8 @@ module ServicesIntegration {
 
     angular.module( "contextsService" ).factory( "ContextsService", Contexts );
 
-    function Contexts () {
-      return new ContextsService.Service();
+    function Contexts ( $location: ng.ILocationService ) {
+      return new PasspointContextsService.Service( $location );
     }
 
     /*******************************************************************/
@@ -51,11 +51,12 @@ module ServicesIntegration {
     User.$inject = [
       "$q",
       "$http",
-      "ToastService"
+      "ToastService",
+      "ContextsService"
     ];
 
-    function User ( $q: ng.IQService, $http: ng.IHttpService, ToastService: ToastServiceInterfaces.Instance ) {
-      return new UserService.Service( $q, $http, ToastService );
+    function User ( $q: ng.IQService, $http: ng.IHttpService, ToastService: ToastServiceInterfaces.Instance, ContextsService: PasspointContextsServiceInterfaces.Instance ) {
+      return new UserService.Service( $q, $http, ToastService, ContextsService );
     }
 
     /*******************************************************************/

@@ -8,8 +8,8 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends Model_Nuance, mongoose.Document { }
-export interface Model_Nuance extends mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance { }
+export interface ModelNuance extends mongoDB.Document {
   label: string;
   images?: string[];
   priceValues: PriceValues;
@@ -19,37 +19,30 @@ export interface Model_Nuance extends mongoDB.Document {
 export type PartialModel = Partial<{
   label: string;
   images: string[];
-  priceValues: PriceValues_Partial;
+  priceValues: PriceValuesPartial;
   effectivePrice: Partial<PriceValue>;
 }>;
 
-export interface PriceValues extends PriceValues_Nuance, mongoose.Document { }
-export interface PriceValues_Nuance extends mongoDB.Document {
+export interface PriceValues {
   min?: PriceValue;
   max?: PriceValue;
   median?: PriceValue;
   mean?: PriceValue;
 };
-export type PriceValues_Partial = Partial<{
-  min: Partial<PriceValue_Partial>;
-  max: Partial<PriceValue_Partial>;
-  median: Partial<PriceValue_Partial>;
-  mean: Partial<PriceValue_Partial>;
-}> & {
-  createdAt?: Date;
-  updatedAt?: Date;
-};
+export type PriceValuesPartial = Partial<{
+  min: Partial<PriceValuePartial>;
+  max: Partial<PriceValuePartial>;
+  median: Partial<PriceValuePartial>;
+  mean: Partial<PriceValuePartial>;
+}>;
 
-export interface PriceValue extends PriceValue_Nuance, mongoose.Document { }
-export interface PriceValue_Nuance extends mongoDB.Document {
+export interface PriceValue {
   shopId: mongoose.Types.ObjectId;
   price: number;
 };
-export interface PriceValue_Partial {
+export interface PriceValuePartial {
   shopId?: mongoose.Types.ObjectId;
   price: number;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 /******************************************************************************/

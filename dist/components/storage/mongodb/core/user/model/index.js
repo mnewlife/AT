@@ -13,29 +13,21 @@ var userSchema = new mongoose.Schema({
     verification: {
         verified: { type: Boolean, default: false, set: preparation_1.ignoreEmpty },
         verificationCode: { type: String, set: preparation_1.ignoreEmpty },
-        numVerAttempts: { type: Number, min: 0, default: 0, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        numVerAttempts: { type: Number, min: 0, default: 0, set: preparation_1.ignoreEmpty }
     },
     personalDetails: {
         firstName: { type: String, set: preparation_1.ignoreEmpty },
         lastName: { type: String, set: preparation_1.ignoreEmpty },
-        dateOfBirth: { type: Date, default: Date.now },
-        gender: { type: String, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        dateOfBirth: { type: Date },
+        gender: { type: String, set: preparation_1.ignoreEmpty }
     },
     contactDetails: {
-        phoneNumbers: [String],
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        phoneNumbers: [String]
     },
     residentialDetails: {
         country: { type: String, set: preparation_1.ignoreEmpty },
         province: { type: String, set: preparation_1.ignoreEmpty },
-        address: { type: String, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        address: { type: String, set: preparation_1.ignoreEmpty }
     },
     activeApps: [String],
     createdAt: { type: Date, default: Date.now },

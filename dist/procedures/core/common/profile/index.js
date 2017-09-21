@@ -7,7 +7,7 @@ var supportDetails = require("../../../../environment/support-details");
 /******************************************************************************/
 var Profile = (function () {
     /****************************************************************/
-    function Profile(events, checkThrow, cleanUsers, newEmailAddressTemplate, passwordResetTemplate, sendEmail, authPassword, createHash, signedIn, signOutSession, generateRandomNumber, getUserById, updateUserById, removeUserById) {
+    function Profile(events, checkThrow, cleanUsers, newEmailAddressTemplate, passwordResetTemplate, sendEmail, authPassword, createHash, signedIn, signOutSession, generateRandomNumber, getUserById, updateUser, updateUserById, removeUserById) {
         var _this = this;
         this.events = events;
         this.checkThrow = checkThrow;
@@ -21,6 +21,7 @@ var Profile = (function () {
         this.signOutSession = signOutSession;
         this.generateRandomNumber = generateRandomNumber;
         this.getUserById = getUserById;
+        this.updateUser = updateUser;
         this.updateUserById = updateUserById;
         this.removeUserById = removeUserById;
         /****************************************************************/
@@ -160,7 +161,7 @@ var Profile = (function () {
             });
         };
         /****************************************************************/
-        this.requestPasswordResetCode = function (userId, forceThrow) {
+        this.requestPasswordResetCode = function (emailAddress, forceThrow) {
             return _this.checkThrow(forceThrow)
                 .then(function (response) {
                 return Promise.all([
@@ -172,22 +173,22 @@ var Profile = (function () {
                 return Promise.resolve(String(randomNumbers[0]) + String(randomNumbers[1]));
             })
                 .then(function (resetCode) {
-                return _this.updateUserById(userId, {
+                return _this.updateUser({ emailAddress: emailAddress }, {
                     resetCode: resetCode
                 })
-                    .then(function (updatedUser) {
+                    .then(function (updatedUsers) {
                     return Promise.resolve({
-                        emailAddress: updatedUser.emailAddress,
+                        userId: updatedUsers[0].id,
                         resetCode: resetCode
                     });
                 });
             })
                 .then(function (response) {
-                return _this.passwordResetTemplate(response.emailAddress, response.resetCode, supportDetails.default.phoneNumber, supportDetails.default.emailAddress)
+                return _this.passwordResetTemplate(emailAddress, response.userId, response.resetCode, supportDetails.default.phoneNumber, supportDetails.default.emailAddress)
                     .then(function (html) {
                     return Promise.resolve({
                         html: html,
-                        emailAddress: response.emailAddress
+                        emailAddress: emailAddress
                     });
                 });
             })
@@ -218,7 +219,9 @@ var Profile = (function () {
                         resolve();
                     }
                     else {
-                        reject();
+                        reject({
+                            identifier: "InvalidResetCode"
+                        });
                     }
                 });
             })
@@ -232,10 +235,13 @@ var Profile = (function () {
                 });
             })
                 .then(function (updatedUser) {
-                return Promise.resolve();
+                return Promise.resolve(updatedUser.password);
             })
                 .catch(function (reason) {
                 if (reason.identifier && reason.identifier === "DocumentNotFound") {
+                    return Promise.reject(reason);
+                }
+                if (reason.identifier && reason.identifier === "InvalidResetCode") {
                     return Promise.reject(reason);
                 }
                 return Promise.reject({

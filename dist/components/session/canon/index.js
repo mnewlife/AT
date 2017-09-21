@@ -55,6 +55,15 @@ var Canon = (function () {
             });
         };
         /*****************************************************************/
+        this.getUserId = function (req) {
+            if (req.session.userId) {
+                return req.session.userId;
+            }
+            else {
+                return null;
+            }
+        };
+        /*****************************************************************/
         this.getCurrentUser = function (req, forceThrow) {
             if (forceThrow === void 0) { forceThrow = false; }
             return _this.checkThrow(forceThrow)

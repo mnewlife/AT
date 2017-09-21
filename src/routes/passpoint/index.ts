@@ -3,10 +3,15 @@
 import * as express from "express";
 
 import * as Components from "../../components/interfaces";
+import * as response from "../../components/response/interfaces";
+import * as helpers from "../helpers/interfaces";
 
 /******************************************************************************/
 
-export default ( components: Components.Instance ): express.Router => {
+export default (
+  sendResponse: response.Send,
+  validateAppContext: helpers.ValidateAppContext
+): express.Router => {
 
   let router = express.Router();
 
@@ -15,14 +20,16 @@ export default ( components: Components.Instance ): express.Router => {
     let payload: any = {};
 
     if ( req.query.appContext ) {
-      payload.appContext = req.query.appContext;
+      if ( validateAppContext( req.query.appContext ) ) {
+        payload.appContext = req.query.appContext;
+      }
     }
 
-    if ( req.query.innerContext ) {
-      payload.innerContext = req.query.innerContext;
+    if ( req.query.nextInnerContext ) {
+      payload.nextInnerContext = req.query.nextInnerContext;
     }
 
-    return components.response.send( res, "passpoint", true, null, payload );
+    return sendResponse( res, "passpoint", true, null, payload );
 
   } );
 

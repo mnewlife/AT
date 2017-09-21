@@ -8,20 +8,20 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance { }
+export interface ModelNuance extends mongoDB.Document {
   pin: number;
   puk: number;
   mdn: number;
   buyer?: Buyer;
   user?: mongoDB.UserInfo;
 }
-export interface PartialModel extends Partial<Pick<Model, "pin" | "puk" | "mdn">> {
-  buyer?: Partial<Buyer_Nuance>;
-  user?: Partial<mongoDB.UserInfo_Nuance>;
+export interface PartialModel extends Partial<Pick<ModelNuance, "pin" | "puk" | "mdn">> {
+  buyer?: Partial<Buyer>;
+  user?: Partial<mongoDB.UserInfo>;
 };
 
-export interface Buyer extends Buyer_Nuance, mongoose.Document { }
-export interface Buyer_Nuance extends mongoDB.Document {
+export interface Buyer {
   cardSaleId: mongoose.Types.ObjectId;
   fullName: string;
 }
@@ -35,16 +35,12 @@ let cardSchema = new mongoose.Schema( {
   mdn: { type: Number, min: 0, default: 0 },
   buyer: {
     cardSaleId: mongoose.Schema.Types.ObjectId,
-    fullName: { type: String, set: ignoreEmpty },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    fullName: { type: String, set: ignoreEmpty }
   },
   user: {
     userId: mongoose.Schema.Types.ObjectId,
     emailAddress: { type: String, set: ignoreEmpty },
-    fullName: { type: String, set: ignoreEmpty },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    fullName: { type: String, set: ignoreEmpty }
   },
 
   createdAt: { type: Date, default: Date.now },

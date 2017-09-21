@@ -31,7 +31,8 @@ class Common implements interfaces.Instance {
   constructor(
     readonly auth: auth.Instance,
     readonly profile: profile.Instance,
-    readonly registration: registration.Instance
+    readonly registration: registration.Instance,
+    readonly mailTemplates: mailTemplates.Instance
   ) { }
 
 }
@@ -50,6 +51,7 @@ export default (
   signOutSession: session.SignOut,
   generateRandomNumber: numbers.GenerateRandomNumber,
   getUserById: storageUser.Instance[ "getById" ],
+  updateUser: storageUser.Instance[ "update" ],
   updateUserById: storageUser.Instance[ "updateById" ],
   removeUserById: storageUser.Instance[ "removeById" ]
 
@@ -80,6 +82,7 @@ export default (
       signOutSession,
       generateRandomNumber,
       getUserById,
+      updateUser,
       updateUserById,
       removeUserById
     ),
@@ -89,7 +92,9 @@ export default (
       checkThrow,
       getUserById,
       updateUserById
-    )
+    ),
+
+    mailTemplatesInstance
 
   );
 

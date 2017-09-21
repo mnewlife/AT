@@ -8,6 +8,7 @@ module ComponentsIntegration {
       "toolBarWidget",
       "sideNavWidget",
       "toastService",
+      "dialogService",
       "userService",
       "contextsService"
     ] );
@@ -21,6 +22,7 @@ module ComponentsIntegration {
       "$q",
       "$routeParams",
       "ToastService",
+      "DialogService",
       "UserService",
       "ContextsService"
     ];
@@ -29,10 +31,11 @@ module ComponentsIntegration {
       $q: ng.IQService,
       $routeParams: ng.route.IRouteParamsService,
       ToastService: ToastServiceInterfaces.Instance,
+      DialogService: DialogServiceInterfaces.Instance,
       UserService: UserServiceInterfaces.Instance,
-      ContextsService: ContextsServiceInterfaces.Instance
+      ContextsService: PasspointContextsServiceInterfaces.Instance
     ) {
-      return new SignInComponent.Component( $q, $routeParams, ToastService, UserService, ContextsService );
+      return new SignInComponent.Component( $q, $routeParams, ToastService, DialogService, UserService, ContextsService );
     }
 
     /*******************************************************************/
@@ -40,6 +43,7 @@ module ComponentsIntegration {
     angular.module( "signUpComponent", [
       "toolBarWidget",
       "toastService",
+      "dialogService",
       "userService",
       "contextsService"
     ] );
@@ -50,10 +54,10 @@ module ComponentsIntegration {
     } );
 
     signUp.$inject = [
+      "$q",
       "$routeParams",
-      "$location",
-      "$timeout",
       "ToastService",
+      "DialogService",
       "UserService",
       "ContextsService"
     ];
@@ -62,10 +66,11 @@ module ComponentsIntegration {
       $q: ng.IQService,
       $routeParams: ng.route.IRouteParamsService,
       ToastService: ToastServiceInterfaces.Instance,
+      DialogService: DialogServiceInterfaces.Instance,
       UserService: UserServiceInterfaces.Instance,
-      ContextsService: ContextsServiceInterfaces.Instance
+      ContextsService: PasspointContextsServiceInterfaces.Instance
     ) {
-      return new SignUpComponent.Component( $q, $routeParams, ToastService, UserService, ContextsService );
+      return new SignUpComponent.Component( $q, $routeParams, ToastService, DialogService, UserService, ContextsService );
     }
 
     /*******************************************************************/

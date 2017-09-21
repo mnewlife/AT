@@ -18,6 +18,7 @@ export interface Instance extends components.MiddlewareBorn {
   readonly setCurrentUser: SetCurrentUser;
   readonly getCurrentUser: GetCurrentUser;
   readonly signOut: SignOut;
+  readonly getUserId: GetUserId;
 }
 
 /******************************************************************************/
@@ -32,6 +33,10 @@ export interface Constructor {
 }
 
 /******************************************************************************/
+
+export interface GetUserId {
+  ( req: express.Request ): string;
+}
 
 export interface SignedIn {
   ( req: express.Request ): boolean;

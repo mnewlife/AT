@@ -175,21 +175,15 @@ function convertToAbstract(models, forceThrow) {
                 };
                 if (model.card) {
                     returnModel.card = {
-                        id: model.card._id.toHexString(),
                         cardId: model.card.cardId.toHexString(),
-                        mdn: model.card.mdn,
-                        createdAt: model.card.createdAt,
-                        updatedAt: model.card.updatedAt
+                        mdn: model.card.mdn
                     };
                 }
                 if (model.user) {
                     returnModel.user = {
-                        id: model.user._id.toHexString(),
                         userId: model.user.userId.toHexString(),
                         emailAddress: model.user.emailAddress,
-                        fullName: model.user.fullName,
-                        createdAt: model.user.createdAt,
-                        updatedAt: model.user.updatedAt
+                        fullName: model.user.fullName
                     };
                 }
                 if (model.bundles) {

@@ -12,7 +12,8 @@ var MongoDB = (function () {
     /*****************************************************************/
     function MongoDB(emitEvent, mapDetails, checkThrow) {
         this.middleware = [];
-        this.linkToDB = "mongodb://127.0.0.1:27017/AthenaTest";
+        //private linkToDB = "mongodb://127.0.0.1:27017/AthenaTest";
+        this.linkToDB = "mongodb://AllanSimoyi:tatenda#1@ds147274.mlab.com:47274/athenatest";
         /*****************************************************************/
         this.connectToDatabase = function (linkToDB) {
             mongoose.connect(linkToDB, function (err, res) {

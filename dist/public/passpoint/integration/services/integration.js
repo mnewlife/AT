@@ -16,7 +16,7 @@ var ServicesIntegration;
         angular.module("dialogService").factory("DialogService", Dialog);
         Dialog.$inject = [
             "$q",
-            "$mdToast"
+            "$mdDialog"
         ];
         function Dialog($q, $mdDialog) {
             return new DialogService.Service($q, $mdDialog);
@@ -24,8 +24,8 @@ var ServicesIntegration;
         /*******************************************************************/
         angular.module("contextsService", []);
         angular.module("contextsService").factory("ContextsService", Contexts);
-        function Contexts() {
-            return new ContextsService.Service();
+        function Contexts($location) {
+            return new PasspointContextsService.Service($location);
         }
         /*******************************************************************/
         angular.module("userService", []);
@@ -33,10 +33,11 @@ var ServicesIntegration;
         User.$inject = [
             "$q",
             "$http",
-            "ToastService"
+            "ToastService",
+            "ContextsService"
         ];
-        function User($q, $http, ToastService) {
-            return new UserService.Service($q, $http, ToastService);
+        function User($q, $http, ToastService, ContextsService) {
+            return new UserService.Service($q, $http, ToastService, ContextsService);
         }
         /*******************************************************************/
     };

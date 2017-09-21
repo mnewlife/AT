@@ -5,6 +5,7 @@ module UserServiceInterfaces {
     export interface Instance {
       signIn: SignIn;
       signUp: SignUp;
+      requestResetCode: RequestResetCode
     }
   
     /*******************************************/
@@ -15,6 +16,10 @@ module UserServiceInterfaces {
     
     export interface SignUp {
       ( emailAddress: string, password: string ): ng.IPromise<void>;
+    }
+
+    export interface RequestResetCode {
+      ( emailAddress: string ): ng.IPromise<void>;
     }
 
     /*******************************************/

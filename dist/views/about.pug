@@ -1,0 +1,11 @@
+doctype html
+html( lang="en" ng-app="About" )
+  head
+    include common/meta.pug
+    title Athena Resources | Welcome
+    include common/stylesheets.pug
+    link( rel="stylesheet" href="/about/stylesheets/app.css" )
+    include common/scripts.pug
+    script(type="text/javascript").
+      window.jsonString = '!{ jsonString }';
+    include html/about.html

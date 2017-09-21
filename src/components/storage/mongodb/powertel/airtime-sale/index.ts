@@ -266,21 +266,15 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           };
           if ( model.card ) {
             returnModel.card = {
-              id: ( <mongoose.Types.ObjectId>model.card._id ).toHexString(),
               cardId: ( <mongoose.Types.ObjectId>model.card.cardId ).toHexString(),
-              mdn: model.card.mdn,
-              createdAt: model.card.createdAt,
-              updatedAt: model.card.updatedAt
+              mdn: model.card.mdn
             };
           }
           if ( model.user ) {
             returnModel.user = {
-              id: ( <mongoose.Types.ObjectId>model.user._id ).toHexString(),
               userId: ( <mongoose.Types.ObjectId>model.user.userId ).toHexString(),
               emailAddress: model.user.emailAddress,
-              fullName: model.user.fullName,
-              createdAt: model.user.createdAt,
-              updatedAt: model.user.updatedAt
+              fullName: model.user.fullName
             };
           }
           if ( model.bundles ) {

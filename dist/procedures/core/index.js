@@ -11,6 +11,6 @@ var Core = (function () {
 }());
 /******************************************************************************/
 exports.default = function (emitEvent, components) {
-    return new Core(_1.default(emitEvent, components.helpers.moders.checkThrow, components.authentication.signIn, components.communication.mailAgent.sendEmail, components.authentication.authPassword, components.authentication.createHashedPassword, components.session.signedIn, components.session.signOut, components.helpers.numbers.generateRandomNumber, components.storage.core.user.getById, components.storage.core.user.updateById, components.storage.core.user.removeById));
+    return new Core(_1.default(emitEvent, components.helpers.moders.checkThrow, components.authentication.signIn, components.communication.mailAgent.sendEmail, components.authentication.authPassword, components.authentication.createHashedPassword, components.session.signedIn, components.session.signOut, components.helpers.numbers.generateRandomNumber, components.storage.core.user.getById, components.storage.core.user.update, components.storage.core.user.updateById, components.storage.core.user.removeById));
 };
 /******************************************************************************/

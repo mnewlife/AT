@@ -7,6 +7,7 @@ import * as dataModel from "../../data-model";
 import * as root from "../../interfaces";
 import * as session from "../../components/session/interfaces";
 import * as moders from "../../components/helpers/moders/interfaces";
+import * as response from "../../components/response/interfaces";
 
 import * as interfaces from "./interfaces";
 
@@ -17,136 +18,94 @@ export default class Helpers implements interfaces.Instance {
   /*****************************************************************/
 
   private readonly apps: root.AppName[] = [ "core", "call263", "grocRound", "powertel", "routers" ];
+  private readonly views: root.View[] = [ "passpoint", "about" ]; // appended to in constructor;
+  private readonly coreViews: root.CoreView[] = [ "core-developer", "core-admin", "core-consumer" ];
+  private readonly call263Views: root.Call263View[] = [ "call263-developer", "call263-admin", "call263-consumer" ];
+  private readonly grocRoundViews: root.GrocRoundView[] = [ "grocRound-developer", "grocRound-admin", "grocRound-consumer" ];
+  private readonly powertelViews: root.PowertelView[] = [ "powertel-developer", "powertel-admin" ];
+  private readonly routersViews: root.RoutersView[] = [ "routers-developer", "routers-admin" ];
 
   /*****************************************************************/
 
   constructor(
     private readonly checkThrow: moders.CheckThrow,
     private readonly signedIn: session.SignedIn,
-    private readonly getUserFromSession: session.GetCurrentUser
-  ) { }
+    private readonly getUserFromSession: session.GetCurrentUser,
+    private readonly sendResponse: response.Send
+  ) {
+
+    this.coreViews.forEach(( view ) => {
+      this.views.push( view );
+    } );
+    this.call263Views.forEach(( view ) => {
+      this.views.push( view );
+    } );
+    this.grocRoundViews.forEach(( view ) => {
+      this.views.push( view );
+    } );
+    this.powertelViews.forEach(( view ) => {
+      this.views.push( view );
+    } );
+    this.routersViews.forEach(( view ) => {
+      this.views.push( view );
+    } );
+
+  }
 
   /*****************************************************************/
 
-  readonly setViewContexts = ( req: express.Request, user?: dataModel.core.user.Super, appContext?: root.AppName, innerContext?: string, forceThrow = false ): Promise<interfaces.ContextsOutput> => {
+  readonly validateAppContext = ( appContext: string ): boolean => {
 
-    let output: interfaces.ContextsOutput;
-    let currentUser: dataModel.core.user.Super;
-    let finalAppContext: root.AppName;
-    let consumer: boolean = false;
+    if ( !appContext ) {
+      return false;
+    }
+    let matches = this.views.filter(( view ) => {
+      return ( view == appContext );
+    } );
+    return ( matches.length ) ? true : false;
 
-    return this.checkThrow( forceThrow )
-      .then(( response: any ) => {
+  }
 
-        return new Promise<root.AppName>(( resolve, reject ) => {
+  /*****************************************************************/
 
-          if ( appContext ) {
-            finalAppContext = appContext;
-            return resolve( appContext );
-          }
+  readonly getAuthCheck = ( accessLevel: dataModel.core.user.AccessLevel, appContext?: root.View, innerContext?: string ): express.RequestHandler => {
 
-          let matches = this.apps.filter(( app ) => {
-            return ( app == req.query.accessLevel );
-          } );
+    let classContext = this;
 
-          if ( matches.length ) {
-            finalAppContext = matches[ 0 ];
-            return resolve( matches[ 0 ] );
+    return function ( req: express.Request, res: express.Response, next: express.NextFunction ) {
+
+      if ( !classContext.signedIn( req ) ) {
+        return signInFirst();
+      }
+
+      return classContext.getUserFromSession( req )
+        .then(( currentUser: dataModel.core.user.Super ) => {
+
+          if ( currentUser.accessLevel == accessLevel ) {
+            res.locals.currentUser = currentUser;
+            return next();
           } else {
-            return resolve( "core" );
+            return signInFirst();
           }
 
         } );
 
-      } )
-      .then(( appContext: root.AppName ) => {
+      function signInFirst () {
+        let pairs: string[] = [];
+        if ( appContext ) {
+          pairs.push( "appContext=" + appContext );
+        }
+        if ( innerContext ) {
+          pairs.push( "nextInnerContext=" + innerContext );
+        }
+        if ( pairs.length ) {
+          return res.redirect( "/passpoint?" + pairs.join( "&" ) );
+        } else {
+          return res.redirect( "/passpoint" );
+        }
+      }
 
-        return new Promise<string>(( resolve, reject ) => {
-
-          if ( user ) {
-            currentUser = user;
-            if ( currentUser.accessLevel == "consumer" ) {
-              consumer = true;
-            }
-            return resolve( [ appContext as string, currentUser.accessLevel as string ].join( "-" ) );
-          }
-
-          if ( !this.signedIn( req ) ) {
-            return reject( {
-              identifier: "NotSignedIn",
-              data: {}
-            } );
-          }
-
-          this.getUserFromSession( req )
-            .then(( foundUser: dataModel.core.user.Super ) => {
-              currentUser = foundUser;
-              if ( currentUser.accessLevel == "consumer" ) {
-                consumer = true;
-              }
-              return resolve( [ appContext as string, currentUser.accessLevel as string ].join( "-" ) );
-            } );
-
-        } );
-
-      } )
-      .then(( view: any ) => {
-
-        let resolveActiveApp = new Promise<boolean>(( resolve, reject ) => {
-
-          if ( consumer && finalAppContext != "core" ) {
-            let matches = currentUser.activeApps.filter(( app ) => {
-              return ( finalAppContext == app );
-            } );
-            return resolve(( matches.length ) ? false : true );
-          } else {
-            return resolve( false );
-          }
-
-        } );
-
-        let resolveInnerContext = new Promise<string>(( resolve, reject ) => {
-          if ( innerContext ) {
-            return resolve( innerContext );
-          }
-          if ( req.query.innerContext ) {
-            return resolve( req.query.innerContext );
-          }
-        } );
-
-        return Promise.all( [ resolveActiveApp, resolveInnerContext ] )
-          .then(( results: any ) => {
-
-            return new Promise<interfaces.ContextsOutput>(( resolve, reject ) => {
-
-              output.view = view;
-              output.payload = {};
-
-              if ( results[ 0 ] ) {
-                output.view += "-join";
-              }
-
-              if ( results[ 1 ] ) {
-                output.payload.innerContext = results[ 1 ];
-              }
-
-              resolve( output );
-
-            } );
-
-          } );
-
-      } )
-      .catch(( reason: any ) => {
-
-        return Promise.reject( {
-          identifier: "Failed",
-          data: {
-            reason: reason
-          }
-        } );
-
-      } );
+    }
 
   }
 

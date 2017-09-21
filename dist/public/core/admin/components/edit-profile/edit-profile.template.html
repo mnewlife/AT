@@ -1,0 +1,144 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar title="Edit Profile"></tool-bar>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.progress.getUser" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <div layout="row" layout-align="center start" layout-wrap>
+
+          <h1 ng-if="$ctrl.progress.getUser" class="grey md-headline">Getting Details...</h1>
+
+          <md-card ng-if="!$ctrl.progress.getUser" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-progress-linear class="md-accent" ng-if="$ctrl.progress.updateDetails" md-mode="indeterminate"></md-progress-linear>
+
+            <form name="form_profile">
+
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">{{ $ctrl.user.emailAddress }}</span>
+                </md-card-title-text>
+              </md-card-title>
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button id="change_email_address" ng-disabled="$ctrl.progress.updateDetails" class="md-accent" ng-click="$ctrl.changeEmail()">
+                  <span>Change Email Address</span>
+                </md-button>
+                <md-button id="change_password" ng-disabled="$ctrl.progress.updateDetails" class="md-accent" ng-click="$ctrl.changePassword()">
+                  <span>Change Password</span>
+                </md-button>
+              </md-card-actions>
+              <md-card-content layout="column" layout-align="start start">
+
+                <hr width="100%">
+
+                <h1 class="md-headline">Personal Details</h1>
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Name</label>
+                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.personalDetails.firstName" type="text" name="firstName"
+                      placeholder="First Name" required>
+                    <div ng-messages="form_profile.firstName.$error" role="alert">
+                      <div ng-message="required">Enter your first name</div>
+                    </div>
+                  </md-input-container>
+                  <md-input-container md-no-float>
+                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.personalDetails.lastName" type="text" name="lastName"
+                      placeholder="Last Name" required>
+                    <div ng-messages="form_profile.lastName.$error" role="alert">
+                      <div ng-message="required">Enter your last name</div>
+                    </div>
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Gender</label>
+                    <md-select ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.personalDetails.gender" name="gender" required>
+                      <md-option value="Male">Male</md-option>
+                      <md-option value="Female">Female</md-option>
+                    </md-select>
+                    <div ng-messages="form_profile.gender.$error" role="alert">
+                      <div ng-message="required">Enter gender</div>
+                    </div>
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Date of Birth</label>
+                    <md-datepicker ng-disabled="$ctrl.progress.updateDetails" md-hide-icons="calendar" ng-model="$ctrl.user.personalDetails.dateOfBirth"
+                      name="dateOfBirth" md-min-date="$ctrl.minDate" md-max-date="$ctrl.maxDate" md-current-view="year" md-placeholder="Date of Birth"
+                      required></md-datepicker>
+                    <div ng-messages="form_profile.dateOfBirth.$error" role="alert">
+                      <div ng-message="required">Enter your date of birth</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <hr width="100%">
+
+                <h1 class="md-headline">Contact Details</h1>
+                <h1 class="md-subhead">Phone Numbers</h1>
+                <div layout-padding>
+                  <md-chips ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.contactDetails.phoneNumbers" readonly="false" md-removable="true"></md-chips>
+                </div>
+
+                <hr width="100%">
+
+                <h1 class="md-headline">Residential Details</h1>
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Country</label>
+                    <md-select ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.residentialDetails.country" name="country" required>
+                      <md-option ng-repeat="country in $ctrl.countries" ng-value="country.name">{{ country.name }}</md-option>
+                    </md-select>
+                    <div ng-messages="form_profile.country.$error" role="alert">
+                      <div ng-message="required">Enter current country</div>
+                    </div>
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Province</label>
+                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.residentialDetails.province" type="text" name="province"
+                      placeholder="Province" required>
+                    <div ng-messages="form_profile.province.$error" role="alert">
+                      <div ng-message="required">Enter province</div>
+                    </div>
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Address</label>
+                    <textarea ng-disabled="$ctrl.progress.updateDetails" class="md-subhead" ng-model="$ctrl.user.residentialDetails.address"
+                      placeholder="Address" name="address" rows="3" required></textarea>
+                    <div ng-messages="form_profile.address.$error" role="alert">
+                      <div ng-message="required">Enter your address</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+              </md-card-content>
+              <md-card-actions layout="row" layout-align="end end">
+                <md-button ng-disabled="$ctrl.progress.updateDetails" class="md-accent" ng-click="$ctrl.saveChanges()">
+                  <span ng-if="!$ctrl.progress.updateDetails">Save Changes</span>
+                  <span ng-if="$ctrl.progress.updateDetails">Saving...</span>
+                </md-button>
+              </md-card-actions>
+
+            </form>
+
+          </md-card>
+
+        </div>
+
+      </section>
+
+    </md-content>
+
+  </md-content>
+</div>

@@ -11,9 +11,7 @@ var airtimeTransferSchema = new mongoose.Schema({
     transfer: {
         identifier: { type: String, set: preparation_1.ignoreEmpty },
         amount: { type: Number, min: 0, default: 0 },
-        paymentRecorded: { type: String, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        paymentRecorded: { type: String, set: preparation_1.ignoreEmpty }
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

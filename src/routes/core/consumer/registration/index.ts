@@ -40,12 +40,14 @@ export default (
 
   function signUp ( req: express.Request, res: express.Response, next: express.NextFunction ) {
 
+    let innerContext = "sign-up";
+
     if ( !req.body.emailAddress ) {
-      return sendResponse( res, "passpoint", false, "Email address is missing", null );
+      return sendResponse( res, "passpoint", false, "Email address is missing", { innerContext: innerContext } );
     }
 
     if ( !req.body.password ) {
-      return sendResponse( res, "passpoint", false, "Password is missing", null );
+      return sendResponse( res, "passpoint", false, "Password is missing", { innerContext: innerContext } );
     }
 
     let verificationCode: string;
@@ -78,7 +80,7 @@ export default (
 
         return addUser( {
           emailAddress: req.body.emailAddress,
-          accessLevel: "consumer",
+          accessLevel: "admin",
           password: hashedPassword,
           verification: {
             verified: false,
@@ -90,7 +92,7 @@ export default (
       } )
       .then(( addedUser: dataModel.core.user.Super ) => {
 
-        return this.newEmailAddressTemplate(
+        return newEmailAddressTemplate(
           req.body.emailAddress,
           verificationCode,
           supportDetails.default.phoneNumber,
@@ -100,21 +102,25 @@ export default (
       } )
       .then(( html: string ) => {
 
-        return this.sendEmail( supportDetails.default.sendingAddress, [ req.body.emailAddress ], environment.default.applicationName + " | Account Verification", html );
+        return sendEmail( supportDetails.default.sendingAddress, [ req.body.emailAddress ], environment.default.applicationName + " | Account Verification", html );
 
       } )
       .then(( response: any ) => {
 
-        return sendResponse( res, "passpoint", true, "", null );
+        return sendResponse( res, "passpoint", true, "Done. A verification email has been sent to your email address.", { innerContext: innerContext } );
 
       } )
       .catch(( reason: any ) => {
 
         if ( reason.identifier && reason.identifier == "AddressAlreadyTaken" ) {
-          return sendResponse( res, "passpoint", false, "That email address is already in use", null );
+          return sendResponse( res, "passpoint", false, "That email address is already in use", { innerContext: innerContext } );
         }
 
-        return sendResponse( res, "passpoint", false, null, null );
+        if ( reason.identifier && reason.identifier == "SendEmailFailed" ) {
+          return sendResponse( res, "passpoint", false, "Done, but couldn't send a verification email, contact support", { innerContext: innerContext } );
+        }
+
+        return sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
 
       } );
 

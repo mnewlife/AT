@@ -1,0 +1,22 @@
+<md-sidenav flex="100" md-component-id="left" class="md-sidenav-left light_grey no_padding" layout="column" layout-align="space-between stretch">
+
+  <div flex="100" layout="column" layout-align="start stretch">
+    <section>
+      <md-list flex>
+        <md-subheader class="md-no-sticky md-primary">Nav</md-subheader>
+        <md-list-item ng-repeat="item in $ctrl.items" href="{{ item.href }}">
+          <md-icon aria-label="Label">{{ item.icon }}</md-icon>
+          <p>{{ item.caption }}</p>
+        </md-list-item>
+        <md-divider></md-divider>
+        <md-list-item ng-repeat="service in $ctrl.services" href="{{ service.href }}">
+          <md-icon aria-label="Label">{{ service.icon }}</md-icon>
+          <p>{{ service.caption }}</p>
+        </md-list-item>
+      </md-list>
+    </section>
+  </div>
+  <div layout="row" layout-align="center end" layout-padding>
+    <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+  </div>
+</md-sidenav>

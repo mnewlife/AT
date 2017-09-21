@@ -183,28 +183,23 @@ function generateUpdateDetails(document, details) {
             if (details.priceValues.min) {
                 document.priceValues.min.shopId = mongoose.Types.ObjectId(details.priceValues.min.shopId);
                 document.priceValues.min.price = details.priceValues.min.price;
-                document.priceValues.min.updatedAt = new Date();
             }
             if (details.priceValues.max) {
                 document.priceValues.max.shopId = mongoose.Types.ObjectId(details.priceValues.max.shopId);
                 document.priceValues.max.price = details.priceValues.max.price;
-                document.priceValues.max.updatedAt = new Date();
             }
             if (details.priceValues.median) {
                 document.priceValues.median.shopId = mongoose.Types.ObjectId(details.priceValues.median.shopId);
                 document.priceValues.median.price = details.priceValues.median.price;
-                document.priceValues.median.updatedAt = new Date();
             }
             if (details.priceValues.mean) {
                 document.priceValues.mean.shopId = mongoose.Types.ObjectId(details.priceValues.mean.shopId);
                 document.priceValues.mean.price = details.priceValues.mean.price;
-                document.priceValues.mean.updatedAt = new Date();
             }
         }
         if (details.effectivePrice) {
-            document.effectivePrice.shopId = mongoose.Types.ObjectId(details.effectivePrice.shopId),
-                document.effectivePrice.price = details.effectivePrice.price;
-            document.effectivePrice.updatedAt = new Date();
+            document.effectivePrice.shopId = mongoose.Types.ObjectId(details.effectivePrice.shopId);
+            document.effectivePrice.price = details.effectivePrice.price;
         }
         resolve(document);
     });
@@ -220,16 +215,9 @@ function convertToAbstract(models, forceThrow) {
                 var returnModel = {
                     id: model._id.toHexString(),
                     label: model.label,
-                    priceValues: {
-                        id: model.priceValues._id.toHexString(),
-                        createdAt: model.priceValues.createdAt,
-                        updatedAt: model.priceValues.updatedAt
-                    },
+                    priceValues: {},
                     effectivePrice: {
-                        id: model.effectivePrice._id.toHexString(),
-                        price: model.effectivePrice.price,
-                        createdAt: model.effectivePrice.createdAt,
-                        updatedAt: model.effectivePrice.updatedAt
+                        price: model.effectivePrice.price
                     },
                     createdAt: model.createdAt,
                     updatedAt: model.updatedAt
@@ -242,38 +230,26 @@ function convertToAbstract(models, forceThrow) {
                 }
                 if (model.priceValues.min) {
                     returnModel.priceValues.min = {
-                        id: model.priceValues.min._id.toHexString(),
                         shopId: model.priceValues.min.shopId.toHexString(),
-                        price: model.priceValues.min.price,
-                        createdAt: model.priceValues.min.createdAt,
-                        updatedAt: model.priceValues.min.updatedAt
+                        price: model.priceValues.min.price
                     };
                 }
                 if (model.priceValues.max) {
                     returnModel.priceValues.max = {
-                        id: model.priceValues.max._id.toHexString(),
                         shopId: model.priceValues.max.shopId.toHexString(),
-                        price: model.priceValues.max.price,
-                        createdAt: model.priceValues.max.createdAt,
-                        updatedAt: model.priceValues.max.updatedAt
+                        price: model.priceValues.max.price
                     };
                 }
                 if (model.priceValues.median) {
                     returnModel.priceValues.median = {
-                        id: model.priceValues.median._id.toHexString(),
                         shopId: model.priceValues.median.shopId.toHexString(),
-                        price: model.priceValues.median.price,
-                        createdAt: model.priceValues.median.createdAt,
-                        updatedAt: model.priceValues.median.updatedAt
+                        price: model.priceValues.median.price
                     };
                 }
                 if (model.priceValues.mean) {
                     returnModel.priceValues.mean = {
-                        id: model.priceValues.mean._id.toHexString(),
                         shopId: model.priceValues.mean.shopId.toHexString(),
-                        price: model.priceValues.mean.price,
-                        createdAt: model.priceValues.mean.createdAt,
-                        updatedAt: model.priceValues.mean.updatedAt
+                        price: model.priceValues.mean.price
                     };
                 }
                 returnModels.push(returnModel);

@@ -23,7 +23,7 @@ export interface Super extends dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface Verification extends dataModel.DataModel {
+export interface Verification {
   verified: boolean;
   verificationCode?: string;
   numVerAttempts: number;
@@ -31,7 +31,7 @@ export interface Verification extends dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface PersonalDetails extends dataModel.DataModel {
+export interface PersonalDetails {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
@@ -40,13 +40,13 @@ export interface PersonalDetails extends dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface ContactDetails extends dataModel.DataModel {
+export interface ContactDetails {
   phoneNumbers: string[];
 }
 
 /******************************************************************************/
 
-export interface ResidentialDetails extends dataModel.DataModel {
+export interface ResidentialDetails {
   country: string;
   province: string;
   address: string;
@@ -54,7 +54,7 @@ export interface ResidentialDetails extends dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface UserInfo extends dataModel.DataModel {
+export interface UserInfo {
   userId: string;
   emailAddress: string;
   fullName?: string;

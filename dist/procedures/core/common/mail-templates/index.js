@@ -21,7 +21,7 @@ var MailTemplates = (function () {
                         "Thank you for joining the platform. Click the link below to verify your email address.",
                         "</span>",
                         "<br>",
-                        "<a href='" + environment.default.host + "/core/common/registration/verifyAccount/" + verificationCode + "'>",
+                        "<a href='" + environment.default.host + "/core/registration/verifyAccount/" + verificationCode + "'>",
                         "Click here to activate your account",
                         "</a>",
                         "<br>",
@@ -38,7 +38,7 @@ var MailTemplates = (function () {
             });
         };
         /****************************************************************/
-        this.passwordReset = function (emailAddress, resetCode, supportPhoneNumber, supportEmailAddress, forceThrow) {
+        this.passwordReset = function (emailAddress, userId, resetCode, supportPhoneNumber, supportEmailAddress, forceThrow) {
             return _this.checkThrow(forceThrow)
                 .then(function (response) {
                 return new Promise(function (resolve, reject) {
@@ -49,7 +49,7 @@ var MailTemplates = (function () {
                         "Thank you for joining the platform. Click the link below to verify your email address.",
                         "</span>",
                         "<br>",
-                        "<a href='" + environment.default.host + "/core/common/profile/resetPassword/" + resetCode + "'>",
+                        "<a href='" + environment.default.host + "/core/profile/resetPassword/" + userId + "/" + resetCode + "'>",
                         "Click here to activate your account",
                         "</a>",
                         "<br>",

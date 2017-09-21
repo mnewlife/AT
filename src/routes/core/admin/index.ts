@@ -3,24 +3,24 @@
 import * as express from "express";
 
 import * as dataModel from "../../../data-model";
-import * as EventListener from "../../../event-listener/interfaces";
 import * as Components from "../../../components/interfaces";
 import * as Procedures from "../../../procedures/interfaces";
 
 import * as response from "../../../components/response/interfaces";
 import * as helpers from "../../helpers/interfaces";
 import * as authProcedures from "../../../procedures/core/common/auth/interfaces";
+import * as profileShared from "../profile-shared/interfaces";
 
-//import profile from "./profile";
+import profile from "./profile";
 //import registration from "./registration";
 
 /******************************************************************************/
 
 export default (
-  eventListener: EventListener.Instance,
   components: Components.Instance,
   procedures: Procedures.Instance,
-  helpers: helpers.Instance
+  helpers: helpers.Instance,
+  makeProfileHandlers: profileShared.Instance
 ): express.Router => {
 
   /**********************************************************/
@@ -29,43 +29,25 @@ export default (
 
   /**********************************************************/
 
-  // router.use( "/profile", authCheck, profile() ) -- use authCheck, not for registration
+  router.use( "/profile", profile(
+    makeProfileHandlers.getDetails,
+    makeProfileHandlers.updateDetails,
+    makeProfileHandlers.changeEmailAddress,
+    makeProfileHandlers.changePassword,
+    makeProfileHandlers.deleteAccount,
+    helpers.getAuthCheck
+  ) );
 
   /**********************************************************/
 
-  router.get( "/", authCheck, ( req: express.Request, res: express.Response, next: express.NextFunction ) => {
+  router.get( "/", helpers.getAuthCheck( "admin", "core-admin" ),
+    ( req: express.Request, res: express.Response, next: express.NextFunction ) => {
 
-    return components.response.send( res, "core-admin", true, null, {
-      currentUser: res.locals.currentUser
-    } );
-
-  } );
-
-  /**********************************************************/
-
-  function authCheck ( req: express.Request, res: express.Response, next: express.NextFunction ) {
-
-    if ( !components.session.signedIn( req ) ) {
-      return signInFirst();
-    }
-
-    return components.session.getCurrentUser( req )
-      .then(( currentUser: dataModel.core.user.Super ) => {
-
-        if ( currentUser.accessLevel == "admin" ) {
-          res.locals.currentUser = currentUser;
-          return next();
-        } else {
-          return signInFirst();
-        }
-
+      return components.response.send( res, "core-admin", true, null, {
+        currentUser: res.locals.currentUser
       } );
 
-    function signInFirst () {
-      return components.response.send( res, "passpoint", false, "You need to sign in first", null );
-    }
-
-  }
+    } );
 
   /**********************************************************/
 

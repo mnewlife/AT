@@ -28,7 +28,7 @@ export interface NewEmailAddress {
 }
 
 export interface PasswordReset {
-  ( emailAddress: string, resetCode: string, supportPhoneNumber: string, supportEmailAddress: string, forceThrow?: boolean ): Promise<string>;
+  ( emailAddress: string, userId: string, resetCode: string, supportPhoneNumber: string, supportEmailAddress: string, forceThrow?: boolean ): Promise<string>;
 }
 
 /******************************************************************************/

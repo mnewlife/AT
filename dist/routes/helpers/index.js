@@ -1,112 +1,82 @@
 "use strict";
 /******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
-var Promise = require("bluebird");
 /******************************************************************************/
 var Helpers = (function () {
     /*****************************************************************/
-    function Helpers(checkThrow, signedIn, getUserFromSession) {
+    function Helpers(checkThrow, signedIn, getUserFromSession, sendResponse) {
         var _this = this;
         this.checkThrow = checkThrow;
         this.signedIn = signedIn;
         this.getUserFromSession = getUserFromSession;
+        this.sendResponse = sendResponse;
         /*****************************************************************/
         this.apps = ["core", "call263", "grocRound", "powertel", "routers"];
+        this.views = ["passpoint", "about"]; // appended to in constructor;
+        this.coreViews = ["core-developer", "core-admin", "core-consumer"];
+        this.call263Views = ["call263-developer", "call263-admin", "call263-consumer"];
+        this.grocRoundViews = ["grocRound-developer", "grocRound-admin", "grocRound-consumer"];
+        this.powertelViews = ["powertel-developer", "powertel-admin"];
+        this.routersViews = ["routers-developer", "routers-admin"];
         /*****************************************************************/
-        this.setViewContexts = function (req, user, appContext, innerContext, forceThrow) {
-            if (forceThrow === void 0) { forceThrow = false; }
-            var output;
-            var currentUser;
-            var finalAppContext;
-            var consumer = false;
-            return _this.checkThrow(forceThrow)
-                .then(function (response) {
-                return new Promise(function (resolve, reject) {
-                    if (appContext) {
-                        finalAppContext = appContext;
-                        return resolve(appContext);
-                    }
-                    var matches = _this.apps.filter(function (app) {
-                        return (app == req.query.accessLevel);
-                    });
-                    if (matches.length) {
-                        finalAppContext = matches[0];
-                        return resolve(matches[0]);
-                    }
-                    else {
-                        return resolve("core");
-                    }
-                });
-            })
-                .then(function (appContext) {
-                return new Promise(function (resolve, reject) {
-                    if (user) {
-                        currentUser = user;
-                        if (currentUser.accessLevel == "consumer") {
-                            consumer = true;
-                        }
-                        return resolve([appContext, currentUser.accessLevel].join("-"));
-                    }
-                    if (!_this.signedIn(req)) {
-                        return reject({
-                            identifier: "NotSignedIn",
-                            data: {}
-                        });
-                    }
-                    _this.getUserFromSession(req)
-                        .then(function (foundUser) {
-                        currentUser = foundUser;
-                        if (currentUser.accessLevel == "consumer") {
-                            consumer = true;
-                        }
-                        return resolve([appContext, currentUser.accessLevel].join("-"));
-                    });
-                });
-            })
-                .then(function (view) {
-                var resolveActiveApp = new Promise(function (resolve, reject) {
-                    if (consumer && finalAppContext != "core") {
-                        var matches = currentUser.activeApps.filter(function (app) {
-                            return (finalAppContext == app);
-                        });
-                        return resolve((matches.length) ? false : true);
-                    }
-                    else {
-                        return resolve(false);
-                    }
-                });
-                var resolveInnerContext = new Promise(function (resolve, reject) {
-                    if (innerContext) {
-                        return resolve(innerContext);
-                    }
-                    if (req.query.innerContext) {
-                        return resolve(req.query.innerContext);
-                    }
-                });
-                return Promise.all([resolveActiveApp, resolveInnerContext])
-                    .then(function (results) {
-                    return new Promise(function (resolve, reject) {
-                        output.view = view;
-                        output.payload = {};
-                        if (results[0]) {
-                            output.view += "-join";
-                        }
-                        if (results[1]) {
-                            output.payload.innerContext = results[1];
-                        }
-                        resolve(output);
-                    });
-                });
-            })
-                .catch(function (reason) {
-                return Promise.reject({
-                    identifier: "Failed",
-                    data: {
-                        reason: reason
-                    }
-                });
+        this.validateAppContext = function (appContext) {
+            if (!appContext) {
+                return false;
+            }
+            var matches = _this.views.filter(function (view) {
+                return (view == appContext);
             });
+            return (matches.length) ? true : false;
         };
+        /*****************************************************************/
+        this.getAuthCheck = function (accessLevel, appContext, innerContext) {
+            var classContext = _this;
+            return function (req, res, next) {
+                if (!classContext.signedIn(req)) {
+                    return signInFirst();
+                }
+                return classContext.getUserFromSession(req)
+                    .then(function (currentUser) {
+                    if (currentUser.accessLevel == accessLevel) {
+                        res.locals.currentUser = currentUser;
+                        return next();
+                    }
+                    else {
+                        return signInFirst();
+                    }
+                });
+                function signInFirst() {
+                    var pairs = [];
+                    if (appContext) {
+                        pairs.push("appContext=" + appContext);
+                    }
+                    if (innerContext) {
+                        pairs.push("nextInnerContext=" + innerContext);
+                    }
+                    if (pairs.length) {
+                        return res.redirect("/passpoint?" + pairs.join("&"));
+                    }
+                    else {
+                        return res.redirect("/passpoint");
+                    }
+                }
+            };
+        };
+        this.coreViews.forEach(function (view) {
+            _this.views.push(view);
+        });
+        this.call263Views.forEach(function (view) {
+            _this.views.push(view);
+        });
+        this.grocRoundViews.forEach(function (view) {
+            _this.views.push(view);
+        });
+        this.powertelViews.forEach(function (view) {
+            _this.views.push(view);
+        });
+        this.routersViews.forEach(function (view) {
+            _this.views.push(view);
+        });
     }
     return Helpers;
 }());

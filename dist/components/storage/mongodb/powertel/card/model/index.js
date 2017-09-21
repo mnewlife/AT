@@ -11,16 +11,12 @@ var cardSchema = new mongoose.Schema({
     mdn: { type: Number, min: 0, default: 0 },
     buyer: {
         cardSaleId: mongoose.Schema.Types.ObjectId,
-        fullName: { type: String, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        fullName: { type: String, set: preparation_1.ignoreEmpty }
     },
     user: {
         userId: mongoose.Schema.Types.ObjectId,
         emailAddress: { type: String, set: preparation_1.ignoreEmpty },
-        fullName: { type: String, set: preparation_1.ignoreEmpty },
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date, default: Date.now }
+        fullName: { type: String, set: preparation_1.ignoreEmpty }
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

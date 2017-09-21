@@ -3,14 +3,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 /******************************************************************************/
-exports.default = function () {
+exports.default = function (makeGetDetails, makeUpdateDetails, makeChangeEmailAddress, makeChangePassword, makeDeleteAccount, getAuthCheck) {
+    /*********************************************************/
     var router = express.Router();
-    router.use(authCheck);
-    router.get("/", example);
-    function example(req, res, next) {
-    }
-    function authCheck() {
-    }
+    var accessLevel = "admin";
+    var appContext = "core-admin";
+    router.get("/getDetails", getAuthCheck("admin", "core-admin", "get-details"), makeGetDetails(appContext));
+    router.post("/updateDetails/:userId", getAuthCheck("admin", "core-admin", "update-details"), makeUpdateDetails(appContext));
+    router.post("/changeEmailAddress/:userId", getAuthCheck("admin", "core-admin", "change-email-address"), makeChangeEmailAddress(appContext));
+    router.post("/changePassword/:userId", getAuthCheck("admin", "core-admin", "change-password"), makeChangePassword(appContext));
+    router.get("/deleteAccount/:userId", getAuthCheck("admin", "core-admin", "delete-account"), makeDeleteAccount(appContext));
+    /*********************************************************/
     return router;
 };
 /******************************************************************************/ 

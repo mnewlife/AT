@@ -74,9 +74,7 @@ function generateAddDetails(models) {
             transfer: {
                 identifier: model.transfer.identifier,
                 amount: model.transfer.amount,
-                paymentRecorded: model.transfer.paymentRecorded,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                paymentRecorded: model.transfer.paymentRecorded
             }
         };
         returnDetails.push(details);
@@ -123,12 +121,9 @@ function convertToAbstract(models, forceThrow) {
                     channelId: model.channelId.toHexString(),
                     paymentId: model.paymentId.toHexString(),
                     transfer: {
-                        id: model._id.toHexString(),
                         identifier: model.transfer.identifier,
                         amount: model.transfer.amount,
-                        paymentRecorded: model.transfer.paymentRecorded,
-                        createdAt: model.transfer.createdAt,
-                        updatedAt: model.transfer.updatedAt
+                        paymentRecorded: model.transfer.paymentRecorded
                     },
                     createdAt: model.createdAt,
                     updatedAt: model.updatedAt

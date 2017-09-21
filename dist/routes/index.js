@@ -11,9 +11,10 @@ var core_1 = require("./core");
 /******************************************************************************/
 exports.default = function (eventListener, components, procedures, app) {
     /**********************************************************/
-    app.use("/passpoint", passpoint_1.default(components));
+    var helpers = new helpers_1.default(components.helpers.moders.checkThrow, components.session.signedIn, components.session.getCurrentUser, components.response.send);
+    app.use("/passpoint", passpoint_1.default(components.response.send, helpers.validateAppContext));
     //app.use( "/call263", call263() );
-    app.use("/core", core_1.default(eventListener, components, procedures, new helpers_1.default(components.helpers.moders.checkThrow, components.session.signedIn, components.session.getCurrentUser)));
+    app.use("/core", core_1.default(components, procedures, helpers));
     //app.use( "/grocRound", grocRound() );
     //app.use( "/powertel", powertel() );
     //app.use( "/routers", routers() );

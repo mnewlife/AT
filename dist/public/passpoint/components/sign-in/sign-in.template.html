@@ -5,7 +5,7 @@
     <div layout="column" layout-align="start stretch" class="no_padding">
       <side-nav-widget flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
     </div>
-    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="90" layout-padding>
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100" layout-padding>
 
       <section layout="column" layout-align="start center">
 
@@ -60,6 +60,10 @@
         <md-button class="md-accent nocase animated fadeIn" ng-href="#/sign-up" aria-label="Create An Account" ng-disabled="$ctrl.authenticating">
           <span>Don't have an account?</span>
           <span class="underlined">Create An Account</span>
+        </md-button>
+
+        <md-button class="md-primary nocase animated fadeIn" ng-click="$ctrl.forgot()" aria-label="Forgot Password" ng-disabled="$ctrl.authenticating">
+          <span>Forgot Password?</span>
         </md-button>
 
       </section>

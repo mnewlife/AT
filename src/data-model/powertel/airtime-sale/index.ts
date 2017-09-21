@@ -15,7 +15,7 @@ export interface Super extends dataModel.DataModel {
   };
 }
 
-export interface CardInfo extends dataModel.DataModel {
+export interface CardInfo {
   cardId: string;
   mdn: number;
 }

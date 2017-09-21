@@ -8,8 +8,8 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends Model_Nuance, mongoose.Document { }
-export interface Model_Nuance extends mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance { }
+export interface ModelNuance extends mongoDB.Document {
   mdnRange?: {
     min: number;
     max: number;
@@ -18,7 +18,7 @@ export interface Model_Nuance extends mongoDB.Document {
   newCount: number;
   amount: number;
 }
-export interface PartialModel extends Partial<Pick<Model, "initialCount" | "newCount" | "amount">> {
+export interface PartialModel extends Partial<Pick<ModelNuance, "initialCount" | "newCount" | "amount">> {
   mdnRange?: Partial<Model[ "mdnRange" ]>;
 };
 

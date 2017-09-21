@@ -7,7 +7,8 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance {}
+export interface ModelNuance extends mongoDB.Document {
   allocated: boolean;
   allocatedTo: mongoose.Types.ObjectId;
   code: string;

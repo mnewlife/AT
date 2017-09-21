@@ -39,6 +39,7 @@ export default class Profile implements interfaces.Instance {
     private readonly signOutSession: session.SignOut,
     private readonly generateRandomNumber: numbers.GenerateRandomNumber,
     private readonly getUserById: storageUser.Instance[ "getById" ],
+    private readonly updateUser: storageUser.Instance[ "update" ],
     private readonly updateUserById: storageUser.Instance[ "updateById" ],
     private readonly removeUserById: storageUser.Instance[ "removeById" ],
   ) { }
@@ -252,7 +253,7 @@ export default class Profile implements interfaces.Instance {
 
   /****************************************************************/
 
-  requestPasswordResetCode = ( userId: string, forceThrow?: boolean ): Promise<void> => {
+  requestPasswordResetCode = ( emailAddress: string, forceThrow?: boolean ): Promise<void> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -270,23 +271,24 @@ export default class Profile implements interfaces.Instance {
       } )
       .then(( resetCode: string ) => {
 
-        return this.updateUserById( userId, {
+        return this.updateUser( { emailAddress: emailAddress }, {
           resetCode: resetCode
         } )
-          .then(( updatedUser: dataModel.core.user.Super ) => {
+          .then(( updatedUsers: dataModel.core.user.Super[] ) => {
 
             return Promise.resolve( {
-              emailAddress: updatedUser.emailAddress,
+              userId: updatedUsers[ 0 ].id,
               resetCode: resetCode
             } );
 
           } );
 
       } )
-      .then(( response: { resetCode: string, emailAddress: string } ) => {
+      .then(( response: { resetCode: string, userId: string } ) => {
 
         return this.passwordResetTemplate(
-          response.emailAddress,
+          emailAddress,
+          response.userId,
           response.resetCode,
           supportDetails.default.phoneNumber,
           supportDetails.default.emailAddress
@@ -295,7 +297,7 @@ export default class Profile implements interfaces.Instance {
 
             return Promise.resolve( {
               html: html,
-              emailAddress: response.emailAddress
+              emailAddress: emailAddress
             } );
 
           } );
@@ -330,7 +332,7 @@ export default class Profile implements interfaces.Instance {
 
   /****************************************************************/
 
-  resetPassword = ( userId: string, resetCode: string, newPassword: string, forceThrow?: boolean ): Promise<void> => {
+  resetPassword = ( userId: string, resetCode: string, newPassword: string, forceThrow?: boolean ): Promise<string> => {
 
     return this.checkThrow( forceThrow )
       .then(( response: any ) => {
@@ -366,7 +368,7 @@ export default class Profile implements interfaces.Instance {
       } )
       .then(( updatedUser: dataModel.core.user.Super ) => {
 
-        return Promise.resolve();
+        return Promise.resolve( updatedUser.password );
 
       } )
       .catch(( reason: any ) => {

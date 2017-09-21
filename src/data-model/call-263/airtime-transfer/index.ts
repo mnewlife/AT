@@ -13,7 +13,7 @@ export interface Super extends dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface Transfer extends dataModel.DataModel {
+export interface Transfer {
   identifier: string;
   amount: number;
   paymentRecorded: boolean;

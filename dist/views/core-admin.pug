@@ -1,0 +1,11 @@
+doctype html
+html( lang="en" ng-app="CoreAdmin" )
+  head
+    include common/meta.pug
+    title Athena Resources | Core
+    include common/stylesheets.pug
+    link( rel="stylesheet" href="/core/admin/stylesheets/app.css" )
+    include common/scripts.pug
+    script(type="text/javascript").
+      window.jsonString = '!{ jsonString }';
+    include html/core-admin.html

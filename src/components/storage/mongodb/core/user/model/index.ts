@@ -10,7 +10,8 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance { }
+export interface ModelNuance extends mongoDB.Document {
   emailAddress: string;
   accessLevel: dataModel.core.user.AccessLevel;
   password: string;
@@ -23,7 +24,7 @@ export interface Model extends mongoose.Document, mongoDB.Document {
 
   activeApps: src.AppName[];
 }
-export interface PartialModel extends Partial<Pick<Model, ModelPartial_Details_Flat>> {
+export interface PartialModel extends Partial<Pick<ModelNuance, ModelPartial_Details_Flat>> {
   verification?: Partial<Verification>;
   personalDetails?: Partial<PersonalDetails>;
   contactDetails?: Partial<ContactDetails>;
@@ -34,32 +35,28 @@ type ModelPartial_Details_Flat = "emailAddress" | "accessLevel" | "password"
 
 /******************************************************************************/
 
-export interface Verification_Nuance extends mongoDB.Document {
+export interface Verification {
   verified: boolean;
   verificationCode?: string;
   numVerAttempts: number;
 }
-export interface Verification extends Verification_Nuance, mongoose.Document { }
 
-export interface PersonalDetails_Nuance extends mongoDB.Document {
+export interface PersonalDetails {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
   gender: "Male" | "Female";
 }
-export interface PersonalDetails extends mongoose.Document, PersonalDetails_Nuance { }
 
-export interface ContactDetails_Nuance extends mongoose.Document, mongoDB.Document {
+export interface ContactDetails {
   phoneNumbers: string[];
 }
-export interface ContactDetails extends mongoose.Document, ContactDetails_Nuance { }
 
-export interface ResidentialDetails_Nuance extends mongoose.Document, mongoDB.Document {
+export interface ResidentialDetails {
   country: string;
   province: string;
   address: string;
 }
-export interface ResidentialDetails extends mongoose.Document, ResidentialDetails_Nuance { }
 
 /******************************************************************************/
 
@@ -73,32 +70,24 @@ let userSchema = new mongoose.Schema( {
   verification: {
     verified: { type: Boolean, default: false, set: ignoreEmpty },
     verificationCode: { type: String, set: ignoreEmpty },
-    numVerAttempts: { type: Number, min: 0, default: 0, set: ignoreEmpty },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    numVerAttempts: { type: Number, min: 0, default: 0, set: ignoreEmpty }
   },
 
   personalDetails: {
     firstName: { type: String, set: ignoreEmpty },
     lastName: { type: String, set: ignoreEmpty },
-    dateOfBirth: { type: Date, default: Date.now },
-    gender: { type: String, set: ignoreEmpty },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    dateOfBirth: { type: Date },
+    gender: { type: String, set: ignoreEmpty }
   },
 
   contactDetails: {
-    phoneNumbers: [ String ],
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    phoneNumbers: [ String ]
   },
 
   residentialDetails: {
     country: { type: String, set: ignoreEmpty },
     province: { type: String, set: ignoreEmpty },
-    address: { type: String, set: ignoreEmpty },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    address: { type: String, set: ignoreEmpty }
   },
 
   activeApps: [ String ],

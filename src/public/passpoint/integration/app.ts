@@ -9,7 +9,8 @@ module App {
     "ngRoute",
     "ngMessages",
     "signInComponent",
-    "signUpComponent"
+    "signUpComponent",
+    "contextsService"
   ] );
 
   angular.module( "Passpoint" ).config( config );

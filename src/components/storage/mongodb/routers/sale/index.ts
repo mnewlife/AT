@@ -261,12 +261,9 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           let returnModel: dataModel.routers.sale.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
             buyer: {
-              id: ( model.buyer._id as mongoose.Types.ObjectId ).toHexString(),
               fullName: model.buyer.fullName,
               emailAddress: model.buyer.emailAddress,
-              phoneNumber: model.buyer.phoneNumber,
-              createdAt: model.buyer.createdAt,
-              updatedAt: model.buyer.updatedAt
+              phoneNumber: model.buyer.phoneNumber
             },
             type: model.type,
             paymentMethod: model.paymentMethod,
@@ -279,11 +276,8 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           
           if ( model.simCard ) {
             returnModel.simCard = {
-              id: ( model.simCard._id as mongoose.Types.ObjectId ).toHexString(),
               cardId : ( model.simCard.cardId as mongoose.Types.ObjectId ).toHexString(),
-              mdn: model.simCard.mdn,
-              createdAt: model.simCard.createdAt,
-              updatedAt: model.simCard.updatedAt
+              mdn: model.simCard.mdn
             };
           }
           

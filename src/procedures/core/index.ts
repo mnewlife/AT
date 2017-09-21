@@ -28,6 +28,7 @@ export default ( emitEvent: eventListener.Emit, components: components.Instance 
       components.session.signOut,
       components.helpers.numbers.generateRandomNumber,
       components.storage.core.user.getById,
+      components.storage.core.user.update,
       components.storage.core.user.updateById,
       components.storage.core.user.removeById
     )
@@ -35,3 +36,4 @@ export default ( emitEvent: eventListener.Emit, components: components.Instance 
 };
 
 /******************************************************************************/
+

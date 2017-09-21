@@ -14,7 +14,7 @@ export interface Super extends dataModel.DataModel {
 
 /******************************************************************************/
 
-export interface Buyer extends dataModel.DataModel {
+export interface Buyer {
   cardSaleId: string;
   fullName: string;
 }

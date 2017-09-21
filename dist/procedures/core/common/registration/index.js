@@ -23,7 +23,9 @@ var Registration = (function () {
                         resolve();
                     }
                     else {
-                        reject();
+                        reject({
+                            identifier: "InvalidCode"
+                        });
                     }
                 });
             })
@@ -40,6 +42,9 @@ var Registration = (function () {
             })
                 .catch(function (reason) {
                 if (reason.identifier && reason.identifier === "DocumentNotFound") {
+                    return Promise.reject(reason);
+                }
+                if (reason.identifier && reason.identifier === "InvalidCode") {
                     return Promise.reject(reason);
                 }
                 return Promise.reject({

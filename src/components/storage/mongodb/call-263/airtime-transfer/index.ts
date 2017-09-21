@@ -140,9 +140,7 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
       transfer: {
         identifier: model.transfer.identifier,
         amount: model.transfer.amount,
-        paymentRecorded: model.transfer.paymentRecorded,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        paymentRecorded: model.transfer.paymentRecorded
       }
     };
     
@@ -209,12 +207,9 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
             channelId: ( <mongoose.Types.ObjectId>model.channelId ).toHexString(),
             paymentId: ( <mongoose.Types.ObjectId>model.paymentId ).toHexString(),
             transfer: {
-              id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
               identifier: model.transfer.identifier,
               amount: model.transfer.amount,
-              paymentRecorded: model.transfer.paymentRecorded,
-              createdAt: model.transfer.createdAt,
-              updatedAt: model.transfer.updatedAt
+              paymentRecorded: model.transfer.paymentRecorded
             },
             createdAt: model.createdAt,
             updatedAt: model.updatedAt

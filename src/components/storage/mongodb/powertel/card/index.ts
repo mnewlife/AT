@@ -232,21 +232,15 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           };
           if ( model.buyer ) {
             returnModel.buyer = {
-              id: ( model.buyer._id as mongoose.Types.ObjectId ).toHexString(),
               cardSaleId: ( model.buyer.cardSaleId as mongoose.Types.ObjectId ).toHexString(),
-              fullName: model.buyer.fullName,
-              createdAt: model.buyer.createdAt,
-              updatedAt: model.buyer.updatedAt
+              fullName: model.buyer.fullName
             };
           }
           if ( model.user ) {
             returnModel.user = {
-              id: ( model.user._id as mongoose.Types.ObjectId ).toHexString(),
               userId: ( model.user.userId as mongoose.Types.ObjectId ).toHexString(),
               emailAddress: model.user.emailAddress,
-              fullName: model.user.fullName,
-              createdAt: model.user.createdAt,
-              updatedAt: model.user.updatedAt
+              fullName: model.user.fullName
             };
           }
           

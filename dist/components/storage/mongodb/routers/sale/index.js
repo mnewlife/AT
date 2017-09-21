@@ -161,12 +161,9 @@ function convertToAbstract(models, forceThrow) {
                 var returnModel = {
                     id: model._id.toHexString(),
                     buyer: {
-                        id: model.buyer._id.toHexString(),
                         fullName: model.buyer.fullName,
                         emailAddress: model.buyer.emailAddress,
-                        phoneNumber: model.buyer.phoneNumber,
-                        createdAt: model.buyer.createdAt,
-                        updatedAt: model.buyer.updatedAt
+                        phoneNumber: model.buyer.phoneNumber
                     },
                     type: model.type,
                     paymentMethod: model.paymentMethod,
@@ -178,11 +175,8 @@ function convertToAbstract(models, forceThrow) {
                 };
                 if (model.simCard) {
                     returnModel.simCard = {
-                        id: model.simCard._id.toHexString(),
                         cardId: model.simCard.cardId.toHexString(),
-                        mdn: model.simCard.mdn,
-                        createdAt: model.simCard.createdAt,
-                        updatedAt: model.simCard.updatedAt
+                        mdn: model.simCard.mdn
                     };
                 }
                 returnModels.push(returnModel);

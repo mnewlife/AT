@@ -193,41 +193,35 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
       password: model.password,
       accessLevel: model.accessLevel,
       verification: {
-        verified: model.verification.verified,
-        numVerAttempts: model.verification.numVerAttempts,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        verified: model.verification.verified
       },
       activeApps: []
     };
     if ( model.resetCode ) {
       details.resetCode = model.resetCode;
     }
+    if ( model.verification.numVerAttempts ) {
+      details.verification.numVerAttempts = model.verification.numVerAttempts;
+    }
     if ( model.verification.verificationCode ) {
       details.verification.verificationCode = model.verification.verificationCode;
     }
     if ( model.personalDetails ) {
-      details.personalDetails = <any>{
+      details.personalDetails = {
         firstName: model.personalDetails.firstName,
-        lastName: model.personalDetails.lastName,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        lastName: model.personalDetails.lastName
       };
     }
     if ( model.contactDetails ) {
-      details.contactDetails = <any>{
-        phoneNumbers: model.contactDetails.phoneNumbers,
-        createdAt: new Date(),
-        updatedAt: new Date()
+      details.contactDetails = {
+        phoneNumbers: model.contactDetails.phoneNumbers
       };
     }
     if ( model.residentialDetails ) {
-      details.residentialDetails = <any>{
+      details.residentialDetails = {
         country: model.residentialDetails.country,
         province: model.residentialDetails.province,
-        address: model.residentialDetails.address,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        address: model.residentialDetails.address
       };
     }
 
@@ -280,69 +274,73 @@ function generateUpdateDetails ( document: Model, details: storage.core.user.Upd
     }
 
     if ( details.personalDetails ) {
-      if ( details.personalDetails.firstName || details.personalDetails.lastName ) {
-        if ( !document.personalDetails ) {
-          document.personalDetails = <any>{
-            firstName: "",
-            lastName: "",
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.personalDetails.firstName ) {
-          document.personalDetails.firstName = details.personalDetails.firstName;
-        }
-        if ( details.personalDetails.lastName ) {
-          document.personalDetails.lastName = details.personalDetails.lastName;
-        }
+      if ( !document.personalDetails ) {
+        document.personalDetails = {
+          firstName: "",
+          lastName: "",
+          dateOfBirth: null,
+          gender: "Male"
+        };
+      }
+      if ( details.personalDetails.firstName ) {
+        document.personalDetails.firstName = details.personalDetails.firstName;
+      }
+      if ( details.personalDetails.lastName ) {
+        document.personalDetails.lastName = details.personalDetails.lastName;
+      }
+      if ( details.personalDetails.dateOfBirth ) {
+        document.personalDetails.dateOfBirth = details.personalDetails.dateOfBirth;
+      }
+      if ( details.personalDetails.gender ) {
+        document.personalDetails.gender = details.personalDetails.gender;
       }
     }
 
     if ( details.contactDetails ) {
-      if ( details.contactDetails.phoneNumbersToAdd || details.contactDetails.phoneNumbersToRemove ) {
-        if ( !document.contactDetails ) {
-          document.contactDetails = <any>{
-            phoneNumbers: [],
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }
-        if ( details.contactDetails.phoneNumbersToRemove ) {
-          details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-            let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-              return ( subject === phoneNumber );
-            } );
-            if ( matches.length ) {
-              document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-            }
+      if ( !document.contactDetails ) {
+        document.contactDetails = {
+          phoneNumbers: []
+        };
+      }
+      if ( details.contactDetails.phoneNumbersToRemove ) {
+        details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
+          let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
+            return ( subject === phoneNumber );
           } );
-        }
-        if ( details.contactDetails.phoneNumbersToAdd ) {
-          details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-            document.contactDetails.phoneNumbers.push( phoneNumber );
-          } );
-        }
+          if ( matches.length ) {
+            document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
+          }
+        } );
+      }
+      if ( details.contactDetails.phoneNumbersToAdd ) {
+        details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
+          document.contactDetails.phoneNumbers.push( phoneNumber );
+        } );
+      }
+      if ( details.contactDetails.phoneNumbers ) {
+        document.contactDetails.phoneNumbers = [];
+        details.contactDetails.phoneNumbers.forEach(( number ) => {
+          document.contactDetails.phoneNumbers.push( number );
+        } );
       }
     }
 
     if ( details.residentialDetails ) {
-      if ( details.residentialDetails.country || details.residentialDetails.province || details.residentialDetails.address ) {
-        if ( !document.residentialDetails ) {
-          document.residentialDetails = <any>{
-            country: "",
-            province: "",
-            address: ""
-          };
-        }
-        if ( details.residentialDetails.country ) {
-          document.residentialDetails.country = details.residentialDetails.country;
-        }
-        if ( details.residentialDetails.province ) {
-          document.residentialDetails.province = details.residentialDetails.province;
-        }
-        if ( details.residentialDetails.address ) {
-          document.residentialDetails.address = details.residentialDetails.address;
-        }
+      if ( !document.residentialDetails ) {
+        document.residentialDetails = {
+          country: "",
+          province: "",
+          address: ""
+        };
+      }
+      if ( details.residentialDetails.country ) {
+        document.residentialDetails.country = details.residentialDetails.country;
+      }
+      if ( details.residentialDetails.province ) {
+        document.residentialDetails.province = details.residentialDetails.province;
+      }
+      if ( details.residentialDetails.address ) {
+        document.residentialDetails.address = details.residentialDetails.address;
       }
     }
 
@@ -394,11 +392,8 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
             accessLevel: model.accessLevel,
             password: model.password,
             verification: {
-              id: ( model.verification._id as mongoose.Types.ObjectId ).toHexString(),
               verified: model.verification.verified,
-              numVerAttempts: model.verification.numVerAttempts,
-              createdAt: model.verification.createdAt,
-              updatedAt: model.verification.updatedAt
+              numVerAttempts: model.verification.numVerAttempts
             },
             activeApps: model.activeApps,
             createdAt: model.createdAt,
@@ -415,33 +410,24 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
 
           if ( model.personalDetails ) {
             returnModel.personalDetails = {
-              id: ( model.personalDetails._id as mongoose.Types.ObjectId ).toHexString(),
               firstName: model.personalDetails.firstName,
               lastName: model.personalDetails.lastName,
               dateOfBirth: model.personalDetails.dateOfBirth,
-              gender: model.personalDetails.gender,
-              createdAt: model.personalDetails.createdAt,
-              updatedAt: model.personalDetails.updatedAt
+              gender: model.personalDetails.gender
             };
           }
 
           if ( model.contactDetails ) {
             returnModel.contactDetails = {
-              id: ( model.contactDetails._id as mongoose.Types.ObjectId ).toHexString(),
-              phoneNumbers: model.contactDetails.phoneNumbers,
-              createdAt: model.contactDetails.createdAt,
-              updatedAt: model.contactDetails.updatedAt
+              phoneNumbers: model.contactDetails.phoneNumbers
             };
           }
 
           if ( model.residentialDetails ) {
             returnModel.residentialDetails = {
-              id: ( model.residentialDetails._id as mongoose.Types.ObjectId ).toHexString(),
               country: model.residentialDetails.country,
               province: model.residentialDetails.province,
-              address: model.residentialDetails.address,
-              createdAt: model.residentialDetails.createdAt,
-              updatedAt: model.residentialDetails.updatedAt
+              address: model.residentialDetails.address
             }
           }
 

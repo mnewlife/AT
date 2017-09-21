@@ -1,0 +1,94 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar-widget title="Profile Details"></tool-bar-widget>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.progress.getUser" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <div layout="row" layout-align="center start" layout-wrap layout-padding>
+
+          <md-card class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-card-title>
+              <md-card-title-text ng-hide="$ctrl.progress.getUser">
+                <span class="md-headline" ng-show="$ctrl.user.personalDetails.firstName">{{ $ctrl.user.personalDetails.firstName }}&nbsp;{{ $ctrl.user.personalDetails.lastName }}</span>
+                <span class="md-subhead" ng-if="$ctrl.user.personalDetails.firstName">{{ $ctrl.user.emailAddress }}&nbsp;|&nbsp;{{ $ctrl.user.updatedAt | date }}</span>
+                <span class="md-headline" ng-if="!$ctrl.user.personalDetails.firstName">{{ $ctrl.user.emailAddress }}&nbsp;|&nbsp;{{ $ctrl.user.updatedAt | date }}</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-actions layout="row" layout-align="end end">
+              <md-button ng-disabled="$ctrl.progress.getUser" class="md-accent" ng-href="#/edit-profile">
+                <span ng-hide="$ctrl.progress.getUser">Edit Profile</span>
+                <span ng-show="$ctrl.progress.getUser">Loading...</span>
+              </md-button>
+            </md-card-actions>
+          </md-card>
+
+          <md-card ng-if="!$ctrl.progress.getUser" ng-show="$ctrl.user.personalDetails.firstName" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">Personal Details</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content layout="column" layout-align="start stretch">
+              <span class="md-body-1">
+                <b>Name:</b> {{ $ctrl.user.personalDetails.firstName }}&nbsp;{{ $ctrl.user.personalDetails.lastName }}
+              </span>
+              <span class="md-body-1"><b>Date Of Birth:</b> {{ $ctrl.user.personalDetails.dateOfBirth | date:"mediumDate"  }}</span>
+              <span class="md-body-1"><b>Gender:</b> {{ $ctrl.user.personalDetails.gender }}</span>
+            </md-card-content>
+          </md-card>
+
+          <md-card ng-if="!$ctrl.progress.getUser" ng-show="$ctrl.user.contactDetails.phoneNumbers && $ctrl.user.contactDetails.phoneNumbers.length" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">Contact Details</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content layout="column" layout-align="start stretch">
+              <div layout="row" layout-align="start start">
+                <span class="md-body-1"><b>Phone Numbers:&nbsp;</b></span>
+                <div layout="column">
+                  <span class="md-body-1" ng-repeat="phoneNumber in $ctrl.user.contactDetails.phoneNumbers">{{ phoneNumber }}</span>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
+
+          <md-card ng-if="!$ctrl.progress.getUser" ng-show="$ctrl.user.residentialDetails.country" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">Residential Details</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content layout="column" layout-align="start stretch">
+              <div layout="column" layout-align="start start">
+                <span class="md-body-1" ng-if="$ctrl.user.residentialDetails.country"><b>Country:</b>&nbsp;{{ $ctrl.user.residentialDetails.country }}</span>
+                <span class="md-body-1" ng-if="!$ctrl.user.residentialDetails.country"><b>Country:</b>&nbsp;_</span>
+
+                <span class="md-body-1" ng-if="$ctrl.user.residentialDetails.province"><b>Province:</b>&nbsp;{{ $ctrl.user.residentialDetails.province }}</span>
+                <span class="md-body-1" ng-if="!$ctrl.user.residentialDetails.province"><b>Province:</b>&nbsp;_</span>
+
+                <span class="md-body-1" ng-if="$ctrl.user.residentialDetails.address"><b>Address:</b>&nbsp;{{ $ctrl.user.residentialDetails.address }}</span>
+                <span class="md-body-1" ng-if="!$ctrl.user.residentialDetails.address"><b>Address:</b>&nbsp;_</span>
+              </div>
+            </md-card-content>
+          </md-card>
+
+        </div>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+    </md-content>
+
+  </md-content>
+</div>

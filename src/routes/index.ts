@@ -28,19 +28,21 @@ export default (
 
   /**********************************************************/
 
-  app.use( "/passpoint", passpoint( components ) );
+  let helpers = new Helpers(
+    components.helpers.moders.checkThrow,
+    components.session.signedIn,
+    components.session.getCurrentUser,
+    components.response.send
+  );
+
+  app.use( "/passpoint", passpoint( components.response.send, helpers.validateAppContext ) );
 
   //app.use( "/call263", call263() );
 
   app.use( "/core", core(
-    eventListener,
     components,
     procedures,
-    new Helpers(
-      components.helpers.moders.checkThrow,
-      components.session.signedIn,
-      components.session.getCurrentUser
-    )
+    helpers
   ) );
 
   //app.use( "/grocRound", grocRound() );

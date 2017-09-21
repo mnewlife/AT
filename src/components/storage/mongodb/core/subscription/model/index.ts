@@ -7,11 +7,12 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends mongoose.Document, mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance {}
+export interface ModelNuance extends mongoDB.Document {
   userId: mongoose.Types.ObjectId;
   subscription: string;
 }
-export type PartialModel = Partial<Pick<Model, "userId" | "subscription">>;
+export type PartialModel = Partial<ModelNuance>;
 
 /******************************************************************************/
 

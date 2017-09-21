@@ -11,6 +11,7 @@ import * as Helpers from "../helpers/interfaces";
 import auth from "./auth";
 import profile from "./profile";
 import registration from "./registration";
+import ProfileShared from "./profile-shared";
 
 import developer from "./developer";
 import admin from "./admin";
@@ -19,7 +20,6 @@ import consumer from "./consumer";
 /******************************************************************************/
 
 export default (
-  eventListener: EventListener.Instance,
   components: Components.Instance,
   procedures: Procedures.Instance,
   helpers: Helpers.Instance
@@ -27,21 +27,30 @@ export default (
 
   let router = express.Router();
 
-  router.use( "/auth", auth(
-    procedures.core.common.auth.signIn,
-    helpers.setViewContexts,
-    components.response.send
-  ) );
-
-  router.use( "/profile", profile(
+  let makeProfileHandlers = new ProfileShared(
     procedures.core.common.profile.getUserDetails,
     procedures.core.common.profile.updateUserDetails,
     procedures.core.common.profile.changeEmailAddress,
     procedures.core.common.profile.changePassword,
     procedures.core.common.profile.requestPasswordResetCode,
     procedures.core.common.profile.resetPassword,
-    helpers.setViewContexts,
+    procedures.core.common.profile.deleteAccount,
+    components.helpers.numbers.generateRandomNumber,
+    components.session.signedIn,
+    components.session.getUserId,
     components.response.send
+  );
+
+  router.use( "/auth", auth(
+    procedures.core.common.auth.signIn,
+    components.session.signOut,
+    helpers.validateAppContext,
+    components.response.send
+  ) );
+
+  router.use( "/profile", profile(
+    makeProfileHandlers.requestPasswordResetCode,
+    makeProfileHandlers.resetPassword
   ) );
 
   router.use( "/registration", registration(
@@ -50,8 +59,8 @@ export default (
   ) );
 
   //router.use( "/developer", developer( config ) );
-  //router.use( "/admin", admin( eventListener, components, procedures, helpers ) );
-  //router.use( "/consumer", consumer( config ) );
+  router.use( "/admin", admin( components, procedures, helpers, makeProfileHandlers ) );
+  router.use( "/consumer", consumer( components, procedures, helpers ) );
 
   return router;
 

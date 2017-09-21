@@ -3,17 +3,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 /******************************************************************************/
-exports.default = function (components) {
+exports.default = function (sendResponse, validateAppContext) {
     var router = express.Router();
     router.get("/", function (req, res, next) {
         var payload = {};
         if (req.query.appContext) {
-            payload.appContext = req.query.appContext;
+            if (validateAppContext(req.query.appContext)) {
+                payload.appContext = req.query.appContext;
+            }
         }
-        if (req.query.innerContext) {
-            payload.innerContext = req.query.innerContext;
+        if (req.query.nextInnerContext) {
+            payload.nextInnerContext = req.query.nextInnerContext;
         }
-        return components.response.send(res, "passpoint", true, null, payload);
+        return sendResponse(res, "passpoint", true, null, payload);
     });
     return router;
 };

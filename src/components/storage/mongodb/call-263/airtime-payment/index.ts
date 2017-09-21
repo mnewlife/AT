@@ -142,17 +142,13 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
       user: {
         userId: mongoose.Types.ObjectId( model.user.userId ),
         emailAddress: model.user.emailAddress,
-        fullName: model.user.fullName,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        fullName: model.user.fullName
       },
       channelId: mongoose.Types.ObjectId( model.channelId ),
       transaction: {
         identifier: model.transaction.identifier,
         amount: model.transaction.amount,
         method: model.transaction.method,
-        createdAt: new Date(),
-        updatedAt: new Date()
       }
     };
     
@@ -221,21 +217,15 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           let returnModel: dataModel.call263.airtimePayment.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
             user: {
-              id: ( model.user._id as mongoose.Types.ObjectId ).toHexString(),
               userId: ( model.user.userId as mongoose.Types.ObjectId ).toHexString(),
               emailAddress: model.user.emailAddress,
-              fullName: model.user.fullName,
-              createdAt: model.user.createdAt,
-              updatedAt: model.user.updatedAt
+              fullName: model.user.fullName
             },
             channelId: ( model.channelId as mongoose.Types.ObjectId ).toHexString(),
             transaction: {
-              id: ( model.transaction._id as mongoose.Types.ObjectId ).toHexString(),
               identifier: model.transaction.identifier,
               amount: model.transaction.amount,
-              method: model.transaction.method,
-              createdAt: model.transaction.createdAt,
-              updatedAt: model.transaction.updatedAt
+              method: model.transaction.method
             },
             createdAt: model.createdAt,
             updatedAt: model.updatedAt

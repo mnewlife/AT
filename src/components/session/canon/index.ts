@@ -122,6 +122,18 @@ export default class Canon implements interfaces.Instance {
 
   /*****************************************************************/
 
+  readonly getUserId = ( req: express.Request ): string => {
+
+    if ( req.session.userId ) {
+      return req.session.userId;
+    } else {
+      return null;
+    }
+
+  }
+
+  /*****************************************************************/
+
   readonly getCurrentUser = ( req: express.Request, forceThrow = false ): Promise<dataModel.core.user.Super> => {
 
     return this.checkThrow( forceThrow )

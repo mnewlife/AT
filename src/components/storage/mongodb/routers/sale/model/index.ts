@@ -8,8 +8,8 @@ import { ignoreEmpty } from "../../../preparation";
 
 /******************************************************************************/
 
-export interface Model extends Model_Nuance, mongoose.Document { }
-export interface Model_Nuance extends mongoDB.Document {
+export interface Model extends mongoose.Document, ModelNuance { }
+export interface ModelNuance extends mongoDB.Document {
   buyer: Buyer;
   simCard?: SimCard;
   type: string;
@@ -18,20 +18,18 @@ export interface Model_Nuance extends mongoDB.Document {
   amount: number;
   totalCost: number;
 }
-export interface PartialModel extends Partial<Pick<Model_Nuance, "type" | "paymentMethod" | "unitCost" | "amount" | "totalCost">> {
-  buyer?: Partial<Buyer_Nuance>;
-  simCard?: Partial<SimCard_Nuance>;
+export interface PartialModel extends Partial<Pick<ModelNuance, "type" | "paymentMethod" | "unitCost" | "amount" | "totalCost">> {
+  buyer?: Partial<Buyer>;
+  simCard?: Partial<SimCard>;
 };
 
-export interface Buyer extends Buyer_Nuance, mongoose.Document { }
-export interface Buyer_Nuance extends mongoDB.Document {
+export interface Buyer {
   fullName: string;
   emailAddress?: string;
   phoneNumber?: string;
 }
 
-export interface SimCard extends SimCard_Nuance, mongoose.Document { }
-export interface SimCard_Nuance extends mongoDB.Document {
+export interface SimCard {
   cardId: mongoose.Types.ObjectId;
   mdn: number;
 }

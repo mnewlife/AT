@@ -73,17 +73,13 @@ function generateAddDetails(models) {
             user: {
                 userId: mongoose.Types.ObjectId(model.user.userId),
                 emailAddress: model.user.emailAddress,
-                fullName: model.user.fullName,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                fullName: model.user.fullName
             },
             channelId: mongoose.Types.ObjectId(model.channelId),
             transaction: {
                 identifier: model.transaction.identifier,
                 amount: model.transaction.amount,
                 method: model.transaction.method,
-                createdAt: new Date(),
-                updatedAt: new Date()
             }
         };
         returnDetails.push(details);
@@ -132,21 +128,15 @@ function convertToAbstract(models, forceThrow) {
                 var returnModel = {
                     id: model._id.toHexString(),
                     user: {
-                        id: model.user._id.toHexString(),
                         userId: model.user.userId.toHexString(),
                         emailAddress: model.user.emailAddress,
-                        fullName: model.user.fullName,
-                        createdAt: model.user.createdAt,
-                        updatedAt: model.user.updatedAt
+                        fullName: model.user.fullName
                     },
                     channelId: model.channelId.toHexString(),
                     transaction: {
-                        id: model.transaction._id.toHexString(),
                         identifier: model.transaction.identifier,
                         amount: model.transaction.amount,
-                        method: model.transaction.method,
-                        createdAt: model.transaction.createdAt,
-                        updatedAt: model.transaction.updatedAt
+                        method: model.transaction.method
                     },
                     createdAt: model.createdAt,
                     updatedAt: model.updatedAt

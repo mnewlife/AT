@@ -6,6 +6,7 @@ var ComponentsIntegration;
             "toolBarWidget",
             "sideNavWidget",
             "toastService",
+            "dialogService",
             "userService",
             "contextsService"
         ]);
@@ -17,16 +18,18 @@ var ComponentsIntegration;
             "$q",
             "$routeParams",
             "ToastService",
+            "DialogService",
             "UserService",
             "ContextsService"
         ];
-        function signIn($q, $routeParams, ToastService, UserService, ContextsService) {
-            return new SignInComponent.Component($q, $routeParams, ToastService, UserService, ContextsService);
+        function signIn($q, $routeParams, ToastService, DialogService, UserService, ContextsService) {
+            return new SignInComponent.Component($q, $routeParams, ToastService, DialogService, UserService, ContextsService);
         }
         /*******************************************************************/
         angular.module("signUpComponent", [
             "toolBarWidget",
             "toastService",
+            "dialogService",
             "userService",
             "contextsService"
         ]);
@@ -35,15 +38,15 @@ var ComponentsIntegration;
             controller: signUp
         });
         signUp.$inject = [
+            "$q",
             "$routeParams",
-            "$location",
-            "$timeout",
             "ToastService",
+            "DialogService",
             "UserService",
             "ContextsService"
         ];
-        function signUp($q, $routeParams, ToastService, UserService, ContextsService) {
-            return new SignUpComponent.Component($q, $routeParams, ToastService, UserService, ContextsService);
+        function signUp($q, $routeParams, ToastService, DialogService, UserService, ContextsService) {
+            return new SignUpComponent.Component($q, $routeParams, ToastService, DialogService, UserService, ContextsService);
         }
         /*******************************************************************/
         angular.module("sideNavWidget", []);

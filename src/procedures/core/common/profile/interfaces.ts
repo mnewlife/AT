@@ -71,11 +71,11 @@ export interface ChangePassword {
 }
 
 export interface RequestPasswordResetCode {
-  ( userId: string, forceThrow?: boolean ): Promise<void>
+  ( emailAddress: string, forceThrow?: boolean ): Promise<void>
 }
 
 export interface ResetPassword {
-  ( userId: string, resetCode: string, newPassword: string, forceThrow?: boolean ): Promise<void>
+  ( userId: string, resetCode: string, newPassword: string, forceThrow?: boolean ): Promise<string>
 }
 
 export interface DeleteAccount {

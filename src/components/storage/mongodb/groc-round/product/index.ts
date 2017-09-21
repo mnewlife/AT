@@ -81,13 +81,13 @@ function makeConditions ( filtrationCriteria: storage.grocRound.product.Filtrati
     if ( filtrationCriteria.label ) {
       conditions[ "label" ] = filtrationCriteria.label;
     }
-    
+
     if ( filtrationCriteria.images ) {
       conditions[ "images" ] = { $all: filtrationCriteria.images };
     }
-    
+
     if ( filtrationCriteria.priceValues ) {
-    
+
       if ( filtrationCriteria.priceValues.min ) {
         if ( filtrationCriteria.priceValues.min.shopId ) {
           conditions[ "priceValues.min.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.min.shopId );
@@ -102,7 +102,7 @@ function makeConditions ( filtrationCriteria: storage.grocRound.product.Filtrati
           }
         }
       }
-    
+
       if ( filtrationCriteria.priceValues.max ) {
         if ( filtrationCriteria.priceValues.max.shopId ) {
           conditions[ "priceValues.max.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.max.shopId );
@@ -117,7 +117,7 @@ function makeConditions ( filtrationCriteria: storage.grocRound.product.Filtrati
           }
         }
       }
-    
+
       if ( filtrationCriteria.priceValues.median ) {
         if ( filtrationCriteria.priceValues.median.shopId ) {
           conditions[ "priceValues.median.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.median.shopId );
@@ -132,7 +132,7 @@ function makeConditions ( filtrationCriteria: storage.grocRound.product.Filtrati
           }
         }
       }
-    
+
       if ( filtrationCriteria.priceValues.mean ) {
         if ( filtrationCriteria.priceValues.mean.shopId ) {
           conditions[ "priceValues.mean.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.priceValues.mean.shopId );
@@ -147,9 +147,9 @@ function makeConditions ( filtrationCriteria: storage.grocRound.product.Filtrati
           }
         }
       }
-    
+
     }
-    
+
     if ( filtrationCriteria.effectivePrice ) {
       if ( filtrationCriteria.effectivePrice.shopId ) {
         conditions[ "effectivePrice.shopId" ] = mongoose.Types.ObjectId( filtrationCriteria.effectivePrice.shopId );
@@ -239,7 +239,7 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
         price: model.priceValues.mean.price
       };
     }
-    
+
     returnDetails.push( details );
 
   } );
@@ -257,13 +257,13 @@ function generateUpdateDetails ( document: Model, details: storage.grocRound.pro
     if ( details.label ) {
       document.label = details.label;
     }
-    
+
     if ( details.imagesToAdd ) {
       details.imagesToAdd.forEach(( image ) => {
         document.images.push( image );
       } );
     }
-    
+
     if ( details.imagesToRemove ) {
       details.imagesToRemove.forEach(( image ) => {
         let index = document.images.indexOf( image );
@@ -272,34 +272,29 @@ function generateUpdateDetails ( document: Model, details: storage.grocRound.pro
         }
       } );
     }
-    
+
     if ( details.priceValues ) {
       if ( details.priceValues.min ) {
         document.priceValues.min.shopId = mongoose.Types.ObjectId( details.priceValues.min.shopId );
         document.priceValues.min.price = details.priceValues.min.price;
-        document.priceValues.min.updatedAt = new Date();
       }
       if ( details.priceValues.max ) {
         document.priceValues.max.shopId = mongoose.Types.ObjectId( details.priceValues.max.shopId );
         document.priceValues.max.price = details.priceValues.max.price;
-        document.priceValues.max.updatedAt = new Date();
       }
       if ( details.priceValues.median ) {
         document.priceValues.median.shopId = mongoose.Types.ObjectId( details.priceValues.median.shopId );
         document.priceValues.median.price = details.priceValues.median.price;
-        document.priceValues.median.updatedAt = new Date();
       }
       if ( details.priceValues.mean ) {
         document.priceValues.mean.shopId = mongoose.Types.ObjectId( details.priceValues.mean.shopId );
         document.priceValues.mean.price = details.priceValues.mean.price;
-        document.priceValues.mean.updatedAt = new Date();
       }
     }
-    
+
     if ( details.effectivePrice ) {
-      document.effectivePrice.shopId = mongoose.Types.ObjectId( details.effectivePrice.shopId ),
-        document.effectivePrice.price = details.effectivePrice.price;
-      document.effectivePrice.updatedAt = new Date();
+      document.effectivePrice.shopId = mongoose.Types.ObjectId( details.effectivePrice.shopId );
+      document.effectivePrice.price = details.effectivePrice.price;
     }
 
     resolve( document );
@@ -324,16 +319,9 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           let returnModel: dataModel.grocRound.product.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
             label: model.label,
-            priceValues: {
-              id: ( <mongoose.Types.ObjectId>model.priceValues._id ).toHexString(),
-              createdAt: model.priceValues.createdAt,
-              updatedAt: model.priceValues.updatedAt
-            },
+            priceValues: {},
             effectivePrice: {
-              id: ( <mongoose.Types.ObjectId>model.effectivePrice._id ).toHexString(),
-              price: model.effectivePrice.price,
-              createdAt: model.effectivePrice.createdAt,
-              updatedAt: model.effectivePrice.updatedAt                
+              price: model.effectivePrice.price
             },
             createdAt: model.createdAt,
             updatedAt: model.updatedAt
@@ -346,41 +334,29 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           }
           if ( model.priceValues.min ) {
             returnModel.priceValues.min = {
-              id: ( model.priceValues.min._id as mongoose.Types.ObjectId ).toHexString(),
               shopId: ( model.priceValues.min.shopId as mongoose.Types.ObjectId ).toHexString(),
-              price: model.priceValues.min.price,
-              createdAt: model.priceValues.min.createdAt,
-              updatedAt: model.priceValues.min.updatedAt
+              price: model.priceValues.min.price
             };
           }
           if ( model.priceValues.max ) {
             returnModel.priceValues.max = {
-              id: ( model.priceValues.max._id as mongoose.Types.ObjectId ).toHexString(),
               shopId: ( model.priceValues.max.shopId as mongoose.Types.ObjectId ).toHexString(),
-              price: model.priceValues.max.price,
-              createdAt: model.priceValues.max.createdAt,
-              updatedAt: model.priceValues.max.updatedAt
+              price: model.priceValues.max.price
             };
           }
           if ( model.priceValues.median ) {
             returnModel.priceValues.median = {
-              id: ( model.priceValues.median._id as mongoose.Types.ObjectId ).toHexString(),
               shopId: ( model.priceValues.median.shopId as mongoose.Types.ObjectId ).toHexString(),
-              price: model.priceValues.median.price,
-              createdAt: model.priceValues.median.createdAt,
-              updatedAt: model.priceValues.median.updatedAt
+              price: model.priceValues.median.price
             };
           }
           if ( model.priceValues.mean ) {
             returnModel.priceValues.mean = {
-              id: ( model.priceValues.mean._id as mongoose.Types.ObjectId ).toHexString(),
               shopId: ( model.priceValues.mean.shopId as mongoose.Types.ObjectId ).toHexString(),
-              price: model.priceValues.mean.price,
-              createdAt: model.priceValues.mean.createdAt,
-              updatedAt: model.priceValues.mean.updatedAt
+              price: model.priceValues.mean.price
             };
           }
-          
+
           returnModels.push( returnModel );
 
         } );

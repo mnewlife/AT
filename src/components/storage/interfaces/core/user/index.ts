@@ -59,6 +59,7 @@ export type UpdateDetails = Partial<{
   }>;
   personalDetails: Partial<dataModel.core.user.PersonalDetails>;
   contactDetails: Partial<{
+    phoneNumbers: string[];
     phoneNumbersToAdd: string[];
     phoneNumbersToRemove: string[];
   }>;

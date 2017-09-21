@@ -5,6 +5,7 @@ import * as express from "express";
 import * as expressSession from "express-session";
 
 import * as dataModel from "../../../data-model";
+import * as root from "../../../interfaces";
 import * as EventListener from "../../../event-listener";
 import * as Storage from "../../storage/interfaces";
 import * as Moders from "../../helpers/moders/interfaces";
@@ -24,7 +25,7 @@ export default class Canon implements interfaces.Instance {
 
   /*****************************************************************/
 
-  readonly send = ( res: express.Response, view: string, success: boolean, message: string, payload: any ): void => {
+  readonly send = ( res: express.Response, view: root.View, success: boolean, message: string, payload: any ): void => {
 
     res.format( {
 
@@ -39,7 +40,11 @@ export default class Canon implements interfaces.Instance {
       html: () => {
         let str;
         try {
-          str = JSON.stringify(( payload ) ? payload : "" );
+          let input: any = {};
+          if ( success ) input.success = success;
+          if ( message ) input.message = message;
+          if ( payload ) input.payload = payload;
+          str = JSON.stringify( input );
         } catch ( exception ) {
           this.events.stringifyHtmlPacketFailed( {
             payload: ( payload ) ? payload : "",
