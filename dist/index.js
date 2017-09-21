@@ -24,7 +24,8 @@ var proceduresInstance = procedures_1.default(eventListenerInstance.emit, compon
 eventListenerInstance.updateReferences(componentsInstance, proceduresInstance);
 /******************************************************************************/
 app.set("trust proxy", 1);
-app.set("views", "./views");
+//app.set( "views", "./views" );
+app.set("views", path.join(__dirname, 'views'));
 app.set("view engine", "pug");
 app.locals.basedir = __dirname + "/public";
 /*************************************************/
