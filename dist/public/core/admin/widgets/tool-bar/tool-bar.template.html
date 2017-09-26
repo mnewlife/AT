@@ -11,10 +11,15 @@
       <span flex></span>
 
       <md-menu>
-        <md-button aria-label="User" class="md-icon-button pointed profile-picture">
+        <md-button aria-label="Menu" class="md-icon-button pointed">
           <md-icon class="md-avatar-icon" aria-label="user icon" ng-click="$mdOpenMenu( $event )">more_vert</md-icon>
         </md-button>
         <md-menu-content>
+          <md-menu-item>
+            <md-button ng-show="$ctrl.ProfileService.user" ng-disabled="true" aria-label="User">
+              <span>{{ $ctrl.ProfileService.user.emailAddress }}</span>
+            </md-button>
+          </md-menu-item>
           <md-menu-item>
             <md-button ng-click="$ctrl.signOut()" aria-label="Sign Out">
               <md-icon aria-label="Sign Out">lock</md-icon>

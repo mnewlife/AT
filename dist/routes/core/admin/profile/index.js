@@ -9,10 +9,10 @@ exports.default = function (makeGetDetails, makeUpdateDetails, makeChangeEmailAd
     var accessLevel = "admin";
     var appContext = "core-admin";
     router.get("/getDetails", getAuthCheck("admin", "core-admin", "get-details"), makeGetDetails(appContext));
-    router.post("/updateDetails/:userId", getAuthCheck("admin", "core-admin", "update-details"), makeUpdateDetails(appContext));
-    router.post("/changeEmailAddress/:userId", getAuthCheck("admin", "core-admin", "change-email-address"), makeChangeEmailAddress(appContext));
-    router.post("/changePassword/:userId", getAuthCheck("admin", "core-admin", "change-password"), makeChangePassword(appContext));
-    router.get("/deleteAccount/:userId", getAuthCheck("admin", "core-admin", "delete-account"), makeDeleteAccount(appContext));
+    router.post("/updateDetails", getAuthCheck("admin", "core-admin", "update-details"), makeUpdateDetails(appContext));
+    router.post("/changeEmailAddress", getAuthCheck("admin", "core-admin", "change-email-address"), makeChangeEmailAddress(appContext));
+    router.post("/changePassword", getAuthCheck("admin", "core-admin", "change-password"), makeChangePassword(appContext));
+    router.get("/deleteAccount", getAuthCheck("admin", "core-admin", "delete-account"), makeDeleteAccount(appContext));
     /*********************************************************/
     return router;
 };

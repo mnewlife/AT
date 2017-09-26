@@ -8,6 +8,7 @@ module AboutComponentsIntegration {
       "toolBarWidget",
       "sideNavWidget",
       "toastService",
+      "contextsService",
       "descLimit"
     ] );
 
@@ -18,32 +19,42 @@ module AboutComponentsIntegration {
 
     home.$inject = [
       "$q",
-      "ToastService"
+      "ToastService",
+      "ContextsService"
     ];
 
     function home (
       $q: ng.IQService,
-      ToastService: ToastServiceInterfaces.Instance
+      ToastService: ToastServiceInterfaces.Instance,
+      ContextsService: AboutContextsServiceInterfaces.Instance
     ) {
-      return new AboutHomeComponent.Component( $q, ToastService );
+      return new AboutHomeComponent.Component( $q, ToastService, ContextsService );
     }
 
     /*******************************************************************/
 
-    angular.module( "sideNavWidget", [] );
+    angular.module( "sideNavWidget", [
+      "contextsService"
+    ] );
 
     angular.module( "sideNavWidget" ).component( "sideNavWidget", {
       templateUrl: "/about/widgets/side-nav/side-nav.template.html",
       controller: sideNav
     } );
 
-    function sideNav () {
-      return new AboutSideNavWidget.Widget();
+    sideNav.$inject = [
+      "ContextsService"
+    ];
+
+    function sideNav ( ContextsService: AboutContextsServiceInterfaces.Instance ) {
+      return new AboutSideNavWidget.Widget( ContextsService );
     }
 
     /*******************************************************************/
 
-    angular.module( "toolBarWidget", [] );
+    angular.module( "toolBarWidget", [
+      "contextsService"
+    ] );
 
     angular.module( "toolBarWidget" ).component( "toolBarWidget", {
       templateUrl: "/about/widgets/tool-bar/tool-bar.template.html",
@@ -54,11 +65,12 @@ module AboutComponentsIntegration {
     } );
 
     toolBar.$inject = [
-      "$mdSidenav"
+      "$mdSidenav",
+      "ContextsService"
     ];
 
-    function toolBar ( $mdSidenav: ng.material.ISidenavService ) {
-      return new AboutToolBarWidget.Widget( $mdSidenav );
+    function toolBar ( $mdSidenav: ng.material.ISidenavService, ContextsService: AboutContextsServiceInterfaces.Instance ) {
+      return new AboutToolBarWidget.Widget( $mdSidenav, ContextsService );
     }
 
     /*******************************************************************/

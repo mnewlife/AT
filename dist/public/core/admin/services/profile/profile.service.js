@@ -9,31 +9,37 @@ var CoreAdminProfileService;
             this.$timeout = $timeout;
             this.ToastService = ToastService;
             this.ContextsService = ContextsService;
+            this.urlPrefix = "/core/admin/profile";
             /***************************************************/
             this.signOut = function () {
                 _this.progress.signOut = true;
-                return _this.$http.get("core/auth/signOut")
+                var promise = _this.$http.get("/core/auth/signOut")
                     .then(function (response) {
                     _this.progress.signOut = false;
                     window.location.href = "/passpoint";
+                    return _this.$q.resolve(true);
                 })
                     .catch(function (reason) {
                     _this.progress.signOut = false;
                     _this.ToastService.showSimple("Something went wrong signing you out");
                 });
+                angular.copy(promise, _this.promises.signOut);
             };
             /***************************************************/
             this.getUser = function () {
                 _this.progress.getUser = true;
-                return _this.$http.get("/core/admin/profile/getDetails")
+                var promise = _this.$http.get(_this.urlPrefix + "/getDetails")
                     .then(function (response) {
                     _this.progress.getUser = false;
                     var responseData = response.data;
                     if (responseData.success) {
                         _this.$timeout(function () {
-                            angular.copy(responseData.payload.user, _this.user);
+                            if (!_this.user) {
+                                _this.user = {};
+                            }
+                            angular.copy(responseData.payload.foundUser, _this.user);
                         });
-                        return _this.$q.resolve();
+                        return _this.$q.resolve(true);
                     }
                     else {
                         var message = (responseData.message) ? responseData.message : "Couldn't get your details";
@@ -45,24 +51,28 @@ var CoreAdminProfileService;
                 })
                     .catch(function (reason) {
                     _this.progress.getUser = false;
-                    console.log(reason);
                     var message = "Something went wrong";
                     _this.ToastService.showSimple(message);
                     return _this.$q.reject({
                         message: message
                     });
                 });
+                angular.copy(promise, _this.promises.getUser);
+                return _this.promises.getUser;
             };
             /***************************************************/
             this.updateDetails = function (details) {
                 _this.progress.updateDetails = true;
-                return _this.$http.post("/core/profile/updateDetails", details)
+                return _this.$http.post(_this.urlPrefix + "/updateDetails", details)
                     .then(function (response) {
                     _this.progress.updateDetails = false;
                     var responseData = response.data;
                     if (responseData.success) {
                         _this.$timeout(function () {
-                            angular.copy(responseData.payload, _this.user);
+                            angular.copy(responseData.payload.updatedUser, _this.user);
+                            if (_this.user.personalDetails && _this.user.personalDetails.dateOfBirth) {
+                                _this.user.personalDetails.dateOfBirth = new Date(_this.user.personalDetails.dateOfBirth);
+                            }
                         });
                         _this.ToastService.showSimple("Profile updated");
                         return _this.$q.resolve();
@@ -97,7 +107,7 @@ var CoreAdminProfileService;
                     newEmailAddress: newEmailAddress
                 };
                 _this.progress.changeEmailAddress = true;
-                return _this.$http.post("/core/profile/changeEmailAddress/:" + _this.user.id, details)
+                return _this.$http.post(_this.urlPrefix + "/changeEmailAddress", details)
                     .then(function (response) {
                     _this.progress.changeEmailAddress = false;
                     var responseData = response.data;
@@ -135,7 +145,7 @@ var CoreAdminProfileService;
                     newPassword: newPassword
                 };
                 _this.progress.changePassword = true;
-                return _this.$http.post("/core/profile/changePassword", details)
+                return _this.$http.post(_this.urlPrefix + "/changePassword", details)
                     .then(function (response) {
                     _this.progress.changePassword = false;
                     var responseData = response.data;
@@ -173,8 +183,12 @@ var CoreAdminProfileService;
                 changePassword: false,
                 signOut: false
             };
-            this.user = {};
+            this.promises = {
+                getUser: this.$q.resolve(false),
+                signOut: this.$q.resolve(false)
+            };
             if (this.ContextsService.currentUser) {
+                this.user = {};
                 angular.copy(this.ContextsService.currentUser, this.user);
             }
             else {

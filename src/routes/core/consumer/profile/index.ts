@@ -33,25 +33,25 @@ export default (
   );
 
   router.post(
-    "/updateDetails/:userId",
+    "/updateDetails",
     getAuthCheck( "consumer", "core-consumer", "update-details" ),
     makeUpdateDetails( appContext )
   );
 
   router.post(
-    "/changeEmailAddress/:userId",
+    "/changeEmailAddress",
     getAuthCheck( "consumer", "core-consumer", "change-email-address" ),
     makeChangeEmailAddress( appContext )
   );
 
   router.post(
-    "/changePassword/:userId",
+    "/changePassword",
     getAuthCheck( "consumer", "core-consumer", "change-password" ),
     makeChangePassword( appContext )
   );
 
   router.get(
-    "/deleteAccount/:userId",
+    "/deleteAccount",
     getAuthCheck( "consumer", "core-consumer", "delete-account" ),
     makeDeleteAccount( appContext )
   );

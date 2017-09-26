@@ -9,6 +9,7 @@ import * as eventListener from "../../../event-listener";
 import * as moders from "../../helpers/moders/interfaces";
 import * as session from "../../session/interfaces";
 import * as storageUser from "../../storage/interfaces/core/user";
+import * as helpers from "../../../procedures/core/common/helpers/interfaces";
 
 import * as interfaces from "../interfaces";
 
@@ -41,7 +42,9 @@ export default class Canon implements interfaces.Instance {
 
     private readonly setUserInSession: session.SetCurrentUser,
     private readonly getUserFromSession: session.GetCurrentUser,
-    private readonly signOutOfSession: session.SignOut
+    private readonly signOutOfSession: session.SignOut,
+
+    private readonly cleanUsers: helpers.CleanUsers
 
   ) { }
 
@@ -171,6 +174,16 @@ export default class Canon implements interfaces.Instance {
       .then(( response: any ) => {
 
         return this.getUserFromSession( req );
+
+      } )
+      .then(( foundUser: dataModel.core.user.Super ) => {
+
+        return this.cleanUsers( [ foundUser ] );
+
+      } )
+      .then(( cleanedUsers: dataModel.core.user.Super[] ) => {
+
+        return Promise.resolve( cleanedUsers[ 0 ] );
 
       } )
       .catch(( reason: any ) => {

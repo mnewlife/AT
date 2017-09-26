@@ -51,7 +51,7 @@ eventListenerInstance.updateReferences( componentsInstance, proceduresInstance )
 app.set( "trust proxy", 1 );
 
 //app.set( "views", "./views" );
-app.set( "views", path.join(__dirname, 'views') );
+app.set( "views", path.join( __dirname, "views" ) );
 app.set( "view engine", "pug" );
 app.locals.basedir = __dirname + "/public";
 
@@ -112,7 +112,7 @@ routes( eventListenerInstance, componentsInstance, proceduresInstance, app );
 
 /******************************************************************************/
 
-app.use( ( err: any, req: express.Request, res: express.Response, next: express.NextFunction ) => {
+app.use(( err: any, req: express.Request, res: express.Response, next: express.NextFunction ) => {
   if ( res.headersSent ) {
     return next( err );
   }

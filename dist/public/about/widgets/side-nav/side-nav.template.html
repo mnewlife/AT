@@ -3,12 +3,19 @@
   <div flex="100" layout="column" layout-align="start stretch">
     <section>
       <md-list flex>
-        <md-subheader class="md-no-sticky md-primary">Nav</md-subheader>
+        <md-subheader class="md-no-sticky md-primary">Passpoint</md-subheader>
         <md-list-item ng-repeat="item in $ctrl.items" href="{{ item.href }}">
           <md-icon aria-label="Label">{{ item.icon }}</md-icon>
           <p>{{ item.caption }}</p>
         </md-list-item>
+        <md-divider ng-if="$ctrl.ContextsService.currentUser"></md-divider>
+        <md-subheader ng-if="$ctrl.ContextsService.currentUser" class="md-no-sticky md-primary">Profile</md-subheader>
+        <md-list-item ng-if="$ctrl.ContextsService.currentUser" href="/core/{{ $ctrl.ContextsService.currentUser.accessLevel }}">
+          <md-icon aria-label="Label">account_circle</md-icon>
+          <p>My Profile</p>
+        </md-list-item>
         <md-divider></md-divider>
+        <md-subheader class="md-no-sticky md-primary">Service Apps</md-subheader>
         <md-list-item ng-repeat="service in $ctrl.services" href="{{ service.href }}">
           <md-icon aria-label="Label">{{ service.icon }}</md-icon>
           <p>{{ service.caption }}</p>

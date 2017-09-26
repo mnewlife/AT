@@ -2,7 +2,8 @@ var AboutSideNavWidget;
 (function (AboutSideNavWidget) {
     var Widget = (function () {
         /***************************************************/
-        function Widget() {
+        function Widget(ContextsService) {
+            this.ContextsService = ContextsService;
             this.items = [];
             this.services = [];
             this.items.push({
@@ -15,13 +16,27 @@ var AboutSideNavWidget;
                 icon: "mode_edit",
                 caption: "Sign Up"
             });
+            var href = "/grocRound";
+            if (this.ContextsService.currentUser) {
+                href += "/" + this.ContextsService.currentUser.accessLevel;
+            }
+            else {
+                href = "";
+            }
             this.services.push({
-                href: "/grocRound",
+                href: href,
                 icon: "local_grocery_store",
                 caption: "Grocery Rounds"
             });
+            href = "/call263";
+            if (this.ContextsService.currentUser) {
+                href += "/" + this.ContextsService.currentUser.accessLevel;
+            }
+            else {
+                href = "";
+            }
             this.services.push({
-                href: "/call263",
+                href: href,
                 icon: "call",
                 caption: "Call263"
             });

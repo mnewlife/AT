@@ -1,6 +1,7 @@
 module AboutSideNavWidget {
 
   import interfaces = AboutSideNavWidgetInterfaces;
+  import contextsService = AboutContextsServiceInterfaces;
 
   export class Widget implements interfaces.Instance {
 
@@ -11,7 +12,7 @@ module AboutSideNavWidget {
 
     /***************************************************/
 
-    constructor() {
+    constructor( private readonly ContextsService: AboutContextsServiceInterfaces.Instance ) {
 
       this.items = [];
       this.services = [];
@@ -27,13 +28,28 @@ module AboutSideNavWidget {
         caption: "Sign Up"
       } );
 
+      let href = "/grocRound";
+
+      if ( this.ContextsService.currentUser ) {
+        href += "/" + this.ContextsService.currentUser.accessLevel;
+      } else {
+        href = "";
+      }
       this.services.push( {
-        href: "/grocRound",
+        href: href,
         icon: "local_grocery_store",
         caption: "Grocery Rounds"
       } );
+
+      href = "/call263";
+
+      if ( this.ContextsService.currentUser ) {
+        href += "/" + this.ContextsService.currentUser.accessLevel;
+      } else {
+        href = "";
+      }
       this.services.push( {
-        href: "/call263",
+        href: href,
         icon: "call",
         caption: "Call263"
       } );

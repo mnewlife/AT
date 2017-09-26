@@ -24,7 +24,7 @@ module CoreAdminToolBarWidget {
 
     public signOut = () => {
 
-      
+      this.ProfileService.signOut();
 
     }
 

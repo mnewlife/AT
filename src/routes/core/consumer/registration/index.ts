@@ -83,8 +83,8 @@ export default (
           accessLevel: "admin",
           password: hashedPassword,
           verification: {
-            verified: false,
-            verificationCode: verificationCode
+            verified: true,
+            verificationCode: ""
           },
           activeApps: []
         } );

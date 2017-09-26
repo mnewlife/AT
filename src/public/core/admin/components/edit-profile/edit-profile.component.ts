@@ -13,6 +13,7 @@ module CoreAdminEditProfileComponent {
 
     /***************************************************/
 
+    public emailAddress: string;
     public details: profileService.UpdateDetails;
     public progress: profileService.Instance[ "progress" ];
 
@@ -20,6 +21,10 @@ module CoreAdminEditProfileComponent {
     public maxDate: Date;
 
     public countries: countriesService.Country[];
+
+    public errorMessage: string;
+
+    private promises: profileService.Instance[ "promises" ];
 
     /***************************************************/
 
@@ -34,38 +39,159 @@ module CoreAdminEditProfileComponent {
       private readonly ChangePasswordService: changePasswordService.Instance
     ) {
 
-      this.countries = this.CountriesService.list;
+      this.initMembers();
 
-      this.initDetails();
+      if ( this.ProfileService.user ) {
 
-      this.initDates();
+        this.copyDetails();
+
+      } else {
+
+        if ( this.ProfileService.progress.getUser ) {
+          this.connectToPromise();
+        } else {
+          this.fetchUser();
+        }
+
+      }
 
     }
 
     /***************************************************/
 
-    private readonly initDates = () => {
+    private initMembers = () => {
 
       let now = new Date;
-
       this.minDate = new Date( 1927, now.getMonth(), now.getDate() );
       this.maxDate = new Date( now.getFullYear() - 13, now.getMonth(), now.getDate() );
 
+      this.errorMessage = "";
+      this.countries = this.CountriesService.list;
+      this.promises = this.ProfileService.promises;
+      this.progress = this.ProfileService.progress;
+
     }
 
     /***************************************************/
 
-    private readonly initDetails = () => {
+    private fetchUser = () => {
 
-      angular.copy( this.ProfileService.user.personalDetails, this.details.personalDetails );
+      this.fetchDone( this.ProfileService.getUser() );
 
-      this.details.contactDetails.phoneNumbers = [];
+    }
 
-      this.ProfileService.user.contactDetails.phoneNumbers.forEach(( number ) => {
-        this.details.contactDetails.phoneNumbers.push( number );
-      } );
+    /***************************************************/
 
-      angular.copy( this.ProfileService.user.residentialDetails, this.details.residentialDetails );
+    private connectToPromise = () => {
+
+      this.fetchDone( this.promises.getUser );
+
+    }
+
+    /***************************************************/
+
+    private fetchDone = ( promise: ng.IPromise<boolean> ) => {
+
+      promise
+        .then(( done: boolean ) => {
+
+          if ( done ) {
+            this.copyDetails();
+          }
+
+        } )
+        .catch(( reason: any ) => {
+
+          if ( reason.message ) {
+            this.errorMessage = reason.message;
+          } else {
+            this.errorMessage = "Couldn't get user details";
+          }
+
+        } )
+        .finally(() => {
+
+          this.promises.getUser = this.$q.resolve( false );
+
+        } );
+
+    }
+
+    /***************************************************/
+
+    private readonly copyDetails = () => {
+
+      this.details = {
+        personalDetails: {
+          firstName: "",
+          lastName: "",
+          dateOfBirth: undefined,
+          gender: null
+        },
+        contactDetails: {
+          phoneNumbers: []
+        },
+        residentialDetails: {
+          country: "",
+          province: "",
+          address: ""
+        }
+      } as any;
+
+      this.emailAddress = this.ProfileService.user.emailAddress;
+
+      if ( this.ProfileService.user.personalDetails ) {
+
+        let personalDetails = this.ProfileService.user.personalDetails;
+
+        if ( personalDetails.firstName ) {
+          this.details.personalDetails.firstName = personalDetails.firstName;
+        }
+
+        if ( personalDetails.lastName ) {
+          this.details.personalDetails.lastName = personalDetails.lastName;
+        }
+
+        if ( personalDetails.dateOfBirth ) {
+          this.details.personalDetails.dateOfBirth = personalDetails.dateOfBirth;
+        }
+
+        if ( personalDetails.gender ) {
+          this.details.personalDetails.gender = personalDetails.gender;
+        }
+
+      }
+
+      if ( this.ProfileService.user.contactDetails ) {
+
+        let contactDetails = this.ProfileService.user.contactDetails;
+
+        if ( contactDetails.phoneNumbers && contactDetails.phoneNumbers.length ) {
+          this.details.contactDetails.phoneNumbers = [];
+          contactDetails.phoneNumbers.forEach(( number ) => {
+            this.details.contactDetails.phoneNumbers.push( number );
+          } );
+        }
+
+      }
+
+      if ( this.ProfileService.user.residentialDetails ) {
+
+        let residentialDetails = this.ProfileService.user.residentialDetails;
+
+        if ( residentialDetails.country ) {
+          this.details.residentialDetails.country = residentialDetails.country;
+        }
+
+        if ( residentialDetails.province ) {
+          this.details.residentialDetails.province = residentialDetails.province;
+        }
+
+        if ( residentialDetails.address ) {
+          this.details.residentialDetails.address = residentialDetails.address;
+        }
+
+      }
 
     }
 
@@ -75,7 +201,7 @@ module CoreAdminEditProfileComponent {
 
       let config = {
         controller: ( $mdDialog: ng.material.IDialogService ) => this.ChangeEmailAddressService,
-        controllerAs: "this",
+        controllerAs: "vm",
         templateUrl: "/core/admin/services/change-email-address/change-email-address.template.html",
         parent: angular.element( document.body ),
         targetEvent: ev,
@@ -92,7 +218,9 @@ module CoreAdminEditProfileComponent {
         } )
         .catch(( reason: any ) => {
 
-          return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
+          if ( reason ) {
+            return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
+          }
 
         } );
 
@@ -104,7 +232,7 @@ module CoreAdminEditProfileComponent {
 
       let config = {
         controller: ( $mdDialog: ng.material.IDialogService ) => this.ChangePasswordService,
-        controllerAs: "this",
+        controllerAs: "vm",
         templateUrl: "/core/admin/services/change-password/change-password.template.html",
         parent: angular.element( document.body ),
         targetEvent: ev,
@@ -121,7 +249,9 @@ module CoreAdminEditProfileComponent {
         } )
         .catch(( reason: any ) => {
 
-          return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
+          if ( reason ) {
+            return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
+          }
 
         } );
 

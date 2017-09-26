@@ -6,6 +6,7 @@ var AboutComponentsIntegration;
             "toolBarWidget",
             "sideNavWidget",
             "toastService",
+            "contextsService",
             "descLimit"
         ]);
         angular.module("homeComponent").component("homeComponent", {
@@ -14,22 +15,30 @@ var AboutComponentsIntegration;
         });
         home.$inject = [
             "$q",
-            "ToastService"
+            "ToastService",
+            "ContextsService"
         ];
-        function home($q, ToastService) {
-            return new AboutHomeComponent.Component($q, ToastService);
+        function home($q, ToastService, ContextsService) {
+            return new AboutHomeComponent.Component($q, ToastService, ContextsService);
         }
         /*******************************************************************/
-        angular.module("sideNavWidget", []);
+        angular.module("sideNavWidget", [
+            "contextsService"
+        ]);
         angular.module("sideNavWidget").component("sideNavWidget", {
             templateUrl: "/about/widgets/side-nav/side-nav.template.html",
             controller: sideNav
         });
-        function sideNav() {
-            return new AboutSideNavWidget.Widget();
+        sideNav.$inject = [
+            "ContextsService"
+        ];
+        function sideNav(ContextsService) {
+            return new AboutSideNavWidget.Widget(ContextsService);
         }
         /*******************************************************************/
-        angular.module("toolBarWidget", []);
+        angular.module("toolBarWidget", [
+            "contextsService"
+        ]);
         angular.module("toolBarWidget").component("toolBarWidget", {
             templateUrl: "/about/widgets/tool-bar/tool-bar.template.html",
             controller: toolBar,
@@ -38,10 +47,11 @@ var AboutComponentsIntegration;
             }
         });
         toolBar.$inject = [
-            "$mdSidenav"
+            "$mdSidenav",
+            "ContextsService"
         ];
-        function toolBar($mdSidenav) {
-            return new AboutToolBarWidget.Widget($mdSidenav);
+        function toolBar($mdSidenav, ContextsService) {
+            return new AboutToolBarWidget.Widget($mdSidenav, ContextsService);
         }
         /*******************************************************************/
     };

@@ -17,24 +17,41 @@ module CoreAdminContextsService {
 
     constructor( private readonly $location: ng.ILocationService ) {
 
-      let payload = null;
+      let decoded = null;
 
       try {
         if ( ( window as any ).jsonString ) {
-          payload = JSON.parse(( window as any ).jsonString );
+          decoded = JSON.parse(( window as any ).jsonString );
         }
       } catch ( ex ) {
         console.log( "Something went wrong, " + ex );
       }
 
-      if ( payload ) {
-        this.payload = payload;
-        if ( payload.currentUser ) {
-          this.currentUser = payload.currentUser;
+
+      if ( decoded ) {
+
+        if ( decoded.payload ) {
+
+          this.payload = decoded.payload;
+
+          if ( decoded.payload.currentUser ) {
+
+            this.currentUser = decoded.payload.currentUser;
+
+            if ( this.currentUser.personalDetails ) {
+              if ( this.currentUser.personalDetails.dateOfBirth ) {
+                this.currentUser.personalDetails.dateOfBirth = new Date( this.currentUser.personalDetails.dateOfBirth );
+              }
+            }
+
+          }
+          if ( decoded.payload.innerContext ) {
+            this.handleInnerContexts( decoded.payload.innerContext );
+          }
+
         }
-        if ( payload.innerContext ) {
-          this.handleInnerContexts( payload.innerContext );
-        }
+
+
       }
 
     }

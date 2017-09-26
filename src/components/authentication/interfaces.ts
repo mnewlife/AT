@@ -8,6 +8,7 @@ import * as components from "../../components/interfaces";
 import * as storage from "../storage/interfaces";
 import * as session from "../session/interfaces";
 import * as moders from "../helpers/moders/interfaces";
+import * as helpers from "../../procedures/core/common/helpers/interfaces";
 
 import * as interfaces from "./interfaces";
 import * as events from "./events/interfaces";
@@ -32,7 +33,8 @@ export interface Constructor {
     getUserById: storage.core.user.Instance[ "getById" ],
     setUserInSession: session.SetCurrentUser,
     getUserFromSession: session.GetCurrentUser,
-    signOutFromSession: session.SignOut
+    signOutFromSession: session.SignOut,
+    cleanUsers: helpers.CleanUsers
   ): Instance;
 }
 

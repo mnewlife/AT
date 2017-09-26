@@ -28,24 +28,24 @@ module CoreAdminSideNavWidget {
       } );
 
       this.apps.push( {
-        href: "/grocRound",
+        href: "/grocRound/admin",
         icon: "local_grocery_store",
         caption: "Grocery Rounds"
       } );
       this.apps.push( {
-        href: "/call263",
+        href: "/call263/admin",
         icon: "call",
         caption: "Call263"
       } );
       this.apps.push( {
-        href: "/routers",
-        icon: "wifi",
-        caption: "Routers"
+        href: "/powertel/admin",
+        icon: "web",
+        caption: "Powertel"
       } );
       this.apps.push( {
-        href: "/phones",
-        icon: "smartphone",
-        caption: "Smartphones"
+        href: "/routers/admin",
+        icon: "routers",
+        caption: "Routers"
       } );
 
     }

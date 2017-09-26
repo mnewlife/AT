@@ -4,7 +4,7 @@
   <md-content flex layout="row" layout-align="center stretch" layout-padding>
 
     <div layout="column" layout-align="start stretch" class="no_padding">
-      <side-nav context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav>
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
     </div>
 
     <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
@@ -16,20 +16,29 @@
           <md-card class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
             <md-card-title>
               <md-card-title-text ng-hide="$ctrl.progress.getUser">
-                <span class="md-headline" ng-show="$ctrl.user.personalDetails.firstName">{{ $ctrl.user.personalDetails.firstName }}&nbsp;{{ $ctrl.user.personalDetails.lastName }}</span>
-                <span class="md-subhead" ng-if="$ctrl.user.personalDetails.firstName">{{ $ctrl.user.emailAddress }}&nbsp;|&nbsp;{{ $ctrl.user.updatedAt | date }}</span>
-                <span class="md-headline" ng-if="!$ctrl.user.personalDetails.firstName">{{ $ctrl.user.emailAddress }}&nbsp;|&nbsp;{{ $ctrl.user.updatedAt | date }}</span>
+                <span class="md-headline" ng-if="$ctrl.user.personalDetails.firstName">{{ $ctrl.user.personalDetails.firstName }}&nbsp;{{ $ctrl.user.personalDetails.lastName }}</span>
+                <span class="md-subhead" ng-if="$ctrl.user.personalDetails.firstName">{{ $ctrl.user.emailAddress }}&nbsp;</span>
+                <span class="md-headline" ng-if="!$ctrl.user.personalDetails.firstName">{{ $ctrl.user.emailAddress }}&nbsp;</span>
               </md-card-title-text>
             </md-card-title>
-            <md-card-actions layout="row" layout-align="end end">
+            <md-card-actions layout="column" layout-align="end center" layout-gt-sm="row" layout-align-gt-sm="center center">
               <md-button ng-disabled="$ctrl.progress.getUser" class="md-accent" ng-href="#/edit-profile">
                 <span ng-hide="$ctrl.progress.getUser">Edit Profile</span>
                 <span ng-show="$ctrl.progress.getUser">Loading...</span>
               </md-button>
+              <md-button id="change_email_address" ng-disabled="$ctrl.progress.changeEmailAddress" class="md-accent" ng-click="$ctrl.openChangeEmailAddress()">
+                <span ng-hide="$ctrl.progress.changeEmailAddress">Change Email Address</span>
+                <span ng-show="$ctrl.progress.changeEmailAddress">Changing Address</span>
+              </md-button>
+              <md-button id="change_password" ng-disabled="$ctrl.progress.changePassword" class="md-accent" ng-click="$ctrl.openChangePassword()">
+                <span ng-hide="$ctrl.progress.changePassword">Change Password</span>
+                <span ng-show="$ctrl.progress.changePassword">Changing Password</span>
+              </md-button>
             </md-card-actions>
           </md-card>
 
-          <md-card ng-if="!$ctrl.progress.getUser" ng-show="$ctrl.user.personalDetails.firstName" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+          <md-card ng-if="!$ctrl.progress.getUser && $ctrl.user.personalDetails.firstName" class="animated zoomIn" flex-xs="100" flex-sm="70"
+            flex-gt-sm="70">
             <md-card-title>
               <md-card-title-text>
                 <span class="md-headline">Personal Details</span>
@@ -44,7 +53,8 @@
             </md-card-content>
           </md-card>
 
-          <md-card ng-if="!$ctrl.progress.getUser" ng-show="$ctrl.user.contactDetails.phoneNumbers && $ctrl.user.contactDetails.phoneNumbers.length" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+          <md-card ng-if="!$ctrl.progress.getUser && $ctrl.user.contactDetails.phoneNumbers && $ctrl.user.contactDetails.phoneNumbers.length"
+            class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
             <md-card-title>
               <md-card-title-text>
                 <span class="md-headline">Contact Details</span>
@@ -60,7 +70,8 @@
             </md-card-content>
           </md-card>
 
-          <md-card ng-if="!$ctrl.progress.getUser" ng-show="$ctrl.user.residentialDetails.country" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+          <md-card ng-if="!$ctrl.progress.getUser && $ctrl.user.residentialDetails.country" class="animated zoomIn" flex-xs="100" flex-sm="70"
+            flex-gt-sm="70">
             <md-card-title>
               <md-card-title-text>
                 <span class="md-headline">Residential Details</span>
@@ -85,7 +96,7 @@
       </section>
 
       <div layout="row" layout-align="center end" layout-padding>
-        <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
       </div>
 
     </md-content>

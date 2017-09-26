@@ -15,14 +15,25 @@
           <md-icon class="md-avatar-icon" aria-label="user icon" ng-click="$mdOpenMenu( $event )">more_vert</md-icon>
         </md-button>
         <md-menu-content>
-          <md-menu-item>
-            <md-button ng-href="#/sign-in" aria-label="Sign In">
+          <md-menu-item ng-if="$ctrl.ContextsService.currentUser">
+            <md-button ng-disabled="true" aria-label="User">
+              <span>{{ $ctrl.ContextsService.currentUser.emailAddress }}</span>
+            </md-button>
+          </md-menu-item>
+          <md-menu-item ng-show="$ctrl.ContextsService.currentUser">
+            <md-button ng-click="$ctrl.signOut()" aria-label="Sign Out">
+              <md-icon aria-label="Sign Out">lock</md-icon>
+              Sign Out
+            </md-button>
+          </md-menu-item>
+          <md-menu-item ng-hide="$ctrl.ContextsService.currentUser">
+            <md-button href="/passpoint/#/sign-in" aria-label="Sign In">
               <md-icon aria-label="Sign In">input</md-icon>
               Sign In
             </md-button>
           </md-menu-item>
-          <md-menu-item>
-            <md-button ng-href="#/sign-up" aria-label="Sign Up">
+          <md-menu-item ng-hide="$ctrl.ContextsService.currentUser">
+            <md-button href="/passpoint/#/sign-up" aria-label="Sign Up">
               <md-icon aria-label="Sign Up">mode_edit</md-icon>
               Sign Up
             </md-button>

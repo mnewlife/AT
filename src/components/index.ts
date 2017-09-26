@@ -3,8 +3,10 @@
 import * as http from "http";
 
 import * as eventListener from "../event-listener/interfaces";
+import * as procHelpers from "../procedures/core/common/helpers/interfaces";
 import * as interfaces from "./interfaces";
 
+import Helpers from "../procedures/core/common/helpers";
 import authentication from "./authentication";
 import communication from "./communication";
 import storage from "./storage";
@@ -53,7 +55,8 @@ export default ( emitEvent: eventListener.Emit, production: boolean, httpServer:
     storageInstance.core.user.getById,
     sessionInstance.setCurrentUser,
     sessionInstance.getCurrentUser,
-    sessionInstance.signOut
+    sessionInstance.signOut,
+    new Helpers( helpersInstance.moders.checkThrow ).cleanUsers
   );
 
   let communicationInstance = communication(

@@ -9,7 +9,7 @@
 
       <section layout="column" layout-align="start center">
 
-        <md-card class="animated fadeIn">
+        <md-card class="animated zoomIn">
           <md-progress-linear md-mode="indeterminate" class="md-accent" ng-show="$ctrl.authenticating"></md-progress-linear>
 
           <form name="form_sign_in" ng-submit="$ctrl.signIn()">
@@ -57,12 +57,12 @@
 
         </md-card>
 
-        <md-button class="md-accent nocase animated fadeIn" ng-href="#/sign-up" aria-label="Create An Account" ng-disabled="$ctrl.authenticating">
+        <md-button class="md-accent nocase animated zoomIn" ng-href="#/sign-up" aria-label="Create An Account" ng-disabled="$ctrl.authenticating">
           <span>Don't have an account?</span>
           <span class="underlined">Create An Account</span>
         </md-button>
 
-        <md-button class="md-primary nocase animated fadeIn" ng-click="$ctrl.forgot()" aria-label="Forgot Password" ng-disabled="$ctrl.authenticating">
+        <md-button class="md-primary nocase animated zoomIn" ng-click="$ctrl.forgot()" aria-label="Forgot Password" ng-disabled="$ctrl.authenticating">
           <span>Forgot Password?</span>
         </md-button>
 

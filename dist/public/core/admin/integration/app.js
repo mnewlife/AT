@@ -9,7 +9,8 @@ var App;
         "ngMessages",
         "profileComponent",
         "editProfileComponent",
-        "contextsService"
+        "contextsService",
+        "profileService"
     ]);
     angular.module("CoreAdmin").config(config);
     config.$inject = [
@@ -29,7 +30,8 @@ var App;
             'hue-1': 'A700',
             'hue-2': '900'
         })
-            .warnPalette("red");
+            .warnPalette("red")
+            .dark();
         $routeProvider.
             when("/profile", {
             template: "<profile-component></profile-component>"

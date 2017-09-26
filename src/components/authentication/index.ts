@@ -4,8 +4,11 @@ import * as eventListener from "../../event-listener/interfaces";
 import * as moders from "../helpers/moders/interfaces";
 import * as session from "../session/interfaces";
 import * as storageUser from "../storage/interfaces/core/user";
+import * as helpers from "../../procedures/core/common/helpers/interfaces";
 
 import * as interfaces from "./interfaces";
+
+import Helpers from "../../procedures/core/common/helpers";
 
 import Canon from "./canon";
 import Events from "./events";
@@ -21,7 +24,8 @@ export default (
   getUserById: storageUser.Instance[ "getById" ],
   setUserInSession: session.SetCurrentUser,
   getUserFromSession: session.GetCurrentUser,
-  signOutOfSession: session.SignOut
+  signOutOfSession: session.SignOut,
+  cleanUsers: helpers.CleanUsers
 ): interfaces.Instance => {
 
   return factory(
@@ -32,7 +36,8 @@ export default (
     getUserById,
     setUserInSession,
     getUserFromSession,
-    signOutOfSession
+    signOutOfSession,
+    cleanUsers
   );
 
 }

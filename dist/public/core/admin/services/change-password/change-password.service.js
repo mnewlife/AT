@@ -6,6 +6,13 @@ var CoreAdminChangePasswordService;
             var _this = this;
             this.$mdDialog = $mdDialog;
             /***************************************************/
+            this.clear = function () {
+                _this.oldPassword = "";
+                _this.newPassword = "";
+                _this.confirm = "";
+                _this.error = "";
+            };
+            /***************************************************/
             this.change = function () {
                 if (!_this.oldPassword) {
                     return _this.error = "Enter your password";
@@ -19,19 +26,17 @@ var CoreAdminChangePasswordService;
                 if (_this.newPassword !== _this.confirm) {
                     return _this.error = "Passwords don't match";
                 }
-                return _this.$mdDialog.hide({
-                    password: _this.oldPassword,
+                _this.$mdDialog.hide({
+                    oldPassword: _this.oldPassword,
                     newPassword: _this.newPassword
                 });
+                return _this.clear();
             };
             /***************************************************/
             this.cancel = function () {
                 _this.$mdDialog.cancel();
             };
-            this.oldPassword = "";
-            this.newPassword = "";
-            this.confirm = "";
-            this.error = "";
+            this.clear();
         }
         return Service;
     }());

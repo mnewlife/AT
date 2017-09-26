@@ -9,6 +9,7 @@ module CoreAdminEditProfileComponentInterfaces {
   /*******************************************/
 
   export interface Instance {
+    emailAddress: string;
     details: profileService.UpdateDetails;
 
     minDate: Date;
@@ -18,6 +19,8 @@ module CoreAdminEditProfileComponentInterfaces {
     openChangeEmailAddress: OpenChangeEmailAddress;
     openChangePassword: OpenChangePassword;
     saveChanges: SaveChanges;
+
+    errorMessage: string;
   }
 
   /*******************************************/

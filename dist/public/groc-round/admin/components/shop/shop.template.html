@@ -1,0 +1,68 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar-widget title="Shop Details"></tool-bar-widget>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.loading" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <md-subheader class="md-no-sticky">{{ $ctrl.shop.shopName }}</md-subheader>
+
+        <div ng-hide="$ctrl.shop || $ctrl.loading" layout="row" layout-align="center center">
+          <h1 class="md-subhead">Couldn't get details</h1>
+        </div>
+
+        <div ng-show="$ctrl.errorMessage" layout="row" layout-align="center center">
+          <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
+        </div>
+
+        <md-card flex-gt-sm="30" flex-sm="45" flex-xs="100" ng-hide="$ctrl.loading">
+
+          <img class="md-card-image pointed" alt="Image" src="/resources/drawable/placeholder.jpg">
+
+          <md-card-title>
+            <md-card-title-text>
+              <h1 class="md-headline pointed">{{ $ctrl.shop.shopName }}</h1>
+              <span class="md-subhead">Updated on {{ $ctrl.shop.updatedAt | date }}</span>
+            </md-card-title-text>
+          </md-card-title>
+
+          <md-card-content>
+            <p>{{ shop.numProducts }} Products</p>
+            <p>...</p>
+          </md-card-content>
+
+          <md-card-actions layout="column" layout-align="end center" layout-gt-sm="row" layout-align-gt-sm="center center">
+            <md-button ng-disabled="$ctrl.loading || $ctrl.deleting" class="md-accent" ng-href="#/add-edit-shop/{{ $ctrl.shop.id }}">
+              <span>Edit Details</span>
+            </md-button>
+            <md-button ng-disabled="$ctrl.deleting" class="md-accent" ng-click="$ctrl.deleteShop()">
+              <span ng-hide="$ctrl.deleting">Delete Shop</span>
+              <span ng-show="$ctrl.deleting">Deleting...</span>
+            </md-button>
+          </md-card-actions>
+
+        </md-card>
+
+        <div ng-if="$ctrl.loading" layout="row" layout-align="center center" layout-padding>
+          <md-progress-circular md-mode="indeterminate" class="md-accent"></md-progress-circular>
+          <div layout="column" layout-align="center center" layout-padding>
+            <span class="md-subhead">Getting Details...</span>
+          </div>
+        </div>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+    </md-content>
+
+  </md-content>
+</div>

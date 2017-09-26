@@ -28,6 +28,7 @@ var App;
             'hue-2': '900'
         })
             .warnPalette("red");
+        //.dark();
         $routeProvider.
             when("/home", {
             template: "<home-component></home-component>"

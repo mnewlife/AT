@@ -252,5 +252,6 @@ var CountriesService;
         }
         return Service;
     }());
+    CountriesService.Service = Service;
 })(CountriesService || (CountriesService = {}));
 /*******************************************************************/ 

@@ -17,6 +17,11 @@ module CoreAdminProfileServiceInterfaces {
       signOut: boolean;
     };
 
+    promises: {
+      getUser: ng.IPromise<boolean>;
+      signOut: ng.IPromise<boolean>;
+    };
+
     getUser: GetUser;
     updateDetails: UpdateDetails;
     changeEmailAddress: ChangeEmailAddress;
@@ -39,11 +44,11 @@ module CoreAdminProfileServiceInterfaces {
   /*******************************************/
 
   export interface SignOut {
-    (): any;
+    (): void;
   }
 
   export interface GetUser {
-    ( userId: string ): ng.IPromise<void>;
+    (): ng.IPromise<boolean>;
   }
 
   export interface UpdateDetails {

@@ -22,18 +22,13 @@ var ProfileShared = (function () {
         this.getDetails = function (appContext) {
             return function (req, res, next) {
                 var innerContext = "profile";
-                var foundUser;
                 if (!_this.signedIn(req)) {
                     return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
                 }
-                var userId = _this.getUserId(req);
-                if (!userId) {
-                    return _this.sendResponse(res, appContext, false, null, { innerContext: innerContext });
-                }
-                return _this.getUserDetails(userId)
-                    .then(function (user) {
+                return _this.getUserDetails(_this.getUserId(req))
+                    .then(function (foundUser) {
                     return _this.sendResponse(res, appContext, true, null, {
-                        user: user,
+                        foundUser: foundUser,
                         innerContext: innerContext
                     });
                 })
@@ -49,10 +44,10 @@ var ProfileShared = (function () {
         this.updateDetails = function (appContext) {
             return function (req, res, next) {
                 var innerContext = "edit-profile";
-                if (!req.params.userId) {
-                    return _this.sendResponse(res, appContext, false, "User ID is missing", { innerContext: innerContext });
+                if (!_this.signedIn(req)) {
+                    return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
                 }
-                var details;
+                var details = {};
                 if (req.body.personalDetails) {
                     details.personalDetails = {};
                     if (req.body.personalDetails.firstName) {
@@ -76,6 +71,9 @@ var ProfileShared = (function () {
                     if (req.body.contactDetails.phoneNumbersToRemove) {
                         details.contactDetails.phoneNumbersToRemove = req.body.contactDetails.phoneNumbersToRemove;
                     }
+                    if (req.body.contactDetails.phoneNumbers) {
+                        details.contactDetails.phoneNumbers = req.body.contactDetails.phoneNumbers;
+                    }
                 }
                 if (req.body.residentialDetails) {
                     details.residentialDetails = {};
@@ -92,11 +90,10 @@ var ProfileShared = (function () {
                 if (!details) {
                     return _this.sendResponse(res, appContext, false, "", { innerContext: innerContext });
                 }
-                var user;
-                return _this.updateUserDetails(req.params.userId, details)
+                return _this.updateUserDetails(_this.getUserId(req), details)
                     .then(function (updatedUser) {
                     return _this.sendResponse(res, appContext, true, null, {
-                        user: user,
+                        updatedUser: updatedUser,
                         innerContext: innerContext
                     });
                 })
@@ -112,16 +109,16 @@ var ProfileShared = (function () {
         this.changeEmailAddress = function (appContext) {
             return function (req, res, next) {
                 var innerContext = "change-email-address";
-                if (req.params.userId) {
-                    return _this.sendResponse(res, appContext, false, "User ID is missing", { innerContext: innerContext });
+                if (!_this.signedIn(req)) {
+                    return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
                 }
-                if (req.body.password) {
+                if (!req.body.password) {
                     return _this.sendResponse(res, appContext, false, "Password is missing", { innerContext: innerContext });
                 }
-                if (req.body.newEmailAddress) {
+                if (!req.body.newEmailAddress) {
                     return _this.sendResponse(res, appContext, false, "The new email address is missing", { innerContext: innerContext });
                 }
-                return _this.changeUserEmailAddress(req.params.userId, req.body.password, req.body.newEmailAddress, req)
+                return _this.changeUserEmailAddress(_this.getUserId(req), req.body.password, req.body.newEmailAddress, req)
                     .then(function (response) {
                     return _this.sendResponse(res, "passpoint", true, "A verification email has been sent to your email address", { innerContext: innerContext });
                 })
@@ -137,16 +134,16 @@ var ProfileShared = (function () {
         this.changePassword = function (appContext) {
             return function (req, res, next) {
                 var innerContext = "profile";
-                if (req.params.userId) {
-                    return _this.sendResponse(res, appContext, false, "User ID is missing", { innerContext: innerContext });
+                if (!_this.signedIn(req)) {
+                    return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
                 }
-                if (req.body.oldPassword) {
+                if (!req.body.oldPassword) {
                     return _this.sendResponse(res, appContext, false, "Password is missing", { innerContext: innerContext });
                 }
-                if (req.body.newPassword) {
+                if (!req.body.newPassword) {
                     return _this.sendResponse(res, appContext, false, "The new password is missing", { innerContext: innerContext });
                 }
-                return _this.changeUserPassword(req.params.userId, req.body.oldPassword, req.body.newPassword)
+                return _this.changeUserPassword(_this.getUserId(req), req.body.oldPassword, req.body.newPassword)
                     .then(function (response) {
                     return _this.sendResponse(res, appContext, true, null, {
                         innerContext: innerContext
@@ -167,8 +164,11 @@ var ProfileShared = (function () {
         this.requestPasswordResetCode = function () {
             return function (req, res, next) {
                 var innerContext = "request-reset-code";
-                if (req.params.emailAddress) {
-                    return _this.sendResponse(res, "passpoint", false, "User ID is missing", { innerContext: innerContext });
+                if (!_this.signedIn(req)) {
+                    return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
+                }
+                if (!req.params.emailAddress) {
+                    return _this.sendResponse(res, "passpoint", false, "Email address is missing", { innerContext: innerContext });
                 }
                 return _this.requestUserPasswordResetCode(req.params.emailAddress)
                     .then(function (response) {
@@ -186,15 +186,15 @@ var ProfileShared = (function () {
         this.resetPassword = function () {
             return function (req, res, next) {
                 var innerContext = "reset-password";
-                if (req.params.userId) {
-                    return _this.sendResponse(res, "passpoint", false, "User ID is missing", { innerContext: innerContext });
+                if (!_this.signedIn(req)) {
+                    return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
                 }
                 return Promise.all([
                     _this.generateRandomNumber(8765, 9172),
                     _this.generateRandomNumber(8132, 8793)
                 ])
                     .then(function (numbers) {
-                    return _this.resetUserPassword(req.params.userId, req.query.resetCode, String(numbers[0]) + String(numbers[1]));
+                    return _this.resetUserPassword(_this.getUserId(req), req.query.resetCode, String(numbers[0]) + String(numbers[1]));
                 })
                     .then(function (newPassword) {
                     return _this.sendResponse(res, "passpoint", true, "Your password has been reset", {
@@ -217,10 +217,10 @@ var ProfileShared = (function () {
         this.deleteAccount = function (appContext) {
             return function (req, res, next) {
                 var innerContext = "delete-account";
-                if (req.params.userId) {
-                    return _this.sendResponse(res, appContext, false, "User ID is missing", { innerContext: innerContext });
+                if (!_this.signedIn(req)) {
+                    return _this.sendResponse(res, "passpoint", false, null, { innerContext: innerContext });
                 }
-                return _this.deleteUserAccount(req.params.userId, req.body.password)
+                return _this.deleteUserAccount(_this.getUserId(req), req.body.password)
                     .then(function (response) {
                     return _this.sendResponse(res, "passpoint", true, "Account deleted", null);
                 })

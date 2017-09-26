@@ -48,22 +48,15 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "profile";
 
-      let foundUser: dataModel.core.user.Super;
-
       if ( !this.signedIn( req ) ) {
         return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
       }
 
-      let userId: string = this.getUserId( req );
-      if ( !userId ) {
-        return this.sendResponse( res, appContext, false, null, { innerContext: innerContext } );
-      }
-
-      return this.getUserDetails( userId )
-        .then(( user: dataModel.core.user.Super ) => {
+      return this.getUserDetails( this.getUserId( req ) )
+        .then(( foundUser: dataModel.core.user.Super ) => {
 
           return this.sendResponse( res, appContext, true, null, {
-            user: user,
+            foundUser: foundUser,
             innerContext: innerContext
           } );
 
@@ -90,11 +83,11 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "edit-profile";
 
-      if ( !req.params.userId ) {
-        return this.sendResponse( res, appContext, false, "User ID is missing", { innerContext: innerContext } );
+      if ( !this.signedIn( req ) ) {
+        return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
       }
 
-      let details: storageUser.UpdateDetails;
+      let details: storageUser.UpdateDetails = {};
 
       if ( req.body.personalDetails ) {
         details.personalDetails = {};
@@ -120,6 +113,9 @@ export default class ProfileShared implements interfaces.Instance {
         if ( req.body.contactDetails.phoneNumbersToRemove ) {
           details.contactDetails.phoneNumbersToRemove = req.body.contactDetails.phoneNumbersToRemove;
         }
+        if ( req.body.contactDetails.phoneNumbers ) {
+          details.contactDetails.phoneNumbers = req.body.contactDetails.phoneNumbers;
+        }
       }
 
       if ( req.body.residentialDetails ) {
@@ -139,13 +135,11 @@ export default class ProfileShared implements interfaces.Instance {
         return this.sendResponse( res, appContext, false, "", { innerContext: innerContext } );
       }
 
-      let user: dataModel.core.user.Super;
-
-      return this.updateUserDetails( req.params.userId, details )
+      return this.updateUserDetails( this.getUserId( req ), details )
         .then(( updatedUser: dataModel.core.user.Super ) => {
 
           return this.sendResponse( res, appContext, true, null, {
-            user: user,
+            updatedUser: updatedUser,
             innerContext: innerContext
           } );
 
@@ -172,19 +166,19 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "change-email-address";
 
-      if ( req.params.userId ) {
-        return this.sendResponse( res, appContext, false, "User ID is missing", { innerContext: innerContext } );
+      if ( !this.signedIn( req ) ) {
+        return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
       }
 
-      if ( req.body.password ) {
+      if ( !req.body.password ) {
         return this.sendResponse( res, appContext, false, "Password is missing", { innerContext: innerContext } );
       }
 
-      if ( req.body.newEmailAddress ) {
+      if ( !req.body.newEmailAddress ) {
         return this.sendResponse( res, appContext, false, "The new email address is missing", { innerContext: innerContext } );
       }
 
-      return this.changeUserEmailAddress( req.params.userId, req.body.password, req.body.newEmailAddress, req )
+      return this.changeUserEmailAddress( this.getUserId( req ), req.body.password, req.body.newEmailAddress, req )
         .then(( response: any ) => {
 
           return this.sendResponse( res, "passpoint", true, "A verification email has been sent to your email address", { innerContext: innerContext } );
@@ -211,19 +205,19 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "profile";
 
-      if ( req.params.userId ) {
-        return this.sendResponse( res, appContext, false, "User ID is missing", { innerContext: innerContext } );
+      if ( !this.signedIn( req ) ) {
+        return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
       }
 
-      if ( req.body.oldPassword ) {
+      if ( !req.body.oldPassword ) {
         return this.sendResponse( res, appContext, false, "Password is missing", { innerContext: innerContext } );
       }
 
-      if ( req.body.newPassword ) {
+      if ( !req.body.newPassword ) {
         return this.sendResponse( res, appContext, false, "The new password is missing", { innerContext: innerContext } );
       }
 
-      return this.changeUserPassword( req.params.userId, req.body.oldPassword, req.body.newPassword )
+      return this.changeUserPassword( this.getUserId( req ), req.body.oldPassword, req.body.newPassword )
         .then(( response: any ) => {
 
           return this.sendResponse( res, appContext, true, null, {
@@ -256,8 +250,12 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "request-reset-code";
 
-      if ( req.params.emailAddress ) {
-        return this.sendResponse( res, "passpoint", false, "User ID is missing", { innerContext: innerContext } );
+      if ( !this.signedIn( req ) ) {
+        return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
+      }
+
+      if ( !req.params.emailAddress ) {
+        return this.sendResponse( res, "passpoint", false, "Email address is missing", { innerContext: innerContext } );
       }
 
       return this.requestUserPasswordResetCode( req.params.emailAddress )
@@ -287,8 +285,8 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "reset-password";
 
-      if ( req.params.userId ) {
-        return this.sendResponse( res, "passpoint", false, "User ID is missing", { innerContext: innerContext } );
+      if ( !this.signedIn( req ) ) {
+        return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
       }
 
       return Promise.all( [
@@ -297,7 +295,7 @@ export default class ProfileShared implements interfaces.Instance {
       ] )
         .then(( numbers: number[] ) => {
 
-          return this.resetUserPassword( req.params.userId, req.query.resetCode, String( numbers[ 0 ] ) + String( numbers[ 1 ] ) );
+          return this.resetUserPassword( this.getUserId( req ), req.query.resetCode, String( numbers[ 0 ] ) + String( numbers[ 1 ] ) );
 
         } )
         .then(( newPassword: string ) => {
@@ -334,11 +332,11 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "delete-account";
 
-      if ( req.params.userId ) {
-        return this.sendResponse( res, appContext, false, "User ID is missing", { innerContext: innerContext } );
+      if ( !this.signedIn( req ) ) {
+        return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
       }
 
-      return this.deleteUserAccount( req.params.userId, req.body.password )
+      return this.deleteUserAccount( this.getUserId( req ), req.body.password )
         .then(( response: any ) => {
 
           return this.sendResponse( res, "passpoint", true, "Account deleted", null );

@@ -20,6 +20,12 @@ module CoreAdminProfileService {
       changePassword: boolean;
       signOut: boolean;
     };
+    public promises: {
+      getUser: ng.IPromise<boolean>;
+      signOut: ng.IPromise<boolean>;
+    };
+
+    private urlPrefix: string = "/core/admin/profile";
 
     /***************************************************/
 
@@ -30,7 +36,7 @@ module CoreAdminProfileService {
       private readonly ToastService: toastService.Instance,
       private readonly ContextsService: contextsService.Instance
     ) {
-      
+
       this.progress = {
         getUser: false,
         updateDetails: false,
@@ -38,10 +44,13 @@ module CoreAdminProfileService {
         changePassword: false,
         signOut: false
       };
-
-      this.user = {} as any;
+      this.promises = {
+        getUser: this.$q.resolve( false ),
+        signOut: this.$q.resolve( false )
+      };
 
       if ( this.ContextsService.currentUser ) {
+        this.user = {} as any;
         angular.copy( this.ContextsService.currentUser, this.user );
       } else {
         this.getUser();
@@ -55,31 +64,32 @@ module CoreAdminProfileService {
 
       this.progress.signOut = true;
 
-      return this.$http.get( "core/auth/signOut" )
+      let promise = this.$http.get( "/core/auth/signOut" )
         .then(( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.signOut = false;
-
           window.location.href = "/passpoint";
+          return this.$q.resolve( true );
 
         } )
         .catch(( reason: any ) => {
 
           this.progress.signOut = false;
-
           this.ToastService.showSimple( "Something went wrong signing you out" );
 
-        } )
+        } );
+
+      angular.copy( promise, this.promises.signOut );
 
     }
 
     /***************************************************/
 
-    public getUser = (): ng.IPromise<void> => {
+    public getUser = (): ng.IPromise<boolean> => {
 
       this.progress.getUser = true;
 
-      return this.$http.get( "/core/admin/profile/getDetails" )
+      let promise = this.$http.get( this.urlPrefix + "/getDetails" )
         .then(( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.getUser = false;
@@ -89,10 +99,13 @@ module CoreAdminProfileService {
           if ( responseData.success ) {
 
             this.$timeout(() => {
-              angular.copy( responseData.payload.user, this.user );
+              if ( !this.user ) {
+                this.user = {} as any;
+              }
+              angular.copy( responseData.payload.foundUser, this.user );
             } );
 
-            return this.$q.resolve();
+            return this.$q.resolve( true );
 
           } else {
 
@@ -111,8 +124,6 @@ module CoreAdminProfileService {
 
           this.progress.getUser = false;
 
-          console.log( reason );
-
           let message = "Something went wrong";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
@@ -120,6 +131,10 @@ module CoreAdminProfileService {
           } );
 
         } );
+
+      angular.copy( promise, this.promises.getUser );
+
+      return this.promises.getUser;
 
     }
 
@@ -129,7 +144,7 @@ module CoreAdminProfileService {
 
       this.progress.updateDetails = true;
 
-      return this.$http.post( "/core/profile/updateDetails", details )
+      return this.$http.post( this.urlPrefix + "/updateDetails", details )
         .then(( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.updateDetails = false;
@@ -139,7 +154,10 @@ module CoreAdminProfileService {
           if ( responseData.success ) {
 
             this.$timeout(() => {
-              angular.copy( responseData.payload, this.user );
+              angular.copy( responseData.payload.updatedUser, this.user );
+              if ( this.user.personalDetails && this.user.personalDetails.dateOfBirth ) {
+                this.user.personalDetails.dateOfBirth = new Date( this.user.personalDetails.dateOfBirth );
+              }
             } );
 
             this.ToastService.showSimple( "Profile updated" );
@@ -191,7 +209,7 @@ module CoreAdminProfileService {
 
       this.progress.changeEmailAddress = true;
 
-      return this.$http.post( "/core/profile/changeEmailAddress/:" + this.user.id, details )
+      return this.$http.post( this.urlPrefix + "/changeEmailAddress", details )
         .then(( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.changeEmailAddress = false;
@@ -248,7 +266,7 @@ module CoreAdminProfileService {
 
       this.progress.changePassword = true;
 
-      return this.$http.post( "/core/profile/changePassword", details )
+      return this.$http.post( this.urlPrefix + "/changePassword", details )
         .then(( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.changePassword = false;

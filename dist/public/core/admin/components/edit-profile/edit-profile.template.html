@@ -1,10 +1,10 @@
 <div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
-  <tool-bar title="Edit Profile"></tool-bar>
+  <tool-bar-widget title="Edit Profile"></tool-bar-widget>
   <md-progress-linear class="md-accent" ng-if="$ctrl.progress.getUser" md-mode="indeterminate"></md-progress-linear>
   <md-content flex layout="row" layout-align="center stretch" layout-padding>
 
     <div layout="column" layout-align="start stretch" class="no_padding">
-      <side-nav context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav>
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
     </div>
 
     <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
@@ -20,19 +20,22 @@
 
             <form name="form_profile">
 
-              <md-card-title>
-                <md-card-title-text>
-                  <span class="md-headline">{{ $ctrl.user.emailAddress }}</span>
-                </md-card-title-text>
-              </md-card-title>
               <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
-                <md-button id="change_email_address" ng-disabled="$ctrl.progress.updateDetails" class="md-accent" ng-click="$ctrl.changeEmail()">
-                  <span>Change Email Address</span>
+                <md-button id="change_email_address" ng-disabled="$ctrl.progress.changeEmailAddress" class="md-accent" ng-click="$ctrl.openChangeEmailAddress()">
+                  <span ng-hide="$ctrl.progress.changeEmailAddress">Change Email Address</span>
+                  <span ng-show="$ctrl.progress.changeEmailAddress">Changing Address</span>
                 </md-button>
-                <md-button id="change_password" ng-disabled="$ctrl.progress.updateDetails" class="md-accent" ng-click="$ctrl.changePassword()">
-                  <span>Change Password</span>
+                <md-button id="change_password" ng-disabled="$ctrl.progress.changePassword" class="md-accent" ng-click="$ctrl.openChangePassword()">
+                  <span ng-hide="$ctrl.progress.changePassword">Change Password</span>
+                  <span ng-show="$ctrl.progress.changePassword">Changing Password</span>
                 </md-button>
               </md-card-actions>
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Email Address</span>
+                  <span class="md-subhead">{{ $ctrl.emailAddress }}</span>
+                </md-card-title-text>
+              </md-card-title>
               <md-card-content layout="column" layout-align="start start">
 
                 <hr width="100%">
@@ -41,14 +44,14 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Name</label>
-                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.personalDetails.firstName" type="text" name="firstName"
+                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.details.personalDetails.firstName" type="text" name="firstName"
                       placeholder="First Name" required>
                     <div ng-messages="form_profile.firstName.$error" role="alert">
                       <div ng-message="required">Enter your first name</div>
                     </div>
                   </md-input-container>
                   <md-input-container md-no-float>
-                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.personalDetails.lastName" type="text" name="lastName"
+                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.details.personalDetails.lastName" type="text" name="lastName"
                       placeholder="Last Name" required>
                     <div ng-messages="form_profile.lastName.$error" role="alert">
                       <div ng-message="required">Enter your last name</div>
@@ -58,7 +61,7 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Gender</label>
-                    <md-select ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.personalDetails.gender" name="gender" required>
+                    <md-select ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.details.personalDetails.gender" name="gender" required>
                       <md-option value="Male">Male</md-option>
                       <md-option value="Female">Female</md-option>
                     </md-select>
@@ -70,7 +73,7 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Date of Birth</label>
-                    <md-datepicker ng-disabled="$ctrl.progress.updateDetails" md-hide-icons="calendar" ng-model="$ctrl.user.personalDetails.dateOfBirth"
+                    <md-datepicker ng-disabled="$ctrl.progress.updateDetails" md-hide-icons="calendar" ng-model="$ctrl.details.personalDetails.dateOfBirth"
                       name="dateOfBirth" md-min-date="$ctrl.minDate" md-max-date="$ctrl.maxDate" md-current-view="year" md-placeholder="Date of Birth"
                       required></md-datepicker>
                     <div ng-messages="form_profile.dateOfBirth.$error" role="alert">
@@ -84,7 +87,8 @@
                 <h1 class="md-headline">Contact Details</h1>
                 <h1 class="md-subhead">Phone Numbers</h1>
                 <div layout-padding>
-                  <md-chips ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.contactDetails.phoneNumbers" readonly="false" md-removable="true"></md-chips>
+                  <md-chips ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.details.contactDetails.phoneNumbers" readonly="false"
+                    md-removable="true"></md-chips>
                 </div>
 
                 <hr width="100%">
@@ -93,7 +97,8 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Country</label>
-                    <md-select ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.residentialDetails.country" name="country" required>
+                    <md-select ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.details.residentialDetails.country" name="country"
+                      required>
                       <md-option ng-repeat="country in $ctrl.countries" ng-value="country.name">{{ country.name }}</md-option>
                     </md-select>
                     <div ng-messages="form_profile.country.$error" role="alert">
@@ -104,7 +109,7 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Province</label>
-                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.user.residentialDetails.province" type="text" name="province"
+                    <input ng-disabled="$ctrl.progress.updateDetails" ng-model="$ctrl.details.residentialDetails.province" type="text" name="province"
                       placeholder="Province" required>
                     <div ng-messages="form_profile.province.$error" role="alert">
                       <div ng-message="required">Enter province</div>
@@ -114,7 +119,7 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Address</label>
-                    <textarea ng-disabled="$ctrl.progress.updateDetails" class="md-subhead" ng-model="$ctrl.user.residentialDetails.address"
+                    <textarea ng-disabled="$ctrl.progress.updateDetails" class="md-subhead" ng-model="$ctrl.details.residentialDetails.address"
                       placeholder="Address" name="address" rows="3" required></textarea>
                     <div ng-messages="form_profile.address.$error" role="alert">
                       <div ng-message="required">Enter your address</div>
@@ -137,6 +142,10 @@
         </div>
 
       </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
 
     </md-content>
 

@@ -1,12 +1,13 @@
 "use strict";
 /******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
+var helpers_1 = require("../procedures/core/common/helpers");
 var authentication_1 = require("./authentication");
 var communication_1 = require("./communication");
 var storage_1 = require("./storage");
 var session_1 = require("./session");
 var response_1 = require("./response");
-var helpers_1 = require("./helpers");
+var helpers_2 = require("./helpers");
 /******************************************************************************/
 var Components = (function () {
     function Components(helpers, storage, session, authentication, communication, response) {
@@ -21,10 +22,10 @@ var Components = (function () {
 }());
 /******************************************************************************/
 exports.default = function (emitEvent, production, httpServer) {
-    var helpersInstance = helpers_1.default(emitEvent);
+    var helpersInstance = helpers_2.default(emitEvent);
     var storageInstance = storage_1.default(emitEvent, helpersInstance.dataStructures.mapDetails, helpersInstance.moders.checkThrow);
     var sessionInstance = session_1.default(emitEvent, helpersInstance.moders.checkThrow, storageInstance.core.user.getById, production);
-    var authenticationInstance = authentication_1.default(emitEvent, helpersInstance.moders.checkThrow, storageInstance.core.user.get, storageInstance.core.user.getById, sessionInstance.setCurrentUser, sessionInstance.getCurrentUser, sessionInstance.signOut);
+    var authenticationInstance = authentication_1.default(emitEvent, helpersInstance.moders.checkThrow, storageInstance.core.user.get, storageInstance.core.user.getById, sessionInstance.setCurrentUser, sessionInstance.getCurrentUser, sessionInstance.signOut, new helpers_1.default(helpersInstance.moders.checkThrow).cleanUsers);
     var communicationInstance = communication_1.default(emitEvent, helpersInstance.moders.checkThrow, "", production, httpServer);
     var responseInstance = response_1.default(emitEvent);
     return new Components(helpersInstance, storageInstance, sessionInstance, authenticationInstance, communicationInstance, responseInstance);

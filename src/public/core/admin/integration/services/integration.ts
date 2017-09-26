@@ -34,6 +34,18 @@ module CoreAdminServicesIntegration {
 
     /*******************************************************************/
 
+    angular.module( "countriesService", [] );
+
+    angular.module( "countriesService" ).factory( "CountriesService", Countries );
+
+    //Countries.$inject = [];
+
+    function Countries () {
+      return new CountriesService.Service();
+    }
+
+    /*******************************************************************/
+
     angular.module( "contextsService", [] );
 
     angular.module( "contextsService" ).factory( "ContextsService", Contexts );

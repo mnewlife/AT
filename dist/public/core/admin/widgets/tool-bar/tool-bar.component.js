@@ -3,10 +3,12 @@ var CoreAdminToolBarWidget;
     var Widget = (function () {
         /***************************************************/
         function Widget($mdSidenav, ProfileService) {
+            var _this = this;
             this.$mdSidenav = $mdSidenav;
             this.ProfileService = ProfileService;
             /***************************************************/
             this.signOut = function () {
+                _this.ProfileService.signOut();
             };
             this.progress = this.ProfileService.progress;
         }

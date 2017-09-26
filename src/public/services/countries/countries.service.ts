@@ -3,7 +3,7 @@ module CountriesService {
 
   import interfaces = CountriesServiceInterfaces;
 
-  class Service implements interfaces.Instance {
+  export class Service implements interfaces.Instance {
 
     /***************************************************/
 

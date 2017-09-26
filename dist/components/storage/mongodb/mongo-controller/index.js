@@ -104,6 +104,7 @@ var MongoController = (function () {
                 return Promise.resolve(convertedDocuments[0]);
             })
                 .catch(function (reason) {
+                console.log(">>" + reason);
                 new Promise(function (resolve, reject) {
                     _this.events.getByIdFailed({
                         id: documentId,
@@ -392,7 +393,7 @@ var MongoController = (function () {
         /*****************************************************************/
         this.findById = function (id) {
             return new Promise(function (resolve, reject) {
-                _this.Model.findById(id, function (err, foundDocument) {
+                _this.Model.findById(id.toHexString(), function (err, foundDocument) {
                     if (err) {
                         return reject(err);
                     }

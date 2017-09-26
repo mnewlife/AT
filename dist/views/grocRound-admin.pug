@@ -1,0 +1,11 @@
+doctype html
+html( lang="en" ng-app="GrocRoundAdmin" )
+  head
+    include common/meta.pug
+    title Athena Resources | GrocRound
+    include common/stylesheets.pug
+    link( rel="stylesheet" href="/groc-round/admin/stylesheets/app.css" )
+    include common/scripts.pug
+    script(type="text/javascript").
+      window.jsonString = '!{ jsonString }';
+    include html/groc-round-admin.html

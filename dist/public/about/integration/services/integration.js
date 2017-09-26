@@ -12,16 +12,26 @@ var AboutServicesIntegration;
             return new ToastService.Service($q, $mdToast);
         }
         /*******************************************************************/
-        angular.module("descLimit", []);
-        angular.module("descLimit").filter("descLimit", DescLimit);
-        function DescLimit() {
-            return function (description) {
-                if (description) {
-                    return (description.length < 100) ? description : description.substring(0, 100) + "...";
-                }
-            };
-            //return DescLimitFilter.getFilter();
+        angular.module("contextsService", []);
+        angular.module("contextsService").factory("ContextsService", Contexts);
+        Contexts.$inject = [
+            "$http"
+        ];
+        function Contexts($http) {
+            return new AboutContextsService.Service($http);
         }
+        /*******************************************************************/
+        angular.module("descLimit", []);
+        angular.module("descLimit").filter("descLimit", DescLimitFilter.getFilter());
+        /*function DescLimit () {
+    
+          return function ( description: string ) {
+            if ( description ) {
+              return ( description.length < 100 ) ? description : description.substring( 0, 100 ) + "...";
+            }
+          }
+    
+        }*/
         /*******************************************************************/
     };
 })(AboutServicesIntegration || (AboutServicesIntegration = {}));

@@ -1,0 +1,7 @@
+/******************************************************************************/
+shops-component, shop-component, add-edit-shop-component,
+products-component, product-component, add-edit-product-component { width : 100%; }
+
+shops-component .screen, shop-component .screen, add-edit-shop-component .screen,
+products-component .screen, product-component .screen, add-edit-product-component .screen { height : 100%; }
+/******************************************************************************/

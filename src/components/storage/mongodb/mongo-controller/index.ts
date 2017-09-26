@@ -150,6 +150,8 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
       } )
       .catch(( reason: any ) => {
 
+        console.log( ">>" + reason );
+
         new Promise<void>(( resolve, reject ) => {
           this.events.getByIdFailed( {
             id: documentId,
@@ -543,7 +545,7 @@ export default abstract class MongoController<FiltrationCriteria extends any, So
 
     return new Promise<Document>(( resolve, reject ) => {
 
-      this.Model.findById( id, ( err, foundDocument ) => {
+      this.Model.findById( id.toHexString(), ( err, foundDocument ) => {
 
         if ( err ) {
           return reject( err );

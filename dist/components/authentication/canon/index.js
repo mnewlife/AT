@@ -6,7 +6,7 @@ var bCrypt = require("bcrypt-nodejs");
 /******************************************************************************/
 var Canon = (function () {
     /*****************************************************************/
-    function Canon(events, checkThrow, getUsers, getUserById, setUserInSession, getUserFromSession, signOutOfSession) {
+    function Canon(events, checkThrow, getUsers, getUserById, setUserInSession, getUserFromSession, signOutOfSession, cleanUsers) {
         var _this = this;
         this.events = events;
         this.checkThrow = checkThrow;
@@ -15,6 +15,7 @@ var Canon = (function () {
         this.setUserInSession = setUserInSession;
         this.getUserFromSession = getUserFromSession;
         this.signOutOfSession = signOutOfSession;
+        this.cleanUsers = cleanUsers;
         this.middleware = [];
         /*****************************************************************/
         this.isValidPassword = function (password, hashedPassword) {
@@ -119,6 +120,12 @@ var Canon = (function () {
             return _this.checkThrow(forceThrow)
                 .then(function (response) {
                 return _this.getUserFromSession(req);
+            })
+                .then(function (foundUser) {
+                return _this.cleanUsers([foundUser]);
+            })
+                .then(function (cleanedUsers) {
+                return Promise.resolve(cleanedUsers[0]);
             })
                 .catch(function (reason) {
                 new Promise(function (resolve, reject) {

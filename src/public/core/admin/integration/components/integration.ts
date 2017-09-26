@@ -44,6 +44,7 @@ module CoreAdminComponentsIntegration {
       "toolBarWidget",
       "sideNavWidget",
       "toastService",
+      "countriesService",
       "profileService",
       "changeEmailAddressService",
       "changePasswordService"

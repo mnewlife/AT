@@ -19,11 +19,25 @@ module AboutServicesIntegration {
 
     /*******************************************************************/
 
+    angular.module( "contextsService", [] );
+
+    angular.module( "contextsService" ).factory( "ContextsService", Contexts );
+
+    Contexts.$inject = [
+      "$http"
+    ];
+
+    function Contexts ( $http: ng.IHttpService ) {
+      return new AboutContextsService.Service( $http );
+    }
+
+    /*******************************************************************/
+
     angular.module( "descLimit", [] );
 
-    angular.module( "descLimit" ).filter( "descLimit", DescLimit );
+    angular.module( "descLimit" ).filter( "descLimit", DescLimitFilter.getFilter() );
 
-    function DescLimit () {
+    /*function DescLimit () {
 
       return function ( description: string ) {
         if ( description ) {
@@ -31,8 +45,7 @@ module AboutServicesIntegration {
         }
       }
 
-      //return DescLimitFilter.getFilter();
-    }
+    }*/
 
     /*******************************************************************/
 
