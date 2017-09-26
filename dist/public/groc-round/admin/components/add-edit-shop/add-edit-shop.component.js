@@ -85,7 +85,7 @@ var GrocRoundAdminAddEditShopComponent;
                     return _this.ToastService.showSimple("Shop name is missing");
                 }
                 _this.updating = true;
-                return _this.ShopsService.updateShop(_this.shopId, _this.addDetails)
+                return _this.ShopsService.updateShop(_this.shopId, _this.updateDetails)
                     .then(function (response) {
                     _this.$location.path("/shops");
                 })

@@ -30,7 +30,8 @@ module GrocRoundAdminShopComponent {
     ) {
 
       this.initMembers();
-
+      this.deriveShopId();
+      
     }
 
     /***************************************************/

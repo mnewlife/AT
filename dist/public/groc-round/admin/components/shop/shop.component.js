@@ -69,6 +69,7 @@ var GrocRoundAdminShopComponent;
                 });
             };
             this.initMembers();
+            this.deriveShopId();
         }
         return Component;
     }());

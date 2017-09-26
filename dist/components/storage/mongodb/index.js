@@ -9,11 +9,11 @@ var powertel_1 = require("./powertel");
 var routers_1 = require("./routers");
 /******************************************************************************/
 var MongoDB = (function () {
+    //private linkToDB = "mongodb://AllanSimoyi:tatenda#1@ds147274.mlab.com:47274/athenatest";
     /*****************************************************************/
     function MongoDB(emitEvent, mapDetails, checkThrow) {
         this.middleware = [];
-        //private linkToDB = "mongodb://127.0.0.1:27017/AthenaTest";
-        this.linkToDB = "mongodb://AllanSimoyi:tatenda#1@ds147274.mlab.com:47274/athenatest";
+        this.linkToDB = "mongodb://127.0.0.1:27017/AthenaTest";
         /*****************************************************************/
         this.connectToDatabase = function (linkToDB) {
             mongoose.connect(linkToDB, function (err, res) {

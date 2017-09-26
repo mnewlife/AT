@@ -27,6 +27,7 @@ var GrocRoundAdminComponentsIntegration;
             "toolBarWidget",
             "sideNavWidget",
             "toastService",
+            "dialogService",
             "shopsService"
         ]);
         angular.module("shopComponent").component("shopComponent", {

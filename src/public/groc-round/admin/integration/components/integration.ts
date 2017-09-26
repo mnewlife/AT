@@ -40,6 +40,7 @@ module GrocRoundAdminComponentsIntegration {
       "toolBarWidget",
       "sideNavWidget",
       "toastService",
+      "dialogService",
       "shopsService"
     ] );
 

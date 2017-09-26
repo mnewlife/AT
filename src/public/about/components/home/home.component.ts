@@ -60,7 +60,7 @@ module AboutHomeComponent {
 
       this.services.push( {
         serviceName: "More coming soon",
-        image: "/about/resources/drawable/mighty-eagle.jpg",
+        image: "/about/resources/drawable/pixel.png",
         description: "Description Here",
         href: ""
       } );

@@ -42,11 +42,11 @@ exports.default = function (getUsers, generateRandomNumber, createHashedPassword
             .then(function (hashedPassword) {
             return addUser({
                 emailAddress: req.body.emailAddress,
-                accessLevel: "admin",
+                accessLevel: "consumer",
                 password: hashedPassword,
                 verification: {
-                    verified: true,
-                    verificationCode: ""
+                    verified: false,
+                    verificationCode: verificationCode
                 },
                 activeApps: []
             });

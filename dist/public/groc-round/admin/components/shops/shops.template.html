@@ -25,8 +25,6 @@
 
           <md-card ng-repeat="shop in $ctrl.shops track by shop.id" class="list-item" flex-gt-sm="30" flex-sm="45" flex-xs="100">
 
-            <img ng-click="$ctrl.route( '/shops/' + shop.id )" class="md-card-image pointed" alt="Image" src="/groc-round/admin/resources/drawable/shop.png">
-
             <md-card-title>
               <md-card-title-text>
                 <h1 class="md-headline pointed" ng-click="$ctrl.route( '/shops/' + shop.id )">{{ shop.shopName }}</h1>
@@ -40,13 +38,6 @@
 
           </md-card>
 
-        </div>
-
-        <div ng-if="$ctrl.progress.getShops" layout="row" layout-align="center center" layout-padding>
-          <md-progress-circular md-mode="indeterminate" class="md-accent"></md-progress-circular>
-          <div layout="column" layout-align="center center" layout-padding>
-            <span class="md-subhead">Getting Shops...</span>
-          </div>
         </div>
 
       </section>

@@ -7,7 +7,7 @@
       <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
     </div>
 
-    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100" layout-padding>
 
       <section>
 
@@ -25,7 +25,7 @@
 
           <md-card-title>
             <md-card-title-text>
-              <h1 class="md-headline pointed">{{ $ctrl.product.label }}</h1>
+              <h1 class="md-headline">{{ $ctrl.product.label }}</h1>
               <span class="md-subhead">Updated on {{ $ctrl.product.updatedAt | date }}</span>
             </md-card-title-text>
           </md-card-title>

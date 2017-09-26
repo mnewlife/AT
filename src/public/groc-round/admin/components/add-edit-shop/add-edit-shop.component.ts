@@ -160,7 +160,7 @@ module GrocRoundAdminAddEditShopComponent {
 
       this.updating = true;
 
-      return this.ShopsService.updateShop( this.shopId, this.addDetails )
+      return this.ShopsService.updateShop( this.shopId, this.updateDetails )
         .then(( response: any ) => {
 
           this.$location.path( "/shops" );
