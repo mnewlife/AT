@@ -34,6 +34,9 @@ var SignUpComponent;
                 if (!_this.password) {
                     return _this.ToastService.showSimple("Enter your password");
                 }
+                if (!_this.confirm) {
+                    return _this.ToastService.showSimple("Re-enter your password");
+                }
                 if (_this.password !== _this.confirm) {
                     return _this.ToastService.showSimple("Passwords don't match");
                 }

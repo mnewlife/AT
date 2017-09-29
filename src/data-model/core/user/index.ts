@@ -13,11 +13,14 @@ export interface Super extends dataModel.DataModel {
   emailAddress: string;
   accessLevel: AccessLevel;
   password: string;
+
   resetCode?: string;
   verification: Verification;
+
   personalDetails?: PersonalDetails;
   contactDetails?: ContactDetails;
   residentialDetails?: ResidentialDetails;
+
   activeApps: root.AppName[];
 }
 

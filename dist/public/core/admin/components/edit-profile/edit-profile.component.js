@@ -39,12 +39,7 @@ var CoreAdminEditProfileComponent;
                     }
                 })
                     .catch(function (reason) {
-                    if (reason.message) {
-                        _this.errorMessage = reason.message;
-                    }
-                    else {
-                        _this.errorMessage = "Couldn't get user details";
-                    }
+                    _this.errorMessage = (reason && reason.message) ? (reason.message) : "Couldn't get user details";
                 })
                     .finally(function () {
                     _this.promises.getUser = _this.$q.resolve(false);
@@ -121,11 +116,6 @@ var CoreAdminEditProfileComponent;
                 return _this.$mdDialog.show(config)
                     .then(function (result) {
                     return _this.ProfileService.changeEmailAddress(result.password, result.newEmailAddress);
-                })
-                    .catch(function (reason) {
-                    if (reason) {
-                        return _this.ToastService.showSimple((reason.message) ? reason.message : "Something went wrong");
-                    }
                 });
             };
             /***************************************************/
@@ -143,11 +133,6 @@ var CoreAdminEditProfileComponent;
                 return _this.$mdDialog.show(config)
                     .then(function (result) {
                     return _this.ProfileService.changePassword(result.oldPassword, result.newPassword);
-                })
-                    .catch(function (reason) {
-                    if (reason) {
-                        return _this.ToastService.showSimple((reason.message) ? reason.message : "Something went wrong");
-                    }
                 });
             };
             /***************************************************/
@@ -179,11 +164,6 @@ var CoreAdminEditProfileComponent;
                 return _this.ProfileService.updateDetails(_this.details)
                     .then(function (response) {
                     _this.$location.path("/profile");
-                })
-                    .catch(function (reason) {
-                    if (reason.message) {
-                        _this.ToastService.showSimple(reason.message);
-                    }
                 });
             };
             this.initMembers();

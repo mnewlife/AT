@@ -22,7 +22,7 @@ module UserService {
     public requestResetCode = ( emailAddress: string ): ng.IPromise<void> => {
 
       return this.$http.get( "/core/profile/requestPasswordResetCode/" + emailAddress )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
           if ( responseData.success ) {
@@ -41,11 +41,9 @@ module UserService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
-          console.log( reason );
-
-          let message = "Something went wrong";
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message
@@ -65,7 +63,7 @@ module UserService {
       };
 
       return this.$http.post( "/core/consumer/registration/signUp", details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
           if ( responseData.success ) {
@@ -79,11 +77,9 @@ module UserService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
-          console.log( reason );
-
-          let message = "Something went wrong";
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message
@@ -103,7 +99,7 @@ module UserService {
       };
 
       return this.$http.post( "/core/auth/signIn", details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
 
@@ -135,24 +131,13 @@ module UserService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
-          if ( reason.message ) {
-
-            this.ToastService.showSimple( reason.message );
-            return this.$q.reject( {
-              message: reason.message
-            } );
-
-          } else {
-
-            let message = "Something went wrong";
-            this.ToastService.showSimple( message );
-            return this.$q.reject( {
-              message: message
-            } );
-
-          }
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
+          this.ToastService.showSimple( message );
+          return this.$q.reject( {
+            message: message
+          } );
 
         } );
 

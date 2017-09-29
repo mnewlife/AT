@@ -25,9 +25,6 @@ var CoreAdminProfileComponent;
                 return _this.$mdDialog.show(config)
                     .then(function (result) {
                     return _this.ProfileService.changeEmailAddress(result.password, result.newEmailAddress);
-                })
-                    .catch(function (reason) {
-                    return _this.ToastService.showSimple((reason.message) ? reason.message : "Something went wrong");
                 });
             };
             /***************************************************/
@@ -45,9 +42,6 @@ var CoreAdminProfileComponent;
                 return _this.$mdDialog.show(config)
                     .then(function (result) {
                     return _this.ProfileService.changePassword(result.oldPassword, result.newPassword);
-                })
-                    .catch(function (reason) {
-                    return _this.ToastService.showSimple((reason.message) ? reason.message : "Something went wrong");
                 });
             };
             this.user = this.ProfileService.user;

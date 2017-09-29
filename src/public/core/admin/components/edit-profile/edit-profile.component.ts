@@ -93,23 +93,19 @@ module CoreAdminEditProfileComponent {
     private fetchDone = ( promise: ng.IPromise<boolean> ) => {
 
       promise
-        .then(( done: boolean ) => {
+        .then( ( done: boolean ) => {
 
           if ( done ) {
             this.copyDetails();
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
-          if ( reason.message ) {
-            this.errorMessage = reason.message;
-          } else {
-            this.errorMessage = "Couldn't get user details";
-          }
+          this.errorMessage = ( reason && reason.message ) ? ( reason.message ) : "Couldn't get user details";
 
         } )
-        .finally(() => {
+        .finally( () => {
 
           this.promises.getUser = this.$q.resolve( false );
 
@@ -168,7 +164,7 @@ module CoreAdminEditProfileComponent {
 
         if ( contactDetails.phoneNumbers && contactDetails.phoneNumbers.length ) {
           this.details.contactDetails.phoneNumbers = [];
-          contactDetails.phoneNumbers.forEach(( number ) => {
+          contactDetails.phoneNumbers.forEach( ( number ) => {
             this.details.contactDetails.phoneNumbers.push( number );
           } );
         }
@@ -211,16 +207,9 @@ module CoreAdminEditProfileComponent {
       };
 
       return this.$mdDialog.show( config )
-        .then(( result: any ) => {
+        .then( ( result: any ) => {
 
           return this.ProfileService.changeEmailAddress( result.password, result.newEmailAddress );
-
-        } )
-        .catch(( reason: any ) => {
-
-          if ( reason ) {
-            return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
-          }
 
         } );
 
@@ -242,16 +231,9 @@ module CoreAdminEditProfileComponent {
       };
 
       return this.$mdDialog.show( config )
-        .then(( result: any ) => {
+        .then( ( result: any ) => {
 
           return this.ProfileService.changePassword( result.oldPassword, result.newPassword );
-
-        } )
-        .catch(( reason: any ) => {
-
-          if ( reason ) {
-            return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
-          }
 
         } );
 
@@ -294,16 +276,9 @@ module CoreAdminEditProfileComponent {
       }
 
       return this.ProfileService.updateDetails( this.details )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.$location.path( "/profile" );
-
-        } )
-        .catch(( reason: any ) => {
-
-          if ( reason.message ) {
-            this.ToastService.showSimple( reason.message as string );
-          }
 
         } );
 

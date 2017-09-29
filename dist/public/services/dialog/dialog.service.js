@@ -22,7 +22,12 @@ var DialogService;
                     prompt.cancel(cancelText);
                 return _this.$mdDialog.show(prompt)
                     .then(function (result) {
-                    return _this.$q.resolve(result);
+                    if (result) {
+                        return _this.$q.resolve(result);
+                    }
+                    else {
+                        return _this.$q.reject();
+                    }
                 })
                     .catch(function (reason) {
                     return _this.$q.reject(reason);

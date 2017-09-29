@@ -65,14 +65,14 @@ module CoreAdminProfileService {
       this.progress.signOut = true;
 
       let promise = this.$http.get( "/core/auth/signOut" )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.signOut = false;
           window.location.href = "/passpoint";
           return this.$q.resolve( true );
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.signOut = false;
           this.ToastService.showSimple( "Something went wrong signing you out" );
@@ -90,7 +90,7 @@ module CoreAdminProfileService {
       this.progress.getUser = true;
 
       let promise = this.$http.get( this.urlPrefix + "/getDetails" )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.getUser = false;
 
@@ -98,7 +98,7 @@ module CoreAdminProfileService {
 
           if ( responseData.success ) {
 
-            this.$timeout(() => {
+            this.$timeout( () => {
               if ( !this.user ) {
                 this.user = {} as any;
               }
@@ -120,11 +120,11 @@ module CoreAdminProfileService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.getUser = false;
 
-          let message = "Something went wrong";
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message
@@ -145,7 +145,7 @@ module CoreAdminProfileService {
       this.progress.updateDetails = true;
 
       return this.$http.post( this.urlPrefix + "/updateDetails", details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.updateDetails = false;
 
@@ -153,7 +153,7 @@ module CoreAdminProfileService {
 
           if ( responseData.success ) {
 
-            this.$timeout(() => {
+            this.$timeout( () => {
               angular.copy( responseData.payload.updatedUser, this.user );
               if ( this.user.personalDetails && this.user.personalDetails.dateOfBirth ) {
                 this.user.personalDetails.dateOfBirth = new Date( this.user.personalDetails.dateOfBirth );
@@ -173,26 +173,15 @@ module CoreAdminProfileService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.updateDetails = false;
 
-          if ( reason.message ) {
-
-            this.ToastService.showSimple( reason.message );
-            return this.$q.reject( {
-              message: reason.message
-            } );
-
-          } else {
-
-            let message = "Something went wrong";
-            this.ToastService.showSimple( message );
-            return this.$q.reject( {
-              message: message
-            } );
-
-          }
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
+          this.ToastService.showSimple( message );
+          return this.$q.reject( {
+            message: message
+          } );
 
         } );
 
@@ -210,7 +199,7 @@ module CoreAdminProfileService {
       this.progress.changeEmailAddress = true;
 
       return this.$http.post( this.urlPrefix + "/changeEmailAddress", details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.changeEmailAddress = false;
 
@@ -230,26 +219,15 @@ module CoreAdminProfileService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.changeEmailAddress = false;
 
-          if ( reason.message ) {
-
-            this.ToastService.showSimple( reason.message );
-            return this.$q.reject( {
-              message: reason.message
-            } );
-
-          } else {
-
-            let message = "Something went wrong";
-            this.ToastService.showSimple( message );
-            return this.$q.reject( {
-              message: message
-            } );
-
-          }
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
+          this.ToastService.showSimple( message );
+          return this.$q.reject( {
+            message: message
+          } );
 
         } );
 
@@ -267,7 +245,7 @@ module CoreAdminProfileService {
       this.progress.changePassword = true;
 
       return this.$http.post( this.urlPrefix + "/changePassword", details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.changePassword = false;
 
@@ -287,26 +265,15 @@ module CoreAdminProfileService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.changePassword = false;
 
-          if ( reason.message ) {
-
-            this.ToastService.showSimple( reason.message );
-            return this.$q.reject( {
-              message: reason.message
-            } );
-
-          } else {
-
-            let message = "Something went wrong";
-            this.ToastService.showSimple( message );
-            return this.$q.reject( {
-              message: message
-            } );
-
-          }
+          let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
+          this.ToastService.showSimple( message );
+          return this.$q.reject( {
+            message: message
+          } );
 
         } );
 

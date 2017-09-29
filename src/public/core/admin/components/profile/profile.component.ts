@@ -53,11 +53,6 @@ module CoreAdminProfileComponent {
 
           return this.ProfileService.changeEmailAddress( result.password, result.newEmailAddress );
 
-        } )
-        .catch(( reason: any ) => {
-
-          return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
-
         } );
 
     }
@@ -81,11 +76,6 @@ module CoreAdminProfileComponent {
         .then(( result: any ) => {
 
           return this.ProfileService.changePassword( result.oldPassword, result.newPassword );
-
-        } )
-        .catch(( reason: any ) => {
-
-          return this.ToastService.showSimple(( reason.message ) ? reason.message : "Something went wrong" );
 
         } );
 

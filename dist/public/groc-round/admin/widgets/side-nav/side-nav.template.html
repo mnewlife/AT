@@ -1,21 +1,41 @@
 <md-sidenav flex="100" md-component-id="left" class="md-sidenav-left no_padding" layout="column" layout-align="space-between stretch">
 
   <div flex="100" layout="column" layout-align="start stretch">
-    <section>
+
+    <div>
       <md-list flex>
+
         <md-list-item ng-repeat="local in $ctrl.locals" href="{{ local.href }}">
           <md-icon aria-label="Label">{{ local.icon }}</md-icon>
           <p>{{ local.caption }}</p>
         </md-list-item>
+
         <md-divider></md-divider>
+
+        <md-subheader class="md-no-sticky">Profile</md-subheader>
+        <md-list-item href="/core/admin">
+          <md-icon aria-label="Label">account_circle</md-icon>
+          <p>My Profile</p>
+        </md-list-item>
+
+        <md-divider></md-divider>
+
+        <md-subheader class="md-no-sticky">Apps</md-subheader>
         <md-list-item ng-repeat="app in $ctrl.apps" href="{{ app.href }}">
           <md-icon aria-label="Label">{{ app.icon }}</md-icon>
           <p>{{ app.caption }}</p>
         </md-list-item>
+
       </md-list>
-    </section>
+    </div>
+
+    <div layout="row" layout-align="center end" layout-margin>
+      <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+    </div>
+
+
   </div>
-  <div layout="row" layout-align="center end" layout-padding>
-    <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
-  </div>
+
+
+
 </md-sidenav>

@@ -30,9 +30,6 @@
                     <label>Email Address</label>
                     <input class="md-body-1" ng-model="$ctrl.emailAddress" type="text" name="email" placeholder="Email Address" ng-disabled="$ctrl.signingUp"
                       required>
-                    <div ng-messages="form_sign_up.emailAddress.$error" role="alert">
-                      <div ng-message="required" class="my-message">Provide your email address</div>
-                    </div>
                   </md-input-container>
                 </div>
 
@@ -40,16 +37,10 @@
                   <md-input-container flex-gt-xs="50">
                     <label>Create a password</label>
                     <input class="md-body-1" ng-model="$ctrl.password" type="password" name="passwordx" placeholder="Password" ng-disabled="$ctrl.signingUp" required>
-                    <div ng-messages="form_sign_up.passwordx.$error" role="alert">
-                      <div ng-message="required" class="my-message">You need a password</div>
-                    </div>
                   </md-input-container>
                   <md-input-container flex-gt-xs="50">
                     <label>Confirm your password</label>
                     <input class="md-body-1" ng-model="$ctrl.confirm" type="password" name="confirm" ng-disabled="$ctrl.signingUp" placeholder="Confirm your password" required>
-                    <div ng-messages="form_sign_up.confirm.$error" role="alert">
-                      <div ng-message="required" class="my-message">Confirm your password</div>
-                    </div>
                   </md-input-container>
                 </div>
 
@@ -65,13 +56,13 @@
 
           </md-card>
 
-          <md-button class="md-accent nocase" ng-href="#/sign-in" aria-label="Create An Account" ng-disabled="$ctrl.activity.signUp">
+          <md-button class="md-primary nocase" ng-href="#/sign-in" aria-label="Create An Account" ng-disabled="$ctrl.activity.signUp">
             <span>Already have an account?</span>
             <span class="underlined">Sign In</span>
           </md-button>
 
           <div layout="row" layout-align="center end" layout-padding>
-            <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+            <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
           </div>
 
         </div>

@@ -17,7 +17,7 @@
             <md-card-title>
               <md-card-title-text>
                 <span class="md-headline" ng-hide="$ctrl.editMode">Sign in to your Athena Account</span>
-                <span class="md-subhead">Provide the following details</span>
+                <span class="md-subhead">Enter your credentials</span>
               </md-card-title-text>
             </md-card-title>
 
@@ -28,9 +28,6 @@
                   <label>Email Address</label>
                   <input class="md-body-1" ng-model="$ctrl.emailAddress" type="text" name="emailAddress" placeholder="Email Address" ng-disabled="$ctrl.authenticating"
                     required>
-                  <div ng-messages="form_sign_in.emailAddress.$error" role="alert">
-                    <div ng-message="required" class="my-message">Enter email address</div>
-                  </div>
                 </md-input-container>
               </div>
 
@@ -39,9 +36,6 @@
                   <label>Enter your password</label>
                   <input class="md-body-1" ng-model="$ctrl.password" type="password" name="passwordmozart" placeholder="Password" ng-disabled="$ctrl.authenticating"
                     required>
-                  <div ng-messages="form_sign_in.passwordmozart.$error" role="alert">
-                    <div ng-message="required" class="my-message">Enter your password</div>
-                  </div>
                 </md-input-container>
               </div>
 
@@ -57,7 +51,7 @@
 
         </md-card>
 
-        <md-button class="md-accent nocase animated zoomIn" ng-href="#/sign-up" aria-label="Create An Account" ng-disabled="$ctrl.authenticating">
+        <md-button class="md-primary nocase animated zoomIn" ng-href="#/sign-up" aria-label="Create An Account" ng-disabled="$ctrl.authenticating">
           <span>Don't have an account?</span>
           <span class="underlined">Create An Account</span>
         </md-button>
@@ -69,7 +63,7 @@
       </section>
 
       <div layout="row" layout-align="center end" layout-padding>
-        <span class="md-caption grey">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
       </div>
 
 

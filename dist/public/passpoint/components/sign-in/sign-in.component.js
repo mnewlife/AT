@@ -63,10 +63,12 @@ var SignInComponent;
             };
             /***************************************************/
             this.forgot = function () {
-                _this.DialogService.showPrompt("Forgot Password", "Enter your email address and we'll send you a recovery link.", null, "Enter your email address", "Yes, Send", "No")
+                return _this.DialogService.showPrompt("Forgot Password", "Enter your email address and we'll send you a recovery link.", null, "Enter your email address", "Yes, Send", "No")
                     .then(function (emailAddress) {
-                    if (emailAddress) {
+                    if (!emailAddress) {
+                        return _this.$q.reject();
                     }
+                    return _this.UserService.requestResetCode(emailAddress);
                 });
             };
             /***************************************************/

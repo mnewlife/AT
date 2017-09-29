@@ -29,6 +29,7 @@ export interface AddDetails {
 
 export type UpdateDetails = Partial<{
   label: string;
+  images: string[];
   imagesToAdd: string[];
   imagesToRemove: string[];
   priceValues: dataModel.grocRound.product.PriceValues;

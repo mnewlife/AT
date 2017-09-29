@@ -25,10 +25,10 @@ module DialogService {
       if ( ev ) {
         dialog.targetEvent( ev );
       }
-      dialog.ok(( okText ) ? okText : "Got It" );
+      dialog.ok( ( okText ) ? okText : "Got It" );
 
       return this.$mdDialog.show( alert )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           return this.$q.resolve();
 
@@ -47,16 +47,16 @@ module DialogService {
       if ( ev ) {
         dialog.targetEvent( ev );
       }
-      dialog.ok(( okText ) ? okText : "Yes" );
-      dialog.cancel(( cancelText ) ? cancelText : "No" );
+      dialog.ok( ( okText ) ? okText : "Yes" );
+      dialog.cancel( ( cancelText ) ? cancelText : "No" );
 
       return this.$mdDialog.show( dialog )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           return this.$q.resolve( true );
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           return this.$q.resolve( false );
 
@@ -79,12 +79,16 @@ module DialogService {
       if ( cancelText ) prompt.cancel( cancelText );
 
       return this.$mdDialog.show( prompt )
-        .then(( result ) => {
+        .then( ( result ) => {
 
-          return this.$q.resolve( result );
+          if ( result ) {
+            return this.$q.resolve( result );
+          } else {
+            return this.$q.reject();
+          }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           return this.$q.reject( reason );
 

@@ -51,7 +51,7 @@ var CoreAdminProfileService;
                 })
                     .catch(function (reason) {
                     _this.progress.getUser = false;
-                    var message = "Something went wrong";
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
                     _this.ToastService.showSimple(message);
                     return _this.$q.reject({
                         message: message
@@ -85,19 +85,11 @@ var CoreAdminProfileService;
                 })
                     .catch(function (reason) {
                     _this.progress.updateDetails = false;
-                    if (reason.message) {
-                        _this.ToastService.showSimple(reason.message);
-                        return _this.$q.reject({
-                            message: reason.message
-                        });
-                    }
-                    else {
-                        var message = "Something went wrong";
-                        _this.ToastService.showSimple(message);
-                        return _this.$q.reject({
-                            message: message
-                        });
-                    }
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
+                    _this.ToastService.showSimple(message);
+                    return _this.$q.reject({
+                        message: message
+                    });
                 });
             };
             /***************************************************/
@@ -123,19 +115,11 @@ var CoreAdminProfileService;
                 })
                     .catch(function (reason) {
                     _this.progress.changeEmailAddress = false;
-                    if (reason.message) {
-                        _this.ToastService.showSimple(reason.message);
-                        return _this.$q.reject({
-                            message: reason.message
-                        });
-                    }
-                    else {
-                        var message = "Something went wrong";
-                        _this.ToastService.showSimple(message);
-                        return _this.$q.reject({
-                            message: message
-                        });
-                    }
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
+                    _this.ToastService.showSimple(message);
+                    return _this.$q.reject({
+                        message: message
+                    });
                 });
             };
             /***************************************************/
@@ -161,19 +145,11 @@ var CoreAdminProfileService;
                 })
                     .catch(function (reason) {
                     _this.progress.changePassword = false;
-                    if (reason.message) {
-                        _this.ToastService.showSimple(reason.message);
-                        return _this.$q.reject({
-                            message: reason.message
-                        });
-                    }
-                    else {
-                        var message = "Something went wrong";
-                        _this.ToastService.showSimple(message);
-                        return _this.$q.reject({
-                            message: message
-                        });
-                    }
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
+                    _this.ToastService.showSimple(message);
+                    return _this.$q.reject({
+                        message: message
+                    });
                 });
             };
             this.progress = {

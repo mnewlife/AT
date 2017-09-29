@@ -47,14 +47,14 @@ module SignInComponent {
       }
 
       if ( this.ContextsService.innerContext === "change-email-address" ) {
-        if ( this.ContextsService.decoded.success) {
+        if ( this.ContextsService.decoded.success ) {
           let message = ( this.ContextsService.decoded.message ) ? this.ContextsService.decoded.message : "Email address changed successfully. Sign in with your address";
           return this.DialogService.showAlert( "Email Address Changed", message );
         }
       }
 
       if ( this.ContextsService.innerContext === "request-reset-code" ) {
-        if ( this.ContextsService.decoded.success) {
+        if ( this.ContextsService.decoded.success ) {
           let message = ( this.ContextsService.decoded.message ) ? this.ContextsService.decoded.message : "An email with the reset code has been sent to your email address";
           return this.DialogService.showAlert( "Reset Password", message );
         } else {
@@ -63,7 +63,7 @@ module SignInComponent {
         }
       }
       if ( this.ContextsService.innerContext === "reset-password" ) {
-        if ( this.ContextsService.decoded.success) {
+        if ( this.ContextsService.decoded.success ) {
 
           let message = ( this.ContextsService.decoded.message ) ? this.ContextsService.decoded.message : "Your password has been reset. ";
           if ( this.ContextsService.decoded.payload && this.ContextsService.decoded.payload.newRandomPassword ) {
@@ -89,7 +89,7 @@ module SignInComponent {
 
       if ( this.ContextsService.innerContext === "verify-account" ) {
 
-        if ( this.ContextsService.decoded.success) {
+        if ( this.ContextsService.decoded.success ) {
           let message = ( this.ContextsService.decoded.message ) ? this.ContextsService.decoded.message : "Your account has been verified. Sign in with your email address";
           return this.DialogService.showAlert( "Account Verification", message );
         } else {
@@ -105,14 +105,16 @@ module SignInComponent {
 
     public forgot = () => {
 
-      this.DialogService.showPrompt( "Forgot Password", "Enter your email address and we'll send you a recovery link.", null, "Enter your email address", "Yes, Send", "No" )
-        .then(( emailAddress: string ) => {
+      return this.DialogService.showPrompt( "Forgot Password", "Enter your email address and we'll send you a recovery link.", null, "Enter your email address", "Yes, Send", "No" )
+        .then( ( emailAddress: string ) => {
 
-          if ( emailAddress ) {
-            
+          if ( !emailAddress ) {
+            return this.$q.reject();
           }
 
-        } )
+          return this.UserService.requestResetCode( emailAddress );
+
+        } );
 
     }
 
@@ -131,12 +133,12 @@ module SignInComponent {
       this.authenticating = true;
 
       return this.UserService.signIn( this.emailAddress, this.password )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.authenticating = false;
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.authenticating = false;
 

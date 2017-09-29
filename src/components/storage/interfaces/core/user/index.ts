@@ -64,6 +64,7 @@ export type UpdateDetails = Partial<{
     phoneNumbersToRemove: string[];
   }>;
   residentialDetails: Partial<dataModel.core.user.ResidentialDetails>;
+  activeApps: src.AppName[];
   activeAppsToAdd: src.AppName[];
   activeAppsToRemove: src.AppName[];
 }>;

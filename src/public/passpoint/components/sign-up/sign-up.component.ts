@@ -72,6 +72,10 @@ module SignUpComponent {
         return this.ToastService.showSimple( "Enter your password" );
       }
 
+      if ( !this.confirm ) {
+        return this.ToastService.showSimple( "Re-enter your password" );
+      }
+
       if ( this.password !== this.confirm ) {
         return this.ToastService.showSimple( "Passwords don't match" );
       }

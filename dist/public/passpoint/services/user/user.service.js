@@ -26,8 +26,7 @@ var UserService;
                     }
                 })
                     .catch(function (reason) {
-                    console.log(reason);
-                    var message = "Something went wrong";
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
                     _this.ToastService.showSimple(message);
                     return _this.$q.reject({
                         message: message
@@ -55,8 +54,7 @@ var UserService;
                     }
                 })
                     .catch(function (reason) {
-                    console.log(reason);
-                    var message = "Something went wrong";
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
                     _this.ToastService.showSimple(message);
                     return _this.$q.reject({
                         message: message
@@ -92,19 +90,11 @@ var UserService;
                     }
                 })
                     .catch(function (reason) {
-                    if (reason.message) {
-                        _this.ToastService.showSimple(reason.message);
-                        return _this.$q.reject({
-                            message: reason.message
-                        });
-                    }
-                    else {
-                        var message = "Something went wrong";
-                        _this.ToastService.showSimple(message);
-                        return _this.$q.reject({
-                            message: message
-                        });
-                    }
+                    var message = (reason && reason.message) ? reason.message : "Something went wrong";
+                    _this.ToastService.showSimple(message);
+                    return _this.$q.reject({
+                        message: message
+                    });
                 });
             };
         }

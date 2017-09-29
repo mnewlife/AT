@@ -8,6 +8,7 @@
           <p>{{ local.caption }}</p>
         </md-list-item>
         <md-divider></md-divider>
+        <md-subheader class="md-no-sticky">Apps</md-subheader>
         <md-list-item ng-repeat="app in $ctrl.apps" href="{{ app.href }}">
           <md-icon aria-label="Label">{{ app.icon }}</md-icon>
           <p>{{ app.caption }}</p>
