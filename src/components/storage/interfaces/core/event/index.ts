@@ -31,8 +31,6 @@ export type UpdateDetails = Partial<{
   context: string;
   identifier: string;
   tags: string[];
-  tagsToAdd: string[];
-  tagsToRemove: string[];
   data: any;
 }>;
 

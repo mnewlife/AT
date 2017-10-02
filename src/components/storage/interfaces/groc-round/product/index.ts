@@ -21,6 +21,7 @@ export type Context = "GrocRound|Product";
 export interface AddDetails {
   label: string;
   images?: string[];
+  prices: dataModel.grocRound.product.Price[];
   priceValues: dataModel.grocRound.product.PriceValues;
   effectivePrice: dataModel.grocRound.product.PriceValue
 }
@@ -30,8 +31,7 @@ export interface AddDetails {
 export type UpdateDetails = Partial<{
   label: string;
   images: string[];
-  imagesToAdd: string[];
-  imagesToRemove: string[];
+  prices: dataModel.grocRound.product.Price[];
   priceValues: dataModel.grocRound.product.PriceValues;
   effectivePrice: dataModel.grocRound.product.PriceValue
 }>;
@@ -41,6 +41,11 @@ export type UpdateDetails = Partial<{
 export type FiltrationCriteria = Partial<{
   label: string;
   images: string[];
+  prices: Partial<{
+    shop: dataModel.grocRound.shop.ShopInfo;
+    quantity: Partial<{ min: number; max: number; }>;
+    price: Partial<{ min: number; max: number; }>;
+  }>;
   priceValues: Partial<{
     min: Partial<{
       shopId: string;

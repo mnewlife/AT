@@ -29,8 +29,6 @@ export interface AddDetails {
 export type UpdateDetails = Partial<{
   shopName: string;
   images: string[];
-  imagesToAdd: string[];
-  imagesToRemove: string[];
   numProducts: number;
   numProductsPlus: number;
   numProductsMinus: number;

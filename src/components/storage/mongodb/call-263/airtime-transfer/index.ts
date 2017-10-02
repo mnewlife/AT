@@ -14,7 +14,7 @@ import Events from "../../generic-event-class";
 import * as storage from "../../../interfaces";
 import * as interfaces from "../../../interfaces/call-263/airtime-transfer";
 
-import { Model, PartialModel, MongooseModel } from "./model";
+import { Model, MongooseModel } from "./model";
 
 /*******************************************************************************/
 

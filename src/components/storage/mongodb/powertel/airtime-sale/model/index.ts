@@ -4,7 +4,7 @@ import * as mongoose from "mongoose";
 
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
-import { ignoreEmpty } from "../../../preparation";
+import * as x from "../../../basic-schema";
 
 /******************************************************************************/
 
@@ -12,7 +12,7 @@ export interface Model extends mongoose.Document, ModelNuance { }
 export interface ModelNuance extends mongoDB.Document {
   buyerName: string;
   card?: CardInfo;
-  user?: mongoDB.UserInfo;
+  user?: user.UserInfo;
   amount: number;
   bundles?: {
     gb: number;
@@ -22,7 +22,7 @@ export interface ModelNuance extends mongoDB.Document {
 export type PartialModel = Partial<{
   buyerName: string;
   card: Partial<CardInfo>;
-  user: Partial<mongoDB.UserInfo>;
+  user: Partial<user.UserInfo>;
   amount: number;
   bundles: Partial<{
     gb: number;

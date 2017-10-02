@@ -4,7 +4,7 @@ import * as mongoose from "mongoose";
 
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
-import { ignoreEmpty } from "../../../preparation";
+import * as x from "../../../basic-schema";
 
 /******************************************************************************/
 
@@ -14,18 +14,27 @@ export interface ModelNuance extends mongoDB.Document {
   images?: string[];
   numProducts: number;
 }
-export type PartialModel = Partial<ModelNuance>;
+
+export interface ShopInfo {
+  shopId: mongoose.Types.ObjectId;
+  shopName: string;
+}
 
 /******************************************************************************/
 
+export let ShopInfoSchema = {
+  shopId: x.ObjectIdSchema,
+  shopName: x.StringSchema
+};
+
 let shopSchema = new mongoose.Schema( {
 
-  shopName: { type: String, set: ignoreEmpty },
-  images: [ String ],
-  numProducts: { type: Number, min: 0, default: 0 },
+  shopName: x.StringSchema,
+  images: [ x.StringSchema ],
+  numProducts: x.NumberSchema,
 
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: x.DateSchema,
+  updatedAt: x.DateSchema
 
 } );
 

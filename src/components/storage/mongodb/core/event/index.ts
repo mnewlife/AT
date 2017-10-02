@@ -14,7 +14,7 @@ import Events from "../../generic-event-class";
 import * as storage from "../../../interfaces";
 import * as interfaces from "../../../interfaces/core/event";
 
-import { Model, PartialModel, MongooseModel } from "./model";
+import { Model, MongooseModel } from "./model";
 
 /*******************************************************************************/
 
@@ -59,7 +59,7 @@ interface QueryConditions {
 
 function makeConditions ( filtrationCriteria: storage.core.event.FiltrationCriteria ): Promise<QueryConditions> {
 
-  return new Promise<QueryConditions>(( resolve, reject ) => {
+  return new Promise<QueryConditions>( ( resolve, reject ) => {
 
     let conditions: QueryConditions = {};
 
@@ -89,7 +89,7 @@ function makeConditions ( filtrationCriteria: storage.core.event.FiltrationCrite
 
 function makeSortCriteria ( sortCriteria: storage.core.event.SortCriteria ): Promise<string> {
 
-  return new Promise<string>(( resolve, reject ) => {
+  return new Promise<string>( ( resolve, reject ) => {
     let sortString;
     sortString = sortCriteria.criteria;
     if ( sortCriteria.order === "Descending" ) {
@@ -102,18 +102,20 @@ function makeSortCriteria ( sortCriteria: storage.core.event.SortCriteria ): Pro
 
 /******************************************************************************/
 
-function generateAddDetails ( events: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( events: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
-  events.forEach(( event ) => {
+  events.forEach( ( event ) => {
 
-    returnDetails.push( {
+    let details: Partial<Model> = {
       context: event.context,
       identifier: event.identifier,
       tags: event.tags,
       data: event.data
-    } as PartialModel );
+    };
+
+    returnDetails.push();
 
   } );
 
@@ -125,7 +127,7 @@ function generateAddDetails ( events: interfaces.AddDetails[] ): PartialModel[] 
 
 function generateUpdateDetails ( document: Model, details: storage.core.event.UpdateDetails ): Promise<Model> {
 
-  return new Promise<Model>(( resolve, reject ) => {
+  return new Promise<Model>( ( resolve, reject ) => {
 
     if ( details.context ) {
       document.context = details.context;
@@ -135,22 +137,10 @@ function generateUpdateDetails ( document: Model, details: storage.core.event.Up
       document.identifier = details.identifier;
     }
 
-    if ( details.tagsToAdd ) {
-      details.tagsToAdd.forEach(( tag ) => {
+    if ( details.tags ) {
+      document.tags = [];
+      details.tags.forEach( ( tag ) => {
         document.tags.push( tag );
-      } );
-    }
-
-    if ( details.tagsToRemove ) {
-      details.tagsToRemove.forEach(( tag ) => {
-        let matches = document.tags.filter(( subject ) => {
-          return ( subject == tag );
-        } );
-        if ( matches.length ) {
-          matches.forEach(( match ) => {
-            document.tags.splice( document.tags.indexOf( match ) );
-          } );
-        }
       } );
     }
 
@@ -169,13 +159,13 @@ function generateUpdateDetails ( document: Model, details: storage.core.event.Up
 function convertToAbstract ( events: Model[], forceThrow = false ): Promise<dataModel.core.event.Super[]> {
 
   return this.checkThrow( forceThrow )
-    .then(( response: any ) => {
+    .then( ( response: any ) => {
 
-      return new Promise<dataModel.core.event.Super[]>(( resolve, reject ) => {
+      return new Promise<dataModel.core.event.Super[]>( ( resolve, reject ) => {
 
         let returnEvents: dataModel.core.event.Super[] = [];
 
-        events.forEach(( event ) => {
+        events.forEach( ( event ) => {
 
           let returnEvent: dataModel.core.event.Super = {
             id: ( <mongoose.Types.ObjectId>event._id ).toHexString(),

@@ -22,6 +22,7 @@ export interface Super extends dataModel.DataModel {
   residentialDetails?: ResidentialDetails;
 
   activeApps: root.AppName[];
+  subscriptions: string[];
 }
 
 /******************************************************************************/

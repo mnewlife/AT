@@ -10,4 +10,9 @@ export interface Super extends dataModel.DataModel {
   numProducts: number;
 }
 
+export interface ShopInfo {
+  shopId: string;
+  shopName: string;
+};
+
 /******************************************************************************/

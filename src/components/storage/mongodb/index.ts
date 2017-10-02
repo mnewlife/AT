@@ -23,12 +23,6 @@ export interface Document {
   updatedAt: Date;
 }
 
-export interface UserInfo {
-  userId: mongoose.Types.ObjectId;
-  emailAddress: string;
-  fullName: string;
-}
-
 /******************************************************************************/
 
 export default class MongoDB implements interfaces.Instance {

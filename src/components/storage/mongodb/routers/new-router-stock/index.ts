@@ -14,7 +14,7 @@ import Events from "../../generic-event-class";
 import * as storage from "../../../interfaces";
 import * as interfaces from "../../../interfaces/routers/new-router-stock";
 
-import { Model, PartialModel, MongooseModel } from "./model";
+import { Model, MongooseModel } from "./model";
 
 /*******************************************************************************/
 

@@ -4,7 +4,7 @@ import * as mongoose from "mongoose";
 
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
-import { ignoreEmpty } from "../../../preparation";
+import * as x from "../../../basic-schema";
 
 /******************************************************************************/
 
@@ -14,11 +14,11 @@ export interface ModelNuance extends mongoDB.Document {
   puk: number;
   mdn: number;
   buyer?: Buyer;
-  user?: mongoDB.UserInfo;
+  user?: user.UserInfo;
 }
 export interface PartialModel extends Partial<Pick<ModelNuance, "pin" | "puk" | "mdn">> {
   buyer?: Partial<Buyer>;
-  user?: Partial<mongoDB.UserInfo>;
+  user?: Partial<user.UserInfo>;
 };
 
 export interface Buyer {

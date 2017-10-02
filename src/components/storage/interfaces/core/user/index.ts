@@ -43,6 +43,7 @@ export interface AddDetails {
     address: string;
   };
   activeApps: src.AppName[];
+  subscriptions: string[];
 }
 
 /******************************************************************************/
@@ -59,14 +60,15 @@ export type UpdateDetails = Partial<{
   }>;
   personalDetails: Partial<dataModel.core.user.PersonalDetails>;
   contactDetails: Partial<{
-    phoneNumbers: string[];
-    phoneNumbersToAdd: string[];
-    phoneNumbersToRemove: string[];
+    phoneNumbers: string[];  
   }>;
   residentialDetails: Partial<dataModel.core.user.ResidentialDetails>;
   activeApps: src.AppName[];
   activeAppsToAdd: src.AppName[];
   activeAppsToRemove: src.AppName[];
+  subscriptions: string[];
+  subscriptionsToAdd: string[];
+  subscriptionsToRemove: string[];
 }>;
 
 /******************************************************************************/
@@ -88,7 +90,8 @@ export type FiltrationCriteria = Partial<{
   contactDetails: dataModel.core.user.ContactDetails;
   residentialDetails: Partial<dataModel.core.user.ResidentialDetails>;
   activeApps: src.AppName[];
-  textSearch?: string;
+  subscriptions: string[];
+  textSearch: string;
 }>
 
 /******************************************************************************/

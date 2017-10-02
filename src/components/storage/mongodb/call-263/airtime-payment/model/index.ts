@@ -3,18 +3,18 @@
 import * as mongoose from "mongoose";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
-import { ignoreEmpty } from "../../../preparation";
+import * as x from "../../../basic-schema";
 
 /******************************************************************************/
 
 export interface Model extends ModelNuance, mongoose.Document { }
 export interface ModelNuance extends mongoDB.Document {
-  user: mongoDB.UserInfo;
+  user: user.UserInfo;
   channelId: mongoose.Types.ObjectId;
   transaction: Transaction;
 }
 export interface PartialModel {
-  user?: Partial<mongoDB.UserInfo>;
+  user?: Partial<user.UserInfo>;
   channelId?: mongoose.Types.ObjectId;
   transaction?: Partial<Transaction>;
 };

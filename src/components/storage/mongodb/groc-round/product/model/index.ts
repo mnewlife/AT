@@ -4,7 +4,8 @@ import * as mongoose from "mongoose";
 
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
-import { ignoreEmpty } from "../../../preparation";
+import * as x from "../../../basic-schema";
+import * as shop from "../../shop/model";
 
 /******************************************************************************/
 
@@ -12,16 +13,14 @@ export interface Model extends mongoose.Document, ModelNuance { }
 export interface ModelNuance extends mongoDB.Document {
   label: string;
   images?: string[];
+  prices: {
+    shop: shop.ShopInfo;
+    quantity: number;
+    price: number;
+  }[];
   priceValues: PriceValues;
   effectivePrice: PriceValue
 }
-
-export type PartialModel = Partial<{
-  label: string;
-  images: string[];
-  priceValues: PriceValuesPartial;
-  effectivePrice: Partial<PriceValue>;
-}>;
 
 export interface PriceValues {
   min?: PriceValue;
@@ -29,28 +28,33 @@ export interface PriceValues {
   median?: PriceValue;
   mean?: PriceValue;
 };
-export type PriceValuesPartial = Partial<{
-  min: Partial<PriceValuePartial>;
-  max: Partial<PriceValuePartial>;
-  median: Partial<PriceValuePartial>;
-  mean: Partial<PriceValuePartial>;
-}>;
 
 export interface PriceValue {
   shopId: mongoose.Types.ObjectId;
   price: number;
 };
-export interface PriceValuePartial {
-  shopId?: mongoose.Types.ObjectId;
-  price: number;
+
+export interface ProductInfo {
+  productId: mongoose.Types.ObjectId;
+  label: string;
 }
 
 /******************************************************************************/
 
+export let ProductInfoSchema = {
+  productId: x.ObjectIdSchema,
+  label: x.StringSchema
+};
+
 let productSchema = new mongoose.Schema( {
 
-  label: { type: String, set: ignoreEmpty },
-  images: [ String ],
+  label: x.StringSchema,
+  images: [ x.StringSchema ],
+  prices: [ {
+    shop: shop.ShopInfoSchema,
+    quantity: { type: Number, min: 0 },
+    price: { type: Number, min: 0 }
+  }],
   priceValues: {
     min: {
       shopId: mongoose.Schema.Types.ObjectId,

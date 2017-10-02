@@ -6,7 +6,7 @@ import * as src from "../../../../../../interfaces";
 import * as dataModel from "../../../../../../data-model";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
-import { ignoreEmpty } from "../../../preparation";
+import * as x from "../../../basic-schema";
 
 /******************************************************************************/
 
@@ -24,14 +24,14 @@ export interface ModelNuance extends mongoDB.Document {
 
   activeApps: src.AppName[];
 }
-export interface PartialModel extends Partial<Pick<ModelNuance, ModelPartial_Details_Flat>> {
-  verification?: Partial<Verification>;
-  personalDetails?: Partial<PersonalDetails>;
-  contactDetails?: Partial<ContactDetails>;
-  residentialDetails?: Partial<ResidentialDetails>;
-};
-type ModelPartial_Details_Flat = "emailAddress" | "accessLevel" | "password"
-  | "resetCode" | "activeApps";
+
+/******************************************************************************/
+
+export interface UserInfo {
+  userId: mongoose.Types.ObjectId;
+  emailAddress: string;
+  fullName?: string;
+}
 
 /******************************************************************************/
 
@@ -60,40 +60,46 @@ export interface ResidentialDetails {
 
 /******************************************************************************/
 
+export let UserInfoSchema = {
+  userId: x.ObjectIdSchema,
+  emailAddress: x.StringSchema,
+  fullName: x.StringSchema
+};
+
 let userSchema = new mongoose.Schema( {
 
-  emailAddress: { type: String, set: ignoreEmpty },
-  accessLevel: { type: String, set: ignoreEmpty },
-  password: { type: String, set: ignoreEmpty },
-  resetCode: { type: String, set: ignoreEmpty },
+  emailAddress: x.StringSchema,
+  accessLevel: x.StringSchema,
+  password: x.StringSchema,
+  resetCode: x.StringSchema,
 
   verification: {
-    verified: { type: Boolean, default: false, set: ignoreEmpty },
-    verificationCode: { type: String, set: ignoreEmpty },
-    numVerAttempts: { type: Number, min: 0, default: 0, set: ignoreEmpty }
+    verified: x.BooleanSchema,
+    verificationCode: x.StringSchema,
+    numVerAttempts: x.NumberSchema
   },
 
   personalDetails: {
-    firstName: { type: String, set: ignoreEmpty },
-    lastName: { type: String, set: ignoreEmpty },
+    firstName: x.StringSchema,
+    lastName: x.StringSchema,
     dateOfBirth: { type: Date },
-    gender: { type: String, set: ignoreEmpty }
+    gender: x.StringSchema
   },
 
   contactDetails: {
-    phoneNumbers: [ String ]
+    phoneNumbers: [ x.StringSchema ]
   },
 
   residentialDetails: {
-    country: { type: String, set: ignoreEmpty },
-    province: { type: String, set: ignoreEmpty },
-    address: { type: String, set: ignoreEmpty }
+    country: x.StringSchema,
+    province: x.StringSchema,
+    address: x.StringSchema
   },
 
-  activeApps: [ String ],
+  activeApps: [ x.StringSchema ],
 
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: x.DateSchema,
+  updatedAt: x.DateSchema
 
 } );
 
