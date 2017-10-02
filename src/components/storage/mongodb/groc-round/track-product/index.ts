@@ -12,7 +12,7 @@ import ModelController from "../../generic-model-class";
 import Events from "../../generic-event-class";
 
 import * as storage from "../../../interfaces";
-import * as interfaces from "../../../interfaces/groc-round/shop";
+import * as interfaces from "../../../interfaces/groc-round/track-product";
 
 import { Model, MongooseModel } from "./model";
 
@@ -26,11 +26,11 @@ export default (
 
   let models = new Events<interfaces.Context, interfaces.FiltrationCriteria,
     interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
-    dataModel.grocRound.shop.Super>( emitEvent, "GrocRound|Shop" );
+    dataModel.grocRound.trackProduct.Super>( emitEvent, "GrocRound|TrackProduct" );
 
   return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
     interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
-    dataModel.grocRound.shop.Super, interfaces.Events>(
+    dataModel.grocRound.trackProduct.Super, interfaces.Events>(
 
     models,
     MongooseModel,
@@ -49,35 +49,67 @@ export default (
 /******************************************************************************/
 
 interface QueryConditions {
-  "shopName"?: string;
-  "images"?: { $all: string[] };
-  "numProducts"?: { $gte?: number; $lte?: number; };
+  "track.trackId"?: mongoose.Types.ObjectId;
+  "track.trackName"?: string;
+
+  "product.productId"?: mongoose.Types.ObjectId;
+  "product.label"?: string;
+
+  "quantity"?: { $gte?: number; $lte?: number; };
+  "value"?: { $gte?: number; $lte?: number; };
+
   $text?: { $search: string };
 }
 
 /******************************************************************************/
 
-function makeConditions ( filtrationCriteria: storage.grocRound.shop.FiltrationCriteria ): Promise<QueryConditions> {
+function makeConditions ( filtrationCriteria: storage.grocRound.trackProduct.FiltrationCriteria ): Promise<QueryConditions> {
 
-  return new Promise<QueryConditions>(( resolve, reject ) => {
+  return new Promise<QueryConditions>( ( resolve, reject ) => {
 
     let conditions: QueryConditions = {};
 
-    if ( filtrationCriteria.shopName ) {
-      conditions[ "shopName" ] = filtrationCriteria.shopName;
-    }
-    
-    if ( filtrationCriteria.images ) {
-      conditions[ "images" ] = { $all: filtrationCriteria.images };
-    }
-    
-    if ( filtrationCriteria.numProducts ) {
-      conditions[ "numProducts" ] = {};
-      if ( filtrationCriteria.numProducts.min ) {
-        conditions[ "numProducts" ].$gte = filtrationCriteria.numProducts.min;
+    if ( filtrationCriteria.track ) {
+
+      if ( filtrationCriteria.track.trackId ) {
+        conditions[ "track.trackId" ] = mongoose.Types.ObjectId( filtrationCriteria.track.trackId );
       }
-      if ( filtrationCriteria.numProducts.max ) {
-        conditions[ "numProducts" ].$lte = filtrationCriteria.numProducts.max;
+
+      if ( filtrationCriteria.track.trackName ) {
+        conditions[ "track.trackName" ] = filtrationCriteria.track.trackName;
+      }
+
+    }
+
+    if ( filtrationCriteria.product ) {
+
+      if ( filtrationCriteria.product.productId ) {
+        conditions[ "product.productId" ] = mongoose.Types.ObjectId( filtrationCriteria.product.productId );
+      }
+
+      if ( filtrationCriteria.product.label ) {
+        conditions[ "product.label" ] = filtrationCriteria.product.label;
+      }
+
+    }
+
+    if ( filtrationCriteria.quantity ) {
+      conditions[ "quantity" ] = {};
+      if ( filtrationCriteria.quantity.min ) {
+        conditions[ "quantity" ].$gte = filtrationCriteria.quantity.min;
+      }
+      if ( filtrationCriteria.quantity.max ) {
+        conditions[ "quantity" ].$lte = filtrationCriteria.quantity.max;
+      }
+    }
+
+    if ( filtrationCriteria.value ) {
+      conditions[ "value" ] = {};
+      if ( filtrationCriteria.value.min ) {
+        conditions[ "value" ].$gte = filtrationCriteria.value.min;
+      }
+      if ( filtrationCriteria.value.max ) {
+        conditions[ "value" ].$lte = filtrationCriteria.value.max;
       }
     }
 
@@ -93,9 +125,9 @@ function makeConditions ( filtrationCriteria: storage.grocRound.shop.FiltrationC
 
 /******************************************************************************/
 
-function makeSortCriteria ( sortCriteria: storage.grocRound.shop.SortCriteria ): Promise<string> {
+function makeSortCriteria ( sortCriteria: storage.grocRound.trackProduct.SortCriteria ): Promise<string> {
 
-  return new Promise<string>(( resolve, reject ) => {
+  return new Promise<string>( ( resolve, reject ) => {
     let sortString;
     sortString = sortCriteria.criteria;
     if ( sortCriteria.order === "Descending" ) {
@@ -108,17 +140,25 @@ function makeSortCriteria ( sortCriteria: storage.grocRound.shop.SortCriteria ):
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
-  models.forEach(( model ) => {
+  models.forEach( ( model ) => {
 
-    let details: PartialModel = {
-      shopName: model.shopName,
-      numProducts: model.numProducts
+    let details: Partial<Model> = {
+      track: {
+        trackId: mongoose.Types.ObjectId( model.track.trackId ),
+        trackName: model.track.trackName
+      },
+      product: {
+        productId: mongoose.Types.ObjectId( model.product.productId ),
+        label: model.product.label
+      },
+      quantity: model.quantity,
+      value: model.value
     };
-    
+
     returnDetails.push( details );
 
   } );
@@ -129,37 +169,40 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
 
 /******************************************************************************/
 
-function generateUpdateDetails ( document: Model, details: storage.grocRound.shop.UpdateDetails ): Promise<Model> {
+function generateUpdateDetails ( document: Model, details: storage.grocRound.trackProduct.UpdateDetails ): Promise<Model> {
 
-  return new Promise<Model>(( resolve, reject ) => {
+  return new Promise<Model>( ( resolve, reject ) => {
 
-    if ( details.shopName ) {
-      document.shopName = details.shopName;
+    if ( details.track ) {
+
+      if ( details.track.trackId ) {
+        document.track.trackId = mongoose.Types.ObjectId( details.track.trackId );
+      }
+
+      if ( details.track.trackName ) {
+        document.track.trackName = details.track.trackName;
+      }
+
     }
-    
-    if ( details.imagesToAdd ) {
-      details.imagesToAdd.forEach(( image ) => {
-        document.images.push( image );
-      } );
+
+    if ( details.product ) {
+
+      if ( details.product.productId ) {
+        document.product.productId = mongoose.Types.ObjectId( details.product.productId );
+      }
+
+      if ( details.product.label ) {
+        document.product.label = details.product.label;
+      }
+
     }
-    
-    if ( details.imagesToRemove ) {
-      details.imagesToRemove.forEach(( image ) => {
-        let index = document.images.indexOf( image );
-        if ( index && index != -1 ) {
-          document.images.splice( index, 1 );
-        }
-      } );
+
+    if ( details.quantity ) {
+      document.quantity = details.quantity;
     }
-    
-    if ( details.numProductsPlus ) {
-      document.numProducts += details.numProductsPlus;
-    }
-    if ( details.numProductsMinus ) {
-      document.numProducts -= details.numProductsMinus;
-    }
-    if ( details.numProducts ) {
-      document.numProducts = details.numProducts;
+
+    if ( details.value ) {
+      document.value = details.value;
     }
 
     resolve( document );
@@ -170,26 +213,34 @@ function generateUpdateDetails ( document: Model, details: storage.grocRound.sho
 
 /******************************************************************************/
 
-function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> {
+function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.grocRound.trackProduct.Super[]> {
 
   return this.checkThrow( forceThrow )
-    .then(( response: any ) => {
+    .then( ( response: any ) => {
 
-      return new Promise<dataModel.grocRound.shop.Super[]>(( resolve, reject ) => {
+      return new Promise<dataModel.grocRound.trackProduct.Super[]>( ( resolve, reject ) => {
 
-        let returnModels: dataModel.grocRound.shop.Super[] = [];
+        let returnModels: dataModel.grocRound.trackProduct.Super[] = [];
 
-        models.forEach(( model ) => {
+        models.forEach( ( model ) => {
 
-          let returnModel: dataModel.grocRound.shop.Super = {
+          let returnModel: dataModel.grocRound.trackProduct.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
-            shopName: model.shopName,
-            numProducts: model.numProducts,
+            track: {
+              trackId: model.track.trackId.toHexString(),
+              trackName: model.track.trackName
+            },
+            product: {
+              productId: model.product.productId.toHexString(),
+              label: model.product.label
+            },
+            quantity: model.quantity,
+            value: model.value,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt
           };
 
-          
+
           returnModels.push( returnModel );
 
         } );

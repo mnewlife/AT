@@ -20,7 +20,7 @@ export type Context = "GrocRound|RoundContributor";
 
 export interface AddDetails {
   round: dataModel.grocRound.round.RoundInfo;
-  user: dataModel.core.user.Super;
+  user: dataModel.core.user.UserInfo;
   contributions: dataModel.grocRound.roundContributor.Contributions;
   tracks: dataModel.grocRound.roundContributor.TrackInfo[];
   cart: {
@@ -38,7 +38,7 @@ export interface AddDetails {
 
 export type UpdateDetails = Partial<{
   round: Partial<dataModel.grocRound.round.RoundInfo>;
-  user: Partial<dataModel.core.user.Super>;
+  user: Partial<dataModel.core.user.UserInfo>;
   contributions: Partial<dataModel.grocRound.roundContributor.Contributions>;
   tracks: dataModel.grocRound.roundContributor.TrackInfo[];
   cart: Partial<{
@@ -56,8 +56,12 @@ export type UpdateDetails = Partial<{
 
 export type FiltrationCriteria = Partial<{
   round: Partial<dataModel.grocRound.round.RoundInfo>;
-  user: Partial<dataModel.core.user.Super>;
-  contributions: Partial<dataModel.grocRound.roundContributor.Contributions>;
+  user: Partial<dataModel.core.user.UserInfo>;
+  contributions: Partial<{
+    num: Partial<{ min: number; max: number; }>;
+    value: Partial<{ min: number; max: number; }>;
+    valueDue: Partial<{ min: number; max: number; }>;
+  }>;
   tracks: string[];
   cart: Partial<{
     num: Partial<{ min: number; max: number; }>;
@@ -73,7 +77,9 @@ export type FiltrationCriteria = Partial<{
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt" | "numProducts" | "cartNum" | "cartValue"
+export type SortOptions = "createdAt" | "updatedAt" | "numContributions"
+  | "valueContributions" | "valueDueContributions"
+  | "cartNum" | "cartValue"
   | "deliveryFeesPaid" | "deliveryFeesDue";
 
 export interface SortCriteria extends storage.BaseSortCriteria {

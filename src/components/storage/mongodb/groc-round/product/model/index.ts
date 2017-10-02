@@ -30,7 +30,7 @@ export interface PriceValues {
 };
 
 export interface PriceValue {
-  shopId: mongoose.Types.ObjectId;
+  shopId?: mongoose.Types.ObjectId;
   price: number;
 };
 

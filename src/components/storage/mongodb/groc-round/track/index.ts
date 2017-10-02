@@ -12,7 +12,7 @@ import ModelController from "../../generic-model-class";
 import Events from "../../generic-event-class";
 
 import * as storage from "../../../interfaces";
-import * as interfaces from "../../../interfaces/groc-round/shop";
+import * as interfaces from "../../../interfaces/groc-round/track";
 
 import { Model, MongooseModel } from "./model";
 
@@ -26,11 +26,11 @@ export default (
 
   let models = new Events<interfaces.Context, interfaces.FiltrationCriteria,
     interfaces.SortCriteria, interfaces.AddDetails, interfaces.UpdateDetails,
-    dataModel.grocRound.shop.Super>( emitEvent, "GrocRound|Shop" );
+    dataModel.grocRound.track.Super>( emitEvent, "GrocRound|Track" );
 
   return new ModelController<interfaces.FiltrationCriteria, storage.BaseSortCriteria,
     interfaces.AddDetails, interfaces.UpdateDetails, QueryConditions, Model,
-    dataModel.grocRound.shop.Super, interfaces.Events>(
+    dataModel.grocRound.track.Super, interfaces.Events>(
 
     models,
     MongooseModel,
@@ -49,36 +49,102 @@ export default (
 /******************************************************************************/
 
 interface QueryConditions {
-  "shopName"?: string;
-  "images"?: { $all: string[] };
-  "numProducts"?: { $gte?: number; $lte?: number; };
+  "round.roundId"?: mongoose.Types.ObjectId;
+  "round.roundName"?: string;
+
+  "trackName"?: string;
+
+  "contributions.installmentValue"?: { $gte?: number; $lte?: number; };
+  "contributions.totalValue"?: { $gte?: number; $lte?: number; };
+
+  "adminFeePercentage"?: { $gte?: number; $lte?: number; };
+
+  "products.num"?: { $gte?: number; $lte?: number; };
+  "products.value"?: { $gte?: number; $lte?: number; };
+
   $text?: { $search: string };
 }
 
 /******************************************************************************/
 
-function makeConditions ( filtrationCriteria: storage.grocRound.shop.FiltrationCriteria ): Promise<QueryConditions> {
+function makeConditions ( filtrationCriteria: storage.grocRound.track.FiltrationCriteria ): Promise<QueryConditions> {
 
-  return new Promise<QueryConditions>(( resolve, reject ) => {
+  return new Promise<QueryConditions>( ( resolve, reject ) => {
 
     let conditions: QueryConditions = {};
 
-    if ( filtrationCriteria.shopName ) {
-      conditions[ "shopName" ] = filtrationCriteria.shopName;
-    }
-    
-    if ( filtrationCriteria.images ) {
-      conditions[ "images" ] = { $all: filtrationCriteria.images };
-    }
-    
-    if ( filtrationCriteria.numProducts ) {
-      conditions[ "numProducts" ] = {};
-      if ( filtrationCriteria.numProducts.min ) {
-        conditions[ "numProducts" ].$gte = filtrationCriteria.numProducts.min;
+    if ( filtrationCriteria.round ) {
+
+      if ( filtrationCriteria.round.roundId ) {
+        conditions[ "round.roundId" ] = mongoose.Types.ObjectId( filtrationCriteria.round.roundId );
       }
-      if ( filtrationCriteria.numProducts.max ) {
-        conditions[ "numProducts" ].$lte = filtrationCriteria.numProducts.max;
+
+      if ( filtrationCriteria.round.roundName ) {
+        conditions[ "round.roundName" ] = filtrationCriteria.round.roundName;
       }
+
+    }
+
+    if ( filtrationCriteria.trackName ) {
+      conditions[ "trackName" ] = filtrationCriteria.trackName;
+    }
+
+    if ( filtrationCriteria.contributions ) {
+
+      if ( filtrationCriteria.contributions.installmentValue ) {
+        conditions[ "contributions.installmentValue" ] = {};
+        if ( filtrationCriteria.contributions.installmentValue.min ) {
+          conditions[ "contributions.installmentValue" ].$gte = filtrationCriteria.contributions.installmentValue.min;
+        }
+        if ( filtrationCriteria.contributions.installmentValue.max ) {
+          conditions[ "contributions.installmentValue" ].$lte = filtrationCriteria.contributions.installmentValue.max;
+        }
+      }
+
+      if ( filtrationCriteria.contributions.totalValue ) {
+        conditions[ "contributions.totalValue" ] = {};
+        if ( filtrationCriteria.contributions.totalValue.min ) {
+          conditions[ "contributions.totalValue" ].$gte = filtrationCriteria.contributions.totalValue.min;
+        }
+        if ( filtrationCriteria.contributions.totalValue.max ) {
+          conditions[ "contributions.totalValue" ].$lte = filtrationCriteria.contributions.totalValue.max;
+        }
+      }
+
+    }
+
+    if ( filtrationCriteria.adminFeePercentage ) {
+      conditions[ "adminFeePercentage" ] = {};
+      if ( filtrationCriteria.adminFeePercentage.min ) {
+        conditions[ "adminFeePercentage" ].$gte = filtrationCriteria.adminFeePercentage.min;
+      }
+      if ( filtrationCriteria.adminFeePercentage.max ) {
+        conditions[ "adminFeePercentage" ].$lte = filtrationCriteria.adminFeePercentage.max;
+      }
+    }
+
+    if ( filtrationCriteria.products ) {
+
+      if ( filtrationCriteria.products.num ) {
+        conditions[ "products.num" ] = {};
+        if ( filtrationCriteria.products.num.min ) {
+          conditions[ "products.num" ].$gte = filtrationCriteria.products.num.min;
+        }
+        if ( filtrationCriteria.products.num.max ) {
+          conditions[ "products.num" ].$lte = filtrationCriteria.products.num.max;
+        }
+      }
+
+      if ( filtrationCriteria.products.value ) {
+        conditions[ "products.value" ] = {};
+        if ( filtrationCriteria.products.value.min ) {
+          conditions[ "products.value" ].$gte = filtrationCriteria.products.value.min;
+        }
+        if ( filtrationCriteria.products.value.max ) {
+          conditions[ "products.value" ].$lte = filtrationCriteria.products.value.max;
+        }
+      }
+
     }
 
     if ( filtrationCriteria.textSearch ) {
@@ -93,11 +159,18 @@ function makeConditions ( filtrationCriteria: storage.grocRound.shop.FiltrationC
 
 /******************************************************************************/
 
-function makeSortCriteria ( sortCriteria: storage.grocRound.shop.SortCriteria ): Promise<string> {
+function makeSortCriteria ( sortCriteria: storage.grocRound.track.SortCriteria ): Promise<string> {
 
-  return new Promise<string>(( resolve, reject ) => {
+  return new Promise<string>( ( resolve, reject ) => {
     let sortString;
+
     sortString = sortCriteria.criteria;
+
+    if ( sortCriteria.criteria == "installmentValue" ) sortString = "contributions.installmentValue";
+    if ( sortCriteria.criteria == "contributionsValue" ) sortString = "contributions.totalValue";
+    if ( sortCriteria.criteria == "numProducts" ) sortString = "products.num";
+    if ( sortCriteria.criteria == "valueProducts" ) sortString = "products.value";
+
     if ( sortCriteria.order === "Descending" ) {
       sortString = "-" + sortString;
     }
@@ -108,17 +181,29 @@ function makeSortCriteria ( sortCriteria: storage.grocRound.shop.SortCriteria ):
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
-  models.forEach(( model ) => {
+  models.forEach( ( model ) => {
 
-    let details: PartialModel = {
-      shopName: model.shopName,
-      numProducts: model.numProducts
+    let details: Partial<Model> = {
+      round: {
+        roundId: mongoose.Types.ObjectId( model.round.roundId ),
+        roundName: model.round.roundName
+      },
+      trackName: model.trackName,
+      contributions: {
+        installmentValue: model.contributions.installmentValue,
+        totalValue: model.contributions.totalValue
+      },
+      adminFeePercentage: model.adminFeePercentage,
+      products: {
+        num: model.products.num,
+        value: model.products.value
+      }
     };
-    
+
     returnDetails.push( details );
 
   } );
@@ -129,37 +214,52 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
 
 /******************************************************************************/
 
-function generateUpdateDetails ( document: Model, details: storage.grocRound.shop.UpdateDetails ): Promise<Model> {
+function generateUpdateDetails ( document: Model, details: storage.grocRound.track.UpdateDetails ): Promise<Model> {
 
-  return new Promise<Model>(( resolve, reject ) => {
+  return new Promise<Model>( ( resolve, reject ) => {
 
-    if ( details.shopName ) {
-      document.shopName = details.shopName;
+    if ( details.round ) {
+
+      if ( details.round.roundId ) {
+        document.round.roundId = mongoose.Types.ObjectId( details.round.roundId );
+      }
+
+      if ( details.round.roundName ) {
+        document.round.roundName = details.round.roundName;
+      }
+
     }
-    
-    if ( details.imagesToAdd ) {
-      details.imagesToAdd.forEach(( image ) => {
-        document.images.push( image );
-      } );
+
+    if ( details.trackName ) {
+      document.trackName = details.trackName;
     }
-    
-    if ( details.imagesToRemove ) {
-      details.imagesToRemove.forEach(( image ) => {
-        let index = document.images.indexOf( image );
-        if ( index && index != -1 ) {
-          document.images.splice( index, 1 );
-        }
-      } );
+
+    if ( details.contributions ) {
+
+      if ( details.contributions.installmentValue ) {
+        document.contributions.installmentValue = details.contributions.installmentValue;
+      }
+
+      if ( details.contributions.totalValue ) {
+        document.contributions.totalValue = details.contributions.totalValue;
+      }
+
     }
-    
-    if ( details.numProductsPlus ) {
-      document.numProducts += details.numProductsPlus;
+
+    if ( details.adminFeePercentage ) {
+      document.adminFeePercentage = details.adminFeePercentage;
     }
-    if ( details.numProductsMinus ) {
-      document.numProducts -= details.numProductsMinus;
-    }
-    if ( details.numProducts ) {
-      document.numProducts = details.numProducts;
+
+    if ( details.products ) {
+
+      if ( details.products.num ) {
+        document.products.num = details.products.num;
+      }
+
+      if ( details.products.value ) {
+        document.products.value = details.products.value;
+      }
+
     }
 
     resolve( document );
@@ -170,26 +270,38 @@ function generateUpdateDetails ( document: Model, details: storage.grocRound.sho
 
 /******************************************************************************/
 
-function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.grocRound.shop.Super[]> {
+function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.grocRound.track.Super[]> {
 
   return this.checkThrow( forceThrow )
-    .then(( response: any ) => {
+    .then( ( response: any ) => {
 
-      return new Promise<dataModel.grocRound.shop.Super[]>(( resolve, reject ) => {
+      return new Promise<dataModel.grocRound.track.Super[]>( ( resolve, reject ) => {
 
-        let returnModels: dataModel.grocRound.shop.Super[] = [];
+        let returnModels: dataModel.grocRound.track.Super[] = [];
 
-        models.forEach(( model ) => {
+        models.forEach( ( model ) => {
 
-          let returnModel: dataModel.grocRound.shop.Super = {
+          let returnModel: dataModel.grocRound.track.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
-            shopName: model.shopName,
-            numProducts: model.numProducts,
+            round: {
+              roundId: model.round.roundId.toHexString(),
+              roundName: model.round.roundName
+            },
+            trackName: model.trackName,
+            contributions: {
+              installmentValue: model.contributions.installmentValue,
+              totalValue: model.contributions.totalValue
+            },
+            adminFeePercentage: model.adminFeePercentage,
+            products: {
+              num: model.products.num,
+              value: model.products.value
+            },
             createdAt: model.createdAt,
             updatedAt: model.updatedAt
           };
 
-          
+
           returnModels.push( returnModel );
 
         } );

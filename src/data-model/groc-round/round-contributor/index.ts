@@ -6,7 +6,7 @@ import * as dataModel from "../../../data-model";
 
 export interface Super extends dataModel.DataModel {
   round: dataModel.grocRound.round.RoundInfo;
-  user: dataModel.core.user.Super;
+  user: dataModel.core.user.UserInfo;
   contributions: Contributions;
   tracks: TrackInfo[];
   cart: {

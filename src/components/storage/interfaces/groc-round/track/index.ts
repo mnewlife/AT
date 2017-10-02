@@ -67,8 +67,8 @@ export type FiltrationCriteria = Partial<{
 
 /******************************************************************************/
 
-export type SortOptions = "createdAt" | "updatedAt" | "numProducts" | "installmentValue"
-  | "contributionsValue" | "adminFee" | "numProducts" | "valueProducts";
+export type SortOptions = "createdAt" | "updatedAt" | "installmentValue"
+  | "contributionsValue" | "adminFeePercentage" | "numProducts" | "valueProducts";
 
 export interface SortCriteria extends storage.BaseSortCriteria {
   criteria: SortOptions;

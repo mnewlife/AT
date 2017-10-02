@@ -74,7 +74,7 @@ interface QueryConditions {
 
 function makeConditions ( filtrationCriteria: storage.grocRound.product.FiltrationCriteria ): Promise<QueryConditions> {
 
-  return new Promise<QueryConditions>(( resolve, reject ) => {
+  return new Promise<QueryConditions>( ( resolve, reject ) => {
 
     let conditions: QueryConditions = {};
 
@@ -179,7 +179,7 @@ function makeConditions ( filtrationCriteria: storage.grocRound.product.Filtrati
 
 function makeSortCriteria ( sortCriteria: storage.grocRound.product.SortCriteria ): Promise<string> {
 
-  return new Promise<string>(( resolve, reject ) => {
+  return new Promise<string>( ( resolve, reject ) => {
     let sortString;
     if ( sortCriteria.criteria === "effectivePrice" ) {
       sortString = "effectivePrice.price";
@@ -196,15 +196,16 @@ function makeSortCriteria ( sortCriteria: storage.grocRound.product.SortCriteria
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
-  models.forEach(( model ) => {
+  models.forEach( ( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       label: model.label,
       priceValues: {},
+      prices: [],
       effectivePrice: {
         price: model.effectivePrice.price
       }
@@ -252,24 +253,30 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
 
 function generateUpdateDetails ( document: Model, details: storage.grocRound.product.UpdateDetails ): Promise<Model> {
 
-  return new Promise<Model>(( resolve, reject ) => {
+  return new Promise<Model>( ( resolve, reject ) => {
 
     if ( details.label ) {
       document.label = details.label;
     }
 
-    if ( details.imagesToAdd ) {
-      details.imagesToAdd.forEach(( image ) => {
+    if ( details.images ) {
+      document.images = [];
+      details.images.forEach( ( image ) => {
         document.images.push( image );
       } );
     }
 
-    if ( details.imagesToRemove ) {
-      details.imagesToRemove.forEach(( image ) => {
-        let index = document.images.indexOf( image );
-        if ( index && index != -1 ) {
-          document.images.splice( index, 1 );
-        }
+    if ( details.prices ) {
+      document.prices = [];
+      details.prices.forEach( ( price ) => {
+        document.prices.push( {
+          shop: {
+            shopId: mongoose.Types.ObjectId( price.shop.shopId ),
+            shopName: price.shop.shopName
+          },
+          quantity: price.quantity,
+          price: price.price
+        } );
       } );
     }
 
@@ -308,17 +315,18 @@ function generateUpdateDetails ( document: Model, details: storage.grocRound.pro
 function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.grocRound.product.Super[]> {
 
   return this.checkThrow( forceThrow )
-    .then(( response: any ) => {
+    .then( ( response: any ) => {
 
-      return new Promise<dataModel.grocRound.product.Super[]>(( resolve, reject ) => {
+      return new Promise<dataModel.grocRound.product.Super[]>( ( resolve, reject ) => {
 
         let returnModels: dataModel.grocRound.product.Super[] = [];
 
-        models.forEach(( model ) => {
+        models.forEach( ( model ) => {
 
           let returnModel: dataModel.grocRound.product.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
             label: model.label,
+            prices: [],
             priceValues: {},
             effectivePrice: {
               price: model.effectivePrice.price
@@ -331,6 +339,18 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
           }
           if ( model.images ) {
             returnModel.images = model.images;
+          }
+          if ( model.prices ) {
+            model.prices.forEach( ( price ) => {
+              returnModel.prices.push( {
+                shop: {
+                  shopId: price.shop.shopId.toHexString(),
+                  shopName: price.shop.shopName
+                },
+                quantity: price.quantity,
+                price: price.price
+              } );
+            } );
           }
           if ( model.priceValues.min ) {
             returnModel.priceValues.min = {

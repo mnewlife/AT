@@ -108,13 +108,13 @@ function makeSortCriteria ( sortCriteria: storage.grocRound.shop.SortCriteria ):
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       shopName: model.shopName,
       numProducts: model.numProducts
     };
@@ -137,18 +137,10 @@ function generateUpdateDetails ( document: Model, details: storage.grocRound.sho
       document.shopName = details.shopName;
     }
     
-    if ( details.imagesToAdd ) {
-      details.imagesToAdd.forEach(( image ) => {
+    if ( details.images ) {
+      document.images = [];
+      details.images.forEach(( image ) => {
         document.images.push( image );
-      } );
-    }
-    
-    if ( details.imagesToRemove ) {
-      details.imagesToRemove.forEach(( image ) => {
-        let index = document.images.indexOf( image );
-        if ( index && index != -1 ) {
-          document.images.splice( index, 1 );
-        }
       } );
     }
     

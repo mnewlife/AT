@@ -68,8 +68,8 @@ export type FiltrationCriteria = Partial<{
   roundName: string;
   inProgress: boolean;
   duration: Partial<{
-    start: Date;
-    end: Date;
+    start: Partial<{ min: Date; max: Date; }>;
+    end: Partial<{ min: Date; max: Date; }>;
     months: Partial<{ min: number; max: number; }>;
   }>;
   deliveries: Partial<{
