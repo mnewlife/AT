@@ -144,13 +144,13 @@ function makeSortCriteria ( sortCriteria: storage.powertel.newCardStock.SortCrit
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       initialCount: model.initialCount,
       newCount: model.newCount,
       amount: model.amount

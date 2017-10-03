@@ -4,6 +4,7 @@ import * as mongoose from "mongoose";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import * as x from "../../../basic-schema";
+import * as user from "../../../core/user/model";
 
 /******************************************************************************/
 
@@ -31,14 +32,14 @@ let airtimePaymentSchema = new mongoose.Schema( {
 
   user: {
     userId: mongoose.Schema.Types.ObjectId,
-    emailAddress: { type: String, set: ignoreEmpty },
-    fullName: { type: String, set: ignoreEmpty }
+    emailAddress: { type: String },
+    fullName: { type: String }
   },
   channelId: mongoose.Schema.Types.ObjectId,
   transaction: {
-    identifier: { type: String, set: ignoreEmpty },
+    identifier: { type: String },
     amount: { type: Number, min: 0, default: 0 },
-    method: { type: String, set: ignoreEmpty }
+    method: { type: String }
   },
 
   createdAt: { type: Date, default: Date.now },

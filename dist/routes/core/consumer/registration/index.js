@@ -48,6 +48,7 @@ exports.default = function (getUsers, generateRandomNumber, createHashedPassword
                     verified: false,
                     verificationCode: verificationCode
                 },
+                subscriptions: [],
                 activeApps: []
             });
         })

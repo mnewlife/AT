@@ -39,16 +39,16 @@ export interface SimCard {
 let saleSchema = new mongoose.Schema( {
 
   buyer: {
-    fullName: { type: String, set: ignoreEmpty },
-    emailAddress: { type: String, set: ignoreEmpty },
-    phoneNumber: { type: String, set: ignoreEmpty }
+    fullName: { type: String },
+    emailAddress: { type: String },
+    phoneNumber: { type: String }
   },
   simCard: {
     cardId: mongoose.Schema.Types.ObjectId,
     mdn: { type: Number, min: 0, default: 0 }
   },
-  type: { type: String, set: ignoreEmpty },
-  paymentMethod: { type: String, set: ignoreEmpty },
+  type: { type: String },
+  paymentMethod: { type: String },
   unitCost: { type: Number, min: 0, default: 0 },
   amount: { type: Number, min: 0, default: 0 },
   totalCost: { type: Number, min: 0, default: 0 },

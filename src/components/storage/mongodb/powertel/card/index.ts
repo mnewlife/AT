@@ -131,13 +131,13 @@ function makeSortCriteria ( sortCriteria: storage.powertel.card.SortCriteria ): 
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       pin: model.pin,
       puk: model.puk,
       mdn: model.mdn

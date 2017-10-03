@@ -35,7 +35,6 @@ exports.default = function (findProducts, findProductById, createProduct, update
                 innerContext: innerContext
             });
         }
-        console.log("---" + req.params.productId);
         return findProductById(req.params.productId)
             .then(function (foundProduct) {
             return sendResponse(res, "grocRound-admin", true, null, {
@@ -44,7 +43,6 @@ exports.default = function (findProducts, findProductById, createProduct, update
             });
         })
             .catch(function (reason) {
-            console.log(reason);
             if (reason && reason.identifier && reason.identifier === "DocumentNotFound") {
                 return sendResponse(res, "grocRound-admin", false, "Couldn't find product", {
                     innerContext: innerContext
@@ -65,6 +63,7 @@ exports.default = function (findProducts, findProductById, createProduct, update
         }
         var details = {
             label: req.body.label,
+            prices: [],
             priceValues: {
                 min: { price: 0 },
                 max: { price: 0 },
@@ -73,6 +72,11 @@ exports.default = function (findProducts, findProductById, createProduct, update
             },
             effectivePrice: { price: 0 }
         };
+        if (req.body.prices) {
+            req.body.prices.forEach(function (price) {
+                details.prices.push(price);
+            });
+        }
         if (req.body.effectivePrice) {
             details.effectivePrice.price = req.body.effectivePrice.price;
             if (req.body.effectivePrice.shopId) {
@@ -110,11 +114,11 @@ exports.default = function (findProducts, findProductById, createProduct, update
         if (req.body.label) {
             details.label = req.body.label;
         }
-        if (req.body.imagesToAdd) {
-            details.imagesToAdd = req.body.imagesToAdd;
+        if (req.body.images) {
+            details.images = req.body.images;
         }
-        if (req.body.imagesToRemove) {
-            details.imagesToRemove = req.body.imagesToRemove;
+        if (req.body.prices) {
+            details.prices = req.body.prices;
         }
         if (req.body.priceValues) {
             details.priceValues = {};
@@ -201,6 +205,142 @@ exports.default = function (findProducts, findProductById, createProduct, update
                 innerContext: innerContext
             });
         });
+    }
+    /*********************************************************/
+    function invalidUpdateDetails(req) {
+        if (req.body.label && req.body.label !== "string") {
+            return true;
+        }
+        if (req.body.images) {
+            if (!Array.isArray(req.body.images)) {
+                return true;
+            }
+            for (var i = 0; i < req.body.images.length; i++) {
+                if (typeof req.body.images[i] !== "string") {
+                    return true;
+                }
+            }
+        }
+        if (req.body.prices) {
+            if (!Array.isArray(req.body.prices)) {
+                return true;
+            }
+            for (var i = 0; i < req.body.prices.length; i++) {
+                if (typeof req.body.prices[i] !== "object") {
+                    return true;
+                }
+                if (!req.body.prices[i].shop || typeof req.body.prices[i].shop !== "object") {
+                    return true;
+                }
+                if (!req.body.prices[i].shop.shopId || typeof req.body.prices[i].shop.shopId !== "string") {
+                    return true;
+                }
+                if (!req.body.prices[i].shop.shopName || typeof req.body.prices[i].shop.shopName !== "string") {
+                    return true;
+                }
+                if (!req.body.prices[i].quantity || typeof req.body.prices[i].quantity !== "number") {
+                    return true;
+                }
+                if (!req.body.prices[i].price || typeof req.body.prices[i].price !== "number") {
+                    return true;
+                }
+            }
+        }
+        if (req.body.priceValues && typeof req.body.priceValues !== "object") {
+            return true;
+        }
+        for (var _i = 0, _a = ["min", "max", "median", "mean"]; _i < _a.length; _i++) {
+            var value = _a[_i];
+            if (req.body.priceValues[value]) {
+                if (typeof req.body.priceValues[value] !== "object") {
+                    return true;
+                }
+                if (!req.body.priceValues[value].shopId || typeof req.body.priceValues[value].shopId !== "string") {
+                    return true;
+                }
+                if (!req.body.priceValues[value].price || typeof req.body.priceValues[value].price !== "number") {
+                    return true;
+                }
+            }
+        }
+        if (req.body.effectivePrice) {
+            if (typeof req.body.effectivePrice !== "object") {
+                return true;
+            }
+            if (req.body.effectivePrice.shopId && typeof req.body.effectivePrice.shopId !== "string") {
+                return true;
+            }
+            if (!req.body.effectivePrice.price || typeof req.body.effectivePrice.price !== "number") {
+                return true;
+            }
+        }
+        return false;
+    }
+    /*********************************************************/
+    function invalidAddDetails(req) {
+        if (!req.body.label || req.body.label !== "string") {
+            return true;
+        }
+        if (req.body.images) {
+            if (!Array.isArray(req.body.images)) {
+                return true;
+            }
+            for (var i = 0; i < req.body.images.length; i++) {
+                if (typeof req.body.images[i] !== "string") {
+                    return true;
+                }
+            }
+        }
+        if (!req.body.prices || !Array.isArray(req.body.prices)) {
+            return true;
+        }
+        for (var i = 0; i < req.body.prices.length; i++) {
+            if (typeof req.body.prices[i] !== "object") {
+                return true;
+            }
+            if (!req.body.prices[i].shop || typeof req.body.prices[i].shop !== "object") {
+                return true;
+            }
+            if (!req.body.prices[i].shop.shopId || typeof req.body.prices[i].shop.shopId !== "string") {
+                return true;
+            }
+            if (!req.body.prices[i].shop.shopName || typeof req.body.prices[i].shop.shopName !== "string") {
+                return true;
+            }
+            if (!req.body.prices[i].quantity || typeof req.body.prices[i].quantity !== "number") {
+                return true;
+            }
+            if (!req.body.prices[i].price || typeof req.body.prices[i].price !== "number") {
+                return true;
+            }
+        }
+        if (!req.body.priceValues || typeof req.body.priceValues !== "object") {
+            return true;
+        }
+        for (var _i = 0, _a = ["min", "max", "median", "mean"]; _i < _a.length; _i++) {
+            var value = _a[_i];
+            if (req.body.priceValues[value]) {
+                if (typeof req.body.priceValues[value] !== "object") {
+                    return true;
+                }
+                if (!req.body.priceValues[value].shopId || typeof req.body.priceValues[value].shopId !== "string") {
+                    return true;
+                }
+                if (!req.body.priceValues[value].price || typeof req.body.priceValues[value].price !== "number") {
+                    return true;
+                }
+            }
+        }
+        if (!req.body.effectivePrice || typeof req.body.effectivePrice !== "object") {
+            return true;
+        }
+        if (req.body.effectivePrice.shopId && typeof req.body.effectivePrice.shopId !== "string") {
+            return true;
+        }
+        if (!req.body.effectivePrice.price || typeof req.body.effectivePrice.price !== "number") {
+            return true;
+        }
+        return false;
     }
     /*********************************************************/
     return router;

@@ -32,9 +32,9 @@ let airtimeTransferSchema = new mongoose.Schema( {
   channelId: mongoose.Schema.Types.ObjectId,
   paymentId: mongoose.Schema.Types.ObjectId,
   transfer: {
-    identifier: { type: String, set: ignoreEmpty },
+    identifier: { type: String },
     amount: { type: Number, min: 0, default: 0 },
-    paymentRecorded: { type: String, set: ignoreEmpty }
+    paymentRecorded: { type: String }
   },
 
   createdAt: { type: Date, default: Date.now },

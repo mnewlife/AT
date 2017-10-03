@@ -2,7 +2,7 @@
 
 import * as http from "http";
 
-import * as storageSub from "../../../storage/interfaces/core/subscription";
+import * as storageUser from "../../../storage/interfaces/core/user";
 import * as moders from "../../../helpers/moders/interfaces";
 
 import * as interfaces from "../interfaces";
@@ -14,12 +14,12 @@ export default (
   WebSocket: interfaces.Constructor,
   events: events.Instance,
   checkThrow: moders.CheckThrow,
-  getSubs: storageSub.Instance[ "get" ],
+  getUserById: storageUser.Instance[ "getById" ],
   production: boolean,
   httpServer: http.Server
 ): interfaces.Instance => {
 
-  return new WebSocket( events, checkThrow, getSubs, production, httpServer );
+  return new WebSocket( events, checkThrow, getUserById, production, httpServer );
 
 }
 

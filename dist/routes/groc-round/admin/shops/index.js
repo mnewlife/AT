@@ -56,8 +56,8 @@ exports.default = function (findShops, findShopById, createShop, updateShopById,
     /*********************************************************/
     function addShop(req, res, next) {
         var innerContext = "add-shop";
-        if (!req.body.shopName) {
-            return sendResponse(res, "grocRound-admin", false, "Shop name is missing", {
+        if (invalidAddDetails(req)) {
+            return sendResponse(res, "grocRound-admin", false, "Something is wrong with the data you sent", {
                 innerContext: innerContext
             });
         }
@@ -88,7 +88,12 @@ exports.default = function (findShops, findShopById, createShop, updateShopById,
     function updateShop(req, res, next) {
         var innerContext = "update-shop";
         if (!req.params.shopId) {
-            return sendResponse(res, "grocRound-admin", false, "Shop ID is missing", {
+            return sendResponse(res, "grocRound-admin", false, "Update id is missing", {
+                innerContext: innerContext
+            });
+        }
+        if (invalidUpdateDetails(req)) {
+            return sendResponse(res, "grocRound-admin", false, "Something is wrong with the data you sent", {
                 innerContext: innerContext
             });
         }
@@ -96,11 +101,8 @@ exports.default = function (findShops, findShopById, createShop, updateShopById,
         if (req.body.shopName) {
             details.shopName = req.body.shopName;
         }
-        if (req.body.imagesToAdd) {
-            details.imagesToAdd = req.body.imagesToAdd;
-        }
-        if (req.body.imagesToRemove) {
-            details.imagesToRemove = req.body.imagesToRemove;
+        if (req.body.images) {
+            details.images = req.body.images;
         }
         return updateShopById(req.params.shopId, details)
             .then(function (updatedShop) {
@@ -144,6 +146,41 @@ exports.default = function (findShops, findShopById, createShop, updateShopById,
                 innerContext: innerContext
             });
         });
+    }
+    /*********************************************************/
+    function invalidUpdateDetails(req) {
+        if (req.body.shopName && typeof req.body.shopName !== "string") {
+            return true;
+        }
+        if (req.body.images && !Array.isArray(req.body.images)) {
+            return true;
+        }
+        req.body.images.forEach(function (image) {
+            if (typeof image !== "string") {
+                return true;
+            }
+        });
+        if (req.body.numProducts && typeof req.body.numProducts !== "number") {
+            return true;
+        }
+        return false;
+    }
+    /*********************************************************/
+    function invalidAddDetails(req) {
+        if (!req.body.shopName || typeof req.body.shopName !== "string") {
+            return true;
+        }
+        if (req.body.images) {
+            if (!Array.isArray(req.body.images)) {
+                return true;
+            }
+            req.body.images.forEach(function (image) {
+                if (typeof image !== "string") {
+                    return true;
+                }
+            });
+        }
+        return false;
     }
     /*********************************************************/
     return router;

@@ -9,17 +9,17 @@ import * as Moders from "../../../helpers/moders/interfaces";
 
 import * as interfaces from "../../interfaces/groc-round";
 
-import * as article from "./article";
-import * as cart from "./cart";
-import * as cartProduct from "./cart-product";
-import * as contribution from "./contribution";
-import * as deliveryFee from "./delivery-fee";
-import * as product from "./product";
-import * as round from "./round";
-import * as roundContributor from "./round-contributor";
-import * as shop from "./shop";
-import * as track from "./track";
-import * as trackProduct from "./track-product";
+import article from "./article";
+import cart from "./cart";
+import cartProduct from "./cart-product";
+import contribution from "./contribution";
+import deliveryFee from "./delivery-fee";
+import product from "./product";
+import round from "./round";
+import roundContributor from "./round-contributor";
+import shop from "./shop";
+import track from "./track";
+import trackProduct from "./track-product";
 
 /******************************************************************************/
 

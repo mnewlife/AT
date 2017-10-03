@@ -44,12 +44,13 @@ function makeSortCriteria(sortCriteria) {
 function generateAddDetails(events) {
     var returnDetails = [];
     events.forEach(function (event) {
-        returnDetails.push({
+        var details = {
             context: event.context,
             identifier: event.identifier,
             tags: event.tags,
             data: event.data
-        });
+        };
+        returnDetails.push();
     });
     return returnDetails;
 }
@@ -62,21 +63,10 @@ function generateUpdateDetails(document, details) {
         if (details.identifier) {
             document.identifier = details.identifier;
         }
-        if (details.tagsToAdd) {
-            details.tagsToAdd.forEach(function (tag) {
+        if (details.tags) {
+            document.tags = [];
+            details.tags.forEach(function (tag) {
                 document.tags.push(tag);
-            });
-        }
-        if (details.tagsToRemove) {
-            details.tagsToRemove.forEach(function (tag) {
-                var matches = document.tags.filter(function (subject) {
-                    return (subject == tag);
-                });
-                if (matches.length) {
-                    matches.forEach(function (match) {
-                        document.tags.splice(document.tags.indexOf(match));
-                    });
-                }
             });
         }
         if (details.data) {

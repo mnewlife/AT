@@ -3,7 +3,7 @@
 import * as Promise from "bluebird";
 import * as http from "http";
 
-import * as storageSub from "../../storage/interfaces/core/subscription";
+import * as storageUser from "../../storage/interfaces/core/user";
 import * as moders from "../../helpers/moders/interfaces";
 import * as events from "./events/interfaces";
 
@@ -13,7 +13,7 @@ export interface Constructor {
   new(
     events: events.Instance,
     checkThrow: moders.CheckThrow,
-    getSubs: storageSub.Instance[ "get" ],
+    getUserById: storageUser.Instance[ "getById" ],
     production: boolean,
     httpServer: http.Server
   ): Instance;

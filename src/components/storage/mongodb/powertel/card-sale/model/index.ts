@@ -29,7 +29,7 @@ let cardSaleSchema = new mongoose.Schema( {
   cost: { type: Number, min: 0, default: 0 },
   conditions: {
     withRouter: { type: Boolean, default: false },
-    routerType: { type: String, set: ignoreEmpty },
+    routerType: { type: String },
   },
 
   createdAt: { type: Date, default: Date.now },

@@ -5,6 +5,7 @@ import * as mongoose from "mongoose";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import * as x from "../../../basic-schema";
+import * as user from "../../../core/user/model";
 
 /******************************************************************************/
 
@@ -35,12 +36,12 @@ let cardSchema = new mongoose.Schema( {
   mdn: { type: Number, min: 0, default: 0 },
   buyer: {
     cardSaleId: mongoose.Schema.Types.ObjectId,
-    fullName: { type: String, set: ignoreEmpty }
+    fullName: { type: String }
   },
   user: {
     userId: mongoose.Schema.Types.ObjectId,
-    emailAddress: { type: String, set: ignoreEmpty },
-    fullName: { type: String, set: ignoreEmpty }
+    emailAddress: { type: String },
+    fullName: { type: String }
   },
 
   createdAt: { type: Date, default: Date.now },

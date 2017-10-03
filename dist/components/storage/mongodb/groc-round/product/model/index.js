@@ -2,13 +2,23 @@
 /******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require("mongoose");
-var preparation_1 = require("../../../preparation");
+var x = require("../../../basic-schema");
+var shop = require("../../shop/model");
 ;
 ;
 /******************************************************************************/
+exports.ProductInfoSchema = {
+    productId: x.ObjectIdSchema,
+    label: x.StringSchema
+};
 var productSchema = new mongoose.Schema({
-    label: { type: String, set: preparation_1.ignoreEmpty },
-    images: [String],
+    label: x.StringSchema,
+    images: [x.StringSchema],
+    prices: [{
+            shop: shop.ShopInfoSchema,
+            quantity: { type: Number, min: 0 },
+            price: { type: Number, min: 0 }
+        }],
     priceValues: {
         min: {
             shopId: mongoose.Schema.Types.ObjectId,

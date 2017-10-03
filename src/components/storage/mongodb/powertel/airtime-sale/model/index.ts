@@ -5,6 +5,7 @@ import * as mongoose from "mongoose";
 import * as mongoDB from "../../../../../../components/storage/mongodb";
 
 import * as x from "../../../basic-schema";
+import * as user from "../../../core/user/model";
 
 /******************************************************************************/
 
@@ -39,15 +40,15 @@ export interface CardInfo {
 
 let airtimeSaleSchema = new mongoose.Schema( {
 
-  buyerName: { type: String, set: ignoreEmpty },
+  buyerName: { type: String },
   card: {
-    cardId: { type: String, set: ignoreEmpty },
+    cardId: { type: String },
     mdn: { type: Number, min: 0, default: 0 }
   },
   user: {
     userId: mongoose.Schema.Types.ObjectId,
-    emailAddress: { type: String, set: ignoreEmpty },
-    fullName: { type: String, set: ignoreEmpty }    
+    emailAddress: { type: String },
+    fullName: { type: String }    
   },
   amount: { type: Number, min: 0, default: 0 },
   bundles: {

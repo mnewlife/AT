@@ -132,13 +132,13 @@ function makeSortCriteria ( sortCriteria: storage.call263.airtimePayment.SortCri
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       user: {
         userId: mongoose.Types.ObjectId( model.user.userId ),
         emailAddress: model.user.emailAddress,

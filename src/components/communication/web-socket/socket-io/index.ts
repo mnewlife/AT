@@ -25,7 +25,7 @@ export default class SocketIO implements interfaces.Instance {
   constructor(
     private readonly events: Events.Instance,
     private readonly checkThrow: moders.CheckThrow,
-    private readonly getSubs: storage.core.subscription.Instance[ "get" ],
+    private readonly getUserById: storage.core.user.Instance[ "getById" ],
     private readonly production: boolean,
     httpServer: http.Server
   ) {
@@ -366,18 +366,10 @@ export default class SocketIO implements interfaces.Instance {
 
         socket.userId = user.id;
 
-        this.getSubs( { userId: user.id }, null, null )
-          .then(( subscriptions: dataModel.core.subscription.Super[] ) => {
+        this.getUserById( user.id )
+          .then(( user: dataModel.core.user.Super ) => {
 
-            return new Promise<string[]>(( resolve, reject ) => {
-
-              let channels: string[] = subscriptions.map(( subscription: dataModel.core.subscription.Super ) => {
-                return subscription.subscription;
-              } );
-
-              resolve( channels );
-
-            } );
+            return Promise.resolve( user.subscriptions );
 
           } )
           .then(( channels: string[] ) => {

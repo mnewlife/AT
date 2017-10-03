@@ -62,6 +62,9 @@ function makeConditions(filtrationCriteria) {
         if (filtrationCriteria.activeApps) {
             conditions["activeApps"] = { $all: filtrationCriteria.activeApps };
         }
+        if (filtrationCriteria.subscriptions) {
+            conditions["subscriptions"] = { $all: filtrationCriteria.subscriptions };
+        }
         if (filtrationCriteria.residentialDetails) {
             if (filtrationCriteria.residentialDetails.country) {
                 conditions["residentialDetails.country"] = filtrationCriteria.residentialDetails.country;
@@ -72,9 +75,6 @@ function makeConditions(filtrationCriteria) {
             if (filtrationCriteria.residentialDetails.address) {
                 conditions["residentialDetails.address"] = filtrationCriteria.residentialDetails.address;
             }
-        }
-        if (filtrationCriteria.textSearch) {
-            conditions.$text = { $search: filtrationCriteria.textSearch };
         }
         if (filtrationCriteria.textSearch) {
             conditions.$text = { $search: filtrationCriteria.textSearch };
@@ -107,15 +107,14 @@ function generateAddDetails(models) {
             password: model.password,
             accessLevel: model.accessLevel,
             verification: {
-                verified: model.verification.verified
+                verified: model.verification.verified,
+                numVerAttempts: model.verification.numVerAttempts
             },
+            subscriptions: model.subscriptions,
             activeApps: []
         };
         if (model.resetCode) {
             details.resetCode = model.resetCode;
-        }
-        if (model.verification.numVerAttempts) {
-            details.verification.numVerAttempts = model.verification.numVerAttempts;
         }
         if (model.verification.verificationCode) {
             details.verification.verificationCode = model.verification.verificationCode;
@@ -123,7 +122,9 @@ function generateAddDetails(models) {
         if (model.personalDetails) {
             details.personalDetails = {
                 firstName: model.personalDetails.firstName,
-                lastName: model.personalDetails.lastName
+                lastName: model.personalDetails.lastName,
+                dateOfBirth: model.personalDetails.dateOfBirth,
+                gender: model.personalDetails.gender
             };
         }
         if (model.contactDetails) {
@@ -202,21 +203,6 @@ function generateUpdateDetails(document, details) {
                     phoneNumbers: []
                 };
             }
-            if (details.contactDetails.phoneNumbersToRemove) {
-                details.contactDetails.phoneNumbersToRemove.forEach(function (phoneNumber) {
-                    var matches = document.contactDetails.phoneNumbers.filter(function (subject) {
-                        return (subject === phoneNumber);
-                    });
-                    if (matches.length) {
-                        document.contactDetails.phoneNumbers.splice(document.contactDetails.phoneNumbers.indexOf(matches[0], 1));
-                    }
-                });
-            }
-            if (details.contactDetails.phoneNumbersToAdd) {
-                details.contactDetails.phoneNumbersToAdd.forEach(function (phoneNumber) {
-                    document.contactDetails.phoneNumbers.push(phoneNumber);
-                });
-            }
             if (details.contactDetails.phoneNumbers) {
                 document.contactDetails.phoneNumbers = [];
                 details.contactDetails.phoneNumbers.forEach(function (number) {
@@ -241,6 +227,30 @@ function generateUpdateDetails(document, details) {
             if (details.residentialDetails.address) {
                 document.residentialDetails.address = details.residentialDetails.address;
             }
+        }
+        if (details.subscriptionsToAdd) {
+            if (!document.subscriptions) {
+                document.subscriptions = [];
+            }
+            details.subscriptionsToAdd.forEach(function (app) {
+                document.subscriptions.push(app);
+            });
+        }
+        if (details.subscriptionsToRemove) {
+            if (!document.subscriptions) {
+                document.subscriptions = [];
+            }
+            details.subscriptionsToRemove.forEach(function (app) {
+                var matches = document.subscriptions.filter(function (subject) {
+                    return (subject == app);
+                });
+                if (matches.length) {
+                    document.subscriptions.splice(document.subscriptions.indexOf(matches[0]), 1);
+                }
+            });
+        }
+        if (details.subscriptions) {
+            document.subscriptions = details.subscriptions;
         }
         if (details.activeAppsToAdd) {
             if (!document.activeApps) {
@@ -283,6 +293,7 @@ function convertToAbstract(models, forceThrow) {
                         verified: model.verification.verified,
                         numVerAttempts: model.verification.numVerAttempts
                     },
+                    subscriptions: model.subscriptions,
                     activeApps: model.activeApps,
                     createdAt: model.createdAt,
                     updatedAt: model.updatedAt

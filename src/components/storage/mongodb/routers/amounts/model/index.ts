@@ -21,7 +21,7 @@ export type PartialModel = Partial<ModelNuance>;
 
 let amountsSchema = new mongoose.Schema( {
 
-  type: { type: String, set: ignoreEmpty },
+  type: { type: String },
   count: { type: Number, min: 0, default: 0 },
   newStock: { type: Number, min: 0, default: 0 },
   sold: { type: Number, min: 0, default: 0 },

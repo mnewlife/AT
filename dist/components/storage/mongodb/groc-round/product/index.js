@@ -122,6 +122,7 @@ function generateAddDetails(models) {
         var details = {
             label: model.label,
             priceValues: {},
+            prices: [],
             effectivePrice: {
                 price: model.effectivePrice.price
             }
@@ -166,17 +167,23 @@ function generateUpdateDetails(document, details) {
         if (details.label) {
             document.label = details.label;
         }
-        if (details.imagesToAdd) {
-            details.imagesToAdd.forEach(function (image) {
+        if (details.images) {
+            document.images = [];
+            details.images.forEach(function (image) {
                 document.images.push(image);
             });
         }
-        if (details.imagesToRemove) {
-            details.imagesToRemove.forEach(function (image) {
-                var index = document.images.indexOf(image);
-                if (index && index != -1) {
-                    document.images.splice(index, 1);
-                }
+        if (details.prices) {
+            document.prices = [];
+            details.prices.forEach(function (price) {
+                document.prices.push({
+                    shop: {
+                        shopId: mongoose.Types.ObjectId(price.shop.shopId),
+                        shopName: price.shop.shopName
+                    },
+                    quantity: price.quantity,
+                    price: price.price
+                });
             });
         }
         if (details.priceValues) {
@@ -215,6 +222,7 @@ function convertToAbstract(models, forceThrow) {
                 var returnModel = {
                     id: model._id.toHexString(),
                     label: model.label,
+                    prices: [],
                     priceValues: {},
                     effectivePrice: {
                         price: model.effectivePrice.price
@@ -227,6 +235,18 @@ function convertToAbstract(models, forceThrow) {
                 }
                 if (model.images) {
                     returnModel.images = model.images;
+                }
+                if (model.prices) {
+                    model.prices.forEach(function (price) {
+                        returnModel.prices.push({
+                            shop: {
+                                shopId: price.shop.shopId.toHexString(),
+                                shopName: price.shop.shopName
+                            },
+                            quantity: price.quantity,
+                            price: price.price
+                        });
+                    });
                 }
                 if (model.priceValues.min) {
                     returnModel.priceValues.min = {

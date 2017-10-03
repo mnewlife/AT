@@ -107,12 +107,6 @@ export default class ProfileShared implements interfaces.Instance {
 
       if ( req.body.contactDetails ) {
         details.contactDetails = {};
-        if ( req.body.contactDetails.phoneNumbersToAdd ) {
-          details.contactDetails.phoneNumbersToAdd = req.body.contactDetails.phoneNumbersToAdd;
-        }
-        if ( req.body.contactDetails.phoneNumbersToRemove ) {
-          details.contactDetails.phoneNumbersToRemove = req.body.contactDetails.phoneNumbersToRemove;
-        }
         if ( req.body.contactDetails.phoneNumbers ) {
           details.contactDetails.phoneNumbers = req.body.contactDetails.phoneNumbers;
         }

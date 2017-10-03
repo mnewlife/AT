@@ -2,18 +2,17 @@
 /******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require("mongoose");
-var preparation_1 = require("../../../preparation");
 /******************************************************************************/
 var airtimeSaleSchema = new mongoose.Schema({
-    buyerName: { type: String, set: preparation_1.ignoreEmpty },
+    buyerName: { type: String },
     card: {
-        cardId: { type: String, set: preparation_1.ignoreEmpty },
+        cardId: { type: String },
         mdn: { type: Number, min: 0, default: 0 }
     },
     user: {
         userId: mongoose.Schema.Types.ObjectId,
-        emailAddress: { type: String, set: preparation_1.ignoreEmpty },
-        fullName: { type: String, set: preparation_1.ignoreEmpty }
+        emailAddress: { type: String },
+        fullName: { type: String }
     },
     amount: { type: Number, min: 0, default: 0 },
     bundles: {

@@ -64,17 +64,10 @@ function generateUpdateDetails(document, details) {
         if (details.shopName) {
             document.shopName = details.shopName;
         }
-        if (details.imagesToAdd) {
-            details.imagesToAdd.forEach(function (image) {
+        if (details.images) {
+            document.images = [];
+            details.images.forEach(function (image) {
                 document.images.push(image);
-            });
-        }
-        if (details.imagesToRemove) {
-            details.imagesToRemove.forEach(function (image) {
-                var index = document.images.indexOf(image);
-                if (index && index != -1) {
-                    document.images.splice(index, 1);
-                }
             });
         }
         if (details.numProductsPlus) {

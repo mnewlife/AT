@@ -86,6 +86,7 @@ export default (
             verified: false,
             verificationCode: verificationCode
           },
+          subscriptions: [],
           activeApps: []
         } );
 

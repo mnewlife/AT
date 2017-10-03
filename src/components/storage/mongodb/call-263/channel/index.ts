@@ -112,13 +112,13 @@ function makeSortCriteria ( sortCriteria: storage.call263.channel.SortCriteria )
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       allocated: model.allocated,
       allocatedTo: mongoose.Types.ObjectId( model.allocatedTo ),
       code: model.code,

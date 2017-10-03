@@ -6,11 +6,11 @@ var IO = require("socket.io");
 /******************************************************************************/
 var SocketIO = (function () {
     /*****************************************************************/
-    function SocketIO(events, checkThrow, getSubs, production, httpServer) {
+    function SocketIO(events, checkThrow, getUserById, production, httpServer) {
         var _this = this;
         this.events = events;
         this.checkThrow = checkThrow;
-        this.getSubs = getSubs;
+        this.getUserById = getUserById;
         this.production = production;
         /*****************************************************************/
         this.getUserSocket = function (userId) {
@@ -260,14 +260,9 @@ var SocketIO = (function () {
                         return;
                     }
                     socket.userId = user_1.id;
-                    _this.getSubs({ userId: user_1.id }, null, null)
-                        .then(function (subscriptions) {
-                        return new Promise(function (resolve, reject) {
-                            var channels = subscriptions.map(function (subscription) {
-                                return subscription.subscription;
-                            });
-                            resolve(channels);
-                        });
+                    _this.getUserById(user_1.id)
+                        .then(function (user) {
+                        return Promise.resolve(user.subscriptions);
                     })
                         .then(function (channels) {
                         channels.forEach(function (channel) {

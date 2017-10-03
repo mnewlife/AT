@@ -125,13 +125,13 @@ function makeSortCriteria ( sortCriteria: storage.routers.amounts.SortCriteria )
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       type: model.type,
       count: model.count,
       newStock: model.newStock,

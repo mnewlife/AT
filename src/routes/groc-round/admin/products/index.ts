@@ -36,7 +36,7 @@ export default (
     let innerContext: string = "get-products";
 
     return findProducts( null, null, null )
-      .then(( foundProducts: dataModel.grocRound.product.Super[] ) => {
+      .then( ( foundProducts: dataModel.grocRound.product.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           foundProducts: foundProducts,
@@ -44,7 +44,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         return sendResponse( res, "grocRound-admin", false, null, {
           innerContext: innerContext
@@ -66,10 +66,8 @@ export default (
       } );
     }
 
-    console.log( "---" + req.params.productId );
-
     return findProductById( req.params.productId )
-      .then(( foundProduct: dataModel.grocRound.product.Super ) => {
+      .then( ( foundProduct: dataModel.grocRound.product.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           foundProduct: foundProduct,
@@ -77,9 +75,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
-
-        console.log( reason );
+      .catch( ( reason: any ) => {
 
         if ( reason && reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return sendResponse( res, "grocRound-admin", false, "Couldn't find product", {
@@ -109,6 +105,7 @@ export default (
 
     let details: storageProduct.AddDetails = {
       label: req.body.label,
+      prices: [],
       priceValues: {
         min: { price: 0 },
         max: { price: 0 },
@@ -117,6 +114,12 @@ export default (
       },
       effectivePrice: { price: 0 }
     };
+
+    if ( req.body.prices ) {
+      req.body.prices.forEach( ( price: dataModel.grocRound.product.Price ) => {
+        details.prices.push( price );
+      } );
+    }
 
     if ( req.body.effectivePrice ) {
       details.effectivePrice.price = req.body.effectivePrice.price;
@@ -127,13 +130,13 @@ export default (
 
     if ( req.body.images ) {
       details.images = [];
-      req.body.images.forEach(( image: string ) => {
+      req.body.images.forEach( ( image: string ) => {
         details.images.push( image );
       } );
     }
 
     return createProduct( details )
-      .then(( createdProduct: dataModel.grocRound.product.Super ) => {
+      .then( ( createdProduct: dataModel.grocRound.product.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           addedProduct: createdProduct,
@@ -141,7 +144,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         return sendResponse( res, "grocRound-admin", false, null, {
           innerContext: innerContext
@@ -169,11 +172,12 @@ export default (
       details.label = req.body.label;
     }
 
-    if ( req.body.imagesToAdd ) {
-      details.imagesToAdd = req.body.imagesToAdd;
+    if ( req.body.images ) {
+      details.images = req.body.images;
     }
-    if ( req.body.imagesToRemove ) {
-      details.imagesToRemove = req.body.imagesToRemove;
+
+    if ( req.body.prices ) {
+      details.prices = req.body.prices;
     }
 
     if ( req.body.priceValues ) {
@@ -230,7 +234,7 @@ export default (
     }
 
     return updateProductById( req.params.productId, details )
-      .then(( updatedProduct: dataModel.grocRound.product.Super ) => {
+      .then( ( updatedProduct: dataModel.grocRound.product.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           updatedProduct: updatedProduct,
@@ -238,7 +242,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         if ( reason && reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return sendResponse( res, "grocRound-admin", false, "Couldn't find product", {
@@ -267,14 +271,14 @@ export default (
     }
 
     return removeProductById( req.params.productId )
-      .then(( response: any ) => {
+      .then( ( response: any ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           innerContext: innerContext
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         if ( reason && reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return sendResponse( res, "grocRound-admin", false, "Couldn't find product", {
@@ -287,6 +291,185 @@ export default (
         } );
 
       } );
+
+  }
+
+  /*********************************************************/
+
+  function invalidUpdateDetails ( req: express.Request ): boolean {
+
+    if ( req.body.label && req.body.label !== "string" ) {
+      return true;
+    }
+
+    if ( req.body.images ) {
+      if ( !Array.isArray( req.body.images ) ) {
+        return true;
+      }
+      for ( let i = 0; i < req.body.images.length; i++ ) {
+        if ( typeof req.body.images[ i ] !== "string" ) {
+          return true;
+        }
+      }
+    }
+
+    if ( req.body.prices ) {
+
+      if ( !Array.isArray( req.body.prices ) ) {
+        return true;
+      }
+
+      for ( let i = 0; i < req.body.prices.length; i++ ) {
+
+        if ( typeof req.body.prices[ i ] !== "object" ) {
+          return true;
+        }
+
+        if ( !req.body.prices[ i ].shop || typeof req.body.prices[ i ].shop !== "object" ) {
+          return true;
+        }
+        if ( !req.body.prices[ i ].shop.shopId || typeof req.body.prices[ i ].shop.shopId !== "string" ) {
+          return true;
+        }
+        if ( !req.body.prices[ i ].shop.shopName || typeof req.body.prices[ i ].shop.shopName !== "string" ) {
+          return true;
+        }
+
+        if ( !req.body.prices[ i ].quantity || typeof req.body.prices[ i ].quantity !== "number" ) {
+          return true;
+        }
+
+        if ( !req.body.prices[ i ].price || typeof req.body.prices[ i ].price !== "number" ) {
+          return true;
+        }
+
+      }
+
+    }
+
+    if ( req.body.priceValues && typeof req.body.priceValues !== "object" ) {
+      return true;
+    }
+
+    for ( let value of [ "min", "max", "median", "mean" ] ) {
+
+      if ( req.body.priceValues[ value ] ) {
+
+        if ( typeof req.body.priceValues[ value ] !== "object" ) {
+          return true;
+        }
+        if ( !req.body.priceValues[ value ].shopId || typeof req.body.priceValues[ value ].shopId !== "string" ) {
+          return true;
+        }
+        if ( !req.body.priceValues[ value ].price || typeof req.body.priceValues[ value ].price !== "number" ) {
+          return true;
+        }
+
+      }
+
+    }
+
+    if ( req.body.effectivePrice ) {
+
+      if ( typeof req.body.effectivePrice !== "object" ) {
+        return true;
+      }
+
+      if ( req.body.effectivePrice.shopId && typeof req.body.effectivePrice.shopId !== "string" ) {
+        return true;
+      }
+      if ( !req.body.effectivePrice.price || typeof req.body.effectivePrice.price !== "number" ) {
+        return true;
+      }
+
+    }
+
+    return false;
+
+  }
+
+  /*********************************************************/
+
+  function invalidAddDetails ( req: express.Request ): boolean {
+
+    if ( !req.body.label || req.body.label !== "string" ) {
+      return true;
+    }
+
+    if ( req.body.images ) {
+      if ( !Array.isArray( req.body.images ) ) {
+        return true;
+      }
+      for ( let i = 0; i < req.body.images.length; i++ ) {
+        if ( typeof req.body.images[ i ] !== "string" ) {
+          return true;
+        }
+      }
+    }
+
+    if ( !req.body.prices || !Array.isArray( req.body.prices ) ) {
+      return true;
+    }
+
+    for ( let i = 0; i < req.body.prices.length; i++ ) {
+
+      if ( typeof req.body.prices[ i ] !== "object" ) {
+        return true;
+      }
+
+      if ( !req.body.prices[ i ].shop || typeof req.body.prices[ i ].shop !== "object" ) {
+        return true;
+      }
+      if ( !req.body.prices[ i ].shop.shopId || typeof req.body.prices[ i ].shop.shopId !== "string" ) {
+        return true;
+      }
+      if ( !req.body.prices[ i ].shop.shopName || typeof req.body.prices[ i ].shop.shopName !== "string" ) {
+        return true;
+      }
+
+      if ( !req.body.prices[ i ].quantity || typeof req.body.prices[ i ].quantity !== "number" ) {
+        return true;
+      }
+
+      if ( !req.body.prices[ i ].price || typeof req.body.prices[ i ].price !== "number" ) {
+        return true;
+      }
+
+    }
+
+    if ( !req.body.priceValues || typeof req.body.priceValues !== "object" ) {
+      return true;
+    }
+
+    for ( let value of [ "min", "max", "median", "mean" ] ) {
+
+      if ( req.body.priceValues[ value ] ) {
+
+        if ( typeof req.body.priceValues[ value ] !== "object" ) {
+          return true;
+        }
+        if ( !req.body.priceValues[ value ].shopId || typeof req.body.priceValues[ value ].shopId !== "string" ) {
+          return true;
+        }
+        if ( !req.body.priceValues[ value ].price || typeof req.body.priceValues[ value ].price !== "number" ) {
+          return true;
+        }
+
+      }
+
+    }
+
+    if ( !req.body.effectivePrice || typeof req.body.effectivePrice !== "object" ) {
+      return true;
+    }
+    if ( req.body.effectivePrice.shopId && typeof req.body.effectivePrice.shopId !== "string" ) {
+      return true;
+    }
+    if ( !req.body.effectivePrice.price || typeof req.body.effectivePrice.price !== "number" ) {
+      return true;
+    }
+
+    return false;
 
   }
 

@@ -131,13 +131,13 @@ function makeSortCriteria ( sortCriteria: storage.powertel.airtime.SortCriteria 
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
   models.forEach(( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       checkpoint: model.checkpoint,
       newStockValue: model.newStockValue,
       amountSold: model.amountSold,

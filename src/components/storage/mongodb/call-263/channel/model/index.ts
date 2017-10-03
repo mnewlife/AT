@@ -23,9 +23,9 @@ let channelSchema = new mongoose.Schema( {
 
   allocated: { type: Boolean, default: false },
   allocatedTo: mongoose.Schema.Types.ObjectId,
-  code: { type: String, set: ignoreEmpty },
-  phoneNumber: { type: String, set: ignoreEmpty },
-  password: { type: String, set: ignoreEmpty },
+  code: { type: String },
+  phoneNumber: { type: String },
+  password: { type: String },
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }

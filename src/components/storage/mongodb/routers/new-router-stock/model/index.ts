@@ -21,7 +21,7 @@ export type PartialModel = Partial<ModelNuance>;
 
 let newRouterStockSchema = new mongoose.Schema( {
 
-  type: { type: String, set: ignoreEmpty },
+  type: { type: String },
   initialCount: { type: Number, min: 0, default: 0 },
   newCount: { type: Number, min: 0, default: 0 },
   amount: { type: Number, min: 0, default: 0 },

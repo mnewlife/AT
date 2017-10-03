@@ -36,7 +36,7 @@ export default (
     let innerContext: string = "get-shops";
 
     return findShops( null, null, null )
-      .then(( foundShops: dataModel.grocRound.shop.Super[] ) => {
+      .then( ( foundShops: dataModel.grocRound.shop.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           foundShops: foundShops,
@@ -44,7 +44,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         return sendResponse( res, "grocRound-admin", false, null, {
           innerContext: innerContext
@@ -67,7 +67,7 @@ export default (
     }
 
     return findShopById( req.params.shopId )
-      .then(( foundShop: dataModel.grocRound.shop.Super ) => {
+      .then( ( foundShop: dataModel.grocRound.shop.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           foundShop: foundShop,
@@ -75,7 +75,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         if ( reason && reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return sendResponse( res, "grocRound-admin", false, "Couldn't find shop", {
@@ -97,8 +97,8 @@ export default (
 
     let innerContext: string = "add-shop";
 
-    if ( !req.body.shopName ) {
-      return sendResponse( res, "grocRound-admin", false, "Shop name is missing", {
+    if ( invalidAddDetails( req ) ) {
+      return sendResponse( res, "grocRound-admin", false, "Something is wrong with the data you sent", {
         innerContext: innerContext
       } );
     }
@@ -110,13 +110,13 @@ export default (
 
     if ( req.body.images ) {
       details.images = [];
-      req.body.images.forEach(( image: string ) => {
+      req.body.images.forEach( ( image: string ) => {
         details.images.push( image );
       } );
     }
 
     return createShop( details )
-      .then(( createdShop: dataModel.grocRound.shop.Super ) => {
+      .then( ( createdShop: dataModel.grocRound.shop.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           addedShop: createdShop,
@@ -124,7 +124,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         return sendResponse( res, "grocRound-admin", false, null, {
           innerContext: innerContext
@@ -141,7 +141,13 @@ export default (
     let innerContext: string = "update-shop";
 
     if ( !req.params.shopId ) {
-      return sendResponse( res, "grocRound-admin", false, "Shop ID is missing", {
+      return sendResponse( res, "grocRound-admin", false, "Update id is missing", {
+        innerContext: innerContext
+      } );
+    }
+
+    if ( invalidUpdateDetails( req ) ) {
+      return sendResponse( res, "grocRound-admin", false, "Something is wrong with the data you sent", {
         innerContext: innerContext
       } );
     }
@@ -152,15 +158,12 @@ export default (
       details.shopName = req.body.shopName;
     }
 
-    if ( req.body.imagesToAdd ) {
-      details.imagesToAdd = req.body.imagesToAdd;
-    }
-    if ( req.body.imagesToRemove ) {
-      details.imagesToRemove = req.body.imagesToRemove;
+    if ( req.body.images ) {
+      details.images = req.body.images;
     }
 
     return updateShopById( req.params.shopId, details )
-      .then(( updatedShop: dataModel.grocRound.shop.Super ) => {
+      .then( ( updatedShop: dataModel.grocRound.shop.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           updatedShop: updatedShop,
@@ -168,7 +171,7 @@ export default (
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         if ( reason && reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return sendResponse( res, "grocRound-admin", false, "Couldn't find shop", {
@@ -197,14 +200,14 @@ export default (
     }
 
     return removeShopById( req.params.shopId )
-      .then(( response: any ) => {
+      .then( ( response: any ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
           innerContext: innerContext
         } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         if ( reason && reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return sendResponse( res, "grocRound-admin", false, "Couldn't find shop", {
@@ -217,6 +220,54 @@ export default (
         } );
 
       } );
+
+  }
+
+  /*********************************************************/
+
+  function invalidUpdateDetails ( req: express.Request ): boolean {
+
+    if ( req.body.shopName && typeof req.body.shopName !== "string" ) {
+      return true;
+    }
+
+    if ( req.body.images && !Array.isArray( req.body.images ) ) {
+      return true;
+    }
+    req.body.images.forEach( ( image: any ) => {
+      if ( typeof image !== "string" ) {
+        return true;
+      }
+    } );
+
+    if ( req.body.numProducts && typeof req.body.numProducts !== "number" ) {
+      return true;
+    }
+
+    return false;
+
+  }
+
+  /*********************************************************/
+
+  function invalidAddDetails ( req: express.Request ): boolean {
+
+    if ( !req.body.shopName || typeof req.body.shopName !== "string" ) {
+      return true;
+    }
+
+    if ( req.body.images ) {
+      if ( !Array.isArray( req.body.images ) ) {
+        return true;
+      }
+      req.body.images.forEach( ( image: any ) => {
+        if ( typeof image !== "string" ) {
+          return true;
+        }
+      } );
+    }
+
+    return false;
 
   }
 

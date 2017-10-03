@@ -2,7 +2,6 @@
 /******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require("mongoose");
-var preparation_1 = require("../../../preparation");
 ;
 /******************************************************************************/
 var cardSchema = new mongoose.Schema({
@@ -11,12 +10,12 @@ var cardSchema = new mongoose.Schema({
     mdn: { type: Number, min: 0, default: 0 },
     buyer: {
         cardSaleId: mongoose.Schema.Types.ObjectId,
-        fullName: { type: String, set: preparation_1.ignoreEmpty }
+        fullName: { type: String }
     },
     user: {
         userId: mongoose.Schema.Types.ObjectId,
-        emailAddress: { type: String, set: preparation_1.ignoreEmpty },
-        fullName: { type: String, set: preparation_1.ignoreEmpty }
+        emailAddress: { type: String },
+        fullName: { type: String }
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

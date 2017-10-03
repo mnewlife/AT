@@ -21,6 +21,7 @@ export interface ModelNuance extends mongoDB.Document {
   personalDetails?: PersonalDetails;
   contactDetails?: ContactDetails;
   residentialDetails?: ResidentialDetails;
+  subscriptions: string[];
 
   activeApps: src.AppName[];
 }
@@ -95,6 +96,8 @@ let userSchema = new mongoose.Schema( {
     province: x.StringSchema,
     address: x.StringSchema
   },
+
+  subscriptions: [ x.StringSchema ],
 
   activeApps: [ x.StringSchema ],
 

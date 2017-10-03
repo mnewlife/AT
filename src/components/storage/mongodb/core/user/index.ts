@@ -66,6 +66,8 @@ interface QueryConditions {
   "residentialDetails.province"?: string;
   "residentialDetails.address"?: string;
 
+  "subscriptions"?: { $all: string[] };
+
   "activeApps"?: { $all: string[] };
   $text?: { $search: string };
 }
@@ -74,7 +76,7 @@ interface QueryConditions {
 
 function makeConditions ( filtrationCriteria: storage.core.user.FiltrationCriteria ): Promise<QueryConditions> {
 
-  return new Promise<QueryConditions>(( resolve, reject ) => {
+  return new Promise<QueryConditions>( ( resolve, reject ) => {
 
     let conditions: QueryConditions = {};
 
@@ -135,6 +137,10 @@ function makeConditions ( filtrationCriteria: storage.core.user.FiltrationCriter
       conditions[ "activeApps" ] = { $all: filtrationCriteria.activeApps };
     }
 
+    if ( filtrationCriteria.subscriptions ) {
+      conditions[ "subscriptions" ] = { $all: filtrationCriteria.subscriptions };
+    }
+
     if ( filtrationCriteria.residentialDetails ) {
       if ( filtrationCriteria.residentialDetails.country ) {
         conditions[ "residentialDetails.country" ] = filtrationCriteria.residentialDetails.country;
@@ -151,10 +157,6 @@ function makeConditions ( filtrationCriteria: storage.core.user.FiltrationCriter
       conditions.$text = { $search: filtrationCriteria.textSearch };
     }
 
-    if ( filtrationCriteria.textSearch ) {
-      conditions.$text = { $search: filtrationCriteria.textSearch };
-    }
-
     resolve( conditions );
 
   } );
@@ -165,7 +167,7 @@ function makeConditions ( filtrationCriteria: storage.core.user.FiltrationCriter
 
 function makeSortCriteria ( sortCriteria: storage.core.user.SortCriteria ): Promise<string> {
 
-  return new Promise<string>(( resolve, reject ) => {
+  return new Promise<string>( ( resolve, reject ) => {
     let sortString;
     if ( sortCriteria.criteria === "numVerAttempts" ) {
       sortString = "verification.numVerAttempts";
@@ -182,26 +184,25 @@ function makeSortCriteria ( sortCriteria: storage.core.user.SortCriteria ): Prom
 
 /******************************************************************************/
 
-function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] {
+function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[] {
 
-  let returnDetails: PartialModel[] = [];
+  let returnDetails: Partial<Model>[] = [];
 
-  models.forEach(( model ) => {
+  models.forEach( ( model ) => {
 
-    let details: PartialModel = {
+    let details: Partial<Model> = {
       emailAddress: model.emailAddress,
       password: model.password,
       accessLevel: model.accessLevel,
       verification: {
-        verified: model.verification.verified
+        verified: model.verification.verified,
+        numVerAttempts: model.verification.numVerAttempts
       },
+      subscriptions: model.subscriptions,
       activeApps: []
     };
     if ( model.resetCode ) {
       details.resetCode = model.resetCode;
-    }
-    if ( model.verification.numVerAttempts ) {
-      details.verification.numVerAttempts = model.verification.numVerAttempts;
     }
     if ( model.verification.verificationCode ) {
       details.verification.verificationCode = model.verification.verificationCode;
@@ -209,7 +210,9 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
     if ( model.personalDetails ) {
       details.personalDetails = {
         firstName: model.personalDetails.firstName,
-        lastName: model.personalDetails.lastName
+        lastName: model.personalDetails.lastName,
+        dateOfBirth: model.personalDetails.dateOfBirth,
+        gender: model.personalDetails.gender
       };
     }
     if ( model.contactDetails ) {
@@ -237,7 +240,7 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): PartialModel[] 
 
 function generateUpdateDetails ( document: Model, details: storage.core.user.UpdateDetails ): Promise<Model> {
 
-  return new Promise<Model>(( resolve, reject ) => {
+  return new Promise<Model>( ( resolve, reject ) => {
 
     if ( details.emailAddress ) {
       document.emailAddress = details.emailAddress;
@@ -302,24 +305,9 @@ function generateUpdateDetails ( document: Model, details: storage.core.user.Upd
           phoneNumbers: []
         };
       }
-      if ( details.contactDetails.phoneNumbersToRemove ) {
-        details.contactDetails.phoneNumbersToRemove.forEach(( phoneNumber ) => {
-          let matches = document.contactDetails.phoneNumbers.filter(( subject ) => {
-            return ( subject === phoneNumber );
-          } );
-          if ( matches.length ) {
-            document.contactDetails.phoneNumbers.splice( document.contactDetails.phoneNumbers.indexOf( matches[ 0 ], 1 ) );
-          }
-        } );
-      }
-      if ( details.contactDetails.phoneNumbersToAdd ) {
-        details.contactDetails.phoneNumbersToAdd.forEach(( phoneNumber ) => {
-          document.contactDetails.phoneNumbers.push( phoneNumber );
-        } );
-      }
       if ( details.contactDetails.phoneNumbers ) {
         document.contactDetails.phoneNumbers = [];
-        details.contactDetails.phoneNumbers.forEach(( number ) => {
+        details.contactDetails.phoneNumbers.forEach( ( number ) => {
           document.contactDetails.phoneNumbers.push( number );
         } );
       }
@@ -344,11 +332,37 @@ function generateUpdateDetails ( document: Model, details: storage.core.user.Upd
       }
     }
 
+    if ( details.subscriptionsToAdd ) {
+      if ( !document.subscriptions ) {
+        document.subscriptions = [];
+      }
+      details.subscriptionsToAdd.forEach( ( app ) => {
+        document.subscriptions.push( app );
+      } );
+    }
+
+    if ( details.subscriptionsToRemove ) {
+      if ( !document.subscriptions ) {
+        document.subscriptions = [];
+      }
+      details.subscriptionsToRemove.forEach( ( app ) => {
+        let matches = document.subscriptions.filter( ( subject ) => {
+          return ( subject == app );
+        } );
+        if ( matches.length ) {
+          document.subscriptions.splice( document.subscriptions.indexOf( matches[ 0 ] ), 1 );
+        }
+      } );
+    }
+    if ( details.subscriptions ) {
+      document.subscriptions = details.subscriptions;
+    }
+
     if ( details.activeAppsToAdd ) {
       if ( !document.activeApps ) {
         document.activeApps = [];
       }
-      details.activeAppsToAdd.forEach(( app ) => {
+      details.activeAppsToAdd.forEach( ( app ) => {
         document.activeApps.push( app );
       } );
     }
@@ -357,8 +371,8 @@ function generateUpdateDetails ( document: Model, details: storage.core.user.Upd
       if ( !document.activeApps ) {
         document.activeApps = [];
       }
-      details.activeAppsToRemove.forEach(( app ) => {
-        let matches = document.activeApps.filter(( subject ) => {
+      details.activeAppsToRemove.forEach( ( app ) => {
+        let matches = document.activeApps.filter( ( subject ) => {
           return ( subject == app );
         } );
         if ( matches.length ) {
@@ -378,13 +392,13 @@ function generateUpdateDetails ( document: Model, details: storage.core.user.Upd
 function convertToAbstract ( models: Model[], forceThrow = false ): Promise<dataModel.core.user.Super[]> {
 
   return this.checkThrow( forceThrow )
-    .then(( response: any ) => {
+    .then( ( response: any ) => {
 
-      return new Promise<dataModel.core.user.Super[]>(( resolve, reject ) => {
+      return new Promise<dataModel.core.user.Super[]>( ( resolve, reject ) => {
 
         let returnModels: dataModel.core.user.Super[] = [];
 
-        models.forEach(( model ) => {
+        models.forEach( ( model ) => {
 
           let returnModel: dataModel.core.user.Super = {
             id: ( <mongoose.Types.ObjectId>model._id ).toHexString(),
@@ -395,6 +409,7 @@ function convertToAbstract ( models: Model[], forceThrow = false ): Promise<data
               verified: model.verification.verified,
               numVerAttempts: model.verification.numVerAttempts
             },
+            subscriptions: model.subscriptions,
             activeApps: model.activeApps,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt

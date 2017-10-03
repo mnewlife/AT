@@ -3,7 +3,7 @@
 import * as http from "http";
 
 import * as eventListener from "../../../event-listener/interfaces";
-import * as storageSub from "../../storage/interfaces/core/subscription";
+import * as storageUser from "../../storage/interfaces/core/user";
 import * as moders from "../../helpers/moders/interfaces";
 
 import * as interfaces from "./interfaces";
@@ -18,12 +18,12 @@ import factory from "./factory";
 export default (
   emitEvent: eventListener.Emit,
   checkThrow: moders.CheckThrow,
-  getSubs: storageSub.Instance[ "get" ],
+  getUserById: storageUser.Instance[ "getById" ],
   production: boolean,
   httpServer: http.Server
 ): interfaces.Instance => {
 
-  return factory( SocketIO, new Events( emitEvent ), checkThrow, getSubs, production, httpServer );
+  return factory( SocketIO, new Events( emitEvent ), checkThrow, getUserById, production, httpServer );
 
 }
 
