@@ -87,6 +87,8 @@ module SignInComponent {
 
       }
 
+      console.log( this.ContextsService.decoded );
+
       if ( this.ContextsService.innerContext === "verify-account" ) {
 
         if ( this.ContextsService.decoded.success ) {
@@ -94,6 +96,7 @@ module SignInComponent {
           return this.DialogService.showAlert( "Account Verification", message );
         } else {
           let message = ( this.ContextsService.decoded.message ) ? this.ContextsService.decoded.message : "Something went wrong";
+          console.log( message );
           return this.DialogService.showAlert( "Account Verification", message );
         }
 

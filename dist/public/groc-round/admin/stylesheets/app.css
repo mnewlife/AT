@@ -1,7 +1,43 @@
 /******************************************************************************/
-shops-component, shop-component, add-edit-shop-component,
-products-component, product-component, add-edit-product-component { width : 100%; }
+carts-component, cart-component,
+cart-products-component,
+contributions-component,
+delivery-fees-component,
+rounds-component, round-component,
+round-contributors-component, round-contributor-component,
+tracks-component, track-component,
+track-products-component,
 
-shops-component .screen, shop-component .screen, add-edit-shop-component .screen,
-products-component .screen, product-component .screen, add-edit-product-component .screen { height : 100%; }
+shops-component, shop-component,
+products-component, product-component,
+
+add-edit-cart-product-component,
+add-edit-contribution-component,
+add-edit-delivery-fee-component,
+add-edit-round-component,
+add-edit-track-component,
+add-edit-track-product-component,
+add-edit-shop-component,
+add-edit-product-component { width : 100%; }
+
+carts-component .screen, cart-component .screen,
+cart-products-component .screen,
+contributions-component .screen,
+delivery-fees-component .screen,
+rounds-component .screen, round-component .screen,
+round-contributors-component .screen, round-contributor-component .screen,
+tracks-component .screen, track-component .screen,
+track-products-component .screen,
+
+shops-component .screen, shop-component .screen,
+products-component .screen, product-component .screen,
+
+add-edit-cart-product-component .screen,
+add-edit-contribution-component .screen,
+add-edit-delivery-fee-component .screen,
+add-edit-round-component .screen,
+add-edit-track-component .screen,
+add-edit-track-product-component .screen,
+add-edit-shop-component .screen,
+add-edit-product-component .screen { height : 100%; }
 /******************************************************************************/

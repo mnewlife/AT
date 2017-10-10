@@ -100,22 +100,43 @@ export default (
     let innerContext: string = "add-round";
 
     if ( invalidAddDetails( req ) ) {
+      console.log( req.body );
       return sendResponse( res, "grocRound-admin", false, "Something is wrong with the data you sent", {
         innerContext: innerContext
       } );
     }
 
-    let details: storageRound.AddDetails = {
-      roundName: req.body.roundName,
-      inProgress: req.body.inProgress,
-      duration: req.body.duration,
-      deliveries: req.body.deliveries,
-      contributions: req.body.contributions,
-      numTracks: req.body.numTracks,
-      valueCartProducts: req.body.valueCartProducts
-    };
+    new Promise<storageRound.AddDetails>( ( resolve, reject ) => {
 
-    return createRound( details )
+      let details: storageRound.AddDetails = {
+        roundName: req.body.roundName,
+        inProgress: req.body.inProgress,
+        duration: {
+          start: new Date( req.body.duration.start ),
+          end: new Date( req.body.duration.end ),
+          months: req.body.duration.months
+        },
+        deliveries: {
+          fee: req.body.deliveries.fee,
+          numPayments: 0,
+          valuePayments: 0
+        },
+        contributions: {
+          num: 0,
+          value: 0
+        },
+        numTracks: 0,
+        valueCartProducts: 0
+      };
+
+      resolve( details );
+
+    } )
+      .then( ( details: storageRound.AddDetails ) => {
+
+        return createRound( details )
+
+      } )
       .then( ( createdRound: dataModel.grocRound.round.Super ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -125,6 +146,8 @@ export default (
 
       } )
       .catch( ( reason: any ) => {
+
+        console.log( reason );
 
         return sendResponse( res, "grocRound-admin", false, null, {
           innerContext: innerContext
@@ -147,6 +170,7 @@ export default (
     }
 
     if ( invalidUpdateDetails( req ) ) {
+      console.log( "Params:" + JSON.stringify( req.params ) + ", Body: " + JSON.stringify( req.body ) );
       return sendResponse( res, "grocRound-admin", false, "Something is wrong with the data you sent", {
         innerContext: innerContext
       } );
@@ -163,23 +187,18 @@ export default (
     }
 
     if ( req.body.duration ) {
-      details.duration = req.body.duration;
+      details.duration = {
+        start: new Date( req.body.duration.start ),
+        end: new Date( req.body.duration.end ),
+        months: req.body.duration.months
+      };
     }
 
     if ( req.body.deliveries ) {
-      details.deliveries = req.body.deliveries;
-    }
-
-    if ( req.body.contributions ) {
-      details.contributions = req.body.contributions;
-    }
-
-    if ( req.body.numTracks ) {
-      details.numTracks = req.body.numTracks;
-    }
-
-    if ( req.body.valueCartProducts ) {
-      details.valueCartProducts = req.body.valueCartProducts;
+      details.deliveries = {};
+      if ( req.body.deliveries.fee ) {
+        details.deliveries.fee = req.body.deliveries.fee;
+      }
     }
 
     return updateRoundById( req.params.roundId, details )
@@ -258,10 +277,10 @@ export default (
     if ( blocks.optionalWrong( req.body, "duration", "object" ) ) {
       return true;
     }
-    if ( blocks.optionalWrong( req.body.duration, "start", "object" ) ) {
+    if ( blocks.optionalWrong( req.body.duration, "start", "string" ) ) {
       return true;
     }
-    if ( blocks.optionalWrong( req.body.duration, "end", "object" ) ) {
+    if ( blocks.optionalWrong( req.body.duration, "end", "string" ) ) {
       return true;
     }
     if ( blocks.optionalWrong( req.body.duration, "months", "number" ) ) {
@@ -271,31 +290,7 @@ export default (
     if ( blocks.optionalWrong( req.body, "deliveries", "object" ) ) {
       return true;
     }
-    if ( blocks.optionalWrong( req.body.deliveries, "fee", "object" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body.deliveries, "numPayments", "object" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body.deliveries, "valuePayments", "number" ) ) {
-      return true;
-    }
-
-    let parent = "contributions";
-    if ( blocks.optionalWrong( req.body, parent, "object" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body[ parent ], "num", "number" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body[ parent ], "value", "number" ) ) {
-      return true;
-    }
-
-    if ( blocks.optionalWrong( req.body, "numTracks", "number" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body, "valueCartProducts", "number" ) ) {
+    if ( blocks.optionalWrong( req.body.deliveries, "fee", "number" ) ) {
       return true;
     }
 
@@ -308,20 +303,25 @@ export default (
   function invalidAddDetails ( req: express.Request ): boolean {
 
     if ( blocks.absentWrong( req.body, "roundName", "string" ) ) {
+      console.log( "a" );
       return true;
     }
 
     if ( blocks.absentWrong( req.body, "inProgress", "boolean" ) ) {
+      console.log( "b" );
       return true;
     }
 
     if ( blocks.absentWrong( req.body, "duration", "object" ) ) {
+      console.log( "c" );
       return true;
     }
-    if ( blocks.absentWrong( req.body.duration, "start", "object" ) ) {
+    if ( blocks.absentWrong( req.body.duration, "start", "string" ) ) {
+      console.log( "d" );
       return true;
     }
-    if ( blocks.absentWrong( req.body.duration, "end", "object" ) ) {
+    if ( blocks.absentWrong( req.body.duration, "end", "string" ) ) {
+      console.log( "e" );
       return true;
     }
     if ( blocks.absentWrong( req.body.duration, "months", "number" ) ) {
@@ -331,31 +331,7 @@ export default (
     if ( blocks.absentWrong( req.body, "deliveries", "object" ) ) {
       return true;
     }
-    if ( blocks.absentWrong( req.body.deliveries, "fee", "object" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body.deliveries, "numPayments", "object" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body.deliveries, "valuePayments", "number" ) ) {
-      return true;
-    }
-
-    let parent = "contributions";
-    if ( blocks.absentWrong( req.body, parent, "object" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body[ parent ], "num", "number" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body[ parent ], "value", "number" ) ) {
-      return true;
-    }
-
-    if ( blocks.absentWrong( req.body, "numTracks", "number" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body, "valueCartProducts", "number" ) ) {
+    if ( blocks.absentWrong( req.body.deliveries, "fee", "number" ) ) {
       return true;
     }
 

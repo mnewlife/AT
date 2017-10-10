@@ -55,7 +55,7 @@ export default (
     return getUsers( {
       emailAddress: req.body.emailAddress
     }, null, 1 )
-      .then(( users: dataModel.core.user.Super[] ) => {
+      .then( ( users: dataModel.core.user.Super[] ) => {
 
         if ( users.length ) {
           return Promise.reject( {
@@ -69,14 +69,14 @@ export default (
         ] );
 
       } )
-      .then(( numbers: number[] ) => {
+      .then( ( numbers: number[] ) => {
 
         verificationCode = String( numbers[ 0 ] ) + String( numbers[ 1 ] );
 
         return createHashedPassword( req.body.password );
 
       } )
-      .then(( hashedPassword: string ) => {
+      .then( ( hashedPassword: string ) => {
 
         return addUser( {
           emailAddress: req.body.emailAddress,
@@ -91,27 +91,30 @@ export default (
         } );
 
       } )
-      .then(( addedUser: dataModel.core.user.Super ) => {
+      .then( ( addedUser: dataModel.core.user.Super ) => {
 
         return newEmailAddressTemplate(
           req.body.emailAddress,
+          addedUser.id,
           verificationCode,
           supportDetails.default.phoneNumber,
           supportDetails.default.emailAddress
         );
 
       } )
-      .then(( html: string ) => {
+      .then( ( html: string ) => {
 
         return sendEmail( supportDetails.default.sendingAddress, [ req.body.emailAddress ], environment.default.applicationName + " | Account Verification", html );
 
       } )
-      .then(( response: any ) => {
+      .then( ( response: any ) => {
+
+        console.log( "sent email" );
 
         return sendResponse( res, "passpoint", true, "Done. A verification email has been sent to your email address.", { innerContext: innerContext } );
 
       } )
-      .catch(( reason: any ) => {
+      .catch( ( reason: any ) => {
 
         if ( reason.identifier && reason.identifier == "AddressAlreadyTaken" ) {
           return sendResponse( res, "passpoint", false, "That email address is already in use", { innerContext: innerContext } );

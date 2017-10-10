@@ -1,0 +1,207 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar-widget title="Round"></tool-bar-widget>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.loading" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <div layout="row" layout-align="center start" layout-wrap>
+
+          <h1 ng-if="$ctrl.loading" class="md-headline">Getting Details...</h1>
+
+          <md-card ng-if="!$ctrl.editMode" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-progress-linear class="md-accent" ng-if="$ctrl.adding" md-mode="indeterminate"></md-progress-linear>
+
+            <form name="form_add">
+
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Create New Round</span>
+                  <span class="md-subhead">Provide the required details</span>
+                </md-card-title-text>
+              </md-card-title>
+
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button ng-disabled="true" class="md-primary">
+                  <spa>Months: {{ $ctrl.addDetails.duration.months }}</span>
+                </md-button>
+              </md-card-actions>
+
+              <md-card-content layout="column" layout-align="start start">
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Round Name</label>
+                    <input ng-disabled="$ctrl.adding" ng-model="$ctrl.addDetails.roundName" type="text" name="roundName" placeholder="Round Name"
+                      required>
+                    <div ng-messages="form_add.roundName.$error" role="alert">
+                      <div ng-message="required">Enter name of round</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Start Date</label>
+                    <md-datepicker ng-change="$ctrl.calculateMonths()" ng-disabled="$ctrl.adding" md-hide-icons="calendar" ng-model="$ctrl.addDetails.duration.start"
+                      name="addStart" md-min-date="$ctrl.minDate" md-current-view="year" md-placeholder="mm/dd/yy" required></md-datepicker>
+                    <div ng-messages="form_add.addStart.$error" role="alert">
+                      <div ng-message="required">Enter the start date</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>End Date</label>
+                    <md-datepicker ng-change="$ctrl.calculateMonths()" ng-disabled="$ctrl.adding" md-hide-icons="calendar" ng-model="$ctrl.addDetails.duration.end"
+                      name="addEnd" md-min-date="$ctrl.addDetails.duration.start" md-current-view="year" md-placeholder="mm/dd/yy"
+                      required></md-datepicker>
+                    <div ng-messages="form_add.addEnd.$error" role="alert">
+                      <div ng-message="required">Enter the end date</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Delivery Fee</label>
+                    <input ng-disabled="$ctrl.adding" ng-model="$ctrl.addDetails.deliveries.fee" type="number" name="deliveryFee" placeholder="Delivery Fee"
+                      required>
+                    <div ng-messages="form_add.deliveryFee.$error" role="alert">
+                      <div ng-message="required">Enter delivery fee</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start start">
+
+                  <md-switch ng-model="$ctrl.addDetails.inProgress" aria-label="Switch 1">
+                    State:
+                    <span ng-show="$ctrl.addDetails.inProgress">Active</span>
+                    <span ng-hide="$ctrl.addDetails.inProgress">Inactive</span>
+                  </md-switch>
+
+                </div>
+
+              </md-card-content>
+
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button ng-disabled="$ctrl.adding" class="md-accent" ng-click="$ctrl.addRound()">
+                  <span ng-if="!$ctrl.adding">Add Round</span>
+                  <span ng-if="$ctrl.adding">Adding...</span>
+                </md-button>
+              </md-card-actions>
+
+
+            </form>
+
+          </md-card>
+
+          <md-card ng-if="$ctrl.editMode" ng-hide="$ctrl.loading" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-progress-linear class="md-accent" ng-if="$ctrl.updating" md-mode="indeterminate"></md-progress-linear>
+
+            <form name="form_update">
+
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Edit Round Details</span>
+                  <span class="md-subhead">Provide the required details</span>
+                </md-card-title-text>
+              </md-card-title>
+
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button ng-disabled="true" class="md-primary">
+                  <spa>Months: {{ $ctrl.updateDetails.duration.months }}</span>
+                </md-button>
+              </md-card-actions>
+
+              <md-card-content layout="column" layout-align="start start">
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Round Name</label>
+                    <input ng-disabled="$ctrl.updating" ng-model="$ctrl.updateDetails.roundName" type="text" name="roundName" placeholder="Round Name"
+                      required>
+                    <div ng-messages="form_update.roundName.$error" role="alert">
+                      <div ng-message="required">Enter name of round</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Start date</label>
+                    <md-datepicker ng-change="$ctrl.calculateMonths()" ng-disabled="$ctrl.updating" md-hide-icons="calendar" ng-model="$ctrl.updateDetails.duration.start"
+                      name="updateStart" md-min-date="$ctrl.minDate" md-current-view="year" md-placeholder="mm/dd/yy"
+                      required></md-datepicker>
+                    <div ng-messages="form_update.updateStart.$error" role="alert">
+                      <div ng-message="required">Enter the start date</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>End date</label>
+                    <md-datepicker ng-change="$ctrl.calculateMonths()" ng-disabled="$ctrl.updating" md-hide-icons="calendar" ng-model="$ctrl.updateDetails.duration.end"
+                      name="updateEnd" md-current-view="year" md-placeholder="mm/dd/yy"
+                      required></md-datepicker>
+                    <div ng-messages="form_update.updateEnd.$error" role="alert">
+                      <div ng-message="required">Enter the end date</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Delivery Fee</label>
+                    <input ng-disabled="$ctrl.updating" ng-model="$ctrl.updateDetails.deliveries.fee" type="number" name="deliveryFee" placeholder="Delivery Fee"
+                      required>
+                    <div ng-messages="form_update.deliveryFee.$error" role="alert">
+                      <div ng-message="required">Enter delivery fee</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+                <div layout="row" layout-align="start start">
+
+                  <md-switch ng-model="$ctrl.updateDetails.inProgress" aria-label="Switch 1">
+                    State:
+                    <span ng-show="$ctrl.updateDetails.inProgress">Active</span>
+                    <span ng-hide="$ctrl.updateDetails.inProgress">Inactive</span>
+                  </md-switch>
+
+                </div>
+
+              </md-card-content>
+
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button ng-disabled="$ctrl.updating" class="md-accent" ng-click="$ctrl.updateRound()">
+                  <span ng-if="!$ctrl.updating">Save Changes</span>
+                  <span ng-if="$ctrl.updating">Saving...</span>
+                </md-button>
+              </md-card-actions>
+
+            </form>
+
+          </md-card>
+
+        </div>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+    </md-content>
+
+  </md-content>
+</div>

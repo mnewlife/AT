@@ -149,19 +149,15 @@ export default class Profile implements interfaces.Instance {
             verified: false,
             verificationCode: verificationCode
           }
-        } )
-          .then(( updatedUser: dataModel.core.user.Super ) => {
-
-            return Promise.resolve( verificationCode );
-
-          } );
+        } );
 
       } )
-      .then(( verificationCode: string ) => {
+      .then(( updatedUser: dataModel.core.user.Super ) => {
 
         return this.newEmailAddressTemplate(
           newEmailAddress,
-          verificationCode,
+          updatedUser.id,
+          updatedUser.verification.verificationCode,
           supportDetails.default.phoneNumber,
           supportDetails.default.emailAddress
         );

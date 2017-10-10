@@ -40,7 +40,21 @@ export default (
 
     let innerContext: string = "get-deliveryFees";
 
-    return findDeliveryFees( null, null, null )
+    let fc: storageDeliveryFee.FiltrationCriteria = {};
+
+    if ( req.query.userId ) {
+      fc.user = {
+        userId: req.query.userId
+      };
+    }
+
+    if ( req.query.roundId ) {
+      fc.round = {
+        roundId: req.query.roundId
+      };
+    }
+
+    return findDeliveryFees( fc, null, null )
       .then( ( foundDeliveryFees: dataModel.grocRound.deliveryFee.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {

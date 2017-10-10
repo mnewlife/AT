@@ -1,0 +1,59 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar-widget title="Shop Details"></tool-bar-widget>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.loading" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <md-subheader class="md-no-sticky">{{ $ctrl.shop.shopName }}</md-subheader>
+
+        <div ng-show="$ctrl.errorMessage" layout="row" layout-align="center center">
+          <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
+        </div>
+
+        <md-card flex-gt-sm="30" flex-sm="45" flex-xs="100" ng-hide="$ctrl.loading" ng-if="$ctrl.shop.id">
+
+          <md-card-title>
+            <md-card-title-text>
+              <h1 class="md-headline">{{ $ctrl.shop.shopName }}</h1>
+              <span class="md-subhead">Updated on {{ $ctrl.shop.updatedAt | date }}</span>
+            </md-card-title-text>
+          </md-card-title>
+
+          <md-card-content>
+            <p>
+              <span class="md-subhead">{{ $ctrl.shop.numProducts }} products</span>
+            </p>
+            <p>...</p>
+          </md-card-content>
+
+          <md-card-actions layout="row" layout-align="end center">
+            <md-button class="md-icon-button md-accent" ng-disabled="$ctrl.loading || $ctrl.deleting" aria-label="Button" ng-href="#/add-edit-shop/{{ $ctrl.shop.id }}">
+              <md-icon class="material-icons step" aria-label="icon">edit</md-icon>
+              <md-tooltip md-direction="bottom">Edit Details</md-tooltip>
+            </md-button>
+            <md-button ng-disabled="$ctrl.loading || $ctrl.deleting" class="md-icon-button md-accent" ng-click="$ctrl.deleteShop()">
+              <md-icon ng-hide="$ctrl.deleting" class="material-icons step" aria-label="icon">delete</md-icon>
+              <md-icon ng-show="$ctrl.deleting" class="material-icons step" aria-label="icon">more_horiz</md-icon>
+              <md-tooltip md-direction="bottom">Delete</md-tooltip>
+            </md-button>
+          </md-card-actions>
+
+        </md-card>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+    </md-content>
+
+  </md-content>
+</div>

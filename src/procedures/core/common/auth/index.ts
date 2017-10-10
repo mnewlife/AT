@@ -51,6 +51,10 @@ export default class Auth implements interfaces.Instance {
           return Promise.reject( reason );
         }
 
+        if ( reason && reason.identifier === "NotVerified" ) {
+          return Promise.reject( reason );
+        }
+
         if ( reason && reason.identifier === "InvalidPassword" ) {
           return Promise.reject( reason );
         }

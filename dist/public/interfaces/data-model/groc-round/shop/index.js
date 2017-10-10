@@ -1,0 +1,1 @@
+var Shop;Shop||(Shop={});

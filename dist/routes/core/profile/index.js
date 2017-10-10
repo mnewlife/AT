@@ -1,13 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var express = require("express");
-/******************************************************************************/
-exports.default = function (getRequestCode, getResetWord) {
-    /*********************************************************/
-    var router = express.Router();
-    router.get("/requestPasswordResetCode/:emailAddress", getRequestCode());
-    router.get("/resetPassword/:userId/:resetCode", getResetWord());
-    return router;
-};
-/******************************************************************************/ 
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var express=require("express");exports.default=function(e,r){var s=express.Router();return s.get("/requestPasswordResetCode/:emailAddress",e()),s.get("/resetPassword/:userId/:resetCode",r()),s};

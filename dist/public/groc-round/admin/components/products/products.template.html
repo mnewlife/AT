@@ -1,11 +1,16 @@
 <div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
   <tool-bar-widget title="Products"></tool-bar-widget>
   <md-progress-linear class="md-accent" ng-if="$ctrl.progress.getProducts" md-mode="indeterminate"></md-progress-linear>
-  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+  <md-content flex layout="row" layout-align="center stretch">
 
     <div layout="column" layout-align="start stretch" class="no_padding">
       <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
     </div>
+
+    <md-button class="md-fab md-fab-bottom-right" ng-href="#/add-edit-product">
+      <md-icon aria-label="icon">plus_one</md-icon>
+      <md-tooltip md-direction="bottom">Add Product</md-tooltip>
+    </md-button>
 
     <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
 
@@ -13,41 +18,84 @@
 
         <md-subheader class="md-no-sticky">Products</md-subheader>
 
-        <div ng-hide="$ctrl.products.length || $ctrl.progress.getProducts" layout="row" layout-align="center center">
-          <h1 class="md-subhead">No Products Yet</h1>
-        </div>
-
-        <div ng-show="$ctrl.errorMessage" layout="row" layout-align="center center">
+        <div ng-if="$ctrl.errorMessage" layout="row" layout-align="center center">
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>
 
-        <div ng-show="$ctrl.products.length" layout="row" layout-align="start start" layout-wrap layout-padding>
+        <md-tabs md-dynamic-height md-border-bottom ng-if="!$ctrl.errorMessage">
 
-          <md-card ng-repeat="product in $ctrl.products track by product.id" class="list-item" flex-gt-sm="30" flex-sm="45" flex-xs="100">
+          <md-tab label="Cards">
 
-            <md-card-title>
-              <md-card-title-text>
-                <h1 class="md-headline pointed" ng-click="$ctrl.route( '/products/' + product.id )">{{ product.label }}</h1>
-                <span class="md-subhead">Updated on {{ product.updatedAt | date }}</span>
-              </md-card-title-text>
-            </md-card-title>
+            <div ng-hide="$ctrl.products.length || $ctrl.progress.getProducts" layout="row" layout-align="center center">
+              <h1 class="md-subhead">No Products Yet</h1>
+            </div>
 
-            <md-card-content>
+            <div ng-show="$ctrl.products.length" layout="row" layout-align="start start" layout-wrap layout-padding>
 
-              <p>Effective Price: {{ product.effectivePrice.price }}</p>
+              <md-card ng-repeat="product in $ctrl.products track by product.id" class="list-item" flex-gt-sm="30" flex-sm="45" flex-xs="100">
 
-              <p>
-                <span>Min Price: {{ product.priceValues.min.price }}</span><br>
-                <span>Max Price: {{ product.priceValues.max.price }}</span><br>
-                <span>Median Price: {{ product.priceValues.median.price }}</span><br>
-                <span>Mean Price: {{ product.priceValues.mean.price }}</span>
-              </p>
+                <md-card-title>
+                  <md-card-title-text>
+                    <span class="md-headline pointed" ng-click="$ctrl.route( '/products/' + product.id )">{{ product.label }}</span>
+                    <span class="md-subhead">Updated on {{ product.updatedAt | date }}</span>
+                  </md-card-title-text>
+                </md-card-title>
 
-            </md-card-content>
+                <md-card-content layout-padding>
 
-          </md-card>
+                  <p>
+                    <span class="md-body-1">Effective Price: {{ product.effectivePrice.price | currency}}</span>
+                  </p>
 
-        </div>
+                  <p>
+                    <span class="md-body-1">Min Price: {{ product.priceValues.min.price | currency}}</span><br>
+                    <span class="md-body-1">Max Price: {{ product.priceValues.max.price | currency}}</span><br>
+                    <span class="md-body-1">Median Price: {{ product.priceValues.median.price | currency}}</span><br>
+                    <span class="md-body-1">Mean Price: {{ product.priceValues.mean.price | currency}}</span>
+                  </p>
+
+                </md-card-content>
+
+              </md-card>
+
+            </div>
+
+          </md-tab>
+
+          <md-tab label="Table">
+
+            <div layout="column" layout-align="start center" layout-padding>
+
+              <div ng-hide="$ctrl.products.length || $ctrl.progress.getProducts" layout="row" layout-align="center center">
+                <h1 class="md-subhead">No Products Yet</h1>
+              </div>
+
+              <table ng-show="$ctrl.products.length">
+                <tr>
+                  <th>Label</th>
+                  <th>Updated On</th>
+                  <th hide-xs>Min. Price</th>
+                  <th hide-xs>Max. Price</th>
+                  <th hide-xs>Median Price</th>
+                  <th hide-xs>Mean Price</th>
+                  <th>Effective Price</th>
+                </tr>
+                <tr class="pointed" ng-repeat="product in $ctrl.products track by product.id" ng-click="$ctrl.route( '/products/' + product.id )">
+                  <td>{{ product.label }}</td>
+                  <td>{{ product.updatedAt | date }}</td>
+                  <td hide-xs>{{ product.priceValues.min.price | currency }}</td>
+                  <td hide-xs>{{ product.priceValues.max.price | currency }}</td>
+                  <td hide-xs>{{ product.priceValues.median.price | currency }}</td>
+                  <td hide-xs>{{ product.priceValues.mean.price | currency }}</td>
+                  <td>{{ product.effectivePrice.price | currency }}</td>
+                </tr>
+              </table>
+
+            </div>
+
+          </md-tab>
+
+        </md-tabs>
 
       </section>
 

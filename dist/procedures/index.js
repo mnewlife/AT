@@ -1,16 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("./core");
-/******************************************************************************/
-var Procedures = (function () {
-    function Procedures(core) {
-        this.core = core;
-    }
-    return Procedures;
-}());
-/******************************************************************************/
-exports.default = function (emitEvent, components) {
-    return new Procedures(core_1.default(emitEvent, components));
-};
-/******************************************************************************/ 
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var core_1=require("./core"),Procedures=function(){return function(e){this.core=e}}();exports.default=function(e,r){return new Procedures(core_1.default(e,r))};

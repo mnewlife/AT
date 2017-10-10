@@ -1,11 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var node_mailer_1 = require("./node-mailer");
-var events_1 = require("./events");
-var factory_1 = require("./factory");
-/******************************************************************************/
-exports.default = function (emitEvent, checkThrow, sendingAddress, password) {
-    return factory_1.default(node_mailer_1.default, new events_1.default(emitEvent), checkThrow, sendingAddress, password);
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var node_mailer_1=require("./node-mailer"),events_1=require("./events"),factory_1=require("./factory");exports.default=function(e,r,t,a){return factory_1.default(node_mailer_1.default,new events_1.default(e),r,t,a)};

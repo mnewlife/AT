@@ -5,9 +5,8 @@ module GrocRoundAdminAddEditProductComponent {
   import toastService = ToastServiceInterfaces;
   import dialogService = DialogServiceInterfaces;
   import productsService = GrocRoundAdminProductsServiceInterfaces;
-  import pricesService = GrocRoundAdminPricesServiceInterfaces;
+  import addPriceService = GrocRoundAdminAddPriceServiceInterfaces;
   import product = Product;
-  import price = Price;
 
   export class Component implements interfaces.Instance {
 
@@ -30,7 +29,6 @@ module GrocRoundAdminAddEditProductComponent {
     public addDetails: productsService.AddDetails;
     public updateDetails: productsService.UpdateDetails;
     public productId: string;
-    public prices: price.Super[];
 
     private promises: productsService.Instance[ "promises" ];
 
@@ -44,7 +42,7 @@ module GrocRoundAdminAddEditProductComponent {
       private readonly ToastService: toastService.Instance,
       private readonly DialogService: dialogService.Instance,
       private readonly ProductsService: productsService.Instance,
-      private readonly PricesService: pricesService.Instance
+      private readonly AddPriceService: addPriceService.Instance
     ) {
 
       this.initMembers();
@@ -61,6 +59,7 @@ module GrocRoundAdminAddEditProductComponent {
 
       this.addDetails = {
         label: "",
+        prices: [],
         effectivePrice: {
           price: 0
         }
@@ -68,12 +67,11 @@ module GrocRoundAdminAddEditProductComponent {
 
       this.updateDetails = {
         label: "",
+        prices: [],
         effectivePrice: {
           price: 0
         }
       };
-
-      this.prices = [];
 
     }
 
@@ -85,7 +83,6 @@ module GrocRoundAdminAddEditProductComponent {
         this.editMode = true;
         this.productId = this.$routeParams.productId;
         this.findProductInfo();
-        this.findPriceInfo();
       } else {
         this.editMode = false;
       }
@@ -98,7 +95,7 @@ module GrocRoundAdminAddEditProductComponent {
 
       this.loading = true;
 
-      let matches = this.ProductsService.products.filter(( product ) => {
+      let matches = this.ProductsService.products.filter( ( product ) => {
         return ( this.productId === product.id );
       } );
 
@@ -110,17 +107,17 @@ module GrocRoundAdminAddEditProductComponent {
       } else {
 
         this.ProductsService.getProduct( this.productId )
-          .then(( foundProduct: product.Super ) => {
+          .then( ( foundProduct: product.Super ) => {
 
             this.copyDetails( foundProduct );
 
           } )
-          .catch(( reason: any ) => {
+          .catch( ( reason: any ) => {
 
             this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get product record";
 
           } )
-          .finally(() => {
+          .finally( () => {
 
             this.loading = false;
 
@@ -132,32 +129,11 @@ module GrocRoundAdminAddEditProductComponent {
 
     /***************************************************/
 
-    private findPriceInfo = () => {
-
-      this.loadingPrices = true;
-
-      this.PricesService.getPrices( { productId: this.productId } )
-        .then(( prices: price.Super[] ) => {
-
-          prices.forEach(( price ) => {
-            this.prices.push( price );
-          } );
-
-        } )
-        .finally(() => {
-
-          this.loadingPrices = false;
-
-        } );
-
-    }
-
-    /***************************************************/
-
     private readonly copyDetails = ( foundProduct: product.Super ) => {
 
       this.updateDetails = {
         label: foundProduct.label,
+        prices: foundProduct.prices,
         effectivePrice: foundProduct.effectivePrice
       };
 
@@ -171,15 +147,19 @@ module GrocRoundAdminAddEditProductComponent {
         return this.ToastService.showSimple( "Product label is missing" );
       }
 
+      if ( !this.addDetails.prices ) {
+        return this.ToastService.showSimple( "Prices are missing" );
+      }
+
       this.adding = true;
 
       return this.ProductsService.addProduct( this.addDetails )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.$location.path( "/products" );
 
         } )
-        .finally(() => {
+        .finally( () => {
 
           this.adding = false;
 
@@ -199,19 +179,82 @@ module GrocRoundAdminAddEditProductComponent {
         return this.ToastService.showSimple( "Product label is missing" );
       }
 
+      if ( !this.updateDetails.prices ) {
+        return this.ToastService.showSimple( "Product prices are missing" );
+      }
+
       this.updating = true;
 
       return this.ProductsService.updateProduct( this.productId, this.updateDetails )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.$location.path( "/products" );
 
         } )
-        .finally(() => {
+        .finally( () => {
 
           this.updating = false;
 
         } );
+
+    }
+
+    /***************************************************/
+
+    public addPrice = ( addMode: boolean, id: string ) => {
+
+      let config = {
+        controller: [ "$mdDialog", ( $mdDialog: ng.material.IDialogService ) => this.AddPriceService ],
+        controllerAs: "vm",
+        templateUrl: "/groc-round/admin/services/add-price/add-price.template.html",
+        parent: angular.element( document.body ),
+        openFrom: "#" + id,
+        closeTo: "#" + id,
+        clickOutsideToClose: false
+      };
+
+      return this.$mdDialog.show( config )
+        .then( ( result: any ) => {
+
+          if ( !result ) {
+            return this.ToastService.showSimple( "Something went wrong adding that price" );
+          }
+
+          console.log( addMode );
+
+          if ( addMode ) {
+            this.addDetails.prices.push( result as product.Price );
+          } else {
+            this.updateDetails.prices.push( result as product.Price );
+          }
+
+        } );
+
+    }
+
+    /***************************************************/
+
+    public removePrice = ( price: product.Price, addMode: boolean ) => {
+
+      if ( addMode ) {
+
+        let index = this.addDetails.prices.indexOf( price );
+        if ( index != -1 ) {
+          this.addDetails.prices.splice( index, 1 );
+        } else {
+          this.ToastService.showSimple( "Error" );
+        }
+
+      } else {
+
+        let index = this.updateDetails.prices.indexOf( price );
+        if ( index != -1 ) {
+          this.updateDetails.prices.splice( index, 1 );
+        } else {
+          this.ToastService.showSimple( "Error" );
+        }
+
+      }
 
     }
 
@@ -226,7 +269,7 @@ module GrocRoundAdminAddEditProductComponent {
       this.deleting = true;
 
       this.DialogService.showConfirm( "Delete Product", "Are you sure?", null )
-        .then(( sure: boolean ) => {
+        .then( ( sure: boolean ) => {
 
           if ( sure ) {
             return this.ProductsService.removeProduct( this.productId );
@@ -235,139 +278,12 @@ module GrocRoundAdminAddEditProductComponent {
           }
 
         } )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.$location.path( "/products" );
 
         } )
-        .finally(() => {
-
-          this.deleting = false;
-
-        } );
-
-    }
-
-    /***************************************************/
-
-    public addPrice = ( details: pricesService.AddDetails ) => {
-
-      if ( !details.productId ) {
-        return this.ToastService.showSimple( "Product ID is missing" );
-      }
-
-      if ( !details.shopId ) {
-        return this.ToastService.showSimple( "Shop ID is missing" );
-      }
-
-      if ( !details.price ) {
-        return this.ToastService.showSimple( "Price is missing" );
-      }
-
-      if ( !details.quantity ) {
-        return this.ToastService.showSimple( "Quantity is missing" );
-      }
-
-      this.addingPrice = true;
-
-      return this.PricesService.addPrice( details )
-        .then(( addedPrice: price.Super ) => {
-
-          this.prices.push( addedPrice );
-
-        } )
-        .finally(() => {
-
-          this.addingPrice = false;
-
-        } );
-
-    }
-
-    /***************************************************/
-
-    public updatePrice = ( priceId: string, details: pricesService.UpdateDetails ) => {
-
-      if ( !priceId ) {
-        return this.ToastService.showSimple( "Price ID is missing" );
-      }
-
-      if ( !details.productId ) {
-        return this.ToastService.showSimple( "Product ID is missing" );
-      }
-
-      if ( !details.shopId ) {
-        return this.ToastService.showSimple( "Shop ID is missing" );
-      }
-
-      if ( !details.price ) {
-        return this.ToastService.showSimple( "Price is missing" );
-      }
-
-      if ( !details.quantity ) {
-        return this.ToastService.showSimple( "Quantity is missing" );
-      }
-
-      this.updatingPrice = true;
-
-      return this.PricesService.updatePrice( priceId, details )
-        .then(( updatedPrice: price.Super ) => {
-
-          let matches = this.prices.filter(( price ) => {
-            return ( price.id === updatedPrice.id );
-          } );
-
-          if ( matches.length ) {
-            matches.forEach(( price ) => {
-              angular.copy( updatedPrice, price );
-            } );
-          }
-
-        } )
-        .finally(() => {
-
-          this.updating = false;
-
-        } );
-
-    }
-
-    /***************************************************/
-
-    public deletePrice = ( priceId: string ) => {
-
-      if ( !priceId ) {
-        return this.ToastService.showSimple( "Price ID is missing" );
-      }
-
-      this.deletingPrice = true;
-
-      this.DialogService.showConfirm( "Delete Price", "Are you sure?", null )
-        .then(( sure: boolean ) => {
-
-          if ( sure ) {
-            return this.PricesService.removePrice( priceId );
-          } else {
-            return this.$q.reject();
-          }
-
-        } )
-        .then(( response: any ) => {
-
-          let matches = this.prices.filter(( price ) => {
-            return ( price.id === priceId );
-          } );
-
-          if ( matches.length ) {
-            matches.forEach(( price ) => {
-
-              this.prices.splice( this.prices.indexOf( price ), 1 );
-
-            } );
-          }
-
-        } )
-        .finally(() => {
+        .finally( () => {
 
           this.deleting = false;
 

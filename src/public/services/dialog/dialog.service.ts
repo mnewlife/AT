@@ -27,7 +27,7 @@ module DialogService {
       }
       dialog.ok( ( okText ) ? okText : "Got It" );
 
-      return this.$mdDialog.show( alert )
+      return this.$mdDialog.show( dialog )
         .then( ( response: any ) => {
 
           return this.$q.resolve();

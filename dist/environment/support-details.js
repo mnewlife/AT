@@ -1,11 +1,1 @@
-"use strict";
-/**********************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/**********************************************************************/
-var details = {
-    phoneNumber: "0779528194",
-    emailAddress: "allansimoyi@gmail.com",
-    sendingAddress: "allansimoyi@gmail.com"
-};
-exports.default = details;
-/**********************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var details={phoneNumber:"0779528194",emailAddress:"athenaresources1@gmail.com",sendingAddress:"athenaresources1@gmail.com"};exports.default=details;

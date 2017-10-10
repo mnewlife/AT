@@ -3,9 +3,7 @@ module GrocRoundAdminAddEditProductComponentInterfaces {
   /*******************************************/
 
   import productsService = GrocRoundAdminProductsServiceInterfaces;
-  import pricesService = GrocRoundAdminPricesServiceInterfaces;
   import product = Product;
-  import price = Price;
 
   /*******************************************/
 
@@ -26,15 +24,11 @@ module GrocRoundAdminAddEditProductComponentInterfaces {
     addDetails: productsService.AddDetails;
     updateDetails: productsService.UpdateDetails;
     productId?: string;
-    prices: price.Super[];
 
     addProduct: AddProduct;
     updateProduct: UpdateProduct;
     deleteProduct: DeleteProduct;
-
-    addPrice: AddPrice;
-    updatePrice: UpdatePrice;
-    deletePrice: DeletePrice;
+    
   }
 
   /*******************************************/
@@ -49,18 +43,6 @@ module GrocRoundAdminAddEditProductComponentInterfaces {
 
   export interface DeleteProduct {
     ( productId: string ): any;
-  }
-
-  export interface AddPrice {
-    ( details: pricesService.UpdateDetails ): any;
-  }
-
-  export interface UpdatePrice {
-    ( priceId: string, details: pricesService.UpdateDetails ): any;
-  }
-
-  export interface DeletePrice {
-    ( priceId: string ): any;
   }
 
   /*******************************************/

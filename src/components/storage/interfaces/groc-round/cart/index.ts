@@ -39,8 +39,8 @@ export type UpdateDetails = Partial<{
 /******************************************************************************/
 
 export type FiltrationCriteria = Partial<{
-  user: dataModel.core.user.UserInfo;
-  round: dataModel.grocRound.round.RoundInfo;
+  user: Partial<dataModel.core.user.UserInfo>;
+  round: Partial<dataModel.grocRound.round.RoundInfo>;
   adminFeePercentage: Partial<{ min: number; max: number; }>;
   numProducts: Partial<{ min: number; max: number; }>;
   valueProducts: Partial<{ min: number; max: number; }>;

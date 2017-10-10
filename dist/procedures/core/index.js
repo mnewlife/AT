@@ -1,16 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var _1 = require("./common/");
-/******************************************************************************/
-var Core = (function () {
-    function Core(common) {
-        this.common = common;
-    }
-    return Core;
-}());
-/******************************************************************************/
-exports.default = function (emitEvent, components) {
-    return new Core(_1.default(emitEvent, components.helpers.moders.checkThrow, components.authentication.signIn, components.communication.mailAgent.sendEmail, components.authentication.authPassword, components.authentication.createHashedPassword, components.session.signedIn, components.session.signOut, components.helpers.numbers.generateRandomNumber, components.storage.core.user.getById, components.storage.core.user.update, components.storage.core.user.updateById, components.storage.core.user.removeById));
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var _1=require("./common/"),Core=function(){return function(e){this.common=e}}();exports.default=function(e,r){return new Core(_1.default(e,r.helpers.moders.checkThrow,r.authentication.signIn,r.communication.mailAgent.sendEmail,r.authentication.authPassword,r.authentication.createHashedPassword,r.session.signedIn,r.session.signOut,r.helpers.numbers.generateRandomNumber,r.storage.core.user.getById,r.storage.core.user.update,r.storage.core.user.updateById,r.storage.core.user.removeById))};

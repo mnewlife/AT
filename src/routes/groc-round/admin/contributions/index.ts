@@ -40,7 +40,21 @@ export default (
 
     let innerContext: string = "get-contributions";
 
-    return findContributions( null, null, null )
+    let fc: storageContribution.FiltrationCriteria = {};
+
+    if ( req.query.userId ) {
+      fc.user = {
+        userId: req.query.userId
+      };
+    }
+
+    if ( req.query.roundId ) {
+      fc.round = {
+        roundId: req.query.roundId
+      };
+    }
+
+    return findContributions( fc, null, null )
       .then( ( foundContributions: dataModel.grocRound.contribution.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -153,10 +167,6 @@ export default (
 
     let details: storageContribution.UpdateDetails = {};
 
-    if ( req.body.user ) {
-      details.user = req.body.user;
-    }
-
     if ( req.body.round ) {
       details.round = req.body.round;
     }
@@ -229,10 +239,6 @@ export default (
   /*********************************************************/
 
   function invalidUpdateDetails ( req: express.Request ): boolean {
-
-    if ( coreValidationUpdate.user( req ) ) {
-      return true;
-    }
 
     if ( validationUpdate.round( req ) ) {
       return true;

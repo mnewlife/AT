@@ -117,7 +117,14 @@ export default (
 
     if ( req.body.prices ) {
       req.body.prices.forEach( ( price: dataModel.grocRound.product.Price ) => {
-        details.prices.push( price );
+        details.prices.push( {
+          shop: {
+            shopId: price.shop.shopId,
+            shopName: price.shop.shopName
+          },
+          quantity: price.quantity,
+          price: price.price
+        } );
       } );
     }
 

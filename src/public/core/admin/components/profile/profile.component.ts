@@ -38,7 +38,7 @@ module CoreAdminProfileComponent {
     public openChangeEmailAddress = ( ev: MouseEvent ) => {
 
       let config = {
-        controller: ( $mdDialog: ng.material.IDialogService ) => this.ChangeEmailAddressService,
+        controller: [ "$mdDialog", ( $mdDialog: ng.material.IDialogService ) => this.ChangeEmailAddressService ],
         controllerAs: "vm",
         templateUrl: "/core/admin/services/change-email-address/change-email-address.template.html",
         parent: angular.element( document.body ),
@@ -49,7 +49,7 @@ module CoreAdminProfileComponent {
       };
 
       return this.$mdDialog.show( config )
-        .then(( result: any ) => {
+        .then( ( result: any ) => {
 
           return this.ProfileService.changeEmailAddress( result.password, result.newEmailAddress );
 
@@ -62,7 +62,7 @@ module CoreAdminProfileComponent {
     public openChangePassword = ( ev: MouseEvent ) => {
 
       let config = {
-        controller: ( $mdDialog: ng.material.IDialogService ) => this.ChangePasswordService,
+        controller: [ "$mdDialog", ( $mdDialog: ng.material.IDialogService ) => this.ChangePasswordService ],
         controllerAs: "vm",
         templateUrl: "/core/admin/services/change-password/change-password.template.html",
         parent: angular.element( document.body ),
@@ -73,7 +73,7 @@ module CoreAdminProfileComponent {
       };
 
       return this.$mdDialog.show( config )
-        .then(( result: any ) => {
+        .then( ( result: any ) => {
 
           return this.ProfileService.changePassword( result.oldPassword, result.newPassword );
 

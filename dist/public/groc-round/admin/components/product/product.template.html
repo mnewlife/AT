@@ -9,7 +9,7 @@
 
     <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100" layout-padding>
 
-      <section>
+      <section layout="column" layout-align="start stretch">
 
         <md-subheader class="md-no-sticky">{{ $ctrl.product.label }}</md-subheader>
 
@@ -21,29 +21,51 @@
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>
 
-        <md-card flex-gt-sm="30" flex-sm="45" flex-xs="100" ng-hide="$ctrl.loading">
+        <md-card ng-hide="$ctrl.loading" ng-if="$ctrl.product.id">
 
           <md-card-title>
             <md-card-title-text>
-              <h1 class="md-headline">{{ $ctrl.product.label }}</h1>
+              <span class="md-headline">{{ $ctrl.product.label }}</span>
               <span class="md-subhead">Updated on {{ $ctrl.product.updatedAt | date }}</span>
             </md-card-title-text>
           </md-card-title>
 
-          <md-card-content>
+          <md-card-content layout-padding>
 
-            <p>Effective Price: {{ $ctrl.product.effectivePrice.price }}</p>
+            <p class="md-body-1">
+              Effective Price: {{ $ctrl.product.effectivePrice.price | currency }}
+            </p>
 
-            <p>Min Price: {{ $ctrl.product.priceValues.min.price }}</p>
-            <p>Max Price: {{ $ctrl.product.priceValues.max.price }}</p>
-            <p>Median Price: {{ $ctrl.product.priceValues.median.price }}</p>
-            <p>Mean Price: {{ $ctrl.product.priceValues.mean.price }}</p>
+            <p>
+              <span class="md-body-1">Min Price: {{ $ctrl.product.priceValues.min.price  | currency }}</span><br>
+              <span class="md-body-1">Max Price: {{ $ctrl.product.priceValues.max.price  | currency }}</span><br>
+              <span class="md-body-1">Median Price: {{ $ctrl.product.priceValues.median.price  | currency }}</span><br>
+              <span class="md-body-1">Mean Price: {{ $ctrl.product.priceValues.mean.price  | currency }}</span>
+            </p>
 
-            <p>...</p>
+            <div layout="column" layout-align="start start">
+
+              <span class="md-body-2">Prices</span>
+
+              <span class="md-body-1" ng-if="!$ctrl.product.prices.length">-No prices yet-</span>
+
+              <md-list class="md-dense" ng-if="$ctrl.product.prices.length">
+
+                <md-list-item class="md-3-line" ng-repeat="price in $ctrl.product.prices">
+                  <div class="md-list-item-text" layout="column">
+                    <h3>{{ price.shop.shopName }}</h3>
+                    <h4>{{ ( price.price ) | currency }}</h4>
+                    <p>for {{ price.quantity }}</p>
+                  </div>
+                </md-list-item>
+
+              </md-list>
+
+            </div>
 
           </md-card-content>
 
-          <md-card-actions layout="column" layout-align="end end" layout-gt-sm="row" layout-align-gt-sm="end center">
+          <md-card-actions layout="row" layout-align="end center">
             <md-button class="md-icon-button md-accent" ng-disabled="$ctrl.loading || $ctrl.deleting" aria-label="Button" ng-href="#/add-edit-product/{{ $ctrl.product.id }}">
               <md-icon class="material-icons step" aria-label="icon">edit</md-icon>
               <md-tooltip md-direction="bottom">Edit Details</md-tooltip>

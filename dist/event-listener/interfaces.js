@@ -1,7 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var hooks = require("./hooks");
-exports.hooks = hooks;
-;
-/******************************************************************************/ 
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var hooks=require("./hooks");exports.hooks=hooks;

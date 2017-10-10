@@ -8,7 +8,7 @@ import * as blocks from "./validation-blocks";
 
 export let absent = ( parent: any ): boolean => {
 
-  if ( blocks.absentWrong( parent, parent[ "product" ], "object" ) ) {
+  if ( blocks.absentWrong( parent, "product", "object" ) ) {
     return true;
   }
 
@@ -18,10 +18,10 @@ export let absent = ( parent: any ): boolean => {
 
 export let absentChildren = ( parent: any ): boolean => {
 
-  if ( blocks.absentWrong( parent, parent[ "productId" ], "string" ) ) {
+  if ( blocks.absentWrong( parent, "productId", "string" ) ) {
     return true;
   }
-  if ( blocks.absentWrong( parent, parent[ "label" ], "string" ) ) {
+  if ( blocks.absentWrong( parent, "label", "string" ) ) {
     return true;
   }
 
@@ -33,7 +33,7 @@ export let absentChildren = ( parent: any ): boolean => {
 
 export let optional = ( parent: any ): boolean => {
 
-  if ( blocks.optionalWrong( parent, parent[ "product" ], "object" ) ) {
+  if ( blocks.optionalWrong( parent, "product", "object" ) ) {
     return true;
   }
 
@@ -43,10 +43,10 @@ export let optional = ( parent: any ): boolean => {
 
 export let optionalChildren = ( parent: any ): boolean => {
 
-  if ( blocks.optionalWrong( parent, parent[ "productId" ], "string" ) ) {
+  if ( blocks.optionalWrong( parent, "productId", "string" ) ) {
     return true;
   }
-  if ( blocks.optionalWrong( parent, parent[ "label" ], "string" ) ) {
+  if ( blocks.optionalWrong( parent, "label", "string" ) ) {
     return true;
   }
 

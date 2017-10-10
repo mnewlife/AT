@@ -91,7 +91,7 @@ module GrocRoundAdminShopsService {
 
           this.progress.getShops = false;
 
-          let message = "Something went wrong";
+          let message = "Shops not found";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message
@@ -135,7 +135,7 @@ module GrocRoundAdminShopsService {
 
           this.progress.getShops = false;
 
-          let message = "Something went wrong";
+          let message = "Shop not found";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message

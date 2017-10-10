@@ -1,15 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/******************************************************************************/
-var Hooks = (function () {
-    function Hooks(hooks) {
-        this.hooks = hooks;
-    }
-    return Hooks;
-}());
-/******************************************************************************/
-exports.default = function () {
-    return new Hooks({});
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Hooks=function(){return function(e){this.hooks=e}}();exports.default=function(){return new Hooks({})};

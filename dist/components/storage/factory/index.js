@@ -1,8 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/******************************************************************************/
-exports.default = function (Storage, emitEvent, mapDetails, checkThrow) {
-    return new Storage(emitEvent, mapDetails, checkThrow);
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(e,t,r,u){return new e(t,r,u)};

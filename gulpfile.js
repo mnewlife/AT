@@ -2,21 +2,25 @@
 
 var gulp = require( "gulp" );
 var ts = require( "gulp-typescript" );
+var watchify = require( "watchify" );
 var tsProject = ts.createProject( "tsconfig.json" );
+var uglify = require( 'gulp-uglify' );
 
 /***********************************************************/
 
-gulp.task( "compileTs" , function () {
+gulp.task( "compileTs", function () {
 
   return tsProject.src()
     .pipe( tsProject() )
-    .js.pipe( gulp.dest( "dist" ) );
+    .js
+    .pipe( uglify() )
+    .pipe( gulp.dest( "dist" ) );
 
 } );
 
 /***********************************************************/
 
-gulp.task( "compileTests" , function () {
+gulp.task( "compileTests", function () {
 
   return gulp.src( "test/**/*.ts" )
     .pipe( ts( {
@@ -29,7 +33,7 @@ gulp.task( "compileTests" , function () {
 
 /***********************************************************/
 
-gulp.task( "default" , [ "compileTs" ] );
+gulp.task( "default", [ "compileTs" ] );
 //gulp.task( "default" , [ "compileTs" , "compileTests" ] );
 
 /***********************************************************/

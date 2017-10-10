@@ -1,11 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var socket_io_1 = require("./socket-io");
-var events_1 = require("./events");
-var factory_1 = require("./factory");
-/******************************************************************************/
-exports.default = function (emitEvent, checkThrow, getUserById, production, httpServer) {
-    return factory_1.default(socket_io_1.default, new events_1.default(emitEvent), checkThrow, getUserById, production, httpServer);
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var socket_io_1=require("./socket-io"),events_1=require("./events"),factory_1=require("./factory");exports.default=function(e,t,r,o,u){return factory_1.default(socket_io_1.default,new events_1.default(e),t,r,o,u)};

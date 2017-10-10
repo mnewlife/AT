@@ -53,7 +53,6 @@ body .box-shadow {
 
 table {
 	border-spacing: 0;
-  border:1px solid #d5d5d5;
   width : inherit;
 }
 
@@ -61,7 +60,7 @@ table th {
   text-align:right;
   padding : 0.5em;
   border:1px solid #d1d1d1;
-  background: #d5d5d5;
+  
 }
 
 table td{

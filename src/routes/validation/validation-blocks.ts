@@ -10,25 +10,38 @@ export type VariableType = "array" | "object" | "boolean" | "number" | "string";
 
 export let absentWrong = ( parent: any, child: string, type: VariableType ): boolean => {
 
-  if ( type == "array" ) {
-    return ( ( !parent[ child ] || !Array.isArray( parent[ child ] ) ) );
+  let wrapped = ( parent: any, child: string, type: VariableType ): boolean => {
+
+    if ( type == "array" ) {
+      return ( ( !parent[ child ] || !Array.isArray( parent[ child ] ) ) );
+    }
+
+    if ( type == "object" ) {
+      return ( ( !parent[ child ] || typeof parent[ child ] !== "object" ) );
+    }
+
+    if ( type == "boolean" ) {
+      if ( parent[ child ] === false ) return false;
+      return ( ( !parent[ child ] || typeof parent[ child ] !== "boolean" ) );
+    }
+
+    if ( type == "number" ) {
+      return ( ( !parent[ child ] || typeof parent[ child ] !== "number" ) );
+    }
+
+    if ( type == "string" ) {
+      return ( ( !parent[ child ] || typeof parent[ child ] !== "string" ) );
+    }
+
   }
 
-  if ( type == "object" ) {
-    return ( ( !parent[ child ] || typeof parent[ child ] !== "object" ) );
+  let result = wrapped( parent, child, type );
+
+  if ( result ) {
+    console.log( "Absent Wrong", [ parent, child, type ].join( ", " ) );
   }
 
-  if ( type == "boolean" ) {
-    return ( ( !parent[ child ] || typeof parent[ child ] !== "boolean" ) );
-  }
-
-  if ( type == "number" ) {
-    return ( ( !parent[ child ] || typeof parent[ child ] !== "number" ) );
-  }
-
-  if ( type == "string" ) {
-    return ( ( !parent[ child ] || typeof parent[ child ] !== "string" ) );
-  }
+  return result;
 
 }
 
@@ -36,25 +49,38 @@ export let absentWrong = ( parent: any, child: string, type: VariableType ): boo
 
 export let optionalWrong = ( parent: any, child: string, type: VariableType ): boolean => {
 
-  if ( type == "array" ) {
-    return ( ( parent[ child ] && Array.isArray( parent[ child ] ) ) );
+  let wrapped = ( parent: any, child: string, type: VariableType ): boolean => {
+
+    if ( type == "array" ) {
+      return ( ( parent[ child ] && Array.isArray( parent[ child ] ) ) );
+    }
+
+    if ( type == "object" ) {
+      return ( ( parent[ child ] && typeof parent[ child ] !== "object" ) );
+    }
+
+    if ( type == "boolean" ) {
+      if ( parent[ child ] === false ) return false;
+      return ( ( parent[ child ] && typeof parent[ child ] !== "boolean" ) );
+    }
+
+    if ( type == "number" ) {
+      return ( ( parent[ child ] && typeof parent[ child ] !== "number" ) );
+    }
+
+    if ( type == "string" ) {
+      return ( ( parent[ child ] && typeof parent[ child ] !== "string" ) );
+    }
+
   }
 
-  if ( type == "object" ) {
-    return ( ( parent[ child ] && typeof parent[ child ] == "object" ) );
+  let result = wrapped( parent, child, type );
+
+  if ( result ) {
+    console.log( "Optional wrong", [ parent, child, type ].join( ", " ) );
   }
 
-  if ( type == "boolean" ) {
-    return ( ( parent[ child ] && typeof parent[ child ] == "boolean" ) );
-  }
-
-  if ( type == "number" ) {
-    return ( ( parent[ child ] && typeof parent[ child ] == "number" ) );
-  }
-
-  if ( type == "string" ) {
-    return ( ( parent[ child ] && typeof parent[ child ] == "string" ) );
-  }
+  return result;
 
 }
 

@@ -1,13 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/******************************************************************************/
-var Events = (function () {
-    /*****************************************************************/
-    function Events(emitevent) {
-        this.emitevent = emitevent;
-    }
-    return Events;
-}());
-exports.default = Events;
-/******************************************************************************/ 
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Events=function(){return function(e){this.emitevent=e}}();exports.default=Events;

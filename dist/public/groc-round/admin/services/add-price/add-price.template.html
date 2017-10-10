@@ -1,0 +1,57 @@
+<md-dialog aria-label="Add Price" flex-gt-sm="40" flex-sm="50" flex-xs="90">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Add Price</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="vm.cancel()">
+          <md-icon class="material-icons step" aria-label="clear">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+
+      <div class="md-dialog-content" layout="column" layout-align="start stretch" layout-padding>
+
+        <div layout="row" layout-align="start start">
+
+          <div flex="50" layout="column" layout-align="start stretch">
+
+            <md-radio-group ng-model="vm.shopId">
+              <md-radio-button ng-repeat="shop in vm.shops" ng-value="shop.id" class="md-accent">{{ shop.shopName }}</md-radio-button>
+            </md-radio-group>
+
+          </div>
+
+          <div flex="50" layout="column" layout-align="start stretch">
+
+            <md-input-container md-no-float>
+              <label>Quantity</label>
+              <input type="number" ng-model="vm.quantity" class="md-body-1" placeholder="Quantity" min="1" step="1" required>
+            </md-input-container>
+
+            <md-input-container md-no-float>
+              <label>Price</label>
+              <input type="number" ng-model="vm.price" lass="md-body-1" placeholder="Price" min="0.01" step="0.01" required>
+            </md-input-container>
+
+          </div>
+
+        </div>
+
+        <div ng-if="vm.error" md-colors="{color: 'red-A100'}" layout-align="center center" layout="row">
+          <span class="md-caption">{{ vm.error }}</span>
+        </div>
+
+      </div>
+
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-xs="column">
+      <span flex></span>
+      <md-button class="md-accent" ng-click="vm.add()">Add Price</md-button>
+      <md-button class="md-accent" ng-click="vm.cancel()">Cancel</md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

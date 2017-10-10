@@ -210,6 +210,21 @@ function generateAddDetails ( models: interfaces.AddDetails[] ): Partial<Model>[
         price: model.effectivePrice.price
       }
     };
+
+    if ( model.prices ) {
+      details.prices = [];
+      model.prices.forEach( ( price ) => {
+        details.prices.push( {
+          shop: {
+            shopId: mongoose.Types.ObjectId( price.shop.shopId ),
+            shopName: price.shop.shopName
+          },
+          quantity: price.quantity,
+          price: price.price
+        } );
+      } );
+    }
+
     if ( model.effectivePrice.shopId ) {
       details.effectivePrice.shopId = mongoose.Types.ObjectId( model.effectivePrice.shopId );
     }

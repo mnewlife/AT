@@ -231,14 +231,16 @@ export default (
       return true;
     }
 
-    if ( req.body.images && !Array.isArray( req.body.images ) ) {
-      return true;
-    }
-    req.body.images.forEach( ( image: any ) => {
-      if ( typeof image !== "string" ) {
+    if ( req.body.images ) {
+      if ( !Array.isArray( req.body.images ) ) {
         return true;
       }
-    } );
+      req.body.images.forEach( ( image: any ) => {
+        if ( typeof image !== "string" ) {
+          return true;
+        }
+      } );
+    }
 
     if ( req.body.numProducts && typeof req.body.numProducts !== "number" ) {
       return true;

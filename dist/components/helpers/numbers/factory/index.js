@@ -1,8 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/******************************************************************************/
-exports.default = function (Numbers, events, checkThrow) {
-    return new Numbers(events, checkThrow);
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(e,t,r){return new e(t,r)};

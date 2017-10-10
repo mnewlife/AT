@@ -47,12 +47,44 @@ module GrocRoundAdminProductsService {
 
     /***************************************************/
 
+    private fixPrices = ( product: product.Super, centify?: boolean ): product.Super => {
+
+      if ( product.prices ) {
+        product.prices.forEach( ( price ) => {
+          price.price = impl( price.price );
+        } );
+      }
+
+      if ( product.priceValues ) {
+        for ( let kind in [ "min", "max", "median", "mean" ] ) {
+          if ( product.priceValues[ kind ] ) {
+            product.priceValues[ kind ].price = impl( product.priceValues[ kind ].price );
+          }
+        }
+      }
+
+      if ( product.effectivePrice ) {
+        product.effectivePrice.price = impl( product.effectivePrice.price );
+      }
+
+      function impl ( value: number ) {
+        if ( centify ) {
+          return value * 100;
+        } else {
+          return value / 100;
+        }
+      }
+
+      return product;
+
+    }
+
     public getProducts = (): ng.IPromise<boolean> => {
 
       this.progress.getProducts = true;
 
       let promise = this.$http.get( this.urlPrefix + "/getProducts" )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           this.progress.getProducts = false;
 
@@ -60,19 +92,23 @@ module GrocRoundAdminProductsService {
 
           if ( responseData.success ) {
 
-            this.$timeout(() => {
+            return this.$q( ( resolve, reject ) => {
 
-              if ( this.products.length ) {
-                this.products = [];
-              }
+              this.$timeout( () => {
 
-              responseData.payload.foundProducts.forEach(( product: product.Super ) => {
-                this.products.push( product );
+                if ( this.products.length ) {
+                  this.products = [];
+                }
+
+                responseData.payload.foundProducts.forEach( ( product: product.Super ) => {
+                  this.products.push( this.fixPrices( product ) );
+                } );
+
+                resolve( true );                
+
               } );
 
             } );
-
-            return this.$q.resolve( true );
 
           } else {
 
@@ -87,11 +123,11 @@ module GrocRoundAdminProductsService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.getProducts = false;
 
-          let message = "Something went wrong";
+          let message = "Products not found";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message
@@ -99,7 +135,7 @@ module GrocRoundAdminProductsService {
 
         } );
 
-      angular.copy( promise, this.promises.getProducts );
+      this.promises.getProducts = promise;
 
       return this.promises.getProducts;
 
@@ -110,13 +146,13 @@ module GrocRoundAdminProductsService {
     public getProduct = ( productId: string ): ng.IPromise<product.Super> => {
 
       return this.$http.get( this.urlPrefix + "/getProduct/" + productId )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
 
           if ( responseData.success ) {
 
-            return this.$q.resolve( responseData.payload.foundProduct );
+            return this.$q.resolve( this.fixPrices( responseData.payload.foundProduct ) );
 
           } else {
 
@@ -131,11 +167,11 @@ module GrocRoundAdminProductsService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.progress.getProducts = false;
 
-          let message = "Something went wrong";
+          let message = "Product not found";
           this.ToastService.showSimple( message );
           return this.$q.reject( {
             message: message
@@ -149,15 +185,27 @@ module GrocRoundAdminProductsService {
 
     public addProduct = ( details: interfaces.AddDetails ): ng.IPromise<void> => {
 
+      if ( details.prices ) {
+        details.prices.forEach( ( price ) => {
+          price.price = price.price * 100;
+        } );
+      }
+
+      if ( details.effectivePrice ) {
+        details.effectivePrice.price = details.effectivePrice.price * 100;
+      }
+
+      console.log( details );
+
       return this.$http.post( this.urlPrefix + "/addProduct", details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
 
           if ( responseData.success ) {
 
-            this.$timeout(() => {
-              this.products.push( responseData.payload.addedProduct );
+            this.$timeout( () => {
+              this.products.push( this.fixPrices( responseData.payload.addedProduct ) );
             } );
 
             this.ToastService.showSimple( "Product Added" );
@@ -173,7 +221,7 @@ module GrocRoundAdminProductsService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           if ( reason.message ) {
 
@@ -200,21 +248,31 @@ module GrocRoundAdminProductsService {
 
     public updateProduct = ( productId: string, details: interfaces.UpdateDetails ): ng.IPromise<void> => {
 
+      if ( details.prices ) {
+        details.prices.forEach( ( price ) => {
+          price.price = price.price * 100;
+        } );
+      }
+
+      if ( details.effectivePrice ) {
+        details.effectivePrice.price = details.effectivePrice.price * 100;
+      }
+
       return this.$http.post( this.urlPrefix + "/updateProduct/" + productId, details )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
 
           if ( responseData.success ) {
 
-            this.$timeout(() => {
+            this.$timeout( () => {
 
-              let matches = this.products.filter(( product ) => {
+              let matches = this.products.filter( ( product ) => {
                 return ( responseData.payload.updatedProduct.id === product.id );
               } );
 
               if ( matches.length ) {
-                angular.copy( responseData.payload.updatedProduct, this.products[ this.products.indexOf( matches[ 0 ] ) ] );
+                angular.copy( this.fixPrices( responseData.payload.updatedProduct ), this.products[ this.products.indexOf( matches[ 0 ] ) ] );
               }
 
             } );
@@ -232,7 +290,7 @@ module GrocRoundAdminProductsService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           if ( reason.message ) {
 
@@ -260,15 +318,15 @@ module GrocRoundAdminProductsService {
     public removeProduct = ( productId: string ): ng.IPromise<void> => {
 
       return this.$http.get( this.urlPrefix + "/deleteProduct/" + productId )
-        .then(( response: ng.IHttpResponse<{}> ) => {
+        .then( ( response: ng.IHttpResponse<{}> ) => {
 
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
 
           if ( responseData.success ) {
 
-            this.$timeout(() => {
+            this.$timeout( () => {
 
-              let matches = this.products.filter(( product ) => {
+              let matches = this.products.filter( ( product ) => {
                 return ( product.id === productId );
               } );
 
@@ -291,7 +349,7 @@ module GrocRoundAdminProductsService {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           if ( reason.message ) {
 

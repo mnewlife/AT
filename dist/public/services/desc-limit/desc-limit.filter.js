@@ -1,12 +1,1 @@
-var DescLimitFilter;
-(function (DescLimitFilter) {
-    DescLimitFilter.getFilter = function () {
-        return function () {
-            return function (description) {
-                if (description) {
-                    return (description.length < 100) ? description : description.substring(0, 100) + "...";
-                }
-            };
-        };
-    };
-})(DescLimitFilter || (DescLimitFilter = {}));
+var DescLimitFilter;!function(t){t.getFilter=function(){return function(){return function(t){if(t)return t.length<100?t:t.substring(0,100)+"..."}}}}(DescLimitFilter||(DescLimitFilter={}));

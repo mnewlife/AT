@@ -29,6 +29,7 @@ module GrocRoundAdminProductsServiceInterfaces {
     export interface AddDetails {
       label: string;
       images?: string[];
+      prices: product.Price[];
       effectivePrice: product.PriceValue
     }
     
@@ -36,10 +37,10 @@ module GrocRoundAdminProductsServiceInterfaces {
     
     export type UpdateDetails = Partial<{
       label: string;
-      imagesToAdd: string[];
-      imagesToRemove: string[];
+      images: string[];
+      prices: product.Price[];
       priceValues: product.PriceValues;
-      effectivePrice: product.PriceValue
+      effectivePrice: product.PriceValue;
     }>;
   
     /*******************************************/

@@ -42,7 +42,21 @@ export default (
 
     let innerContext: string = "get-roundContributors";
 
-    return findRoundContributors( null, null, null )
+    let fc: storageRoundContributor.FiltrationCriteria = {};
+
+    if ( req.query.userId ) {
+      fc.user = {
+        userId: req.query.userId
+      };
+    }
+
+    if ( req.query.roundId ) {
+      fc.round = {
+        roundId: req.query.roundId
+      };
+    }
+
+    return findRoundContributors( fc, null, null )
       .then( ( foundRoundContributors: dataModel.grocRound.roundContributor.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -113,11 +127,21 @@ export default (
     let details: storageRoundContributor.AddDetails = {
       round: req.body.round,
       user: req.body.user,
-      contributions: req.body.contributions,
-      tracks: req.body.tracks,
-      cart: req.body.cart,
-      deliveryFees: req.body.deliveryFees,
-      complete: req.body.complete
+      contributions: {
+        num: 0,
+        value: 0,
+        valueDue: 0
+      },
+      tracks: [],
+      cart: {
+        num: 0,
+        value: 0
+      },
+      deliveryFees: {
+        valuePaid: 0,
+        valueDue: 0
+      },
+      complete: false
     };
 
     return createRoundContributor( details )
@@ -158,30 +182,6 @@ export default (
     }
 
     let details: storageRoundContributor.UpdateDetails = {};
-
-    if ( req.body.round ) {
-      details.round = req.body.round;
-    }
-
-    if ( req.body.user ) {
-      details.user = req.body.user;
-    }
-
-    if ( req.body.contributions ) {
-      details.contributions = req.body.contributions;
-    }
-
-    if ( req.body.tracks ) {
-      details.tracks = req.body.tracks;
-    }
-
-    if ( req.body.cart ) {
-      details.cart = req.body.cart;
-    }
-
-    if ( req.body.deliveryFees ) {
-      details.deliveryFees = req.body.deliveryFees;
-    }
 
     if ( req.body.complete ) {
       details.complete = req.body.complete;
@@ -252,85 +252,6 @@ export default (
 
   function invalidUpdateDetails ( req: express.Request ): boolean {
 
-    if ( coreValidationUpdate.user( req ) ) {
-      return true;
-    }
-
-    if ( validationUpdate.round( req ) ) {
-      return true;
-    }
-
-    if ( req.body.contributions && typeof req.body.contributions == "object" ) {
-      return true;
-    }
-    if ( req.body.contributions.num && typeof req.body.contributions.num == "number" ) {
-      return true;
-    }
-    if ( req.body.contributions.value && typeof req.body.contributions.value == "number" ) {
-      return true;
-    }
-    if ( req.body.contributions.valueDue && typeof req.body.contributions.valueDue == "number" ) {
-      return true;
-    }
-
-    if ( req.body.tracks && !Array.isArray( req.body.tracks ) ) {
-      return true;
-    }
-    if ( !req.body.tracks.track.trackId || typeof req.body.tracks.track.trackId !== "string" ) {
-      return true;
-    }
-    if ( !req.body.tracks.track.trackName || typeof req.body.tracks.track.trackName !== "string" ) {
-      return true;
-    }
-
-    if ( !req.body.deviations || typeof req.body.deviations !== "object" ) {
-      return true;
-    }
-    for ( let kind in [ "additions", "subtractions" ] ) {
-
-      if ( !req.body.deviations[ kind ] || !Array.isArray( req.body.deviations[ kind ] ) ) {
-        return true;
-      }
-      for ( let deviationKind of req.body.deviations[ kind ] ) {
-        if ( !deviationKind.product || typeof deviationKind.product !== "object" ) {
-          return true;
-        }
-        if ( !deviationKind.product.productId || typeof deviationKind.product.productId !== "string" ) {
-          return true;
-        }
-        if ( !deviationKind.product.label || typeof deviationKind.product.label !== "string" ) {
-          return true;
-        }
-        if ( !deviationKind.quantity || typeof deviationKind.quantity !== "number" ) {
-          return true;
-        }
-        if ( !deviationKind.value || typeof deviationKind.value !== "number" ) {
-          return true;
-        }
-      }
-
-    }
-
-    if ( blocks.optionalWrong( req.body, "cart", "object" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body.cart, "num", "number" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body.cart, "value", "number" ) ) {
-      return true;
-    }
-
-    if ( blocks.optionalWrong( req.body, "deliveryFees", "object" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body.deliveryFees, "valuePaid", "number" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body.deliveryFees, "valueDue", "number" ) ) {
-      return true;
-    }
-
     if ( blocks.optionalWrong( req.body, "complete", "boolean" ) ) {
       return true;
     }
@@ -348,82 +269,6 @@ export default (
     }
 
     if ( validationAdd.round( req ) ) {
-      return true;
-    }
-
-    if ( !req.body.contributions || typeof req.body.contributions !== "object" ) {
-      return true;
-    }
-    if ( !req.body.contributions.num || typeof req.body.contributions.num !== "number" ) {
-      return true;
-    }
-    if ( !req.body.contributions.value || typeof req.body.contributions.value !== "number" ) {
-      return true;
-    }
-    if ( !req.body.contributions.valueDue || typeof req.body.contributions.valueDue !== "number" ) {
-      return true;
-    }
-
-    if ( !req.body.tracks || !Array.isArray( req.body.tracks ) ) {
-      return true;
-    }
-    if ( !req.body.tracks.track.trackId || typeof req.body.tracks.track.trackId !== "string" ) {
-      return true;
-    }
-    if ( !req.body.tracks.track.trackName || typeof req.body.tracks.track.trackName !== "string" ) {
-      return true;
-    }
-
-    if ( !req.body.deviations || typeof req.body.deviations !== "object" ) {
-      return true;
-    }
-
-    for ( let kind in [ "additions", "subtractions" ] ) {
-
-      if ( !req.body.deviations[ kind ] || !Array.isArray( req.body.deviations[ kind ] ) ) {
-        return true;
-      }
-      for ( let deviationKind of req.body.deviations[ kind ] ) {
-        if ( !deviationKind.product || typeof deviationKind.product !== "object" ) {
-          return true;
-        }
-        if ( !deviationKind.product.productId || typeof deviationKind.product.productId !== "string" ) {
-          return true;
-        }
-        if ( !deviationKind.product.label || typeof deviationKind.product.label !== "string" ) {
-          return true;
-        }
-        if ( !deviationKind.quantity || typeof deviationKind.quantity !== "number" ) {
-          return true;
-        }
-        if ( !deviationKind.value || typeof deviationKind.value !== "number" ) {
-          return true;
-        }
-      }
-
-    }
-
-    if ( blocks.absentWrong( req.body, "cart", "object" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body.cart, "num", "number" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body.cart, "value", "number" ) ) {
-      return true;
-    }
-
-    if ( blocks.absentWrong( req.body, "deliveryFees", "object" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body.deliveryFees, "valuePaid", "number" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body.deliveryFees, "valueDue", "number" ) ) {
-      return true;
-    }
-
-    if ( blocks.absentWrong( req.body, "complete", "boolean" ) ) {
       return true;
     }
 

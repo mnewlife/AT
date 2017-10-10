@@ -1,8 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/******************************************************************************/
-exports.default = function (Mware) {
-    return new Mware();
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(e){return new e};

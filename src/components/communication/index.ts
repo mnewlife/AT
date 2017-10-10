@@ -39,7 +39,7 @@ export default (
 ): interfaces.Instance => {
 
   return new Communication(
-    mailAgent( emitEvent, checkThrow, "allansimoyi@gmail.com", "passwordhere" ),
+    mailAgent( emitEvent, checkThrow, "athenaresources1@gmail.com", "athengranda" ),
     webSocket( emitEvent, checkThrow, getSubById, production, httpServer )
   );
   

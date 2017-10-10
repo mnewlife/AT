@@ -3,9 +3,7 @@ module GrocRoundAdminShopsServiceInterfaces {
   /*******************************************/
 
   import shop = Shop;
-
-  /*******************************************/
-
+  
   export interface Instance {
     shops: shop.Super[];
 

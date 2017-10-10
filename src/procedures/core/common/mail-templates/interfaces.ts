@@ -24,7 +24,7 @@ export interface Constructor {
 /******************************************************************************/
 
 export interface NewEmailAddress {
-  ( newEmailAddress: string, verificationCode: string, supportPhoneNumber: string, supportEmailAddress: string, forceThrow?: boolean ): Promise<string>;
+  ( userId: string, newEmailAddress: string, verificationCode: string, supportPhoneNumber: string, supportEmailAddress: string, forceThrow?: boolean ): Promise<string>;
 }
 
 export interface PasswordReset {

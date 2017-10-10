@@ -12,6 +12,11 @@ module Shop {
     numProducts: number;
   }
 
+  export interface ShopInfo {
+    shopId: string;
+    shopName: string;
+  };
+
   /******************************************************************************/
 
 }

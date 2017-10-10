@@ -36,6 +36,8 @@ export default (
 
   /**********************************************************/
 
+  router.use( getAuthCheck( "admin", "grocRound-admin" ) );
+
   router.use( "/cartProducts", cartProducts(
     components.storage.grocRound.cartProduct.get,
     components.storage.grocRound.cartProduct.getById,
@@ -127,7 +129,7 @@ export default (
   router.use( "/users", users(
     components.storage.core.user.get,
     components.storage.core.user.getById,
-    
+
     components.response.send
   ) );
 

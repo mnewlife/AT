@@ -1,0 +1,105 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar-widget title="Shop"></tool-bar-widget>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.loading" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <div layout="row" layout-align="center start" layout-wrap>
+
+          <h1 ng-if="$ctrl.loading" class="md-headline">Getting Details...</h1>
+
+          <md-card ng-if="!$ctrl.editMode" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-progress-linear class="md-accent" ng-if="$ctrl.adding" md-mode="indeterminate"></md-progress-linear>
+
+            <form name="form_add">
+
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Add Shop</span>
+                  <span class="md-subhead">Provide the required details</span>
+                </md-card-title-text>
+              </md-card-title>
+
+              <md-card-content layout="column" layout-align="start start">
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Shop Name</label>
+                    <input ng-disabled="$ctrl.adding" ng-model="$ctrl.addDetails.shopName" type="text" name="shopName" placeholder="Shop Name"
+                      required>
+                    <div ng-messages="form_add.shopName.$error" role="alert">
+                      <div ng-message="required">Enter shop name</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+              </md-card-content>
+
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button ng-disabled="$ctrl.adding" class="md-accent" ng-click="$ctrl.addShop()">
+                  <span ng-if="!$ctrl.adding">Add Shop</span>
+                  <span ng-if="$ctrl.adding">Adding...</span>
+                </md-button>
+              </md-card-actions>
+
+            </form>
+
+          </md-card>
+
+          <md-card ng-if="$ctrl.editMode" ng-hide="$ctrl.loading" class="animated zoomIn" flex-xs="100" flex-sm="70" flex-gt-sm="70">
+            <md-progress-linear class="md-accent" ng-if="$ctrl.updating" md-mode="indeterminate"></md-progress-linear>
+
+            <form name="form_update">
+
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Edit Shop Details</span>
+                  <span class="md-subhead">Provide the required details</span>
+                </md-card-title-text>
+              </md-card-title>
+
+              <md-card-content layout="column" layout-align="start start">
+
+                <div layout="row" layout-align="start center">
+                  <md-input-container md-no-float>
+                    <label>Shop Name</label>
+                    <input ng-disabled="$ctrl.updating" ng-model="$ctrl.updateDetails.shopName" type="text" name="shopName" placeholder="Shop Name"
+                      required>
+                    <div ng-messages="form_update.shopName.$error" role="alert">
+                      <div ng-message="required">Enter shop name</div>
+                    </div>
+                  </md-input-container>
+                </div>
+
+              </md-card-content>
+
+              <md-card-actions layout-xs="column" layout-align-xs="start center" layout="row" layout-align="end end">
+                <md-button ng-disabled="$ctrl.updating" class="md-accent" ng-click="$ctrl.updateShop()">
+                  <span ng-if="!$ctrl.updating">Save Changes</span>
+                  <span ng-if="$ctrl.updating">Saving...</span>
+                </md-button>
+              </md-card-actions>
+
+            </form>
+
+          </md-card>
+
+        </div>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+    </md-content>
+
+  </md-content>
+</div>

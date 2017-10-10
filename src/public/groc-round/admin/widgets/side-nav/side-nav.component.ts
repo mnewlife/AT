@@ -17,24 +17,19 @@ module GrocRoundAdminSideNavWidget {
       this.locals = [];
 
       this.locals.push( {
+        href: "#/rounds",
+        icon: "group",
+        caption: "Rounds"
+      } );
+      this.locals.push( {
         href: "#/shops",
         icon: "business",
         caption: "Shops"
       } );
       this.locals.push( {
-        href: "#/add-edit-shop",
-        icon: "plus_one",
-        caption: "Add Shop"
-      } );
-      this.locals.push( {
         href: "#/products",
         icon: "loyalty",
         caption: "Products"
-      } );
-      this.locals.push( {
-        href: "#/add-edit-product",
-        icon: "plus_one",
-        caption: "Add Product"
       } );
 
       this.apps.push( {

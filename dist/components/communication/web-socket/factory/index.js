@@ -1,8 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-/******************************************************************************/
-exports.default = function (WebSocket, events, checkThrow, getUserById, production, httpServer) {
-    return new WebSocket(events, checkThrow, getUserById, production, httpServer);
-};
-/******************************************************************************/
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=function(e,t,r,u,n,o){return new e(t,r,u,n,o)};

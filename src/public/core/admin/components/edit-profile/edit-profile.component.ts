@@ -196,7 +196,7 @@ module CoreAdminEditProfileComponent {
     public openChangeEmailAddress = ( ev: MouseEvent ) => {
 
       let config = {
-        controller: ( $mdDialog: ng.material.IDialogService ) => this.ChangeEmailAddressService,
+        controller: [ "$mdDialog", ( $mdDialog: ng.material.IDialogService ) => this.ChangeEmailAddressService ],
         controllerAs: "vm",
         templateUrl: "/core/admin/services/change-email-address/change-email-address.template.html",
         parent: angular.element( document.body ),
@@ -220,7 +220,7 @@ module CoreAdminEditProfileComponent {
     public openChangePassword = ( ev: MouseEvent ) => {
 
       let config = {
-        controller: ( $mdDialog: ng.material.IDialogService ) => this.ChangePasswordService,
+        controller: [ "$mdDialog", ( $mdDialog: ng.material.IDialogService ) => this.ChangePasswordService ],
         controllerAs: "vm",
         templateUrl: "/core/admin/services/change-password/change-password.template.html",
         parent: angular.element( document.body ),

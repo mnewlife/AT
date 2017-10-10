@@ -1,0 +1,81 @@
+<div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
+  <tool-bar-widget title="Track Details"></tool-bar-widget>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.loading" md-mode="indeterminate"></md-progress-linear>
+  <md-content flex layout="row" layout-align="center stretch" layout-padding>
+
+    <div layout="column" layout-align="start stretch" class="no_padding">
+      <side-nav-widget context="profile" flex="100" layout="row" layout-align="center stretch" class="no_padding"></side-nav-widget>
+    </div>
+
+    <md-content flex-gt-sm="80" flex-sm="90" flex-xs="100">
+
+      <section>
+
+        <md-subheader class="md-no-sticky">{{ $ctrl.track.trackName }}</md-subheader>
+
+        <div ng-show="$ctrl.errorMessage" layout="row" layout-align="center center">
+          <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
+        </div>
+
+        <md-card flex="100" ng-hide="$ctrl.loading" ng-if="$ctrl.track.id">
+
+          <md-card-header>
+            <md-card-avatar>
+              <img class="md-user-avatar" src="/resources/drawable/bg2.jpg">
+            </md-card-avatar>
+            <md-card-header-text>
+              <span class="md-title" ng-show="$ctrl.track.products.num != 1">{{ $ctrl.track.products.num }} Products</span>
+              <span class="md-title" ng-show="$ctrl.track.products.num == 1">1 Product</span>
+              <span class="md-subhead">Worth {{ $ctrl.track.products.value | currency }}</span>
+            </md-card-header-text>
+          </md-card-header>
+
+          <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline pointed" ng-click="$ctrl.route( '/tracks/' + track.id )">{{ $ctrl.track.trackName }}</span>
+              <span class="md-subhead">Updated on {{ $ctrl.track.updatedAt | date }}</span>
+            </md-card-title-text>
+          </md-card-title>
+
+          <md-card-actions layout="row" layout-align="start center">
+            <md-button class="md-accent" ng-disabled="$ctrl.loading || $ctrl.deleting" aria-label="Button" ng-href="#/add-edit-track/{{ $ctrl.track.id }}">
+              <span>Edit Track Details</span>
+            </md-button>
+          </md-card-actions>
+
+          <md-card-content>
+
+            <p>
+              <span class="md-body-1">Round: <b>{{ $ctrl.track.round.roundName }}</b></span>
+            </p>
+
+            <p>
+              <span class="md-body-1">Installment value: <b>{{ $ctrl.track.contributions.installmentValue | currency }}</b></span>
+              <br>
+              <span class="md-body-1">Total value of installments: <b>{{ $ctrl.track.contributions.totalValue | currency }}</b></span>
+            </p>
+
+            <p>
+              <span class="md-body-1">Admin Fee Percentage: <b>{{ $ctrl.track.adminFeePercentage }} %</b></span>
+            </p>
+
+          </md-card-content>
+
+          <md-card-actions layout-gt-sm="row" layout-align-gt-sm="start center" layout="column" layout-align="start center">
+            <md-button class="md-accent" aria-label="Button" ng-href="#/track-products/{{ $ctrl.track.id }}">
+              <span>Track Products</span>
+            </md-button>
+          </md-card-actions>
+
+        </md-card>
+
+      </section>
+
+      <div layout="row" layout-align="center end" layout-padding>
+        <span class="md-caption">Copyright © 2017 Athena Resources Limited. All rights reserved.</span>
+      </div>
+
+    </md-content>
+
+  </md-content>
+</div>

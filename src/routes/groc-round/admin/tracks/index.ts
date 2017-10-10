@@ -38,7 +38,17 @@ export default (
 
     let innerContext: string = "get-tracks";
 
-    return findTracks( null, null, null )
+    let fc: storageTrack.FiltrationCriteria = null;
+
+    if ( req.query.roundId ) {
+      fc = {
+        round: {
+          roundId: req.query.roundId
+        }
+      };
+    }
+
+    return findTracks( fc, null, null )
       .then( ( foundTracks: dataModel.grocRound.track.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -111,7 +121,10 @@ export default (
       trackName: req.body.trackName,
       contributions: req.body.contributions,
       adminFeePercentage: req.body.adminFeePercentage,
-      products: req.body.products
+      products: {
+        num: 0,
+        value: 0
+      }
     };
 
     return createTrack( details )
@@ -157,20 +170,12 @@ export default (
       details.trackName = req.body.trackName;
     }
 
-    if ( req.body.round ) {
-      details.round = req.body.round;
-    }
-
     if ( req.body.contributions ) {
       details.contributions = req.body.contributions;
     }
 
     if ( req.body.adminFeePercentage ) {
       details.adminFeePercentage = req.body.adminFeePercentage;
-    }
-
-    if ( req.body.products ) {
-      details.products = req.body.products;
     }
 
     return updateTrackById( req.params.trackId, details )
@@ -238,10 +243,6 @@ export default (
 
   function invalidUpdateDetails ( req: express.Request ): boolean {
 
-    if ( v.round.optional( req.body ) ) {
-      return true;
-    }
-
     if ( blocks.optionalWrong( req.body, "trackName", "string" ) ) {
       return true;
     }
@@ -261,17 +262,6 @@ export default (
       return true;
     }
 
-    parent = "products";
-    if ( blocks.optionalWrong( req.body, parent, "object" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body[ parent ], "num", "number" ) ) {
-      return true;
-    }
-    if ( blocks.optionalWrong( req.body[ parent ], "value", "number" ) ) {
-      return true;
-    }
-
     return false;
 
   }
@@ -279,6 +269,8 @@ export default (
   /*********************************************************/
 
   function invalidAddDetails ( req: express.Request ): boolean {
+
+    console.log( req.body );
 
     if ( v.round.absent( req.body ) ) {
       return true;
@@ -300,17 +292,6 @@ export default (
     }
 
     if ( blocks.absentWrong( req.body, "adminFeePercentage", "number" ) ) {
-      return true;
-    }
-
-    parent = "products";
-    if ( blocks.absentWrong( req.body, parent, "object" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body[ parent ], "num", "number" ) ) {
-      return true;
-    }
-    if ( blocks.absentWrong( req.body[ parent ], "value", "number" ) ) {
       return true;
     }
 

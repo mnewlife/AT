@@ -1,15 +1,1 @@
-var ToolBarWidget;
-(function (ToolBarWidget) {
-    var Widget = (function () {
-        /***************************************************/
-        function Widget($mdSidenav) {
-            this.$mdSidenav = $mdSidenav;
-        }
-        /***************************************************/
-        Widget.prototype.toggleSideNav = function () {
-            this.$mdSidenav("left").toggle();
-        };
-        return Widget;
-    }());
-    ToolBarWidget.Widget = Widget;
-})(ToolBarWidget || (ToolBarWidget = {}));
+var ToolBarWidget;!function(t){var o=function(){function t(t){this.$mdSidenav=t}return t.prototype.toggleSideNav=function(){this.$mdSidenav("left").toggle()},t}();t.Widget=o}(ToolBarWidget||(ToolBarWidget={}));

@@ -38,7 +38,15 @@ export default (
 
     let innerContext: string = "get-trackProducts";
 
-    return findTrackProducts( null, null, null )
+    let fc: storageTrackProduct.FiltrationCriteria = {};
+
+    if ( req.query.trackId ) {
+      fc.track = {
+        trackId: req.query.trackId
+      };
+    }
+
+    return findTrackProducts( fc, null, null )
       .then( ( foundTrackProducts: dataModel.grocRound.trackProduct.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -152,14 +160,6 @@ export default (
 
     let details: storageTrackProduct.UpdateDetails = {};
 
-    if ( req.body.track ) {
-      details.track = req.body.track;
-    }
-
-    if ( req.body.product ) {
-      details.product = req.body.product;
-    }
-
     if ( req.body.quantity ) {
       details.quantity = req.body.quantity;
     }
@@ -232,14 +232,6 @@ export default (
   /*********************************************************/
 
   function invalidUpdateDetails ( req: express.Request ): boolean {
-
-    if ( v.track.absent( req.body ) ) {
-      return true;
-    }
-
-    if ( v.product.absent( req.body ) ) {
-      return true;
-    }
 
     if ( blocks.absentWrong( req.body, "quantity", "number" ) ) {
       return true;

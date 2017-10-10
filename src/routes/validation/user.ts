@@ -8,7 +8,7 @@ import * as blocks from "./validation-blocks";
 
 export let absent = ( parent: any ): boolean => {
 
-  if ( blocks.absentWrong( parent, parent[ "user" ], "object" ) ) {
+  if ( blocks.absentWrong( parent, "user", "object" ) ) {
     return true;
   }
 
@@ -18,13 +18,13 @@ export let absent = ( parent: any ): boolean => {
 
 export let absentChildren = ( parent: any ): boolean => {
 
-  if ( blocks.absentWrong( parent, parent[ "userId" ], "string" ) ) {
+  if ( blocks.absentWrong( parent, "userId", "string" ) ) {
     return true;
   }
-  if ( blocks.absentWrong( parent, parent[ "emailAddress" ], "string" ) ) {
+  if ( blocks.absentWrong( parent, "emailAddress", "string" ) ) {
     return true;
   }
-  if ( blocks.optionalWrong( parent, parent[ "fullName" ], "string" ) ) {
+  if ( blocks.optionalWrong( parent, "fullName", "string" ) ) {
     return true;
   }
 
@@ -36,7 +36,7 @@ export let absentChildren = ( parent: any ): boolean => {
 
 export let optional = ( parent: any ): boolean => {
 
-  if ( blocks.optionalWrong( parent, parent[ "user" ], "object" ) ) {
+  if ( blocks.optionalWrong( parent, "user", "object" ) ) {
     return true;
   }
 
@@ -46,13 +46,13 @@ export let optional = ( parent: any ): boolean => {
 
 export let optionalChildren = ( parent: any ): boolean => {
 
-  if ( blocks.optionalWrong( parent, parent[ "userId" ], "string" ) ) {
+  if ( blocks.optionalWrong( parent, "userId", "string" ) ) {
     return true;
   }
-  if ( blocks.optionalWrong( parent, parent[ "emailAddress" ], "string" ) ) {
+  if ( blocks.optionalWrong( parent, "emailAddress", "string" ) ) {
     return true;
   }
-  if ( blocks.optionalWrong( parent, parent[ "fullName" ], "string" ) ) {
+  if ( blocks.optionalWrong( parent, "fullName", "string" ) ) {
     return true;
   }
 

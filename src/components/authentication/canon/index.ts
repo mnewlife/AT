@@ -71,6 +71,13 @@ export default class Canon implements interfaces.Instance {
             } );
           }
 
+          if ( !foundUsers[ 0 ].verification.verified ) {
+            return reject( {
+              identifier: "NotVerified",
+              data: {}
+            } );
+          }
+
           if ( this.isValidPassword( password, foundUsers[ 0 ].password ) ) {
             return resolve( foundUsers[ 0 ] );
           }
@@ -119,6 +126,10 @@ export default class Canon implements interfaces.Instance {
         } );
 
         if ( reason.identifier && reason.identifier === "UserNotFound" ) {
+          return Promise.reject( reason );
+        }
+
+        if ( reason.identifier && reason.identifier === "NotVerified" ) {
           return Promise.reject( reason );
         }
 

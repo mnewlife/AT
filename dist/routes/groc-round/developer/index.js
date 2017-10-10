@@ -1,16 +1,1 @@
-"use strict";
-/******************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
-var express = require("express");
-/******************************************************************************/
-exports.default = function () {
-    var router = express.Router();
-    router.use(authCheck);
-    router.get("/", example);
-    function example(req, res, next) {
-    }
-    function authCheck() {
-    }
-    return router;
-};
-/******************************************************************************/ 
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var express=require("express");exports.default=function(){var e=express.Router();return e.use(function(){}),e.get("/",function(e,r,t){}),e};

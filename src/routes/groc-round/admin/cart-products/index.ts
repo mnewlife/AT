@@ -40,7 +40,15 @@ export default (
 
     let innerContext: string = "get-cartProducts";
 
-    return findCartProducts( null, null, null )
+    let fc: storageCartProduct.FiltrationCriteria = null;
+
+    if ( req.query.cartId ) {
+      fc = {
+        cartId: req.query.cartId
+      };
+    }
+
+    return findCartProducts( fc, null, null )
       .then( ( foundCartProducts: dataModel.grocRound.cartProduct.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -162,10 +170,6 @@ export default (
       details.round = req.body.round;
     }
 
-    if ( req.body.cartId ) {
-      details.cartId = req.body.cartId;
-    }
-
     if ( req.body.product ) {
       details.product = req.body.product;
     }
@@ -240,10 +244,6 @@ export default (
     }
 
     if ( validationUpdate.round( req ) ) {
-      return true;
-    }
-
-    if ( req.body.cartId && typeof req.body.cartId == "string" ) {
       return true;
     }
 

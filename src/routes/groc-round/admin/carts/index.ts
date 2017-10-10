@@ -36,7 +36,21 @@ export default (
 
     let innerContext: string = "get-carts";
 
-    return findCarts( null, null, null )
+    let fc: storageCart.FiltrationCriteria = {};
+
+    if ( req.query.userId ) {
+      fc.user = {
+        userId: req.query.userId
+      }
+    }
+
+    if ( req.query.roundId ) {
+      fc.round = {
+        roundId: req.query.roundId
+      }
+    }
+
+    return findCarts( fc, null, null )
       .then( ( foundCarts: dataModel.grocRound.cart.Super[] ) => {
 
         return sendResponse( res, "grocRound-admin", true, null, {
@@ -124,14 +138,6 @@ export default (
       details.adminFeePercentage = req.body.adminFeePercentage;
     }
 
-    if ( req.body.numProducts ) {
-      details.numProducts = req.body.numProducts;
-    }
-
-    if ( req.body.valueProducts ) {
-      details.valueProducts = req.body.valueProducts;
-    }
-
     return updateCartById( req.params.cartId, details )
       .then( ( updatedCart: dataModel.grocRound.cart.Super ) => {
 
@@ -170,14 +176,6 @@ export default (
     }
 
     if ( req.body.adminFeePercentage && typeof req.body.adminFeePercentage !== "number" ) {
-      return true;
-    }
-
-    if ( req.body.numProducts && typeof req.body.numProducts !== "number" ) {
-      return true;
-    }
-
-    if ( req.body.valueProducts && typeof req.body.valueProducts !== "number" ) {
       return true;
     }
 

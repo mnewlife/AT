@@ -42,9 +42,30 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Effective Price</label>
-                    <input ng-disabled="$ctrl.adding" ng-model="$ctrl.addDetails.effectivePrice.price" type="number" name="effectivePrice" placeholder="Effective Price">
+                    <input ng-disabled="$ctrl.adding" ng-model="$ctrl.addDetails.effectivePrice.price" type="number" min="0.01" step="0.01" name="effectivePrice"
+                      placeholder="Effective Price">
                   </md-input-container>
                 </div>
+
+                <span class="md-body-2">Prices</span>
+
+                <md-list class="md-dense">
+
+                  <md-list-item class="md-3-line" ng-repeat="price in $ctrl.addDetails.prices">
+                    <div class="md-list-item-text" layout="column">
+                      <h3>{{ price.shop.shopName }}</h3>
+                      <h4>{{ ( price.price ) | currency }}</h4>
+                      <p>for {{ price.quantity }}</p>
+                    </div>
+                    <md-button class="md-icon-button md-accent md-secondary" aria-label="Button" ng-click="$ctrl.removePrice( price, true )">
+                      <md-icon class="material-icons step" aria-label="icon">clear</md-icon>
+                      <md-tooltip md-direction="bottom">Remove Price</md-tooltip>
+                    </md-button>
+                  </md-list-item>
+
+                </md-list>
+
+                <md-button id="add_price_add" class="md-accent" aria-label="Button" ng-click="$ctrl.addPrice( true, 'add_price_add' )">Add Price</md-button>
 
               </md-card-content>
 
@@ -86,10 +107,30 @@
                 <div layout="row" layout-align="start center">
                   <md-input-container md-no-float>
                     <label>Effective Price</label>
-                    <input ng-disabled="$ctrl.updating" ng-model="$ctrl.updateDetails.effectivePrice.price" type="number" name="effectivePrice"
-                      placeholder="Effective Price">
+                    <input type="number" min="0.01" step="0.01" ng-disabled="$ctrl.updating" ng-model="$ctrl.updateDetails.effectivePrice.price"
+                      name="effectivePrice" placeholder="Effective Price" required>
                   </md-input-container>
                 </div>
+
+                <span class="md-body-2">Prices</span>
+
+                <md-list class="md-dense">
+
+                  <md-list-item class="md-3-line" ng-repeat="price in $ctrl.updateDetails.prices">
+                    <div class="md-list-item-text" layout="column">
+                      <h3>{{ price.shop.shopName }}</h3>
+                      <h4>{{ ( price.price ) | currency }}</h4>
+                      <p>for {{ price.quantity }}</p>
+                    </div>
+                    <md-button class="md-icon-button md-accent md-secondary" aria-label="Button" ng-click="$ctrl.removePrice( price, false )">
+                      <md-icon class="material-icons step" aria-label="icon">clear</md-icon>
+                      <md-tooltip md-direction="bottom">Remove Price</md-tooltip>
+                    </md-button>
+                  </md-list-item>
+
+                </md-list>
+
+                <md-button id="add_price_update" class="md-accent" aria-label="Button" ng-click="$ctrl.addPrice( false, 'add_price_update' )">Add Price</md-button>
 
               </md-card-content>
 

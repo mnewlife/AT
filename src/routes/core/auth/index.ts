@@ -56,6 +56,10 @@ export default (
           return sendResponse( res, "passpoint", false, "User not found", null );
         }
 
+        if ( reason.identifier && reason.identifier == "NotVerified" ) {
+          return sendResponse( res, "passpoint", false, "User not verified", null );
+        }
+
         if ( reason.identifier && reason.identifier == "InvalidPassword" ) {
           return sendResponse( res, "passpoint", false, "Incorrect password", null );
         }

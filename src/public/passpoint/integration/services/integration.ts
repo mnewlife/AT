@@ -38,6 +38,10 @@ module ServicesIntegration {
 
     angular.module( "contextsService" ).factory( "ContextsService", Contexts );
 
+    Contexts.$inject = [
+      "$location"
+    ];
+
     function Contexts ( $location: ng.ILocationService ) {
       return new PasspointContextsService.Service( $location );
     }

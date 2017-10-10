@@ -19,7 +19,7 @@ export default (
 
   /*********************************************************/
 
-  router.post( "/verifyAccount/:userId/:code", verifyAccount );
+  router.get( "/verifyAccount/:userId/:code", verifyAccount );
 
   /*********************************************************/
 
@@ -42,6 +42,10 @@ export default (
 
       } )
       .catch(( reason: any ) => {
+
+        if ( reason.identifier && reason.identifier == "DocumentNotFound" ) {
+          return sendResponse( res, "passpoint", false, "User not found", { innerContext: innerContext } );
+        }
 
         if ( reason.identifier && reason.identifier == "UserNotFound" ) {
           return sendResponse( res, "passpoint", false, "User not found", { innerContext: innerContext } );

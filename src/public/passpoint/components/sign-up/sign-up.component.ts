@@ -83,9 +83,11 @@ module SignUpComponent {
       this.registering = true;
 
       return this.UserService.signUp( this.emailAddress, this.password )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.registering = false;
+
+          window.alert( "Done, A verification email has been sent to your email account." );
 
           if ( this.ContextsService.appContext ) {
             window.location.href = "/" + this.ContextsService.appContext;
@@ -94,7 +96,7 @@ module SignUpComponent {
           }
 
         } )
-        .catch(( reason: any ) => {
+        .catch( ( reason: any ) => {
 
           this.registering = false;
 
