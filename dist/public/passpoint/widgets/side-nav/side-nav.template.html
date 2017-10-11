@@ -1,13 +1,13 @@
-<md-sidenav flex="100" md-component-id="left" class="md-sidenav-left light_grey no_padding"
+<md-sidenav flex="100" md-component-id="left" class="md-sidenav-left no_padding"
   layout="column" layout-align="space-between stretch">
 
   <div flex="100" layout="column" layout-align="start stretch">
     <section>
       <md-list flex>
         
-        <md-list-item ng-repeat="item in $ctrl.items" ng-href="{{ item.href }}">
-          <md-icon aria-label="Label" >{{ item.icon }}</md-icon>
-          <p>{{ item.caption }}</p>
+        <md-list-item ng-repeat="item in ::$ctrl.items track by item.id" ng-href="{{ ::item.href }}">
+          <md-icon aria-label="Label" >{{ ::tem.icon }}</md-icon>
+          <p>{{ ::item.caption }}</p>
         </md-list-item>
         <md-list-item href="/">
           <md-icon aria-label="Label" >info</md-icon>

@@ -6,12 +6,12 @@
       </md-button>
       <h2 class="md-title">
         <span>Athena Resources</span>
-        <span ng-if="::$ctrl.title">-&nbsp;{{ ::$ctrl.title }}</span>
+        <span ng-if="::$ctrl.title" hide-xs>-&nbsp;{{ ::$ctrl.title }}</span>
       </h2>
       <span flex></span>
 
       <md-menu>
-        <md-button aria-label="User" class="md-icon-button pointed profile-picture">
+        <md-button aria-label="User" class="md-icon-button pointed">
           <md-icon class="md-avatar-icon" aria-label="user icon" ng-click="$mdOpenMenu( $event )">more_vert</md-icon>
         </md-button>
         <md-menu-content>

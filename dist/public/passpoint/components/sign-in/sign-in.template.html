@@ -10,13 +10,13 @@
       <section layout="column" layout-align="start center">
 
         <md-card class="animated zoomIn">
-          <md-progress-linear md-mode="indeterminate" class="md-accent" ng-show="$ctrl.authenticating"></md-progress-linear>
+          <md-progress-linear md-mode="indeterminate" class="md-accent" ng-if="$ctrl.authenticating"></md-progress-linear>
 
           <form name="form_sign_in" ng-submit="$ctrl.signIn()">
 
             <md-card-title>
               <md-card-title-text>
-                <span class="md-headline" ng-hide="$ctrl.editMode">Sign in to your Athena Account</span>
+                <span class="md-headline">Sign in to your Athena Account</span>
                 <span class="md-subhead">Enter your credentials</span>
               </md-card-title-text>
             </md-card-title>

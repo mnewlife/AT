@@ -12,19 +12,20 @@ module SideNavWidget {
 
     constructor() {
 
-      this.items = [];
-
-      this.items.push( {
-        href: "#/sign-in",
-        icon: "input",
-        caption: "Sign In"
-      } );
-
-      this.items.push( {
-        href: "#/sign-up",
-        icon: "mode_edit",
-        caption: "Sign Up"
-      } );
+      this.items = [
+        {
+          id: 1,
+          href: "#/sign-in",
+          icon: "input",
+          caption: "Sign In"
+        },
+        {
+          id: 2,
+          href: "#/sign-up",
+          icon: "mode_edit",
+          caption: "Sign Up"
+        }
+      ];
 
     }
 

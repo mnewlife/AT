@@ -1,17 +1,17 @@
 <form name="form_toolbar">
-  <md-toolbar layout="row" layout-align="center center" class="box-shadow">
+  <md-toolbar layout="row" layout-align="center center">
     <div flex-gt-sm="80" flex-sm="90" flex-xs="90" class="md-toolbar-tools">
       <md-button class="md-icon-button" aria-label="Menu" ng-click="$ctrl.toggleSideNav()">
         <md-icon class="material-icons step" aria-label="menu">menu</md-icon>
       </md-button>
       <h2 class="md-title">
         <span>Athena Resources</span>
-        <span ng-if="$ctrl.title" hide-xs>-&nbsp;{{ ::$ctrl.title }}</span>
+        <span ng-if="::$ctrl.title" hide-xs>-&nbsp;{{ ::$ctrl.title }}</span>
       </h2>
       <span flex></span>
 
       <md-menu>
-        <md-button aria-label="User" class="md-icon-button pointed profile-picture">
+        <md-button aria-label="User" class="md-icon-button pointed">
           <md-icon class="md-avatar-icon" aria-label="user icon" ng-click="$mdOpenMenu( $event )">more_vert</md-icon>
         </md-button>
         <md-menu-content>
