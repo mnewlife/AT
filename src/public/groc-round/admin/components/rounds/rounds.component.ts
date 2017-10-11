@@ -11,6 +11,7 @@ module GrocRoundAdminRoundsComponent {
 
     public rounds: round.Super[];
     public errorMessage: string;
+    public loading: boolean;
 
     /***************************************************/
 
@@ -21,6 +22,7 @@ module GrocRoundAdminRoundsComponent {
     ) {
 
       this.rounds = [];
+      this.loading = false;
 
       this.getRounds();
 
@@ -29,6 +31,8 @@ module GrocRoundAdminRoundsComponent {
     /***************************************************/
 
     private readonly getRounds = () => {
+
+      this.loading = true;
 
       this.RoundsService.getRounds()
         .then( ( rounds: round.Super[] ) => {
@@ -41,6 +45,11 @@ module GrocRoundAdminRoundsComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Operation Failed";
+
+        } )
+        .finally( () => {
+
+          this.loading = false;
 
         } );
 

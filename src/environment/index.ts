@@ -10,7 +10,8 @@ if ( process.env.node_env === "production" ) {
   temp.host = "athena-resources.herokuapp.com";
 } else {
   temp.production = false;
-  temp.host = "http://127.0.0.1:1111";
+  //temp.host = "http://127.0.0.1:1111";
+  temp.host = "http://athena-resources.herokuapp.com";
 }
 
 let environment: interfaces.Environment = {
