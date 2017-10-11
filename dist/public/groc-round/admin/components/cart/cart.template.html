@@ -17,6 +17,8 @@
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>
 
+        <h1 ng-if="$ctrl.loading" class="md-headline">Getting Details...</h1>
+
         <md-card flex-gt-sm="30" flex-sm="45" flex-xs="100" ng-hide="$ctrl.loading" ng-if="$ctrl.shop.id">
 
           <md-card-title>

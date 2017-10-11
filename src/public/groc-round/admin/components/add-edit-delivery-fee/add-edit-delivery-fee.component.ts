@@ -48,7 +48,7 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
       private readonly ToastService: toastService.Instance,
       private readonly DeliveryFeesService: deliveryFeesService.Instance,
       private readonly AutoCompleteService: autoCompleteService.Instance,
-      private readonly SelectService: selectService.Instance,      
+      private readonly SelectService: selectService.Instance,
       private readonly UsersService: usersService.Instance,
       private readonly RoundsService: roundsService.Instance,
       private readonly SuperInfoService: superInfoService.Instance
@@ -115,6 +115,8 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
 
         this.editMode = false;
 
+        this.loading = true;
+
         this.$q.all( [
           this.getUsers(),
           this.getRounds()
@@ -146,9 +148,7 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
 
     private getUsers = () => {
 
-      this.loading = true;
-
-      this.UsersService.getUsers()
+      return this.UsersService.getUsers()
         .then( ( response: any ) => {
 
           this.users = [];
@@ -164,11 +164,6 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get deliveryFee record";
 
-        } )
-        .finally( () => {
-
-          this.loading = false;
-
         } );
 
 
@@ -178,9 +173,7 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
 
     private getRounds = () => {
 
-      this.loading = true;
-
-      this.RoundsService.getRounds()
+      return this.RoundsService.getRounds()
         .then( ( foundRounds: round.Super[] ) => {
 
           this.rounds = [];
@@ -199,11 +192,6 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get deliveryFee record";
 
-        } )
-        .finally( () => {
-
-          this.loading = false;
-
         } );
 
 
@@ -213,9 +201,7 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
 
     private getDeliveryFeeInfo = ( id: string ) => {
 
-      this.loading = true;
-
-      this.DeliveryFeesService.getDeliveryFee( id )
+      return this.DeliveryFeesService.getDeliveryFee( id )
         .then( ( foundDeliveryFee: deliveryFee.Super ) => {
 
           this.metaUser = foundDeliveryFee.user;
@@ -229,11 +215,6 @@ module GrocRoundAdminAddEditDeliveryFeeComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get deliveryFee record";
-
-        } )
-        .finally( () => {
-
-          this.loading = false;
 
         } );
 

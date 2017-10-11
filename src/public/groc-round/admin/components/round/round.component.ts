@@ -38,6 +38,7 @@ module GrocRoundAdminRoundComponent {
     private initMembers = () => {
 
       this.round = {} as any;
+      this.loading = false;
 
     }
 
@@ -57,7 +58,7 @@ module GrocRoundAdminRoundComponent {
 
     private getRoundRecord = ( id: string ) => {
 
-      let loading = true;
+      this.loading = true;
 
       this.RoundsService.getRound( id )
         .then( ( foundRound: round.Super ) => {

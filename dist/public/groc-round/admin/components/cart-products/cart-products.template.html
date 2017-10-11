@@ -17,6 +17,8 @@
           <h1 class="md-subhead">No Shops Yet</h1>
         </div>
 
+        <h1 ng-if="$ctrl.loading" class="md-headline">Getting Details...</h1>
+
         <div ng-show="$ctrl.errorMessage" layout="row" layout-align="center center">
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>

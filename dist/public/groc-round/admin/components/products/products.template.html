@@ -22,6 +22,8 @@
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>
 
+        <h1 ng-if="$ctrl.progress.getProducts" class="md-headline">Getting Details...</h1>
+
         <md-tabs md-dynamic-height md-border-bottom ng-if="!$ctrl.errorMessage">
 
           <md-tab label="Cards">

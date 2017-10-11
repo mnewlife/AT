@@ -11,6 +11,7 @@ module GrocRoundAdminDeliveryFeesComponent {
 
     public deliveryFees: deliveryFee.Super[];
     public errorMessage: string;
+    public loading: boolean;
 
     /***************************************************/
 
@@ -36,6 +37,8 @@ module GrocRoundAdminDeliveryFeesComponent {
 
     private readonly getDeliveryFees = ( roundId: string, userId: string ) => {
 
+      this.loading = true;
+
       this.DeliveryFeesService.getDeliveryFees( roundId, userId )
         .then( ( deliveryFees: deliveryFee.Super[] ) => {
 
@@ -47,6 +50,11 @@ module GrocRoundAdminDeliveryFeesComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Operation Failed";
+
+        } )
+        .finally( () => {
+
+          this.loading = false;
 
         } );
 

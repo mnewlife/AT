@@ -57,7 +57,7 @@ module GrocRoundAdminRoundContributorComponent {
 
     private getRoundContributorRecord = ( id: string ) => {
 
-      let loading = true;
+      this.loading = true;
 
       this.RoundContributorsService.getRoundContributor( id )
         .then( ( foundRoundContributor: roundContributor.Super ) => {

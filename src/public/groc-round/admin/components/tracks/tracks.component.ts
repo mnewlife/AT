@@ -11,6 +11,7 @@ module GrocRoundAdminTracksComponent {
 
     public tracks: track.Super[];
     public errorMessage: string;
+    public loading: boolean;
 
     /***************************************************/
 
@@ -34,6 +35,8 @@ module GrocRoundAdminTracksComponent {
 
     private readonly getTracks = ( roundId: string ) => {
 
+      this.loading = true;
+
       this.TracksService.getTracks( roundId )
         .then( ( tracks: track.Super[] ) => {
 
@@ -45,6 +48,11 @@ module GrocRoundAdminTracksComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Operation Failed";
+
+        } )
+        .finally( () => {
+
+          this.loading = false;
 
         } );
 
