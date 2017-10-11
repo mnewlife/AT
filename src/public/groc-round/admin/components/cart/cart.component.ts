@@ -57,7 +57,7 @@ module GrocRoundAdminCartComponent {
 
     private getCartRecord = ( id: string ) => {
 
-      let loading = true;
+      this.loading = true;
 
       this.CartsService.getCart( id )
         .then( ( foundCart: cart.Super ) => {

@@ -83,59 +83,61 @@ module GrocRoundAdminProductsService {
 
       this.progress.getProducts = true;
 
-      let promise = this.$http.get( this.urlPrefix + "/getProducts" )
-        .then( ( response: ng.IHttpResponse<{}> ) => {
+      this.promises.getProducts = this.$q( ( resolve, reject ) => {
 
-          this.progress.getProducts = false;
+        return this.$http.get( this.urlPrefix + "/getProducts" )
+          .then( ( response: ng.IHttpResponse<{}> ) => {
 
-          let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
+            this.progress.getProducts = false;
 
-          if ( responseData.success ) {
+            let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
 
-            return this.$q( ( resolve, reject ) => {
+            if ( responseData.success ) {
 
-              this.$timeout( () => {
+              return this.$q( ( resolve, reject ) => {
 
-                if ( this.products.length ) {
-                  this.products = [];
-                }
+                this.$timeout( () => {
 
-                responseData.payload.foundProducts.forEach( ( product: product.Super ) => {
-                  this.products.push( this.fixPrices( product ) );
+                  if ( this.products.length ) {
+                    this.products = [];
+                  }
+
+                  responseData.payload.foundProducts.forEach( ( product: product.Super ) => {
+                    this.products.push( this.fixPrices( product ) );
+                  } );
+
+                  resolve( true );
+
                 } );
-
-                resolve( true );                
 
               } );
 
-            } );
+            } else {
 
-          } else {
+              let message = ( responseData.message ) ? responseData.message : "Couldn't get product records";
 
-            let message = ( responseData.message ) ? responseData.message : "Couldn't get product records";
+              this.ToastService.showSimple( message );
 
+              return reject( {
+                message: message
+              } );
+
+            }
+
+          } )
+          .catch( ( reason: any ) => {
+
+            this.progress.getProducts = false;
+
+            let message = "Products not found";
             this.ToastService.showSimple( message );
-
-            return this.$q.reject( {
+            return reject( {
               message: message
             } );
 
-          }
-
-        } )
-        .catch( ( reason: any ) => {
-
-          this.progress.getProducts = false;
-
-          let message = "Products not found";
-          this.ToastService.showSimple( message );
-          return this.$q.reject( {
-            message: message
           } );
 
-        } );
-
-      this.promises.getProducts = promise;
+      } );
 
       return this.promises.getProducts;
 

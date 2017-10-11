@@ -57,7 +57,7 @@ module GrocRoundAdminTrackComponent {
 
     private getTrackRecord = ( id: string ) => {
 
-      let loading = true;
+      this.loading = true;
 
       this.TracksService.getTrack( id )
         .then( ( foundTrack: track.Super ) => {

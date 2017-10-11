@@ -25,7 +25,6 @@ module GrocRoundAdminAddEditCartProductComponent {
     public loading: boolean;
     public adding: boolean;
     public updating: boolean;
-    public deleting: boolean;
 
     public addDetails: cartProductsService.AddDetails;
     public updateDetails: cartProductsService.UpdateDetails;
@@ -60,6 +59,10 @@ module GrocRoundAdminAddEditCartProductComponent {
 
     private clearMembers = () => {
 
+      this.loading = false;
+      this.adding = false;
+      this.updating = false;
+
       this.productText = "";
 
       this.addDetails = {
@@ -88,7 +91,14 @@ module GrocRoundAdminAddEditCartProductComponent {
 
         this.editMode = true;
 
-        this.getCartProductInfo( this.$routeParams.cartProductId );
+        this.loading = true;
+
+        this.getCartProductInfo( this.$routeParams.cartProductId )
+          .finally( () => {
+
+            this.loading = false;
+
+          } );
 
       } else {
 
@@ -100,7 +110,14 @@ module GrocRoundAdminAddEditCartProductComponent {
 
         this.editMode = false;
 
-        this.getCartInfo( qs.cartId );
+        this.loading = true;
+
+        this.getCartInfo( qs.cartId )
+          .finally( () => {
+
+            this.loading = false;
+
+          } );
 
       }
 
@@ -141,9 +158,7 @@ module GrocRoundAdminAddEditCartProductComponent {
 
     private getCartInfo = ( id: string ) => {
 
-      this.loading = true;
-
-      this.CartsService.getCart( id )
+      return this.CartsService.getCart( id )
         .then( ( foundCart: cart.Super ) => {
 
           this.addDetails.user = foundCart.user;
@@ -155,11 +170,6 @@ module GrocRoundAdminAddEditCartProductComponent {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get cartProduct record";
 
-        } )
-        .finally( () => {
-
-          this.loading = false;
-
         } );
 
 
@@ -167,9 +177,7 @@ module GrocRoundAdminAddEditCartProductComponent {
 
     private getCartProductInfo = ( id: string ) => {
 
-      this.loading = true;
-
-      this.CartProductsService.getCartProduct( id )
+      return this.CartProductsService.getCartProduct( id )
         .then( ( foundCartProduct: cartProduct.Super ) => {
 
           this.metaUser = foundCartProduct.user;
@@ -183,11 +191,6 @@ module GrocRoundAdminAddEditCartProductComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get cartProduct record";
-
-        } )
-        .finally( () => {
-
-          this.loading = false;
 
         } );
 

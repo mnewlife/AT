@@ -116,6 +116,8 @@ module GrocRoundAdminAddEditContributionComponent {
 
         this.editMode = false;
 
+        this.loading = true;
+
         this.$q.all( [
           this.getUsers(),
           this.getRounds()
@@ -147,9 +149,7 @@ module GrocRoundAdminAddEditContributionComponent {
 
     private getUsers = () => {
 
-      this.loading = true;
-
-      this.UsersService.getUsers()
+      return this.UsersService.getUsers()
         .then( ( response: any ) => {
 
           this.users = [];
@@ -165,11 +165,6 @@ module GrocRoundAdminAddEditContributionComponent {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get contribution record";
 
-        } )
-        .finally( () => {
-
-          this.loading = false;
-
         } );
 
 
@@ -179,9 +174,7 @@ module GrocRoundAdminAddEditContributionComponent {
 
     private getRounds = () => {
 
-      this.loading = true;
-
-      this.RoundsService.getRounds()
+      return this.RoundsService.getRounds()
         .then( ( foundRounds: round.Super[] ) => {
 
           this.rounds = [];
@@ -200,11 +193,6 @@ module GrocRoundAdminAddEditContributionComponent {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get contribution record";
 
-        } )
-        .finally( () => {
-
-          this.loading = false;
-
         } );
 
 
@@ -214,9 +202,7 @@ module GrocRoundAdminAddEditContributionComponent {
 
     private getContributionInfo = ( id: string ) => {
 
-      this.loading = true;
-
-      this.ContributionsService.getContribution( id )
+      return this.ContributionsService.getContribution( id )
         .then( ( foundContribution: contribution.Super ) => {
 
           this.metaUser = foundContribution.user;
@@ -230,11 +216,6 @@ module GrocRoundAdminAddEditContributionComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get contribution record";
-
-        } )
-        .finally( () => {
-
-          this.loading = false;
 
         } );
 

@@ -11,6 +11,7 @@ module GrocRoundAdminContributionsComponent {
 
     public contributions: contribution.Super[];
     public errorMessage: string;
+    public loading: boolean;
 
     /***************************************************/
 
@@ -36,6 +37,8 @@ module GrocRoundAdminContributionsComponent {
 
     private readonly getContributions = ( roundId: string, userId: string ) => {
 
+      this.loading = true;
+
       this.ContributionsService.getContributions( roundId, userId )
         .then( ( contributions: contribution.Super[] ) => {
 
@@ -47,6 +50,11 @@ module GrocRoundAdminContributionsComponent {
         .catch( ( reason: any ) => {
 
           this.errorMessage = ( reason && reason.message ) ? reason.message : "Operation Failed";
+
+        } )
+        .finally( () => {
+
+          this.loading = false;
 
         } );
 

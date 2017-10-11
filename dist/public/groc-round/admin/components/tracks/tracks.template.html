@@ -1,6 +1,6 @@
 <div flex="100" layout="column" layout-align="start stretch" class="screen" ng-cloak>
   <tool-bar-widget title="Tracks"></tool-bar-widget>
-  <md-progress-linear class="md-accent" ng-if="$ctrl.progress.getTracks" md-mode="indeterminate"></md-progress-linear>
+  <md-progress-linear class="md-accent" ng-if="$ctrl.loading" md-mode="indeterminate"></md-progress-linear>
   <md-content flex layout="row" layout-align="center stretch">
 
     <div layout="column" layout-align="start stretch" class="no_padding">
@@ -18,9 +18,11 @@
 
         <md-subheader class="md-no-sticky">Tracks</md-subheader>
 
-        <div ng-hide="$ctrl.tracks.length || $ctrl.progress.getTracks" layout="row" layout-align="center center">
+        <div ng-hide="$ctrl.tracks.length || $ctrl.loading" layout="row" layout-align="center center">
           <h1 class="md-subhead">No Tracks Yet</h1>
         </div>
+
+        <h1 ng-if="$ctrl.loading" class="md-headline">Getting Details...</h1>
 
         <div ng-show="$ctrl.errorMessage" layout="row" layout-align="center center">
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>

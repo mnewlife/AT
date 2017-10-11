@@ -31,7 +31,7 @@ module GrocRoundAdminShopComponent {
 
       this.initMembers();
       this.deriveShopId();
-      
+
     }
 
     /***************************************************/
@@ -58,9 +58,9 @@ module GrocRoundAdminShopComponent {
 
     private getShopRecord = ( id: string ) => {
 
-      let loading = true;
+      this.loading = true;
 
-      let matches = this.ShopsService.shops.filter(( shop ) => {
+      let matches = this.ShopsService.shops.filter( ( shop ) => {
         return ( shop.id === id );
       } );
 
@@ -73,18 +73,18 @@ module GrocRoundAdminShopComponent {
       } else {
 
         this.ShopsService.getShop( id )
-          .then(( foundShop: shop.Super ) => {
+          .then( ( foundShop: shop.Super ) => {
 
             angular.copy( foundShop, this.shop );
             this.errorMessage = null;
 
           } )
-          .catch(( reason: any ) => {
+          .catch( ( reason: any ) => {
 
             this.errorMessage = ( reason && reason.message ) ? reason.message : "Couldn't get shop record";
 
           } )
-          .finally(() => {
+          .finally( () => {
 
             this.loading = false;
 
@@ -101,7 +101,7 @@ module GrocRoundAdminShopComponent {
       this.deleting = true;
 
       this.DialogService.showConfirm( "Delete Shop", "Are you sure?", null )
-        .then(( sure: boolean ) => {
+        .then( ( sure: boolean ) => {
 
           if ( sure ) {
             return this.ShopsService.removeShop( this.shop.id );
@@ -110,12 +110,12 @@ module GrocRoundAdminShopComponent {
           }
 
         } )
-        .then(( response: any ) => {
+        .then( ( response: any ) => {
 
           this.$location.path( "/shops" );
 
         } )
-        .finally(() => {
+        .finally( () => {
 
           this.deleting = false;
 

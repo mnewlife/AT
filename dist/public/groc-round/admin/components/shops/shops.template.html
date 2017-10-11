@@ -26,6 +26,8 @@
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>
 
+        <h1 ng-if="$ctrl.progress.getShops" class="md-headline">Getting Details...</h1>
+
         <div ng-show="$ctrl.shops.length" layout="row" layout-align="start start" layout-wrap layout-padding>
 
           <md-card ng-repeat="shop in $ctrl.shops track by shop.id" class="list-item" flex-gt-sm="30" flex-sm="45" flex-xs="100">
