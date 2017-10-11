@@ -136,11 +136,6 @@ module SignInComponent {
       this.authenticating = true;
 
       return this.UserService.signIn( this.emailAddress, this.password )
-        .then( ( response: any ) => {
-
-          this.authenticating = false;
-
-        } )
         .catch( ( reason: any ) => {
 
           this.authenticating = false;

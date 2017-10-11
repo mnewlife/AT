@@ -26,6 +26,10 @@
           <h1 class="md-subhead">{{ $ctrl.errorMessage }}</h1>
         </div>
 
+        <div ng-if="$ctrl.loading" layout="row" layout-align="center center">
+          <h1 class="md-headline">Getting Rounds...</h1>
+        </div>
+
         <div ng-show="$ctrl.rounds.length" layout="row" layout-align="start start" layout-wrap layout-padding>
 
           <md-card ng-repeat="round in $ctrl.rounds track by round.id" class="list-item" flex-gt-sm="30" flex-sm="45" flex-xs="100">
@@ -57,14 +61,14 @@
                 <span class="md-body-1" ng-show="round.numTracks != 1">{{ round.numTracks }} tracks</span>
                 <span class="md-body-1" ng-show="round.numTracks == 1">Just 1 track</span>
                 <br>
-                <span class="md-body-1" >All cart products are worth: {{ round.valueCartProducts | currency }}</span>
+                <span class="md-body-1">All cart products are worth: {{ round.valueCartProducts | currency }}</span>
               </p>
 
               <p>
                 <span class="md-body-1" ng-show="round.contributions.num != 1">{{ round.contributions.num }} contributions so far</span>
                 <span class="md-body-1" ng-show="round.contributions.num == 1">1 contribution so far</span>
                 <br>
-                <span class="md-body-1" >All worth: {{ round.contributions.value | currency }}</span>
+                <span class="md-body-1">All worth: {{ round.contributions.value | currency }}</span>
               </p>
 
               <p>
@@ -73,7 +77,7 @@
                 <span class="md-body-1" ng-show="round.deliveries.numPayments != 1">{{ round.deliveries.numPayments }} payments so far</span>
                 <span class="md-body-1" ng-show="round.deliveries.numPayments == 1">1 payment so far</span>
                 <br>
-                <span class="md-body-1" >All worth: {{ round.deliveries.valuePayments | currency }}</span>
+                <span class="md-body-1">All worth: {{ round.deliveries.valuePayments | currency }}</span>
               </p>
 
             </md-card-content>
