@@ -18,11 +18,13 @@ module AboutSideNavWidget {
       this.services = [];
 
       this.items.push( {
+        id: 1,
         href: "/passpoint/#/sign-in",
         icon: "input",
         caption: "Sign In"
       } );
       this.items.push( {
+        id: 2,
         href: "/passpoint/#/sign-up",
         icon: "mode_edit",
         caption: "Sign Up"
@@ -36,6 +38,7 @@ module AboutSideNavWidget {
         href = "";
       }
       this.services.push( {
+        id: 11,
         href: href,
         icon: "local_grocery_store",
         caption: "Grocery Rounds"
@@ -49,6 +52,7 @@ module AboutSideNavWidget {
         href = "";
       }
       this.services.push( {
+        id: 12,
         href: href,
         icon: "call",
         caption: "Call263"

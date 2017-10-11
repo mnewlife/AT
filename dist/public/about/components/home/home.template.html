@@ -43,7 +43,7 @@
           </md-card-content>
 
           <md-card-actions layout="row" layout-align="start end" layout-xs="column" layout-align-xs="center start">
-            <md-button ng-if="$ctrl.ContextsService.currentUser" href="/core/{{ $ctrl.ContextsService.currentUser.accessLevel }}" class="md-accent nocase"
+            <md-button ng-if="$ctrl.ContextsService.currentUser" href="/core/{{ ::$ctrl.ContextsService.currentUser.accessLevel }}" class="md-accent nocase"
               aria-label="Aria Label">
               My Profile
             </md-button>
@@ -58,10 +58,10 @@
         <md-grid-list md-cols="1" md-cols-sm="2" md-cols-gt-sm="3" md-cols-md="4" md-cols-gt-md="4" md-row-height-gt-md="1:1" md-row-height="4:3"
           md-gutter="8px" md-gutter-gt-sm="8px">
 
-          <md-grid-tile class="pointed" ng-click="$ctrl.route( service.href )" ng-repeat="service in $ctrl.services" md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
-            <img flex="100" ng-src="{{ service.image }}" onerror="this.src='/resources/drawable/placeholder.jpg';" />
+          <md-grid-tile class="pointed" ng-click="$ctrl.route( service.href )" ng-repeat="service in ::$ctrl.services" md-rowspan="1" md-colspan="1" md-colspan-sm="1" md-colspan-xs="1">
+            <img flex="100" ng-src="{{ ::service.image }}" onerror="this.src='/resources/drawable/placeholder.jpg';" />
             <md-grid-tile-footer>
-              <h3>{{ service.serviceName }}</h3>
+              <h3>{{ ::service.serviceName }}</h3>
             </md-grid-tile-footer>
           </md-grid-tile>
 
