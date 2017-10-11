@@ -43,7 +43,7 @@
           </md-card-content>
 
           <md-card-actions layout="row" layout-align="start end" layout-xs="column" layout-align-xs="center start">
-            <md-button ng-if="$ctrl.ContextsService.currentUser" href="/core/{{ ::$ctrl.ContextsService.currentUser.accessLevel }}" class="md-accent nocase"
+            <md-button ng-if="::$ctrl.ContextsService.currentUser" href="/core/{{ ::$ctrl.ContextsService.currentUser.accessLevel }}" class="md-accent nocase"
               aria-label="Aria Label">
               My Profile
             </md-button>
