@@ -6,7 +6,6 @@ module AboutComponentsIntegration {
 
     angular.module( "homeComponent", [
       "toolBarWidget",
-      "sideNavWidget",
       "toastService",
       "contextsService",
       "descLimit"
@@ -29,25 +28,6 @@ module AboutComponentsIntegration {
       ContextsService: AboutContextsServiceInterfaces.Instance
     ) {
       return new AboutHomeComponent.Component( $q, ToastService, ContextsService );
-    }
-
-    /*******************************************************************/
-
-    angular.module( "sideNavWidget", [
-      "contextsService"
-    ] );
-
-    angular.module( "sideNavWidget" ).component( "sideNavWidget", {
-      templateUrl: "/about/widgets/side-nav/side-nav.template.html",
-      controller: sideNav
-    } );
-
-    sideNav.$inject = [
-      "ContextsService"
-    ];
-
-    function sideNav ( ContextsService: AboutContextsServiceInterfaces.Instance ) {
-      return new AboutSideNavWidget.Widget( ContextsService );
     }
 
     /*******************************************************************/

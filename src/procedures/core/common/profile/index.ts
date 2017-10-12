@@ -304,12 +304,14 @@ export default class Profile implements interfaces.Instance {
         return this.sendEmail(
           supportDetails.default.sendingAddress,
           [ response.emailAddress ],
-          environment.default.applicationName + " | Account Verification",
+          environment.default.applicationName + " | Reset Password",
           response.html
         );
 
       } )
       .catch(( reason: any ) => {
+
+        console.log( reason );
 
         if ( reason.identifier && reason.identifier === "DocumentNotFound" ) {
           return Promise.reject( reason );

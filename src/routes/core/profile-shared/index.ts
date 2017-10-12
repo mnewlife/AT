@@ -244,9 +244,9 @@ export default class ProfileShared implements interfaces.Instance {
 
       let innerContext = "request-reset-code";
 
-      if ( !this.signedIn( req ) ) {
+      /*if ( !this.signedIn( req ) ) {
         return this.sendResponse( res, "passpoint", false, null, { innerContext: innerContext } );
-      }
+      }*/
 
       if ( !req.params.emailAddress ) {
         return this.sendResponse( res, "passpoint", false, "Email address is missing", { innerContext: innerContext } );
@@ -259,6 +259,8 @@ export default class ProfileShared implements interfaces.Instance {
 
         } )
         .catch(( reason: any ) => {
+
+          console.log( reason );
 
           if ( reason.identifier && reason.identifier == "UserNotFound" ) {
             return this.sendResponse( res, "passpoint", false, "User not found", { innerContext: innerContext } );

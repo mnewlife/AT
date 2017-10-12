@@ -6,7 +6,7 @@
       <md-list flex>
         
         <md-list-item ng-repeat="item in ::$ctrl.items track by item.id" ng-href="{{ ::item.href }}">
-          <md-icon aria-label="Label" >{{ ::tem.icon }}</md-icon>
+          <md-icon aria-label="Label" >{{ ::item.icon }}</md-icon>
           <p>{{ ::item.caption }}</p>
         </md-list-item>
         <md-list-item href="/">

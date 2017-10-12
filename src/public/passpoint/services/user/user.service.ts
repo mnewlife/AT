@@ -24,6 +24,8 @@ module UserService {
       return this.$http.get( "/core/profile/requestPasswordResetCode/" + emailAddress )
         .then( ( response: ng.IHttpResponse<{}> ) => {
 
+          console.log( response );
+
           let responseData: networkCall.ResponseData = response.data as networkCall.ResponseData;
           if ( responseData.success ) {
 
@@ -42,6 +44,8 @@ module UserService {
 
         } )
         .catch( ( reason: any ) => {
+
+          console.log( reason );
 
           let message = ( reason && reason.message ) ? reason.message : "Something went wrong";
           this.ToastService.showSimple( message );

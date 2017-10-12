@@ -29,20 +29,6 @@ export default (
 
   /**********************************************************/
 
-  components.storage.core.user.remove( {
-    emailAddress: "tinoguguru@gmail.com"
-  } )
-    .then( ( response: any ) => {
-
-      console.log( "done" );
-
-    } )
-    .catch( ( reason: any ) => {
-
-      console.log( reason );
-
-    } )
-
   let helpers = new Helpers(
     components.helpers.moders.checkThrow,
     components.session.signedIn,
